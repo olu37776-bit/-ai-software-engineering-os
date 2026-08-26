@@ -39,16 +39,8 @@ jobs:
           set -euo pipefail
           current_message="$(git log -1 --pretty=%s)"
           if [ "${current_message}" = "chore: bootstrap M0 remediation" ]; then
-            python - <<'PY'
-          import base64, json, lzma
-          from pathlib import Path
-          encoded = ''.join(p.read_text(encoding='ascii').strip() for p in sorted(Path('.github/m0-bootstrap').glob('*.txt')))
-          files = json.loads(lzma.decompress(base64.b64decode(encoded)).decode('utf-8'))
-          for rel, content in files.items():
-              path = Path(rel)
-              path.parent.mkdir(parents=True, exist_ok=True)
-              path.write_text(content, encoding='utf-8', newline='\n')
-          PY
+            cat .github/m0-bootstrap/*.txt | tr -d '\n' | base64 --decode | xz --decompress --stdout > /tmp/m0-files.json
+            python -c 'import json,pathlib; d=json.load(open("/tmp/m0-files.json",encoding="utf-8")); [(lambda p,c:(p.parent.mkdir(parents=True,exist_ok=True),p.write_text(c,encoding="utf-8",newline="\n")))(pathlib.Path(k),v) for k,v in d.items()]'
             python -m py_compile scripts/m0/bootstrap_remediation.py scripts/m0/verify_preimplementation.py
             python -m pip install --disable-pip-version-check --no-input \
               "jsonschema==4.25.1" \
@@ -119,15 +111,7 @@ jobs:
 
       - name: Publish verification summary
         working-directory: repo
+        env:
+          SUMMARY_FILE: ${{ github.step_summary }}
         run: |
-          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
-          import json
-          from pathlib import Path
-          report = json.loads(Path('m0-independent-preimplementation-report.json').read_text())
-          print('# M0 Independent Preimplementation Verification')
-          print()
-          print(f"- Decision: **{report['decision']}**")
-          print(f"- Subject commit: `{report['subjectCommit']}`")
-          print(f"- Subject tree: `{report['subjectTree']}`")
-          print(f"- Required checks: {len(report['checks'])}")
-          PY
+          python -c 'import json,os,pathlib; r=json.loads(pathlib.Path("m0-independent-preimplementation-report.json").read_text()); s="# M0 Independent Preimplementation Verification\n\n- Decision: **{}**\n- Subject commit: `{}`\n- Subject tree: `{}`\n- Required checks: {}\n".format(r["decision"],r["subjectCommit"],r["subjectTree"],len(r["checks"])); pathlib.Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8").write(s)'
