@@ -1,0 +1,357 @@
+{
+  "schemaVersion": "1.0.0",
+  "planId": "0198e0a1-0000-7019-8000-000000000019",
+  "subjectRef": {
+    "subjectType": "Operation",
+    "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+    "subjectVersion": "1.0.0"
+  },
+  "contractRefs": [
+    {
+      "schemaId": "urn:aseos:schema:schema-inventory:1.0.0",
+      "schemaVersion": "1.0.0",
+      "schemaHash": "cc89f18d0c306713c0316ae37caeffb94145f2a54e86082df17cd1a9243d84cb"
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:operation-manifest:1.0.0",
+      "schemaVersion": "1.0.0",
+      "schemaHash": "e2e13991590aab63bd93cb840bab479c70d1af0d04a891a5fe5e991559a55e17"
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:write-scope:1.0.0",
+      "schemaVersion": "1.0.0",
+      "schemaHash": "f7fa3a9402765100edc2980feac2cc890d62ff8ea49550053ca6a48bef3e8f35"
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:phase-1-receipt:1.0.0",
+      "schemaVersion": "1.0.0",
+      "schemaHash": "749c0259f4cdf5212f456c0dc0b915ea3bcbe98c95e17464687eff3fd2169b9e"
+    }
+  ],
+  "riskClass": "R4",
+  "plannerId": "phase-1-minimum-verification-planner",
+  "plannerVersion": "1.0.0",
+  "policySnapshotId": "0198e0a1-0000-7018-8000-000000000018",
+  "createdAt": "2026-08-26T08:30:00Z",
+  "steps": [
+    {
+      "stepId": "P1-V01-PREFLIGHT",
+      "kind": "SCHEMA",
+      "required": true,
+      "dependsOn": [],
+      "executorCapability": "phase1_preflight",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "BaselineIdentityEvidence",
+        "AuthorityReferenceEvidence",
+        "WriteScopeValidationResult"
+      ],
+      "timeoutMs": 300000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V02-TOOLCHAIN",
+      "kind": "COMPILE",
+      "required": true,
+      "dependsOn": [
+        "P1-V01-PREFLIGHT"
+      ],
+      "executorCapability": "qualify_toolchain",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "FrozenLockfileInstallResult",
+        "TypeScriptBuildResult",
+        "ToolchainManifestEvidence",
+        "CrossPlatformBuildEvidence"
+      ],
+      "timeoutMs": 3600000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V03-CONTRACTS",
+      "kind": "CONTRACT",
+      "required": true,
+      "dependsOn": [
+        "P1-V02-TOOLCHAIN"
+      ],
+      "executorCapability": "validate_contracts",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "SchemaMetaValidationResult",
+        "SchemaInventoryValidationResult",
+        "ValidInvalidExampleSuiteResult",
+        "SchemaTypeConsistencyResult"
+      ],
+      "timeoutMs": 1800000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V04-ARCHITECTURE",
+      "kind": "ARCHITECTURE",
+      "required": true,
+      "dependsOn": [
+        "P1-V02-TOOLCHAIN",
+        "P1-V03-CONTRACTS"
+      ],
+      "executorCapability": "validate_architecture",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "DependencyGraphResult",
+        "DeepImportDenialResult",
+        "CycleDenialResult",
+        "DuplicateSemanticOwnerDenialResult"
+      ],
+      "timeoutMs": 1800000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V05-POLICY",
+      "kind": "PROPERTY",
+      "required": true,
+      "dependsOn": [
+        "P1-V03-CONTRACTS",
+        "P1-V04-ARCHITECTURE"
+      ],
+      "executorCapability": "qualify_policy",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "PolicySchemaResult",
+        "CanonicalizationDeterminismResult",
+        "FailClosedPropertyResult",
+        "PolicyMutationResult"
+      ],
+      "timeoutMs": 3600000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V06-PERSISTENCE",
+      "kind": "MIGRATION",
+      "required": true,
+      "dependsOn": [
+        "P1-V02-TOOLCHAIN",
+        "P1-V03-CONTRACTS",
+        "P1-V04-ARCHITECTURE"
+      ],
+      "executorCapability": "qualify_node_sqlite",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "PersistenceAtomicityResult",
+        "CrashRecoveryResult",
+        "DedupConcurrencyResult",
+        "BackupRestoreResult",
+        "CorruptionQuarantineResult",
+        "PersistenceBenchmarkResult",
+        "EventLoopResponsivenessResult"
+      ],
+      "timeoutMs": 7200000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V07-CONTROL-API",
+      "kind": "SECURITY",
+      "required": true,
+      "dependsOn": [
+        "P1-V02-TOOLCHAIN",
+        "P1-V03-CONTRACTS",
+        "P1-V04-ARCHITECTURE"
+      ],
+      "executorCapability": "qualify_control_api",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "OpenApiValidationResult",
+        "LoopbackExposureResult",
+        "TokenAclRedactionResult",
+        "IdempotencyConflictResult",
+        "StaleDiscoveryResult",
+        "SseRecoveryResult",
+        "CliPublicApiAcceptanceResult"
+      ],
+      "timeoutMs": 5400000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V08-ISOLATION",
+      "kind": "SECURITY",
+      "required": true,
+      "dependsOn": [
+        "P1-V03-CONTRACTS",
+        "P1-V04-ARCHITECTURE",
+        "P1-V05-POLICY"
+      ],
+      "executorCapability": "qualify_process_restricted",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "JobObjectLifecycleResult",
+        "ProcessTreeTerminationResult",
+        "ResourceLimitResult",
+        "EnvironmentSecretDenialResult",
+        "PathSafetyFuzzResult",
+        "NoDowngradePropertyResult",
+        "IsolationEvidenceConformanceResult"
+      ],
+      "timeoutMs": 7200000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V09-PACKAGING",
+      "kind": "STARTUP_HEALTH",
+      "required": true,
+      "dependsOn": [
+        "P1-V02-TOOLCHAIN",
+        "P1-V03-CONTRACTS",
+        "P1-V04-ARCHITECTURE",
+        "P1-V06-PERSISTENCE",
+        "P1-V07-CONTROL-API",
+        "P1-V08-ISOLATION"
+      ],
+      "executorCapability": "qualify_windows_package",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "SelfContainedArtifactResult",
+        "ReleaseManifestConsistencyResult",
+        "ChecksumResult",
+        "SbomResult",
+        "BuildProvenanceResult",
+        "CleanWindowsStartupResult",
+        "UnicodeSpacePathResult",
+        "DataRootIsolationResult"
+      ],
+      "timeoutMs": 7200000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "P1-V10-INTEGRATED-GATE",
+      "kind": "HUMAN_REVIEW",
+      "required": true,
+      "dependsOn": [
+        "P1-V05-POLICY",
+        "P1-V06-PERSISTENCE",
+        "P1-V07-CONTROL-API",
+        "P1-V08-ISOLATION",
+        "P1-V09-PACKAGING"
+      ],
+      "executorCapability": "independent_phase1_review",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.0.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "StructuredReceiptValidationResult",
+        "WriteScopeComplianceResult",
+        "QualificationObligationMatrix",
+        "KnownGapAssessment",
+        "IndependentGateDecision"
+      ],
+      "timeoutMs": 7200000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    }
+  ],
+  "risksCovered": [
+    "toolchain-version-drift",
+    "non-reproducible-install-or-build",
+    "schema-invalid-or-unversioned-boundary",
+    "package-dependency-inversion-or-deep-import",
+    "duplicate-authority-semantic-owner",
+    "policy-default-allow-or-indeterminate-allow",
+    "node-sqlite-transaction-crash-recovery-or-packaging-failure",
+    "control-api-network-exposure-token-leak-or-idempotency-bypass",
+    "orphan-process-resource-overrun-secret-inheritance-or-isolation-downgrade",
+    "release-artifact-version-or-provenance-mismatch",
+    "implementation-agent-self-verification"
+  ],
+  "risksNotCovered": [
+    "OS_SANDBOXED-AppContainer-production-guarantee",
+    "real-GBrain-protocol-and-private-knowledge-integration",
+    "real-model-provider-and-private-workspace-behavior",
+    "production-event-artifact-cryptographic-tamper-evidence-depth",
+    "local-human-approval-identity-and-evidence-encryption-key-management",
+    "complete-durable-Workflow-Node-runtime-semantics"
+  ]
+}
