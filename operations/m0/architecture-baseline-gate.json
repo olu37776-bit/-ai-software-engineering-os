@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0.0",
+  "gateId": "M0-ARCHITECTURE-BASELINE-VERIFIED",
+  "gateType": "ARCHITECTURE_BASELINE",
+  "decision": "PASS",
+  "decidedAt": "2026-08-26T18:42:56Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "commit": "3b01e905f6a638d0aa64e7e2e50e39414c35fb45",
+    "tree": "bb777ea2befc512e3f8d700ad839dd6c7de637eb"
+  },
+  "preconditions": {
+    "independentArchitectureReview": "PASS_WITH_RESIDUAL_WORK_NO_OPEN_P0_P1",
+    "acceptedArchitectureDecisions": "ADR-0001_THROUGH_ADR-0011",
+    "schemaAndGovernanceRemediation": "IMPLEMENTED",
+    "independentPreimplementationVerification": "PASS",
+    "productionRuntimeImplementation": "NOT_STARTED"
+  },
+  "evidence": {
+    "architectureReview": "docs/reviews/phase-0-independent-architecture-review.md",
+    "governanceRemediationReview": "docs/reviews/phase-0-schema-phase1-governance-review.md",
+    "implementationReceipt": "operations/phase-1/remediation-receipt.json",
+    "implementationSelfCheck": "operations/phase-1/remediation-self-check.json",
+    "independentVerificationReport": "operations/m0/preimplementation-validation-report.json",
+    "remediationPullRequest": 2,
+    "independentBranchPushRun": 33000950852,
+    "independentPullRequestRun": 33000956406,
+    "independentMainRun": 33001049775,
+    "independentMainRunConclusion": "SUCCESS"
+  },
+  "authorization": {
+    "phase0Status": "VERIFIED_COMPLETE",
+    "phase1Entry": "BLOCKED_PENDING_REPOSITORY_PROTECTION",
+    "phase1Status": "NOT_STARTED",
+    "currentOperation": null
+  },
+  "blockingPrerequisites": [
+    {
+      "prerequisiteId": "PHASE1-REPOSITORY-PROTECTION",
+      "status": "NOT_SATISFIED",
+      "observedAt": "2026-08-26T18:42:56Z",
+      "observedFact": {
+        "branch": "main",
+        "protected": false,
+        "requiredStatusChecksEnabled": false
+      },
+      "requiredState": [
+        "main is protected",
+        "changes require pull requests",
+        "M0 independent preimplementation verification / verify is a required check",
+        "force pushes are disabled",
+        "branch deletion is disabled"
+      ],
+      "effect": "Phase 1 implementation branch and P1-O01 must not start until independently confirmed."
+    }
+  ],
+  "nonClaims": [
+    "This Gate does not verify any production Framework runtime capability.",
+    "This Gate does not qualify Node.js, TypeScript, pnpm, node:sqlite, Control API, Policy evaluator or Windows isolation implementations.",
+    "This Gate does not authorize an implementation Agent to declare VERIFIED.",
+    "This Gate does not start Phase 1 while the repository-protection prerequisite remains unsatisfied.",
+    "This Gate does not connect real models, GBrain, private Workspaces or local private data."
+  ],
+  "residualWork": [
+    "Enable and independently confirm repository protection and required checks before Phase 1 entry.",
+    "Complete ADR-0007 through ADR-0011 qualification obligations during Phase 1.",
+    "Complete GBrain protocol survey before the real KnowledgeProvider Adapter.",
+    "Resolve production cryptographic integrity, Evidence encryption, local approval identity and third-party Adapter loading through later ADRs."
+  ]
+}

@@ -58,6 +58,7 @@ AI Software Engineering OS
 - [Canonical Glossary](docs/glossary.md)
 - [完整能力地图](docs/architecture/09-capability-map.md)
 - [当前建设状态](docs/roadmap/progress-status.md)
+- [M0 — Architecture Baseline Verified](docs/reviews/m0-architecture-baseline-verified.md)
 
 ### 架构
 
@@ -87,18 +88,15 @@ AI Software Engineering OS
 
 ## 当前阶段
 
-当前处于 `Phase 0 — Architecture Authority`。目标是完成文档一致性审查、核心 Schema inventory、工具链/存储 ADR 和第一阶段 WRITE_SCOPE，然后才开始生产代码。
-
-本文档状态：`BASELINE DRAFT v0.2`  
-基线日期：`2026-08-26`
-
-## M0 remediation status
-
 ```text
-Schema / Phase 1 governance remediation: IMPLEMENTED
-Independent preimplementation verification: PENDING
-M0 final Gate: NOT_YET_GRANTED
+Phase 0 — Architecture Authority: VERIFIED / COMPLETE
+M0 — Architecture Baseline Verified: PASS
+Phase 1 entry: BLOCKED_PENDING_REPOSITORY_PROTECTION
 Phase 1: NOT_STARTED
+Production runtime capability: NOT_IMPLEMENTED
 ```
 
-See `docs/reviews/phase-0-schema-phase1-governance-review.md`.
+M0 已确认完整重建架构和 Phase 1 治理基线可实施；它不表示 Framework Runtime 已实现。下一步必须先启用并核验 `main` branch protection 与 required check，之后才能单独授权进入 `P1-O01`。
+
+本文档状态：`BASELINE v0.3`  
+基线日期：`2026-08-27`
