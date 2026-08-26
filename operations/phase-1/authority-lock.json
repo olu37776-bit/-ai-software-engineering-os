@@ -1,0 +1,125 @@
+{
+  "$schema": "urn:aseos:operation-schema:authority-lock:1.0.0",
+  "schemaVersion": "1.0.0",
+  "lockId": "P1-AUTHORITY-LOCK-1",
+  "sourceBaselineCommit": "88b237a422c5e0fef0d8d8a16e1291c6fa692599",
+  "hashPolicy": "SHA256_EXACT_UTF8_LF_FILE_BYTES",
+  "authorityFiles": [
+    {
+      "path": "docs/roadmap/phase-1-operation-plan.md",
+      "sha256": "79ce5caa6550f56671bbd7b08aded9f192b5c6c5502b2ab301479b9b8de0cf48",
+      "role": "OPERATION_PLAN",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "docs/roadmap/phase-1-write-scope.md",
+      "sha256": "a3415a5524f2c98d94bd0152ff97521bc58fdfe88192a6b3f0b9a8e429fac14f",
+      "role": "WRITE_SCOPE",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/operation-manifest.schema.json",
+      "sha256": "e8f74c7f443da1fb365a66f3489356f8114046c830904f17cb6d4c05c4ad62c3",
+      "role": "META_SCHEMA",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/operation.json",
+      "sha256": "6bd77c4014eb8a55dead77b35f508c58c6daffcf57de4e226e48c3fe9277cc24",
+      "role": "OPERATION_PLAN",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/write-scope.schema.json",
+      "sha256": "0f78d4f876501447e24593a9716547b1b7860b8dfbd3bd1be9a8af3b34201ea4",
+      "role": "META_SCHEMA",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/write-scope.json",
+      "sha256": "e16c852e56d22ad6e99b99d31fc8b4bc145fe1b657cfc30eef73f80570997a20",
+      "role": "WRITE_SCOPE",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/verification-plan.json",
+      "sha256": "f78efc4f25abd9deaa43e0505319fd1b7a0b315b794b8d5d2f99e1d3988bf7ad",
+      "role": "VERIFICATION_PLAN",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/receipt.schema.json",
+      "sha256": "1678c87803737552f6f990beca02ad5a914e8655c3071da4250edcceb99917e3",
+      "role": "RECEIPT_SCHEMA",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/authority-lock.schema.json",
+      "sha256": "a6b49e168a5b0748070ffe99fbff960be3e215aca773f4b9a61c189ba6b0d254",
+      "role": "META_SCHEMA",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/preimplementation-policy-snapshot.schema.json",
+      "sha256": "cd8a5051f1d7a3583f540e8e92655dd3fbd93ca623e6099deab9db8bcb67c135",
+      "role": "META_SCHEMA",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "operations/phase-1/preimplementation-policy-snapshot.json",
+      "sha256": "96dfce8d5c339c91a0d2f766cb5a6197fc3e97180178a242ee906ef51ffe2d62",
+      "role": "VERIFICATION_POLICY",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "packages/contracts/schema-inventory.json",
+      "sha256": "b59f4a68b1a2cce24dfcad770253f429602b5a17e1113b56ac46cd9b8deb643d",
+      "role": "CONTRACT_INVENTORY",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "packages/contracts/schemas/meta/schema-inventory.schema.json",
+      "sha256": "100e66c9bb444f0d06b1a43cecbad302c88ab5ed45fac1d0cd2cff0d08438207",
+      "role": "META_SCHEMA",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "packages/contracts/schemas/meta/example-suite.schema.json",
+      "sha256": "2a6253956a2d8f28633f1548a6adc784e42feb1763f3784d3b3361193bad56c7",
+      "role": "META_SCHEMA",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "packages/contracts/examples/first-slice/example-suite.json",
+      "sha256": "d73c3be3f7121a2c1040fbff9e90f634ca5fd4cba53d7c339900a8bf2a122ebc",
+      "role": "EXAMPLE_SUITE",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "packages/contracts/schemas/fixtures/first-slice-fixture-contracts.schema.json",
+      "sha256": "04bc92930b946f3f8e2fb24aa5cb9e2a76f5759715e65f0fd29981bea204ce61",
+      "role": "META_SCHEMA",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "packages/contracts/planned-contracts.json",
+      "sha256": "f36f638e4b2686e471cbf4f3cd9b27981180656964939c8d3e9c2a28095a3155",
+      "role": "CONTRACT_INVENTORY",
+      "mutableByImplementation": false
+    },
+    {
+      "path": "packages/contracts/schemas/meta/planned-contract-inventory.schema.json",
+      "sha256": "4e202578542a4fc1d70edbdaaccf187ed173d2944fb47c2c5bc5746abac85605",
+      "role": "META_SCHEMA",
+      "mutableByImplementation": false
+    }
+  ],
+  "excludedSelfPath": "operations/phase-1/authority-lock.json",
+  "verificationRules": [
+    "EVERY_LISTED_PATH_EXISTS",
+    "EVERY_LISTED_HASH_MATCHES_EXACT_BYTES",
+    "NO_DUPLICATE_PATHS",
+    "SELF_PATH_EXCLUDED_FROM_HASH_SET",
+    "IMPLEMENTATION_DIFF_DOES_NOT_TOUCH_LOCKED_PATHS"
+  ]
+}
