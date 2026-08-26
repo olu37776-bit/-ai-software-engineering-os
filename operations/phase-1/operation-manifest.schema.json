@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:aseos:operation-schema:operation-manifest:1.0.0",
-  "title": "ASEOS Operation Manifest",
+  "$id": "urn:aseos:operation-schema:operation-manifest:1.1.0",
+  "title": "ASEOS Phase 1 Operation Manifest",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,9 +9,11 @@
     "schemaVersion",
     "operationId",
     "title",
-    "baselineCommit",
+    "sourceBaselineCommit",
     "riskClass",
     "status",
+    "m0GateRef",
+    "authorityLockRef",
     "authorityRefs",
     "prerequisites",
     "objectives",
@@ -26,31 +28,24 @@
   ],
   "properties": {
     "$schema": {
-      "const": "urn:aseos:operation-schema:operation-manifest:1.0.0"
+      "const": "urn:aseos:operation-schema:operation-manifest:1.1.0"
     },
     "schemaVersion": {
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "operationId": {
-      "type": "string",
-      "minLength": 1
+      "const": "P1-EXECUTABLE-REPOSITORY-FOUNDATION"
     },
     "title": {
       "type": "string",
       "minLength": 1
     },
-    "baselineCommit": {
+    "sourceBaselineCommit": {
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
     },
     "riskClass": {
-      "enum": [
-        "R0",
-        "R1",
-        "R2",
-        "R3",
-        "R4"
-      ]
+      "const": "R4"
     },
     "status": {
       "enum": [
@@ -63,45 +58,52 @@
         "RETIRED"
       ]
     },
+    "m0GateRef": {
+      "const": "docs/reviews/m0-architecture-baseline-verified.md"
+    },
+    "authorityLockRef": {
+      "const": "operations/phase-1/authority-lock.json"
+    },
     "authorityRefs": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     },
     "prerequisites": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     },
     "objectives": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     },
     "nonGoals": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     },
     "suboperations": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 9,
+      "maxItems": 9,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -116,8 +118,17 @@
         ],
         "properties": {
           "operationId": {
-            "type": "string",
-            "pattern": "^P1-O[0-9]{2}$"
+            "enum": [
+              "P1-O01",
+              "P1-O02",
+              "P1-O03",
+              "P1-O04",
+              "P1-O05",
+              "P1-O06",
+              "P1-O07",
+              "P1-O08",
+              "P1-O09"
+            ]
           },
           "title": {
             "type": "string",
@@ -133,75 +144,220 @@
           },
           "dependsOn": {
             "type": "array",
+            "uniqueItems": true,
             "items": {
-              "type": "string",
-              "pattern": "^P1-O[0-9]{2}$"
-            },
-            "uniqueItems": true
+              "enum": [
+                "P1-O01",
+                "P1-O02",
+                "P1-O03",
+                "P1-O04",
+                "P1-O05",
+                "P1-O06",
+                "P1-O07",
+                "P1-O08",
+                "P1-O09"
+              ]
+            }
           },
           "writeScopeOperationId": {
-            "type": "string",
-            "pattern": "^P1-O[0-9]{2}$"
+            "enum": [
+              "P1-O01",
+              "P1-O02",
+              "P1-O03",
+              "P1-O04",
+              "P1-O05",
+              "P1-O06",
+              "P1-O07",
+              "P1-O08",
+              "P1-O09"
+            ]
           },
           "outputs": {
             "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
             "items": {
               "type": "string",
               "minLength": 1
-            },
-            "minItems": 1,
-            "uniqueItems": true
+            }
           },
           "gateStepIds": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^P1-V[0-9]{2}-.+$"
-            },
             "minItems": 1,
-            "uniqueItems": true
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "P1-V00-M0-AUTHORIZATION",
+                "P1-V01-PREFLIGHT",
+                "P1-V02-TOOLCHAIN",
+                "P1-V03-CONTRACTS",
+                "P1-V04-ARCHITECTURE",
+                "P1-V05-POLICY",
+                "P1-V06-PERSISTENCE",
+                "P1-V07-CONTROL-API",
+                "P1-V08-ISOLATION",
+                "P1-V09-PACKAGING",
+                "P1-V10-INTEGRATED-GATE"
+              ]
+            }
           }
         }
-      }
+      },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O01"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O02"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O03"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O04"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O05"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O06"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O07"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O08"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "operationId": {
+                "const": "P1-O09"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        }
+      ]
     },
     "writeScopeRef": {
-      "type": "string",
       "const": "operations/phase-1/write-scope.json"
     },
     "verificationPlanRef": {
-      "type": "string",
       "const": "operations/phase-1/verification-plan.json"
     },
     "receiptSchemaRef": {
-      "type": "string",
       "const": "operations/phase-1/receipt.schema.json"
     },
     "stopConditions": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     },
     "completionCriteria": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     },
     "declarationRules": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     }
   }
 }

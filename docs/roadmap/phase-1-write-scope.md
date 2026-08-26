@@ -1,48 +1,52 @@
 # Phase 1 WRITE_SCOPE
 
-状态：`BASELINE DRAFT v0.1`  
+状态：`M0 CANDIDATE v0.2`  
 Scope ID：`P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE`  
 执行模式：`DENY_BY_DEFAULT`  
-基线 commit：`f4f10855f5bfcce2d56ff4b110f271b4d7cfd116`  
-机器可读权威：[`operations/phase-1/write-scope.json`](../../operations/phase-1/write-scope.json)
+源基线 commit：`88b237a422c5e0fef0d8d8a16e1291c6fa692599`  
+机器权威：[`operations/phase-1/write-scope.json`](../../operations/phase-1/write-scope.json)  
+Authority Lock：[`operations/phase-1/authority-lock.json`](../../operations/phase-1/authority-lock.json)
 
-## 1. 作用
+## 1. 判定算法
 
-WRITE_SCOPE 是 Phase 1 的硬边界，不是建议目录。执行 Agent 只能修改当前子 Operation 明确允许的路径，并同时满足语义约束。
+所有路径先规范化为 repository-relative、NFC、`/` 分隔路径；拒绝 absolute path 与 `.`/`..` segment。Pattern dialect 为 `POSIX_GLOB_V1`：
 
-判断顺序：
+- `*` 只匹配单个 segment；
+- `**` 可跨 segment；
+- 精确路径只匹配该路径；
+- symlink、junction、reparse point、generated path 和 case variation 都以最终规范化目标检查。
+
+优先级：
 
 ```text
-当前子 Operation allowlist
-AND 全局 allowlist
-AND 不命中任何 deny rule
-AND 不触发 prohibited semantics
+immutable authority match -> DENY
+else global deny match     -> DENY
+else operation deny match  -> DENY
+else global allow AND operation allow -> ALLOW
+else DENY
 ```
 
-任一条件不满足即停止。生成代码、脚本间接写入、重命名、复制或 vendor 文件不构成绕过方式。
+路径允许不代表语义允许。
 
-## 2. 全局允许范围
+## 2. Authority 不可自修改
 
-Phase 1 仅允许建设：
+Implementation Operation 不得修改：
 
-- 根工具链、workspace、编译、lint、测试配置；
-- `toolchain/**`；
-- GitHub quality/release workflow 与模板；
-- 最小 `apps/cli`、`apps/runtime`、`apps/worker`；
-- `packages/contracts`；
-- Phase 1 qualification 所需的 `packages/kernel`、`packages/policy`、`packages/persistence`、`packages/platform`；
-- `packages/observability` 的最小非权威诊断；
-- `packages/adapters/tool/windows-process-restricted`；
-- architecture/contract/qualification/acceptance fixtures；
-- release schema、scripts、operations、必要文档。
+- Architecture、Threat Model、ADR-0001～ADR-0011；
+- Phase 0/M0/本次独立实现前 Review；
+- Operation Plan、WRITE_SCOPE、VerificationPlan、Receipt Schema；
+- operation/write-scope/authority-lock/preimplementation-policy machine authority。
 
-“允许 package”不等于可实现其未来全部能力。每个子 Operation 的路径和语义约束更窄。
+旧版本中 `operations/phase-1/**` 被所有子 Operation 通配允许，会使实施者能够修改自己的 Scope/Gate；该路径已经移除。所有实施回执与 Evidence 只能写入明确的 output 子目录。
 
-## 3. 全局禁止范围
+## 3. 全局允许与禁止
 
-Phase 1 明确禁止修改或创建以下生产能力：
+全局允许：工具链、最小 apps、Phase 1 所需 contracts/kernel/policy/persistence/platform/observability、Windows process-restricted Adapter、architecture/contract/qualification/acceptance/fault-injection/security tests、release schema/scripts、明确的 operation outputs 和必要文档。
+
+全局禁止：
 
 ```text
+.ai-local/**  .ai-work/**  artifacts/**  dist/**  node_modules/**
 packages/workflow/**
 packages/node-runtime/**
 packages/context/**
@@ -57,104 +61,68 @@ packages/adapters/tool/container-isolated/**
 packages/adapters/tool/remote-isolated/**
 ```
 
-同时禁止提交：
-
-```text
-.ai-local/**
-.ai-work/**
-artifacts/**
-dist/**
-node_modules/**
-Secrets / token / local Evidence / private Workspace / GBrain data
-```
-
-Contract Schema 可以位于 `packages/contracts/schemas/<domain>/**`；这不等于对应生产 package 已允许实现。
+原版本全局 allowlist 漏掉 `tests/fault-injection/**` 与 `tests/security/**`，却在 O05/O07 中把它们列为强制输出；该交叉冲突已经关闭。
 
 ## 4. 禁止语义
 
-即使文件路径在 allowlist，仍禁止：
+即使路径允许，也禁止：
 
-1. 实现生产 Workflow/Node 状态机、Router、Scheduler、terminal transition、retry/recovery；
-2. 实现生产 Verification System、EvidenceGraph、Learning runtime；
-3. 接入真实 Model Provider、GBrain 或私有 Workspace；
-4. 创建第二持久化 driver、第二 Control API transport、第二 Policy authority；
-5. 在 accepted implementation 不可用时 silent fallback；
-6. CLI/UI 直接访问 SQLite 或 Kernel internal；
+1. 生产 Workflow/Node state machine、Router、Scheduler、terminal、retry/recovery；
+2. 生产 Verification System、EvidenceGraph、Learning runtime；
+3. 真实 Model、GBrain、私有 Workspace；
+4. 第二 persistence driver、Control API transport、Policy evaluator 或 isolation authority；
+5. silent fallback/downward downgrade；
+6. CLI/UI 直连 SQLite 或 Kernel internal；
 7. Adapter/Worker/Model/test helper 生成权威 Event、终态、PolicyDecision 或 GateDecision；
-8. 批量创建无消费者、无 Contract、无 conformance test 的空 package/interface；
-9. 复制旧本地 Framework 代码；
-10. 将 Job Object 描述为 `OS_SANDBOXED`；
-11. 通过配置开启 unrestricted shell、remote API 或动态 authority plugin；
-12. 使用 coverage、文件存在或 Agent 自述替代行为验证。
+8. 空 package/interface 批量造进度；
+9. 复制旧本地 Framework；
+10. 把 Job Object 声称为 `OS_SANDBOXED`；
+11. unrestricted shell、remote API 或动态 authority plugin；
+12. 用 coverage、文件存在或 Agent 自述代替行为验证；
+13. 在实施分支中修改自己的 Scope 或 Verification authority。
 
-## 5. 子 Operation Scope
+## 5. 子 Operation 摘要
 
-详细 machine-readable path pattern 位于 `write-scope.json`。下面给出权威语义摘要。
-
-| Operation | 主要可写范围 | 必须保持的边界 |
+| Operation | 可写重点 | 关键边界 |
 |---|---|---|
-| `P1-O01` | 根工具链、lockfile、toolchain、quality workflow | 不写生产 runtime |
-| `P1-O02` | `packages/contracts/**`、contract tests/scripts | Schema runtime validation 是 authority |
-| `P1-O03` | architecture config/tests、最小 package public entry | 不批量空建 package，不读旧文件文本判断架构 |
-| `P1-O04` | `packages/policy/**` 与 Policy Schema/tests | 唯一内置 evaluator，无脚本/外部 authority |
-| `P1-O05` | `packages/persistence/**` 与 qualification/fault tests | 仅 `node:sqlite`，无业务 transition，无 fallback |
-| `P1-O06` | `packages/platform`、最小 runtime/CLI、Control API | 仅 `127.0.0.1` HTTP，CLI 不直连 Kernel/DB |
-| `P1-O07` | Windows process-restricted Adapter/Worker/tests | 仅 PROCESS_RESTRICTED，不实现强 sandbox |
-| `P1-O08` | release scripts/schema/workflow/package smoke | qualification artifact，不宣称 production-ready |
-| `P1-O09` | verification scripts/tests/receipt/docs | 不新增生产能力，不在独立验证中顺手修复 |
+| P1-O01 | root toolchain/lockfile/quality | 不写 apps/packages |
+| P1-O02 | contracts/schema/tests | runtime Schema 是 authority |
+| P1-O03 | architecture config/tests/minimal entries | 不批量空建 package |
+| P1-O04 | policy/schema/tests | 唯一内置 evaluator |
+| P1-O05 | persistence/fault-injection | 仅 node:sqlite，无 transition/fallback |
+| P1-O06 | platform/runtime/CLI/API security tests | 仅 loopback HTTP，CLI 不直连 internal |
+| P1-O07 | windows-process-restricted/security tests | 不是强 sandbox，不降级 |
+| P1-O08 | packaging/release/supply-chain | qualification artifact |
+| P1-O09 | verification scripts/receipt/Evidence bundle | 不改生产代码和 authority |
 
-## 6. Scope Expansion Protocol
+详细 glob、deny 与 required outputs 只以 `write-scope.json` 为准。
 
-当实现需要超出 Scope：
+## 6. Scope Expansion
+
+需要越界时：
 
 1. 立即停止；
-2. 记录具体文件、所需语义和原因；
-3. 说明当前 Contract/ADR 为什么无法满足；
-4. 评估是否产生新 canonical owner、public/persisted Contract 或安全边界；
-5. 需要时新增/supersede ADR；
-6. 更新 Operation Plan、WRITE_SCOPE 和 VerificationPlan；
-7. 经用户/architecture authority 批准后再继续。
+2. 记录路径、语义、原因和 Evidence；
+3. 判断是否改变 owner/public/persisted Contract/security boundary；
+4. 由独立 architecture-authority change 更新 ADR、Operation Plan、WRITE_SCOPE、VerificationPlan 和 Authority Lock；
+5. 重新执行实现前验证并取得批准；
+6. 从新授权 baseline 继续。
 
-禁止：
+禁止先改后补、generated path 绕过、临时 fallback、以 spike 名义绕过边界。
 
-- 先修改再补 Scope；
-- 通过脚本生成 denied path；
-- 暂时引入 fallback 后承诺以后删除；
-- 用“只是 spike”绕过 authority/safety boundary；
-- 继续执行并在回执中隐藏越界。
+## 7. Scope Evidence
 
-## 7. Scope Verification
-
-每个 PR 和 Phase 1 总 Gate 必须运行 scope check，至少输出：
+每个 PR 与总 Gate至少记录：
 
 ```text
-baseline commit
+M0-authorized baseline commit
 operationId
-changed paths
-matched allow rule
-matched deny rule
+authority lock hash/result
+changed and generated paths
+normalized paths
+matched immutable/deny/allow rule
 semantic-owner changes
-generated paths
-scope violations
+violations
 ```
 
-需要同时检查 Git diff、未跟踪文件和构建脚本输出路径。只检查已提交文件不足以证明 Scope 合规。
-
-最终 receipt：
-
-```json
-{
-  "writeScope": {
-    "scopeId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE",
-    "compliant": true,
-    "changedPaths": [],
-    "violations": []
-  }
-}
-```
-
-实现声明为 `IMPLEMENTED` 时，`compliant` 必须为 `true` 且 `violations` 必须为空。
-
-## 8. 状态边界
-
-WRITE_SCOPE 通过只说明改动没有越界，不说明实现正确，也不产生 `VERIFIED`。正确性、安全性与 ADR qualification 仍由 Phase 1 VerificationPlan 判定。
+检查范围必须包括 Git diff、未跟踪文件和构建脚本输出。WRITE_SCOPE PASS 只说明没有越界，不等于实现正确或 `VERIFIED`。

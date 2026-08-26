@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:operation-schema:authority-lock:1.0.0",
+  "title": "Phase 1 Authority Lock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "lockId",
+    "sourceBaselineCommit",
+    "hashPolicy",
+    "authorityFiles",
+    "excludedSelfPath",
+    "verificationRules"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "urn:aseos:operation-schema:authority-lock:1.0.0"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "lockId": {
+      "const": "P1-AUTHORITY-LOCK-1"
+    },
+    "sourceBaselineCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "hashPolicy": {
+      "const": "SHA256_EXACT_UTF8_LF_FILE_BYTES"
+    },
+    "authorityFiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "role",
+          "mutableByImplementation"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+          },
+          "role": {
+            "enum": [
+              "ARCHITECTURE",
+              "ADR",
+              "SECURITY",
+              "REVIEW",
+              "OPERATION_PLAN",
+              "WRITE_SCOPE",
+              "VERIFICATION_PLAN",
+              "RECEIPT_SCHEMA",
+              "CONTRACT_INVENTORY",
+              "EXAMPLE_SUITE",
+              "VERIFICATION_POLICY",
+              "META_SCHEMA"
+            ]
+          },
+          "mutableByImplementation": {
+            "const": false
+          }
+        }
+      }
+    },
+    "excludedSelfPath": {
+      "const": "operations/phase-1/authority-lock.json"
+    },
+    "verificationRules": {
+      "const": [
+        "EVERY_LISTED_PATH_EXISTS",
+        "EVERY_LISTED_HASH_MATCHES_EXACT_BYTES",
+        "NO_DUPLICATE_PATHS",
+        "SELF_PATH_EXCLUDED_FROM_HASH_SET",
+        "IMPLEMENTATION_DIFF_DOES_NOT_TOUCH_LOCKED_PATHS"
+      ]
+    }
+  }
+}
