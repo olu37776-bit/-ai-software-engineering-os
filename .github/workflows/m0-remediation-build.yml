@@ -52,6 +52,8 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/governance/build_m0_remediation.py
+          git checkout HEAD -- .github/workflows/m0-remediation-build.yml
+          rm -f .github/workflows/m0-independent-verify.yml
           git add -A
           git commit -m "fix: complete M0 governance remediation"
 
