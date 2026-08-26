@@ -1,0 +1,388 @@
+{
+  "$schema": "urn:aseos:operation-schema:write-scope:1.0.0",
+  "schemaVersion": "1.0.0",
+  "scopeId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE",
+  "baselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+  "enforcementMode": "DENY_BY_DEFAULT",
+  "globalAllowedPaths": [
+    "package.json",
+    "pnpm-workspace.yaml",
+    "pnpm-lock.yaml",
+    "tsconfig.base.json",
+    "tsconfig.*.json",
+    ".npmrc",
+    ".gitignore",
+    "eslint.config.*",
+    "prettier.config.*",
+    "vitest.config.*",
+    ".dependency-cruiser.*",
+    "toolchain/**",
+    ".github/workflows/**",
+    ".github/ISSUE_TEMPLATE/**",
+    ".github/pull_request_template.md",
+    "apps/cli/**",
+    "apps/runtime/**",
+    "apps/worker/**",
+    "packages/contracts/**",
+    "packages/kernel/**",
+    "packages/policy/**",
+    "packages/persistence/**",
+    "packages/platform/**",
+    "packages/observability/**",
+    "packages/adapters/tool/windows-process-restricted/**",
+    "tests/architecture/**",
+    "tests/contract/**",
+    "tests/qualification/**",
+    "tests/acceptance/**",
+    "tests/fixtures/**",
+    "schemas/release/**",
+    "scripts/**",
+    "operations/phase-1/**",
+    "docs/**"
+  ],
+  "globalDeniedPaths": [
+    ".ai-local/**",
+    ".ai-work/**",
+    "artifacts/**",
+    "dist/**",
+    "node_modules/**",
+    "packages/workflow/**",
+    "packages/node-runtime/**",
+    "packages/context/**",
+    "packages/skills/**",
+    "packages/verification/**",
+    "packages/evidence/**",
+    "packages/learning/**",
+    "packages/adapters/model/**",
+    "packages/adapters/knowledge/**",
+    "packages/adapters/tool/os-sandboxed/**",
+    "packages/adapters/tool/container-isolated/**",
+    "packages/adapters/tool/remote-isolated/**"
+  ],
+  "prohibitedSemantics": [
+    "Implement production Workflow or Node state machines, Router, Scheduler, terminal transition, retry or recovery semantics.",
+    "Implement the production Verification System, EvidenceGraph or Learning and Feedback runtime.",
+    "Connect real model providers, GBrain, swap-kb, microwave-kb or private local assets.",
+    "Introduce a second persistence driver, Control API transport, Policy evaluator or isolation authority.",
+    "Fallback from node:sqlite, PROCESS_RESTRICTED, loopback HTTP or canonical Policy evaluator without a superseding ADR.",
+    "Let CLI/UI read SQLite or import Kernel/persistence internals.",
+    "Let Adapter, Worker, Model or test helper create authority DomainEvent, terminal state, PolicyDecision or GateDecision.",
+    "Batch-create empty future packages or interfaces that have no Phase 1 consumer and conformance test.",
+    "Copy old local Framework source or preserve old paths merely for compatibility.",
+    "Upload or add local private data, secrets, Evidence, Workspace or knowledge content."
+  ],
+  "operations": [
+    {
+      "operationId": "P1-O01",
+      "allowedPaths": [
+        "package.json",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
+        "tsconfig.base.json",
+        "tsconfig.*.json",
+        ".npmrc",
+        ".gitignore",
+        "eslint.config.*",
+        "prettier.config.*",
+        "vitest.config.*",
+        "toolchain/**",
+        "scripts/toolchain/**",
+        "tests/qualification/toolchain/**",
+        ".github/workflows/quality.yml",
+        "docs/engineering/**",
+        "operations/phase-1/**"
+      ],
+      "deniedPaths": [
+        "apps/**",
+        "packages/**"
+      ],
+      "semanticConstraints": [
+        "Pin Node.js 24.19.0, TypeScript 6.0.3 and pnpm 11.24.0 exactly.",
+        "Use ESM-only, NodeNext, ES2025 and tsc -b as authority build.",
+        "Do not add production runtime behavior."
+      ],
+      "requiredOutputs": [
+        "clean frozen-lockfile install",
+        "strict project-reference build",
+        "toolchain manifest",
+        "Windows and Linux clean-build Evidence"
+      ]
+    },
+    {
+      "operationId": "P1-O02",
+      "allowedPaths": [
+        "packages/contracts/**",
+        "tests/contract/**",
+        "scripts/contracts/**",
+        "docs/contracts/**",
+        "operations/phase-1/**"
+      ],
+      "deniedPaths": [
+        "packages/kernel/**",
+        "packages/workflow/**",
+        "packages/node-runtime/**",
+        "packages/context/**",
+        "packages/skills/**",
+        "packages/policy/**",
+        "packages/verification/**",
+        "packages/evidence/**",
+        "packages/learning/**",
+        "packages/persistence/**",
+        "packages/adapters/**",
+        "packages/observability/**",
+        "packages/platform/**"
+      ],
+      "semanticConstraints": [
+        "JSON Schema 2020-12 is runtime authority.",
+        "Reject unknown fields and unsupported versions at public/persisted boundaries.",
+        "Generated TypeScript types cannot replace runtime validation.",
+        "Every implemented schema must update schema-inventory.json and valid/invalid examples in the same change."
+      ],
+      "requiredOutputs": [
+        "schema registry/validator",
+        "inventory validation",
+        "first-slice example suite",
+        "schema/type consistency tests",
+        "compatibility test harness"
+      ]
+    },
+    {
+      "operationId": "P1-O03",
+      "allowedPaths": [
+        ".dependency-cruiser.*",
+        "package.json",
+        "pnpm-lock.yaml",
+        "packages/*/package.json",
+        "packages/*/tsconfig.json",
+        "packages/*/src/index.ts",
+        "tests/architecture/**",
+        "scripts/architecture/**",
+        "docs/engineering/**",
+        "operations/phase-1/**"
+      ],
+      "deniedPaths": [
+        "package internal behavior outside the minimal public-entry fixture"
+      ],
+      "semanticConstraints": [
+        "Create only packages needed by a real Phase 1 consumer.",
+        "Enforce public entry points, no deep import, no cycles and dependency direction.",
+        "Add machine-checkable canonical-owner declarations for authority semantics.",
+        "Architecture tests must inspect dependency/public metadata, not obsolete file text."
+      ],
+      "requiredOutputs": [
+        "package DAG check",
+        "deep-import denial",
+        "cycle denial",
+        "dependency-inversion denial",
+        "duplicate-semantic-owner denial"
+      ]
+    },
+    {
+      "operationId": "P1-O04",
+      "allowedPaths": [
+        "packages/policy/**",
+        "packages/contracts/schemas/policy/**",
+        "packages/contracts/examples/policy/**",
+        "tests/contract/policy/**",
+        "tests/qualification/policy/**",
+        "docs/contracts/**",
+        "operations/phase-1/**"
+      ],
+      "deniedPaths": [
+        "third-party policy runtime",
+        "dynamic policy module/plugin loading"
+      ],
+      "semanticConstraints": [
+        "packages/policy is the only V1 authoritative evaluator.",
+        "Policy input and captured clock are explicit; evaluation performs no I/O.",
+        "Default deny, deny-overrides and INDETERMINATE fail closed.",
+        "Restricted YAML is authoring input only; canonical JSON and hash are authority.",
+        "Accepted ADR files are read-only; any decision change requires stop, a superseding ADR, and an updated approved scope."
+      ],
+      "requiredOutputs": [
+        "PolicySet/Rule/Input/Snapshot schemas",
+        "restricted parser",
+        "canonicalization/hash fixtures",
+        "deterministic evaluator skeleton",
+        "property and mutation qualification Evidence"
+      ]
+    },
+    {
+      "operationId": "P1-O05",
+      "allowedPaths": [
+        "packages/persistence/**",
+        "packages/contracts/schemas/persistence/**",
+        "tests/qualification/persistence/**",
+        "tests/fault-injection/persistence/**",
+        "scripts/qualification/persistence/**",
+        "operations/phase-1/**"
+      ],
+      "deniedPaths": [
+        "any alternate SQLite driver",
+        "business reducer/transition logic"
+      ],
+      "semanticConstraints": [
+        "Use only Node.js 24.19.0 node:sqlite and SQLite 3.53.3.",
+        "All SQLite calls run in a dedicated PersistenceWorker.",
+        "One authoritative database and one transaction cover Event, receipt, outbox/inbox and required audit.",
+        "No SQL/driver type crosses the persistence public boundary.",
+        "Qualification failure stops work and requires a superseding ADR; no fallback.",
+        "Accepted ADR files are read-only; any decision change requires stop, a superseding ADR, and an updated approved scope."
+      ],
+      "requiredOutputs": [
+        "SQLite qualification harness",
+        "transaction/crash tests",
+        "WAL/recovery tests",
+        "backup/restore and corruption quarantine",
+        "event-loop responsiveness Evidence",
+        "package/runtime version attestation"
+      ]
+    },
+    {
+      "operationId": "P1-O06",
+      "allowedPaths": [
+        "packages/platform/**",
+        "apps/runtime/**",
+        "apps/cli/**",
+        "packages/contracts/schemas/control-api/**",
+        "tests/qualification/control-api/**",
+        "tests/acceptance/control-api/**",
+        "scripts/qualification/control-api/**",
+        "operations/phase-1/**"
+      ],
+      "deniedPaths": [
+        "direct CLI Kernel import",
+        "direct SQLite access",
+        "remote binding or second transport"
+      ],
+      "semanticConstraints": [
+        "Bind only 127.0.0.1 on an OS-assigned port.",
+        "All endpoints require rotated bearer token from a user-only ACL file.",
+        "Mutations require Idempotency-Key and version/conflict semantics.",
+        "CLI uses only generated/public Control API client.",
+        "SSE is non-authoritative and connection loss does not cancel durable operation.",
+        "Accepted ADR files are read-only; any decision change requires stop, a superseding ADR, and an updated approved scope."
+      ],
+      "requiredOutputs": [
+        "OpenAPI 3.1.1 baseline",
+        "endpoint discovery and stale detection",
+        "token lifecycle/redaction",
+        "exposure/CSRF/Host tests",
+        "minimal version/doctor/start/stop/status acceptance"
+      ]
+    },
+    {
+      "operationId": "P1-O07",
+      "allowedPaths": [
+        "packages/adapters/tool/windows-process-restricted/**",
+        "apps/worker/**",
+        "packages/contracts/schemas/isolation/**",
+        "tests/qualification/isolation/**",
+        "tests/security/isolation/**",
+        "scripts/qualification/isolation/**",
+        "operations/phase-1/**"
+      ],
+      "deniedPaths": [
+        "OS_SANDBOXED implementation",
+        "CONTAINER_ISOLATED implementation",
+        "REMOTE_ISOLATED implementation"
+      ],
+      "semanticConstraints": [
+        "PROCESS_RESTRICTED is lifecycle/resource containment, not a security sandbox.",
+        "Use Job Object kill-on-close and bounded process tree/resources.",
+        "No shell:true or raw model command string by default.",
+        "No secret/token inheritance; staged cwd and path controls are mandatory.",
+        "Unavailable required isolation blocks; no downward fallback.",
+        "Accepted ADR files are read-only; any decision change requires stop, a superseding ADR, and an updated approved scope."
+      ],
+      "requiredOutputs": [
+        "capability probe",
+        "Job Object lifecycle Evidence",
+        "child/grandchild termination tests",
+        "resource/environment/path tests",
+        "IsolationEvidence contract and no-downgrade property tests"
+      ]
+    },
+    {
+      "operationId": "P1-O08",
+      "allowedPaths": [
+        "apps/runtime/**",
+        "apps/cli/**",
+        "apps/worker/**",
+        "packages/platform/**",
+        "packages/observability/**",
+        "schemas/release/**",
+        "scripts/release/**",
+        ".github/workflows/release.yml",
+        "tests/acceptance/release/**",
+        "tests/qualification/packaging/**",
+        "docs/operations/**",
+        "operations/phase-1/**"
+      ],
+      "deniedPaths": [
+        "production installer auto-update network service",
+        "unsigned floating downloads"
+      ],
+      "semanticConstraints": [
+        "Produce a self-contained Windows-first qualification artifact with pinned runtime.",
+        "Release directory and local data root are separated.",
+        "Build uses frozen lockfile and pinned actions/downloads.",
+        "Generate checksums, SBOM, provenance/attestation where supported.",
+        "Packaging spike does not claim production Release readiness."
+      ],
+      "requiredOutputs": [
+        "qualification release artifact",
+        "manifest/checksum/SBOM/provenance",
+        "clean Windows startup",
+        "Chinese/space path smoke",
+        "no-development-toolchain startup Evidence"
+      ]
+    },
+    {
+      "operationId": "P1-O09",
+      "allowedPaths": [
+        "tests/architecture/**",
+        "tests/contract/**",
+        "tests/qualification/**",
+        "tests/acceptance/**",
+        "scripts/verify-phase-1/**",
+        "operations/phase-1/**",
+        "docs/roadmap/**",
+        "docs/reviews/**",
+        "README.md",
+        "docs/README.md"
+      ],
+      "deniedPaths": [
+        "new production feature implementation"
+      ],
+      "semanticConstraints": [
+        "Run verification from a clean checkout and immutable commit.",
+        "Do not remediate failures inside the independent verification pass.",
+        "Every skipped, unavailable or inconclusive step is explicit.",
+        "Implementation status may become IMPLEMENTED only; VERIFIED requires independent Gate."
+      ],
+      "requiredOutputs": [
+        "complete structured receipt",
+        "Evidence index",
+        "known-gap list",
+        "independent verification input bundle",
+        "Phase 1 Gate recommendation"
+      ]
+    }
+  ],
+  "scopeExpansion": {
+    "mustStop": true,
+    "requires": [
+      "A written finding that identifies the missing scope and why the current Contract cannot be satisfied.",
+      "User/architecture authority approval.",
+      "Updated operation plan and WRITE_SCOPE.",
+      "New or superseding ADR when an accepted architectural decision changes."
+    ],
+    "forbiddenBehavior": [
+      "Do not silently edit outside allowed paths.",
+      "Do not reinterpret a denied path as allowed through generated files or scripts.",
+      "Do not introduce a fallback implementation.",
+      "Do not continue and report success after a scope violation."
+    ]
+  }
+}
