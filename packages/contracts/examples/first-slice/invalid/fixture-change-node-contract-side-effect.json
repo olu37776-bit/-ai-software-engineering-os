@@ -1,0 +1,20 @@
+{
+  "contractId": "fixture-change-node",
+  "version": "1.0.0",
+  "inputSchemaRef": {
+    "schemaId": "urn:aseos:schema:apply-workspace-change-payload:1.0.0",
+    "schemaVersion": "1.0.0",
+    "schemaHash": "88ce6660b2956f94ba7244fd7688bca5f57a408ff63b278c233fed7c2993a433"
+  },
+  "outputSchemaRef": {
+    "schemaId": "urn:aseos:schema:apply-workspace-change-result:1.0.0",
+    "schemaVersion": "1.0.0",
+    "schemaHash": "7aaf732ecf5839d0b7a0b6fafe859f88725705f75463cc8f17eea0438137e770"
+  },
+  "allowedSideEffects": [
+    "arbitrary_shell"
+  ],
+  "verificationRequirements": [
+    "exact-content"
+  ]
+}

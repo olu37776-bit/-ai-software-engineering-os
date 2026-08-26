@@ -24,3 +24,5 @@ Review 不替代 ADR、Contract、测试或运行 Evidence。文档审查只能�
 - GateDecision 与允许的下一步。
 
 实现者不能用自述 Review 把自己的实现从 `IMPLEMENTED` 改为 `VERIFIED`。
+
+- [Phase 0 Schema / Phase 1 Governance Remediation Review](phase-0-schema-phase1-governance-review.md) — `IMPLEMENTED`, pending independent verification.

@@ -1,3 +1,54 @@
 {
-  "schemaVersion":"1.0.0","taskId":"0198e0a1-0000-7007-8000-000000000007","executionId":"0198e0a1-0000-7008-8000-000000000008","attempt":1,"correlationId":"0198e0a1-0000-7003-8000-000000000003","causationId":"0198e0a1-0000-7006-8000-000000000006","idempotencyKey":"apply-change:fixture:execution-001","effectScope":"workspace:fixture-change-workflow:target.txt","capability":"write_workspace","permissionSet":["workspace.read:fixture","workspace.write:fixture/target.txt"],"requiredIsolationLevel":"PROCESS_RESTRICTED","inputArtifactRefs":[{"artifactId":"0198e0a1-0000-7009-8000-000000000009","sha256":"6666666666666666666666666666666666666666666666666666666666666666","mediaType":"text/plain","sizeBytes":48,"sensitivity":"INTERNAL"}],"timeoutMs":30000,"resourceBudget":{"maxCpuTimeMs":10000,"maxMemoryBytes":134217728,"maxProcessCount":4,"maxOutputBytes":1048576,"networkMode":"DENY"},"adapterContractVersion":"1.0.0","payloadSchema":{"schemaId":"urn:aseos:schema:apply-workspace-change-payload:1.0.0","schemaVersion":"1.0.0","schemaHash":"7777777777777777777777777777777777777777777777777777777777777777"},"payloadHash":"8888888888888888888888888888888888888888888888888888888888888888","payload":{"workspaceRef":"fixture-workspace","baseSnapshotHash":"9999999999999999999999999999999999999999999999999999999999999999","targetPath":"target.txt","desiredContentArtifactRef":{"artifactId":"0198e0a1-0000-700a-8000-00000000000a","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","mediaType":"text/plain","sizeBytes":64,"sensitivity":"INTERNAL"}}
+  "schemaVersion": "1.0.0",
+  "taskId": "0198e0a1-0000-7005-8005-000000000005",
+  "executionId": "0198e0a1-0000-7006-8006-000000000006",
+  "attempt": 1,
+  "correlationId": "0198e0a1-0000-7003-8003-000000000003",
+  "causationId": "0198e0a1-0000-7004-8004-000000000004",
+  "idempotencyKey": "apply-change:fixture:execution-001",
+  "effectScope": "workspace:fixture-change-workflow:target.txt",
+  "capability": "write_workspace",
+  "permissionSet": [
+    "workspace.read:fixture",
+    "workspace.write:fixture/target.txt"
+  ],
+  "requiredIsolationLevel": "PROCESS_RESTRICTED",
+  "inputArtifactRefs": [
+    {
+      "artifactId": "0198e0a1-0000-7102-8002-000000000102",
+      "sha256": "e666c1bc66aeb99394add94c88cd6ea7559e4f44deee1b6392ae7fad573b9ddb",
+      "mediaType": "text/plain",
+      "sizeBytes": 17,
+      "sensitivity": "INTERNAL",
+      "logicalName": "desired-content.txt"
+    }
+  ],
+  "timeoutMs": 30000,
+  "resourceBudget": {
+    "maxCpuTimeMs": 10000,
+    "maxMemoryBytes": 134217728,
+    "maxProcessCount": 4,
+    "maxOutputBytes": 1048576,
+    "networkMode": "DENY"
+  },
+  "adapterContractVersion": "1.0.0",
+  "payloadSchema": {
+    "schemaId": "urn:aseos:schema:apply-workspace-change-payload:1.0.0",
+    "schemaVersion": "1.0.0",
+    "schemaHash": "88ce6660b2956f94ba7244fd7688bca5f57a408ff63b278c233fed7c2993a433"
+  },
+  "payloadHash": "4f55e2f8f628ce62e44d4ba2ebb749d3d86c09c55676bf89b90cc7bc9db4c1c3",
+  "payload": {
+    "workspaceRef": "fixture-workspace",
+    "baseSnapshotHash": "9220e38f08d4e4102e5f174940b4f6b234e27bcff47fc00257599779ef85ce03",
+    "targetPath": "target.txt",
+    "desiredContentArtifactRef": {
+      "artifactId": "0198e0a1-0000-7102-8002-000000000102",
+      "sha256": "e666c1bc66aeb99394add94c88cd6ea7559e4f44deee1b6392ae7fad573b9ddb",
+      "mediaType": "text/plain",
+      "sizeBytes": 17,
+      "sensitivity": "INTERNAL",
+      "logicalName": "desired-content.txt"
+    }
+  }
 }

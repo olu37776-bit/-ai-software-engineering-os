@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:example-suite:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "ASEOS Executable Example Suite",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "suiteId",
+    "suiteVersion",
+    "hashPolicy",
+    "cases"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "urn:aseos:schema:example-suite:1.0.0"
+    },
+    "suiteId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suiteVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "hashPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "payload",
+        "schema",
+        "artifact"
+      ],
+      "properties": {
+        "payload": {
+          "const": "SHA256_RFC8785_CANONICAL_JSON_UTF8"
+        },
+        "schema": {
+          "const": "SHA256_EXACT_AUTHORITY_FILE_BYTES"
+        },
+        "artifact": {
+          "const": "SHA256_RAW_BYTES"
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "caseId",
+          "schemaId",
+          "instancePath",
+          "expected"
+        ],
+        "properties": {
+          "caseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "schemaId": {
+            "type": "string",
+            "format": "uri"
+          },
+          "instancePath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected": {
+            "enum": [
+              "VALID",
+              "INVALID"
+            ]
+          },
+          "expectedError": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "keyword",
+              "instancePath"
+            ],
+            "properties": {
+              "keyword": {
+                "type": "string",
+                "minLength": 1
+              },
+              "instancePath": {
+                "type": "string"
+              }
+            }
+          },
+          "semanticAssertions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "PAYLOAD_SCHEMA_RESOLVES",
+                "PAYLOAD_HASH_MATCHES",
+                "SCHEMA_HASH_MATCHES",
+                "ARTIFACT_HASH_MATCHES"
+              ]
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "expected": {
+                  "const": "INVALID"
+                }
+              },
+              "required": [
+                "expected"
+              ]
+            },
+            "then": {
+              "required": [
+                "expectedError"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

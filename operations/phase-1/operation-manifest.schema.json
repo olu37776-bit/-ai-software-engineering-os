@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:aseos:operation-schema:operation-manifest:1.1.0",
+  "x-schemaVersion": "1.1.0",
   "title": "ASEOS Phase 1 Operation Manifest",
   "type": "object",
   "additionalProperties": false,
@@ -9,7 +10,9 @@
     "schemaVersion",
     "operationId",
     "title",
-    "sourceBaselineCommit",
+    "architectureBaselineCommit",
+    "planningSourceCommit",
+    "executionBaselinePolicy",
     "riskClass",
     "status",
     "m0GateRef",
@@ -22,6 +25,7 @@
     "writeScopeRef",
     "verificationPlanRef",
     "receiptSchemaRef",
+    "independentVerificationReceiptSchemaRef",
     "stopConditions",
     "completionCriteria",
     "declarationRules"
@@ -40,23 +44,22 @@
       "type": "string",
       "minLength": 1
     },
-    "sourceBaselineCommit": {
+    "architectureBaselineCommit": {
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
+    },
+    "planningSourceCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "executionBaselinePolicy": {
+      "const": "M0_GATE_COMMIT_DESCENDANT_OF_PLANNING_SOURCE"
     },
     "riskClass": {
       "const": "R4"
     },
     "status": {
-      "enum": [
-        "PLANNED",
-        "IN_PROGRESS",
-        "IMPLEMENTED",
-        "PARTIAL",
-        "BLOCKED",
-        "VERIFIED",
-        "RETIRED"
-      ]
+      "const": "PLANNED"
     },
     "m0GateRef": {
       "const": "docs/reviews/m0-architecture-baseline-verified.md"
@@ -136,8 +139,6 @@
           },
           "riskClass": {
             "enum": [
-              "R1",
-              "R2",
               "R3",
               "R4"
             ]
@@ -186,19 +187,7 @@
             "minItems": 1,
             "uniqueItems": true,
             "items": {
-              "enum": [
-                "P1-V00-M0-AUTHORIZATION",
-                "P1-V01-PREFLIGHT",
-                "P1-V02-TOOLCHAIN",
-                "P1-V03-CONTRACTS",
-                "P1-V04-ARCHITECTURE",
-                "P1-V05-POLICY",
-                "P1-V06-PERSISTENCE",
-                "P1-V07-CONTROL-API",
-                "P1-V08-ISOLATION",
-                "P1-V09-PACKAGING",
-                "P1-V10-INTEGRATED-GATE"
-              ]
+              "pattern": "^P1-V[0-9]{2}-.+$"
             }
           }
         }
@@ -206,7 +195,6 @@
       "allOf": [
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O01"
@@ -219,7 +207,6 @@
         },
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O02"
@@ -232,7 +219,6 @@
         },
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O03"
@@ -245,7 +231,6 @@
         },
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O04"
@@ -258,7 +243,6 @@
         },
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O05"
@@ -271,7 +255,6 @@
         },
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O06"
@@ -284,7 +267,6 @@
         },
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O07"
@@ -297,7 +279,6 @@
         },
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O08"
@@ -310,7 +291,6 @@
         },
         {
           "contains": {
-            "type": "object",
             "properties": {
               "operationId": {
                 "const": "P1-O09"
@@ -331,6 +311,9 @@
     },
     "receiptSchemaRef": {
       "const": "operations/phase-1/receipt.schema.json"
+    },
+    "independentVerificationReceiptSchemaRef": {
+      "const": "operations/phase-1/independent-verification-receipt.schema.json"
     },
     "stopConditions": {
       "type": "array",

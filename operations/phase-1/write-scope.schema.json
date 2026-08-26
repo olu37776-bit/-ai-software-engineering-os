@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:aseos:operation-schema:write-scope:1.0.0",
+  "$id": "urn:aseos:operation-schema:write-scope:1.1.0",
+  "x-schemaVersion": "1.1.0",
   "title": "ASEOS Operation Write Scope",
   "type": "object",
   "additionalProperties": false,
@@ -8,111 +9,252 @@
     "$schema",
     "schemaVersion",
     "scopeId",
-    "baselineCommit",
+    "architectureBaselineCommit",
+    "planningSourceCommit",
     "enforcementMode",
-    "globalAllowedPaths",
-    "globalDeniedPaths",
+    "authorityLockRef",
+    "globalAllowedPathGlobs",
+    "globalDeniedPathGlobs",
     "prohibitedSemantics",
     "operations",
     "scopeExpansion"
   ],
   "properties": {
+    "$schema": {
+      "const": "urn:aseos:operation-schema:write-scope:1.1.0"
+    },
     "schemaVersion": {
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "scopeId": {
-      "type": "string",
-      "minLength": 1
+      "const": "P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE"
     },
-    "baselineCommit": {
+    "architectureBaselineCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "planningSourceCommit": {
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
     },
     "enforcementMode": {
       "const": "DENY_BY_DEFAULT"
     },
-    "globalAllowedPaths": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+    "authorityLockRef": {
+      "const": "operations/phase-1/authority-lock.json"
     },
-    "globalDeniedPaths": {
+    "globalAllowedPathGlobs": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
+      }
+    },
+    "globalDeniedPathGlobs": {
+      "type": "array",
       "minItems": 1,
-      "uniqueItems": true
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
     "prohibitedSemantics": {
       "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+      }
     },
     "operations": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 9,
+      "maxItems": 9,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": [
           "operationId",
-          "allowedPaths",
-          "deniedPaths",
+          "allowedPathGlobs",
+          "deniedPathGlobs",
           "semanticConstraints",
-          "requiredOutputs"
+          "requiredOutputs",
+          "requiredOutputPathGlobs"
         ],
         "properties": {
           "operationId": {
-            "type": "string",
-            "pattern": "^P1-O[0-9]{2}$"
+            "enum": [
+              "P1-O01",
+              "P1-O02",
+              "P1-O03",
+              "P1-O04",
+              "P1-O05",
+              "P1-O06",
+              "P1-O07",
+              "P1-O08",
+              "P1-O09"
+            ]
           },
-          "allowedPaths": {
+          "allowedPathGlobs": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            },
             "minItems": 1,
-            "uniqueItems": true
-          },
-          "deniedPaths": {
-            "type": "array",
+            "uniqueItems": true,
             "items": {
               "type": "string",
               "minLength": 1
-            },
-            "uniqueItems": true
+            }
+          },
+          "deniedPathGlobs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
           },
           "semanticConstraints": {
             "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
             "items": {
               "type": "string",
               "minLength": 1
-            },
-            "minItems": 1,
-            "uniqueItems": true
+            }
           },
           "requiredOutputs": {
             "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
             "items": {
               "type": "string",
               "minLength": 1
-            },
+            }
+          },
+          "requiredOutputPathGlobs": {
+            "type": "array",
             "minItems": 1,
-            "uniqueItems": true
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         }
-      }
+      },
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O01"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O02"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O03"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O04"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O05"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O06"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O07"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O08"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O09"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        }
+      ]
     },
     "scopeExpansion": {
       "type": "object",
@@ -128,26 +270,23 @@
         },
         "requires": {
           "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
           "items": {
             "type": "string",
             "minLength": 1
-          },
-          "minItems": 1,
-          "uniqueItems": true
+          }
         },
         "forbiddenBehavior": {
           "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
           "items": {
             "type": "string",
             "minLength": 1
-          },
-          "minItems": 1,
-          "uniqueItems": true
+          }
         }
       }
-    },
-    "$schema": {
-      "const": "urn:aseos:operation-schema:write-scope:1.0.0"
     }
   }
 }

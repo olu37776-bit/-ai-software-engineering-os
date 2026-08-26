@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:aseos:schema:schema-inventory:1.0.0",
-  "title": "ASEOS Schema Inventory",
+  "$id": "urn:aseos:schema:schema-inventory:1.1.0",
+  "x-schemaVersion": "1.1.0",
+  "title": "ASEOS Active Schema Inventory",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,11 +12,16 @@
     "authority",
     "identityPolicy",
     "statusVocabulary",
-    "contracts"
+    "hashPolicy",
+    "contracts",
+    "plannedInventoryRef"
   ],
   "properties": {
+    "$schema": {
+      "const": "urn:aseos:schema:schema-inventory:1.1.0"
+    },
     "inventoryVersion": {
-      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+      "const": "1.1.0"
     },
     "schemaDialect": {
       "const": "https://json-schema.org/draft/2020-12/schema"
@@ -27,69 +33,45 @@
         "inventoryPath",
         "schemaRoot",
         "catalogRef",
-        "baselineCommit"
+        "architectureBaselineCommit",
+        "planningSourceCommit"
       ],
       "properties": {
         "inventoryPath": {
-          "type": "string",
           "const": "packages/contracts/schema-inventory.json"
         },
         "schemaRoot": {
-          "type": "string",
           "const": "packages/contracts/schemas"
         },
         "catalogRef": {
-          "type": "string",
           "const": "docs/contracts/core-contract-catalog.md"
         },
-        "baselineCommit": {
+        "architectureBaselineCommit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "planningSourceCommit": {
           "type": "string",
           "pattern": "^[0-9a-f]{40}$"
         }
       }
     },
     "identityPolicy": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "durableIdentity",
-        "contentIdentity",
-        "timeFormat",
-        "schemaVersionFormat"
-      ],
-      "properties": {
-        "durableIdentity": {
-          "const": "UUIDv7-lowercase"
-        },
-        "contentIdentity": {
-          "const": "SHA-256-lowercase-hex"
-        },
-        "timeFormat": {
-          "const": "RFC3339-UTC"
-        },
-        "schemaVersionFormat": {
-          "const": "SemVer"
-        }
-      }
+      "type": "object"
     },
     "statusVocabulary": {
       "type": "array",
-      "const": [
-        "PLANNED",
-        "BASELINE_DRAFT",
-        "FROZEN",
-        "IMPLEMENTED",
-        "VERIFIED",
-        "DEPRECATED",
-        "RETIRED"
-      ]
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "hashPolicy": {
+      "const": "SHA256_EXACT_AUTHORITY_FILE_BYTES"
     },
     "contracts": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "additionalProperties": false,
         "required": [
           "contractId",
           "canonicalName",
@@ -101,6 +83,10 @@
           "priority",
           "phaseIntroduced",
           "authorityPath",
+          "schemaId",
+          "sha256",
+          "hashPolicy",
+          "exampleRequired",
           "persisted",
           "publicBoundary",
           "producers",
@@ -116,81 +102,52 @@
             "pattern": "^aseos\\.[a-z0-9-]+(?:\\.[a-z0-9-]+)+$"
           },
           "canonicalName": {
-            "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/canonicalTypeName"
+            "type": "string",
+            "minLength": 1
           },
           "domain": {
-            "enum": [
-              "common",
-              "kernel",
-              "persistence",
-              "workflow",
-              "node",
-              "context",
-              "skill",
-              "knowledge",
-              "policy",
-              "isolation",
-              "verification",
-              "evidence",
-              "learning",
-              "control-api",
-              "platform",
-              "configuration",
-              "release"
-            ]
+            "type": "string",
+            "minLength": 1
           },
           "canonicalOwner": {
             "type": "string",
             "pattern": "^packages/[a-z0-9-]+$"
           },
           "contractKind": {
-            "enum": [
-              "JSON_SCHEMA",
-              "OPENAPI_COMPONENT",
-              "STATE_SCHEMA",
-              "MANIFEST",
-              "PORT_CONFORMANCE"
-            ]
+            "type": "string",
+            "minLength": 1
           },
           "schemaVersion": {
             "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/schemaVersion"
           },
           "status": {
-            "enum": [
-              "PLANNED",
-              "BASELINE_DRAFT",
-              "FROZEN",
-              "IMPLEMENTED",
-              "VERIFIED",
-              "DEPRECATED",
-              "RETIRED"
-            ]
+            "type": "string",
+            "minLength": 1
           },
           "priority": {
-            "enum": [
-              "M0",
-              "P1",
-              "P2",
-              "P3",
-              "P4"
-            ]
+            "type": "string",
+            "minLength": 1
           },
           "phaseIntroduced": {
-            "enum": [
-              "PHASE_0",
-              "PHASE_1",
-              "PHASE_2",
-              "PHASE_3",
-              "PHASE_4",
-              "PHASE_5",
-              "PHASE_6",
-              "PHASE_7",
-              "PHASE_8"
-            ]
+            "type": "string",
+            "pattern": "^PHASE_[0-8]$"
           },
           "authorityPath": {
             "type": "string",
             "minLength": 1
+          },
+          "schemaId": {
+            "type": "string",
+            "format": "uri"
+          },
+          "sha256": {
+            "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+          },
+          "hashPolicy": {
+            "const": "SHA256_EXACT_AUTHORITY_FILE_BYTES"
+          },
+          "exampleRequired": {
+            "type": "boolean"
           },
           "persisted": {
             "type": "boolean"
@@ -199,141 +156,41 @@
             "type": "boolean"
           },
           "sensitivity": {
-            "enum": [
-              "PUBLIC",
-              "INTERNAL",
-              "CONFIDENTIAL",
-              "MIXED"
-            ]
+            "type": "string"
           },
           "producers": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            },
             "uniqueItems": true
           },
           "consumers": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            },
             "uniqueItems": true
           },
           "dependsOn": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^aseos\\.[a-z0-9-]+(?:\\.[a-z0-9-]+)+$"
-            },
             "uniqueItems": true
           },
           "adrRefs": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^ADR-[0-9]{4}$"
-            },
             "uniqueItems": true
           },
           "examplePaths": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            },
             "uniqueItems": true
           },
           "verificationObligations": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            },
             "minItems": 1,
             "uniqueItems": true
           },
           "notes": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
-      },
-      "allOf": [
-        {
-          "contains": {
-            "type": "object",
-            "properties": {
-              "contractId": {
-                "const": "aseos.kernel.command-envelope"
-              }
-            },
-            "required": [
-              "contractId"
-            ]
+            "type": "string"
           }
         },
-        {
-          "contains": {
-            "type": "object",
-            "properties": {
-              "contractId": {
-                "const": "aseos.kernel.domain-event-envelope"
-              }
-            },
-            "required": [
-              "contractId"
-            ]
-          }
-        },
-        {
-          "contains": {
-            "type": "object",
-            "properties": {
-              "contractId": {
-                "const": "aseos.policy.policy-decision"
-              }
-            },
-            "required": [
-              "contractId"
-            ]
-          }
-        },
-        {
-          "contains": {
-            "type": "object",
-            "properties": {
-              "contractId": {
-                "const": "aseos.verification.verification-plan"
-              }
-            },
-            "required": [
-              "contractId"
-            ]
-          }
-        },
-        {
-          "contains": {
-            "type": "object",
-            "properties": {
-              "contractId": {
-                "const": "aseos.verification.gate-decision"
-              }
-            },
-            "required": [
-              "contractId"
-            ]
-          }
-        }
-      ]
-    },
-    "$schema": {
-      "const": "urn:aseos:schema:schema-inventory:1.0.0"
+        "additionalProperties": false
+      }
     },
     "plannedInventoryRef": {
-      "type": "string",
       "const": "packages/contracts/planned-contracts.json"
     }
   }

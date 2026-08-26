@@ -1,0 +1,6 @@
+{
+  "code": "WORKER_TIMEOUT",
+  "category": "TIMEOUT",
+  "message": "Worker exceeded deadline",
+  "retryability": "CONDITIONAL"
+}

@@ -1,12 +1,13 @@
 {
-  "$schema": "urn:aseos:schema:schema-inventory:1.0.0",
-  "inventoryVersion": "1.0.0",
+  "$schema": "urn:aseos:schema:schema-inventory:1.1.0",
+  "inventoryVersion": "1.1.0",
   "schemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "authority": {
     "inventoryPath": "packages/contracts/schema-inventory.json",
     "schemaRoot": "packages/contracts/schemas",
     "catalogRef": "docs/contracts/core-contract-catalog.md",
-    "baselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116"
+    "architectureBaselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+    "planningSourceCommit": "e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45"
   },
   "identityPolicy": {
     "durableIdentity": "UUIDv7-lowercase",
@@ -38,12 +39,31 @@
       "persisted": false,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["platform-authentication", "kernel", "workers"],
-      "consumers": ["kernel", "policy", "evidence", "audit"],
-      "dependsOn": ["aseos.common.identifiers"],
+      "producers": [
+        "platform-authentication",
+        "kernel",
+        "workers"
+      ],
+      "consumers": [
+        "kernel",
+        "policy",
+        "evidence",
+        "audit"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
       "adrRefs": [],
       "examplePaths": [],
-      "verificationObligations": ["actor-type-enum", "no-unknown-fields", "redaction-review"]
+      "verificationObligations": [
+        "actor-type-enum",
+        "no-unknown-fields",
+        "redaction-review"
+      ],
+      "schemaId": "urn:aseos:schema:actor-ref:1.0.0",
+      "sha256": "67c513a9e37c4f1006d1e7121fbf271498c08f01299b4d8be70c36f0bf6c35c5",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.common.artifact-ref",
@@ -59,12 +79,30 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["artifact-store"],
-      "consumers": ["kernel", "context", "evidence", "verification", "workers"],
-      "dependsOn": ["aseos.common.identifiers"],
+      "producers": [
+        "artifact-store"
+      ],
+      "consumers": [
+        "kernel",
+        "context",
+        "evidence",
+        "verification",
+        "workers"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
       "adrRefs": [],
       "examplePaths": [],
-      "verificationObligations": ["hash-size-media-consistency", "sensitivity-required", "missing-artifact-fail-closed"]
+      "verificationObligations": [
+        "hash-size-media-consistency",
+        "sensitivity-required",
+        "missing-artifact-fail-closed"
+      ],
+      "schemaId": "urn:aseos:schema:artifact-ref:1.0.0",
+      "sha256": "bb03989c5784bfd7c9c4dc6367062d1c954de81dee7c29e136f67ef600ba97ba",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.common.identifiers",
@@ -80,13 +118,26 @@
       "persisted": false,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["packages/contracts"],
-      "consumers": ["all-schema-producers"],
+      "producers": [
+        "packages/contracts"
+      ],
+      "consumers": [
+        "all-schema-producers"
+      ],
       "dependsOn": [],
       "adrRefs": [],
       "examplePaths": [],
-      "verificationObligations": ["uuidv7-shape", "sha256-shape", "semver-shape", "stable-code-shape"],
-      "notes": "Reusable $defs; not a runtime payload."
+      "verificationObligations": [
+        "uuidv7-shape",
+        "sha256-shape",
+        "semver-shape",
+        "stable-code-shape"
+      ],
+      "notes": "Reusable $defs; not a runtime payload.",
+      "schemaId": "urn:aseos:schema:common-identifiers:1.0.0",
+      "sha256": "6d1b9797270b1bc7fc8e979898c4652c89d67b2bced97337a29f335ab1699f0e",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
     },
     {
       "contractId": "aseos.common.schema-ref",
@@ -102,12 +153,26 @@
       "persisted": false,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["contract-registry"],
-      "consumers": ["all-boundary-validators"],
-      "dependsOn": ["aseos.common.identifiers"],
+      "producers": [
+        "contract-registry"
+      ],
+      "consumers": [
+        "all-boundary-validators"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
       "adrRefs": [],
       "examplePaths": [],
-      "verificationObligations": ["schema-id-uri", "schema-version-semver", "schema-hash-integrity"]
+      "verificationObligations": [
+        "schema-id-uri",
+        "schema-version-semver",
+        "schema-hash-integrity"
+      ],
+      "schemaId": "urn:aseos:schema:schema-ref:1.0.0",
+      "sha256": "c43e602c1fc744905bfebf04917effd165865f2d15d7d8b525e77305bedef9cd",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.common.subject-ref",
@@ -123,12 +188,27 @@
       "persisted": false,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["all-domain-modules"],
-      "consumers": ["evidence", "verification", "control-api"],
-      "dependsOn": ["aseos.common.identifiers"],
+      "producers": [
+        "all-domain-modules"
+      ],
+      "consumers": [
+        "evidence",
+        "verification",
+        "control-api"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
       "adrRefs": [],
       "examplePaths": [],
-      "verificationObligations": ["stable-subject-identity", "version-reference-semantics"]
+      "verificationObligations": [
+        "stable-subject-identity",
+        "version-reference-semantics"
+      ],
+      "schemaId": "urn:aseos:schema:subject-ref:1.0.0",
+      "sha256": "cbd6eac2a9139a6c6fa80eebf29e5e109111e5ba86eb30dfef4f36aee9c91ffa",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.common.typed-error",
@@ -144,12 +224,30 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["all-runtime-components"],
-      "consumers": ["kernel", "control-api", "diagnostics", "verification"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.subject-ref"],
+      "producers": [
+        "all-runtime-components"
+      ],
+      "consumers": [
+        "kernel",
+        "control-api",
+        "diagnostics",
+        "verification"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref"
+      ],
       "adrRefs": [],
       "examplePaths": [],
-      "verificationObligations": ["stable-code-not-string-branch", "retryability-taxonomy", "secret-redaction"]
+      "verificationObligations": [
+        "stable-code-not-string-branch",
+        "retryability-taxonomy",
+        "secret-redaction"
+      ],
+      "schemaId": "urn:aseos:schema:typed-error:1.0.0",
+      "sha256": "e52e5c840ac729b3da826591f3f9d9d7da962a84ea808bd0c7838671f0bfd2cb",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.evidence.evidence-metadata",
@@ -165,12 +263,39 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["workers", "verification-executors", "policy", "runtime"],
-      "consumers": ["verification", "learning", "audit", "inspect"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.subject-ref", "aseos.common.actor-ref", "aseos.common.artifact-ref", "aseos.node.node-execution-identity"],
+      "producers": [
+        "workers",
+        "verification-executors",
+        "policy",
+        "runtime"
+      ],
+      "consumers": [
+        "verification",
+        "learning",
+        "audit",
+        "inspect"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref",
+        "aseos.common.actor-ref",
+        "aseos.common.artifact-ref",
+        "aseos.node.node-execution-identity"
+      ],
       "adrRefs": [],
-      "examplePaths": ["packages/contracts/examples/first-slice/valid/exact-content.evidence.json"],
-      "verificationObligations": ["content-ref-hash-consistency", "producer-provenance", "subject-linkage", "trust-not-relevance"]
+      "examplePaths": [
+        "packages/contracts/examples/first-slice/valid/exact-content.evidence.json"
+      ],
+      "verificationObligations": [
+        "content-ref-hash-consistency",
+        "producer-provenance",
+        "subject-linkage",
+        "trust-not-relevance"
+      ],
+      "schemaId": "urn:aseos:schema:evidence-metadata:1.0.0",
+      "sha256": "1415d66b313f6cd67c7a5bd51671422df85d4153444dc6ab941239856907d7f1",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.kernel.command-envelope",
@@ -186,12 +311,38 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["control-api-application-services", "router", "worker-result-handlers"],
-      "consumers": ["kernel", "persistence"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.actor-ref", "aseos.common.schema-ref"],
-      "adrRefs": ["ADR-0003", "ADR-0009"],
-      "examplePaths": ["packages/contracts/examples/first-slice/valid/create-workflow-run.command.json", "packages/contracts/examples/first-slice/invalid/missing-idempotency.command.json"],
-      "verificationObligations": ["runtime-payload-schema-validation", "payload-hash-match", "duplicate-command-dedup", "expected-version-conflict"]
+      "producers": [
+        "control-api-application-services",
+        "router",
+        "worker-result-handlers"
+      ],
+      "consumers": [
+        "kernel",
+        "persistence"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.actor-ref",
+        "aseos.common.schema-ref"
+      ],
+      "adrRefs": [
+        "ADR-0003",
+        "ADR-0009"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/first-slice/valid/create-workflow-run.command.json",
+        "packages/contracts/examples/first-slice/invalid/missing-idempotency.command.json"
+      ],
+      "verificationObligations": [
+        "runtime-payload-schema-validation",
+        "payload-hash-match",
+        "duplicate-command-dedup",
+        "expected-version-conflict"
+      ],
+      "schemaId": "urn:aseos:schema:command-envelope:1.0.0",
+      "sha256": "a7edbfa5aeee2d278c074a5996fd9a71e6278150ad6abc951945c424f433c011",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.kernel.domain-event-envelope",
@@ -207,12 +358,38 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["kernel"],
-      "consumers": ["persistence", "workflow", "node-runtime", "projections", "evidence"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.actor-ref", "aseos.common.schema-ref"],
-      "adrRefs": ["ADR-0003", "ADR-0008"],
-      "examplePaths": ["packages/contracts/examples/first-slice/valid/workflow-run-created.event.json"],
-      "verificationObligations": ["append-only", "aggregate-version-monotonic", "payload-hash-match", "replay-compatible"]
+      "producers": [
+        "kernel"
+      ],
+      "consumers": [
+        "persistence",
+        "workflow",
+        "node-runtime",
+        "projections",
+        "evidence"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.actor-ref",
+        "aseos.common.schema-ref"
+      ],
+      "adrRefs": [
+        "ADR-0003",
+        "ADR-0008"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/first-slice/valid/workflow-run-created.event.json"
+      ],
+      "verificationObligations": [
+        "append-only",
+        "aggregate-version-monotonic",
+        "payload-hash-match",
+        "replay-compatible"
+      ],
+      "schemaId": "urn:aseos:schema:domain-event-envelope:1.0.0",
+      "sha256": "f088267aa6641672c053f48823913c94e147bcd67c293ec5e4c7b1ed2a6d1e43",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.kernel.side-effect-result-envelope",
@@ -228,12 +405,40 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["side-effect-worker"],
-      "consumers": ["inbox", "kernel", "evidence", "verification"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.artifact-ref", "aseos.common.subject-ref", "aseos.common.typed-error", "aseos.common.schema-ref"],
-      "adrRefs": ["ADR-0003", "ADR-0010"],
-      "examplePaths": ["packages/contracts/examples/first-slice/valid/apply-change.side-effect-result.json", "packages/contracts/examples/first-slice/invalid/failed-result-without-error.json"],
-      "verificationObligations": ["result-dedup", "unknown-outcome-reconciliation", "failure-requires-typed-error", "isolation-evidence-required"]
+      "producers": [
+        "side-effect-worker"
+      ],
+      "consumers": [
+        "inbox",
+        "kernel",
+        "evidence",
+        "verification"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.artifact-ref",
+        "aseos.common.subject-ref",
+        "aseos.common.typed-error",
+        "aseos.common.schema-ref"
+      ],
+      "adrRefs": [
+        "ADR-0003",
+        "ADR-0010"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/first-slice/valid/apply-change.side-effect-result.json",
+        "packages/contracts/examples/first-slice/invalid/failed-result-without-error.json"
+      ],
+      "verificationObligations": [
+        "result-dedup",
+        "unknown-outcome-reconciliation",
+        "failure-requires-typed-error",
+        "isolation-evidence-required"
+      ],
+      "schemaId": "urn:aseos:schema:side-effect-result-envelope:1.0.0",
+      "sha256": "f9bc5d3503bada61d8b09908bc1f7430ff5ccddd1277a67febd3a1bbe16364cc",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.kernel.side-effect-task-envelope",
@@ -249,12 +454,39 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["kernel"],
-      "consumers": ["outbox", "worker-dispatch", "policy", "isolation-provider"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.artifact-ref", "aseos.common.schema-ref"],
-      "adrRefs": ["ADR-0003", "ADR-0010", "ADR-0011"],
-      "examplePaths": ["packages/contracts/examples/first-slice/valid/apply-change.side-effect-task.json", "packages/contracts/examples/first-slice/invalid/host-unrestricted.side-effect-task.json"],
-      "verificationObligations": ["required-isolation-enum", "resource-budget-bounds", "idempotency-scope", "no-raw-shell-default"]
+      "producers": [
+        "kernel"
+      ],
+      "consumers": [
+        "outbox",
+        "worker-dispatch",
+        "policy",
+        "isolation-provider"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.artifact-ref",
+        "aseos.common.schema-ref"
+      ],
+      "adrRefs": [
+        "ADR-0003",
+        "ADR-0010",
+        "ADR-0011"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/first-slice/valid/apply-change.side-effect-task.json",
+        "packages/contracts/examples/first-slice/invalid/host-unrestricted.side-effect-task.json"
+      ],
+      "verificationObligations": [
+        "required-isolation-enum",
+        "resource-budget-bounds",
+        "idempotency-scope",
+        "no-raw-shell-default"
+      ],
+      "schemaId": "urn:aseos:schema:side-effect-task-envelope:1.0.0",
+      "sha256": "c1ed4ef0c82932ec8e3bca784b2e6a6f1a6b7b1d5554ca89f5c1b3de249c6af5",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.node.node-execution-identity",
@@ -270,12 +502,30 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["node-runtime"],
-      "consumers": ["evidence", "verification", "learning", "diagnostics"],
-      "dependsOn": ["aseos.common.identifiers"],
-      "adrRefs": ["ADR-0002"],
+      "producers": [
+        "node-runtime"
+      ],
+      "consumers": [
+        "evidence",
+        "verification",
+        "learning",
+        "diagnostics"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0002"
+      ],
       "examplePaths": [],
-      "verificationObligations": ["run-node-execution-attempt-identity", "attempt-minimum-one"]
+      "verificationObligations": [
+        "run-node-execution-attempt-identity",
+        "attempt-minimum-one"
+      ],
+      "schemaId": "urn:aseos:schema:node-execution-identity:1.0.0",
+      "sha256": "a0b60b30362bf3f10370376d8a3a5d30ca8028c47eda2679c7c79c0ab667779c",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.policy.policy-decision",
@@ -291,12 +541,38 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["canonical-policy-evaluator"],
-      "consumers": ["kernel", "router", "verification", "audit"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.subject-ref"],
-      "adrRefs": ["ADR-0010", "ADR-0011"],
-      "examplePaths": ["packages/contracts/examples/first-slice/valid/fixture-policy-decision.json", "packages/contracts/examples/first-slice/invalid/indeterminate-without-reason.policy-decision.json"],
-      "verificationObligations": ["default-deny", "deny-overrides", "indeterminate-fail-closed", "deterministic-replay", "requirements-conflict"]
+      "producers": [
+        "canonical-policy-evaluator"
+      ],
+      "consumers": [
+        "kernel",
+        "router",
+        "verification",
+        "audit"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref"
+      ],
+      "adrRefs": [
+        "ADR-0010",
+        "ADR-0011"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/first-slice/valid/fixture-policy-decision.json",
+        "packages/contracts/examples/first-slice/invalid/indeterminate-without-reason.policy-decision.json"
+      ],
+      "verificationObligations": [
+        "default-deny",
+        "deny-overrides",
+        "indeterminate-fail-closed",
+        "deterministic-replay",
+        "requirements-conflict"
+      ],
+      "schemaId": "urn:aseos:schema:policy-decision:1.0.0",
+      "sha256": "8b20f71119df2e1a5ca3ec7708cb89de2da83975f9c5fa2a512cf2c22fda8a22",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.verification.gate-decision",
@@ -312,12 +588,35 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["canonical-verification-gate"],
-      "consumers": ["kernel", "router", "node-runtime", "learning", "inspect"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.subject-ref"],
+      "producers": [
+        "canonical-verification-gate"
+      ],
+      "consumers": [
+        "kernel",
+        "router",
+        "node-runtime",
+        "learning",
+        "inspect"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref"
+      ],
       "adrRefs": [],
-      "examplePaths": ["packages/contracts/examples/first-slice/valid/fixture-gate-decision.json", "packages/contracts/examples/first-slice/invalid/pass-without-evidence.gate-decision.json"],
-      "verificationObligations": ["pass-requires-evidence", "risk-acceptance-explicit", "missing-evidence-no-pass", "deterministic-gate"]
+      "examplePaths": [
+        "packages/contracts/examples/first-slice/valid/fixture-gate-decision.json",
+        "packages/contracts/examples/first-slice/invalid/pass-without-evidence.gate-decision.json"
+      ],
+      "verificationObligations": [
+        "pass-requires-evidence",
+        "risk-acceptance-explicit",
+        "missing-evidence-no-pass",
+        "deterministic-gate"
+      ],
+      "schemaId": "urn:aseos:schema:gate-decision:1.0.0",
+      "sha256": "5a7512058468d9f7b5af163b155b7eed67405bcfc5c27586f9648e5539fdd0e8",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.verification.verification-plan",
@@ -333,13 +632,36 @@
       "persisted": true,
       "publicBoundary": true,
       "sensitivity": "INTERNAL",
-      "producers": ["verification-planner"],
-      "consumers": ["verification-orchestrator", "executors", "gate-evaluator", "inspect"],
-      "dependsOn": ["aseos.common.identifiers", "aseos.common.subject-ref", "aseos.common.schema-ref"],
+      "producers": [
+        "verification-planner"
+      ],
+      "consumers": [
+        "verification-orchestrator",
+        "executors",
+        "gate-evaluator",
+        "inspect"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref",
+        "aseos.common.schema-ref"
+      ],
       "adrRefs": [],
-      "examplePaths": ["packages/contracts/examples/first-slice/valid/fixture-verification-plan.json"],
-      "verificationObligations": ["required-step-nonempty", "explicit-uncovered-risk", "dependency-cycle-semantic-check", "executor-capability-check"]
+      "examplePaths": [
+        "packages/contracts/examples/first-slice/valid/fixture-verification-plan.json"
+      ],
+      "verificationObligations": [
+        "required-step-nonempty",
+        "explicit-uncovered-risk",
+        "dependency-cycle-semantic-check",
+        "executor-capability-check"
+      ],
+      "schemaId": "urn:aseos:schema:verification-plan:1.0.0",
+      "sha256": "35ff0e24f7beb2328d445f3a0bab946e310e2095294d690fc0fea1b1f76c272d",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     }
   ],
-  "plannedInventoryRef": "packages/contracts/planned-contracts.json"
+  "plannedInventoryRef": "packages/contracts/planned-contracts.json",
+  "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES"
 }

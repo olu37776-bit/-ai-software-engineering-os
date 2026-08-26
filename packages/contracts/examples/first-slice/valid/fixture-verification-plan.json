@@ -1,3 +1,73 @@
 {
-  "schemaVersion":"1.0.0","planId":"0198e0a1-0000-7013-8000-000000000013","subjectRef":{"subjectType":"NodeExecution","subjectId":"0198e0a1-0000-7008-8000-000000000008"},"contractRefs":[{"schemaId":"urn:aseos:schema:fixture-change-node-contract:1.0.0","schemaVersion":"1.0.0","schemaHash":"4444444444444444444444444444444444444444444444444444444444444444"}],"riskClass":"R2","plannerId":"minimum-policy-verification-planner","plannerVersion":"1.0.0","policySnapshotId":"0198e0a1-0000-7012-8000-000000000012","createdAt":"2026-08-26T08:10:03Z","steps":[{"stepId":"V1-proposal-schema","kind":"SCHEMA","required":true,"dependsOn":[],"executorCapability":"validate_json_schema","inputRefs":[{"subjectType":"Proposal","subjectId":"0198e0a1-0000-7014-8000-000000000014"}],"expectedEvidenceTypes":["SchemaValidationResult"],"timeoutMs":5000,"retryPolicy":{"maxAttempts":1,"retryableErrorCodes":[]}},{"stepId":"V2-exact-content-oracle","kind":"ORACLE","required":true,"dependsOn":["V1-proposal-schema"],"executorCapability":"exact_content_oracle","inputRefs":[{"subjectType":"ChangeSet","subjectId":"0198e0a1-0000-700f-8000-00000000000f"}],"expectedEvidenceTypes":["ExactContentOracleResult"],"timeoutMs":5000,"retryPolicy":{"maxAttempts":1,"retryableErrorCodes":[]}},{"stepId":"V3-workspace-diff-scope","kind":"ORACLE","required":true,"dependsOn":["V1-proposal-schema"],"executorCapability":"workspace_diff_scope_oracle","inputRefs":[{"subjectType":"ChangeSet","subjectId":"0198e0a1-0000-700f-8000-00000000000f"}],"expectedEvidenceTypes":["DiffScopeOracleResult"],"timeoutMs":5000,"retryPolicy":{"maxAttempts":1,"retryableErrorCodes":[]}}],"risksCovered":["malformed-proposal","wrong-content-with-exit-zero","unexpected-path-write"],"risksNotCovered":["strong-malicious-process-containment"]
+  "schemaVersion": "1.0.0",
+  "planId": "0198e0a1-0000-700b-800b-00000000000b",
+  "subjectRef": {
+    "subjectType": "NodeExecution",
+    "subjectId": "0198e0a1-0000-7006-8006-000000000006"
+  },
+  "contractRefs": [
+    {
+      "schemaId": "urn:aseos:schema:fixture-change-node-contract:1.0.0",
+      "schemaVersion": "1.0.0",
+      "schemaHash": "2d471f657b7369e670d7801ea58b727b70fe1ca1eeac70545f1eb9792a5298f6"
+    }
+  ],
+  "riskClass": "R2",
+  "plannerId": "minimum-policy-verification-planner",
+  "plannerVersion": "1.0.0",
+  "policySnapshotId": "0198e0a1-0000-700a-800a-00000000000a",
+  "createdAt": "2026-08-26T08:10:03Z",
+  "steps": [
+    {
+      "stepId": "V1-proposal-schema",
+      "kind": "SCHEMA",
+      "required": true,
+      "dependsOn": [],
+      "executorCapability": "validate_json_schema",
+      "inputRefs": [
+        {
+          "subjectType": "Proposal",
+          "subjectId": "0198e0a1-0000-7010-8000-000000000010"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "SchemaValidationResult"
+      ],
+      "timeoutMs": 5000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
+    {
+      "stepId": "V2-exact-content-oracle",
+      "kind": "ORACLE",
+      "required": true,
+      "dependsOn": [
+        "V1-proposal-schema"
+      ],
+      "executorCapability": "exact_content_oracle",
+      "inputRefs": [
+        {
+          "subjectType": "ChangeSet",
+          "subjectId": "0198e0a1-0000-700e-800e-00000000000e"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "ExactContentOracleResult"
+      ],
+      "timeoutMs": 5000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    }
+  ],
+  "risksCovered": [
+    "malformed-proposal",
+    "wrong-content-with-exit-zero"
+  ],
+  "risksNotCovered": [
+    "strong-malicious-process-containment"
+  ]
 }

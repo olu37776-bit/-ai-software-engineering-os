@@ -1,36 +1,15 @@
 {
-  "$schema": "urn:aseos:operation-schema:phase-1-verification-policy-snapshot:1.0.0",
+  "$schema": "urn:aseos:operation-schema:preimplementation-policy-snapshot:1.0.0",
   "schemaVersion": "1.0.0",
-  "policySnapshotId": "0198e0a1-0000-7018-8000-000000000018",
-  "policySnapshotVersion": "1.0.0",
-  "sourceBaselineCommit": "88b237a422c5e0fef0d8d8a16e1291c6fa692599",
-  "rules": [
-    "Phase 1 implementation cannot start without an M0 PASS gate bound to an immutable commit.",
-    "Every required P1-V00 through P1-V10 step must PASS before IMPLEMENTED is valid.",
-    "FAIL, BLOCKED, UNAVAILABLE, INCONCLUSIVE or NOT_RUN on a required step blocks IMPLEMENTED.",
-    "All P1-O01 through P1-O09 suboperations must be IMPLEMENTED.",
-    "Every qualification obligation from ADR-0007 through ADR-0011 must PASS with Evidence.",
-    "WRITE_SCOPE is deny-by-default; immutable authority files cannot be modified by an implementation operation.",
-    "No alternate driver, transport, evaluator or isolation downgrade is permitted without a superseding ADR.",
-    "Implementation agents may not declare VERIFIED."
-  ],
-  "decisionAlgorithm": {
-    "implementedRequires": [
-      "M0_GATE_PASS",
-      "ALL_REQUIRED_VERIFICATION_STEPS_PASS",
-      "ALL_NINE_SUBOPERATIONS_IMPLEMENTED",
-      "ADR_0007_THROUGH_0011_OBLIGATIONS_PASS",
-      "WRITE_SCOPE_COMPLIANT",
-      "NO_UNAUTHORIZED_FALLBACK",
-      "DOCUMENTATION_SYNCHRONIZED"
-    ],
-    "blockingResults": [
-      "FAIL",
-      "BLOCKED",
-      "UNAVAILABLE",
-      "INCONCLUSIVE",
-      "NOT_RUN"
-    ],
-    "verifiedAuthority": "INDEPENDENT_VERIFICATION_GATE_ONLY"
-  }
+  "snapshotId": "M0-PREIMPLEMENTATION-POLICY-1",
+  "defaultDecision": "DENY",
+  "hardInvariants": [
+    "MODEL_ADAPTER_EXECUTOR_CANNOT_COMMIT_AUTHORITY_STATE",
+    "INVALID_OR_UNSUPPORTED_SCHEMA_FAILS_CLOSED",
+    "CACHE_PROJECTION_TELEMETRY_ARE_NOT_FACT_SOURCES",
+    "REQUIRED_R4_STEP_NOT_PASS_BLOCKS_COMPLETION",
+    "IMPLEMENTATION_AGENT_CANNOT_DECLARE_VERIFIED",
+    "NO_SILENT_FALLBACK_OR_ISOLATION_DOWNGRADE",
+    "LOCAL_PRIVATE_DATA_IS_NOT_UPLOADED"
+  ]
 }

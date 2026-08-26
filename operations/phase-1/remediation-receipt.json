@@ -1,0 +1,38 @@
+{
+  "$schema": "urn:aseos:operation-schema:m0-remediation-receipt:1.0.0",
+  "schemaVersion": "1.0.0",
+  "remediationId": "M0-SCHEMA-PHASE1-GOVERNANCE-REMEDIATION",
+  "sourceCommit": "e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45",
+  "branch": "remediation/m0-preimplementation-governance",
+  "implementationDeclaration": "IMPLEMENTED",
+  "declaredBy": {
+    "role": "IMPLEMENTATION_AGENT",
+    "actorId": "openai-gpt-5.6-pro"
+  },
+  "completedAt": "2026-08-26T18:29:04Z",
+  "authorityLockHash": "aa9c3c52992d366920570743506c8543bd4e6c6ad12772315a471e6dbf1b0be1",
+  "resolvedFindings": [
+    "P1-R01 contract hash integrity",
+    "P1-R02 WRITE_SCOPE consistency",
+    "P1-R03 false IMPLEMENTED receipt prevention",
+    "P1-R04 executable payload and hash examples",
+    "P1-R05 baseline identity separation",
+    "P2-R01 complete Schema registry",
+    "P2-R02 expected negative-example failure reason",
+    "P2-R03 status documentation synchronization",
+    "P2-R04 branch-protection prerequisite recorded"
+  ],
+  "verificationStatus": "PENDING_INDEPENDENT_VERIFICATION",
+  "m0GateStatus": "NOT_YET_GRANTED",
+  "phase1Status": "NOT_STARTED",
+  "productionRuntimeChanged": false,
+  "acceptedAdrsChanged": false,
+  "unauthorizedFallbackUsed": false,
+  "evidenceRefs": [
+    "docs/reviews/phase-0-schema-phase1-governance-review.md",
+    "docs/roadmap/phase-0-schema-phase1-remediation-plan.md",
+    "packages/contracts/schema-registry.json",
+    "packages/contracts/examples/first-slice/example-suite.json",
+    "operations/phase-1/authority-lock.json"
+  ]
+}

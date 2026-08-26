@@ -3,7 +3,9 @@
   "schemaVersion": "1.1.0",
   "operationId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
   "title": "Phase 1 — Executable Repository Foundation",
-  "sourceBaselineCommit": "88b237a422c5e0fef0d8d8a16e1291c6fa692599",
+  "architectureBaselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+  "planningSourceCommit": "e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45",
+  "executionBaselinePolicy": "M0_GATE_COMMIT_DESCENDANT_OF_PLANNING_SOURCE",
   "riskClass": "R4",
   "status": "PLANNED",
   "m0GateRef": "docs/reviews/m0-architecture-baseline-verified.md",
@@ -16,6 +18,7 @@
     "docs/architecture/11-nonfunctional-requirements.md",
     "docs/contracts/core-contract-catalog.md",
     "packages/contracts/schema-inventory.json",
+    "packages/contracts/schema-registry.json",
     "docs/engineering/repository-blueprint.md",
     "docs/engineering/engineering-standard.md",
     "docs/engineering/quality-gates.md",
@@ -27,11 +30,12 @@
     "docs/decisions/ADR-0011-policy-engine-and-representation.md"
   ],
   "prerequisites": [
-    "M0 — Architecture Baseline Verified is PASS and identifies the immutable Phase 1 start commit.",
+    "M0 Architecture Baseline Verified is PASS and identifies the immutable Phase 1 start commit.",
     "Phase 0 independent architecture review has no open P0 or P1 ownership conflict.",
     "ADR-0001 through ADR-0011 are ACCEPTED.",
-    "The schema inventory, all active JSON Schemas, first-slice examples and semantic integrity checks pass.",
-    "The implementation starts from the M0-authorized commit or an explicitly approved rebase that revalidates the authority lock.",
+    "The schema inventory, complete schema registry, active JSON Schemas, examples and semantic integrity checks pass.",
+    "The implementation starts from the M0-authorized commit or an approved rebase that revalidates the authority lock.",
+    "Main branch protection and required Phase 1 checks are enabled before implementation merge.",
     "Every suboperation uses a short-lived branch or PR and its own Evidence."
   ],
   "objectives": [
@@ -40,7 +44,7 @@
     "Enforce package dependency direction and unique authority ownership.",
     "Qualify the accepted toolchain, node:sqlite, Control API, PROCESS_RESTRICTED and Policy decisions.",
     "Produce a self-contained Windows-first qualification artifact and release Evidence.",
-    "Provide a repository foundation on which Phase 2 can implement the durable Kernel without hidden technical decisions."
+    "Provide a repository foundation for Phase 2 without hidden technical decisions."
   ],
   "nonGoals": [
     "Do not implement production Workflow, Node Runtime, Router, Scheduler or terminal transitions.",
@@ -60,7 +64,7 @@
       "outputs": [
         "Exact toolchain manifest and frozen lockfile",
         "Strict ESM project-reference build",
-        "Windows/Linux clean-build Evidence"
+        "Windows and Linux clean-build Evidence"
       ],
       "gateStepIds": [
         "P1-V00-M0-AUTHORIZATION",
@@ -78,8 +82,8 @@
       "writeScopeOperationId": "P1-O02",
       "outputs": [
         "Schema registry and runtime validator",
-        "Inventory/example semantic validation",
-        "Schema/type consistency harness"
+        "Inventory and example semantic validation",
+        "Schema and type consistency harness"
       ],
       "gateStepIds": [
         "P1-V03-CONTRACTS"
@@ -96,7 +100,7 @@
       "writeScopeOperationId": "P1-O03",
       "outputs": [
         "Machine-checkable package DAG",
-        "Public-entry/deep-import/cycle checks",
+        "Public-entry deep-import and cycle checks",
         "Duplicate semantic-owner check"
       ],
       "gateStepIds": [
@@ -114,7 +118,7 @@
       "writeScopeOperationId": "P1-O04",
       "outputs": [
         "Policy schemas and restricted compiler",
-        "Canonical JSON/hash fixtures",
+        "Canonical JSON and hash fixtures",
         "Fail-closed evaluator skeleton and Evidence"
       ],
       "gateStepIds": [
@@ -123,7 +127,7 @@
     },
     {
       "operationId": "P1-O05",
-      "title": "SQLite/node:sqlite authority-storage qualification",
+      "title": "SQLite node:sqlite authority-storage qualification",
       "riskClass": "R4",
       "dependsOn": [
         "P1-O01",
@@ -133,8 +137,8 @@
       "writeScopeOperationId": "P1-O05",
       "outputs": [
         "PersistenceWorker qualification implementation",
-        "Crash/transaction/recovery Evidence",
-        "Backup/corruption/performance Evidence"
+        "Crash transaction and recovery Evidence",
+        "Backup corruption and performance Evidence"
       ],
       "gateStepIds": [
         "P1-V06-PERSISTENCE"
@@ -152,7 +156,7 @@
       "writeScopeOperationId": "P1-O06",
       "outputs": [
         "OpenAPI 3.1.1 baseline",
-        "Runtime discovery/token lifecycle",
+        "Runtime discovery and token lifecycle",
         "CLI public-client acceptance"
       ],
       "gateStepIds": [
@@ -173,7 +177,7 @@
       "outputs": [
         "Capability probe and IsolationEvidence",
         "Job Object process-tree lifecycle",
-        "No-downgrade/path/environment Evidence"
+        "No-downgrade path and environment Evidence"
       ],
       "gateStepIds": [
         "P1-V08-ISOLATION"
@@ -194,7 +198,7 @@
       "writeScopeOperationId": "P1-O08",
       "outputs": [
         "Windows qualification artifact",
-        "Release manifest/checksum/SBOM/provenance",
+        "Release manifest checksum SBOM and provenance",
         "Clean-machine startup Evidence"
       ],
       "gateStepIds": [
@@ -229,32 +233,33 @@
   "writeScopeRef": "operations/phase-1/write-scope.json",
   "verificationPlanRef": "operations/phase-1/verification-plan.json",
   "receiptSchemaRef": "operations/phase-1/receipt.schema.json",
+  "independentVerificationReceiptSchemaRef": "operations/phase-1/independent-verification-receipt.schema.json",
   "stopConditions": [
-    "The M0 gate or authority lock cannot be verified against the implementation baseline.",
-    "An accepted ADR cannot be implemented as specified or qualification contradicts its safety or correctness claims.",
+    "The M0 Gate or authority lock cannot be verified against the implementation baseline.",
+    "An accepted ADR cannot be implemented as specified or qualification contradicts its claims.",
     "Any required change falls outside the current operation WRITE_SCOPE.",
     "A second authority implementation, fallback driver, transport, evaluator or silent isolation downgrade appears necessary.",
-    "A public or persisted Contract has ambiguous owner, incompatible fields or cannot be runtime-validated.",
-    "A required R4 verification step is FAIL, BLOCKED, UNAVAILABLE, INCONCLUSIVE or NOT_RUN.",
+    "A public or persisted Contract has ambiguous owner or cannot be runtime-validated.",
+    "A required R4 verification step is not PASS.",
     "Secrets or private local data would need to enter the repository or GitHub workflow.",
-    "Clean Windows/Linux build, local API exposure control or process-tree containment cannot be demonstrated.",
-    "The repository baseline changes concurrently and invalidates Evidence or path scope."
+    "Clean Windows and Linux build, API exposure control or process containment cannot be demonstrated.",
+    "The repository baseline changes concurrently and invalidates Evidence or scope."
   ],
   "completionCriteria": [
-    "All P1-O01 through P1-O09 are IMPLEMENTED with required outputs and commit references.",
+    "All P1-O01 through P1-O09 are IMPLEMENTED with outputs and commit references.",
     "P1-V00 through P1-V10 all PASS with Evidence.",
-    "The repository builds and validates from a clean checkout with the exact accepted toolchain.",
+    "The repository builds from a clean checkout with the exact accepted toolchain.",
     "Architecture checks prevent dependency inversion, deep imports, cycles and duplicate authority ownership.",
-    "Every qualification obligation from ADR-0007 through ADR-0011 is PASS; BLOCKED or INCONCLUSIVE is not completion.",
-    "A self-contained Windows qualification artifact starts without local development tools and does not write outside its test data root.",
-    "The implementation receipt validates against receipt.schema.json and declares at most IMPLEMENTED.",
-    "An independent verifier can reproduce the Gate using public scripts and recorded environment facts."
+    "Every qualification obligation from ADR-0007 through ADR-0011 is PASS.",
+    "A self-contained Windows qualification artifact starts without local development tools and stays inside its test data root.",
+    "The implementation receipt validates and declares at most IMPLEMENTED.",
+    "An independent verifier can reproduce the Gate from public scripts and recorded environment facts."
   ],
   "declarationRules": [
     "The implementation Agent may declare IMPLEMENTED, PARTIAL or BLOCKED.",
     "The implementation Agent must not declare VERIFIED.",
-    "Each suboperation records actual commands, environment, commit, results, Evidence and known gaps.",
-    "Skipped, unavailable, blocked and inconclusive results remain visible and prevent IMPLEMENTED when required.",
-    "Independent verification occurs after implementation on an immutable commit without remediation in the same pass."
+    "Each suboperation records commands, environment, commit, results, Evidence and gaps.",
+    "Skipped unavailable blocked and inconclusive results remain visible and prevent completion.",
+    "Independent verification occurs on an immutable commit without remediation in the same pass."
   ]
 }

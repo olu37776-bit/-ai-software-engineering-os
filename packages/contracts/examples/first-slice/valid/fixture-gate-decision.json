@@ -1,3 +1,28 @@
 {
-  "schemaVersion":"1.0.0","decisionId":"0198e0a1-0000-7015-8000-000000000015","planId":"0198e0a1-0000-7013-8000-000000000013","subjectRef":{"subjectType":"NodeExecution","subjectId":"0198e0a1-0000-7008-8000-000000000008"},"outcome":"PASS","policySnapshotId":"0198e0a1-0000-7012-8000-000000000012","assessmentRefs":[{"subjectType":"VerificationAssessment","subjectId":"0198e0a1-0000-7016-8000-000000000016"}],"evidenceRefs":[{"subjectType":"Evidence","subjectId":"0198e0a1-0000-700e-8000-00000000000e"},{"subjectType":"Evidence","subjectId":"0198e0a1-0000-7017-8000-000000000017"}],"missingEvidence":[],"riskAcceptanceRefs":[],"reasonCodes":[],"decidedAt":"2026-08-26T08:10:05Z","evaluatorVersion":"1.0.0"
+  "schemaVersion": "1.0.0",
+  "decisionId": "0198e0a1-0000-700c-800c-00000000000c",
+  "planId": "0198e0a1-0000-700b-800b-00000000000b",
+  "subjectRef": {
+    "subjectType": "NodeExecution",
+    "subjectId": "0198e0a1-0000-7006-8006-000000000006"
+  },
+  "outcome": "PASS",
+  "policySnapshotId": "0198e0a1-0000-700a-800a-00000000000a",
+  "assessmentRefs": [
+    {
+      "subjectType": "VerificationAssessment",
+      "subjectId": "0198e0a1-0000-700d-800d-00000000000d"
+    }
+  ],
+  "evidenceRefs": [
+    {
+      "subjectType": "Evidence",
+      "subjectId": "0198e0a1-0000-7008-8008-000000000008"
+    }
+  ],
+  "missingEvidence": [],
+  "riskAcceptanceRefs": [],
+  "reasonCodes": [],
+  "decidedAt": "2026-08-26T08:10:05Z",
+  "evaluatorVersion": "1.0.0"
 }

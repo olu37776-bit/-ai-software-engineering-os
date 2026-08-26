@@ -1,10 +1,12 @@
 {
-  "$schema": "urn:aseos:operation-schema:write-scope:1.0.0",
-  "schemaVersion": "1.0.0",
+  "$schema": "urn:aseos:operation-schema:write-scope:1.1.0",
+  "schemaVersion": "1.1.0",
   "scopeId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE",
-  "baselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+  "architectureBaselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+  "planningSourceCommit": "e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45",
   "enforcementMode": "DENY_BY_DEFAULT",
-  "globalAllowedPaths": [
+  "authorityLockRef": "operations/phase-1/authority-lock.json",
+  "globalAllowedPathGlobs": [
     "package.json",
     "pnpm-workspace.yaml",
     "pnpm-lock.yaml",
@@ -17,9 +19,8 @@
     "vitest.config.*",
     ".dependency-cruiser.*",
     "toolchain/**",
-    ".github/workflows/**",
-    ".github/ISSUE_TEMPLATE/**",
-    ".github/pull_request_template.md",
+    ".github/workflows/quality.yml",
+    ".github/workflows/release.yml",
     "apps/cli/**",
     "apps/runtime/**",
     "apps/worker/**",
@@ -35,12 +36,21 @@
     "tests/qualification/**",
     "tests/acceptance/**",
     "tests/fixtures/**",
+    "tests/fault-injection/**",
+    "tests/security/**",
     "schemas/release/**",
     "scripts/**",
-    "operations/phase-1/**",
-    "docs/**"
+    "operations/phase-1/evidence/**",
+    "operations/phase-1/implementation-receipt.json",
+    "docs/contracts/**",
+    "docs/operations/**",
+    "docs/implementation/phase-1/**",
+    "docs/reviews/phase-1-*.md",
+    "docs/roadmap/progress-status.md",
+    "README.md",
+    "docs/README.md"
   ],
-  "globalDeniedPaths": [
+  "globalDeniedPathGlobs": [
     ".ai-local/**",
     ".ai-work/**",
     "artifacts/**",
@@ -57,24 +67,39 @@
     "packages/adapters/knowledge/**",
     "packages/adapters/tool/os-sandboxed/**",
     "packages/adapters/tool/container-isolated/**",
-    "packages/adapters/tool/remote-isolated/**"
+    "packages/adapters/tool/remote-isolated/**",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/operation-manifest.schema.json",
+    "operations/phase-1/write-scope.schema.json",
+    "operations/phase-1/receipt.schema.json",
+    "operations/phase-1/independent-verification-receipt.schema.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/authority-lock.schema.json",
+    "operations/phase-1/preimplementation-policy-snapshot.json",
+    "operations/phase-1/preimplementation-policy-snapshot.schema.json",
+    "docs/roadmap/phase-1-operation-plan.md",
+    "docs/roadmap/phase-1-write-scope.md",
+    "docs/roadmap/phase-1-verification-plan.md",
+    "docs/decisions/**"
   ],
   "prohibitedSemantics": [
     "Implement production Workflow or Node state machines, Router, Scheduler, terminal transition, retry or recovery semantics.",
-    "Implement the production Verification System, EvidenceGraph or Learning and Feedback runtime.",
+    "Implement the production Verification System, EvidenceGraph or Learning runtime.",
     "Connect real model providers, GBrain, swap-kb, microwave-kb or private local assets.",
     "Introduce a second persistence driver, Control API transport, Policy evaluator or isolation authority.",
-    "Fallback from node:sqlite, PROCESS_RESTRICTED, loopback HTTP or canonical Policy evaluator without a superseding ADR.",
-    "Let CLI/UI read SQLite or import Kernel/persistence internals.",
-    "Let Adapter, Worker, Model or test helper create authority DomainEvent, terminal state, PolicyDecision or GateDecision.",
-    "Batch-create empty future packages or interfaces that have no Phase 1 consumer and conformance test.",
-    "Copy old local Framework source or preserve old paths merely for compatibility.",
-    "Upload or add local private data, secrets, Evidence, Workspace or knowledge content."
+    "Use silent fallback or downward isolation downgrade.",
+    "Let CLI or UI read SQLite or import Kernel or persistence internals.",
+    "Let Adapter, Worker, Model or test helper create authoritative DomainEvent, terminal state, PolicyDecision or GateDecision.",
+    "Batch-create empty future packages or interfaces with no Phase 1 consumer and conformance test.",
+    "Copy old local Framework source.",
+    "Upload or commit local private data, secrets, Evidence, Workspace or knowledge content."
   ],
   "operations": [
     {
       "operationId": "P1-O01",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         "package.json",
         "pnpm-workspace.yaml",
         "pnpm-lock.yaml",
@@ -89,16 +114,16 @@
         "scripts/toolchain/**",
         "tests/qualification/toolchain/**",
         ".github/workflows/quality.yml",
-        "docs/engineering/**",
-        "operations/phase-1/**"
+        "docs/implementation/phase-1/o01/**",
+        "operations/phase-1/evidence/o01/**"
       ],
-      "deniedPaths": [
+      "deniedPathGlobs": [
         "apps/**",
         "packages/**"
       ],
       "semanticConstraints": [
         "Pin Node.js 24.19.0, TypeScript 6.0.3 and pnpm 11.24.0 exactly.",
-        "Use ESM-only, NodeNext, ES2025 and tsc -b as authority build.",
+        "Use ESM-only, NodeNext, ES2025 and tsc -b as the authority build.",
         "Do not add production runtime behavior."
       ],
       "requiredOutputs": [
@@ -106,18 +131,24 @@
         "strict project-reference build",
         "toolchain manifest",
         "Windows and Linux clean-build Evidence"
+      ],
+      "requiredOutputPathGlobs": [
+        "toolchain/**",
+        "tests/qualification/toolchain/**",
+        "operations/phase-1/evidence/o01/**"
       ]
     },
     {
       "operationId": "P1-O02",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         "packages/contracts/**",
         "tests/contract/**",
         "scripts/contracts/**",
         "docs/contracts/**",
-        "operations/phase-1/**"
+        "docs/implementation/phase-1/o02/**",
+        "operations/phase-1/evidence/o02/**"
       ],
-      "deniedPaths": [
+      "deniedPathGlobs": [
         "packages/kernel/**",
         "packages/workflow/**",
         "packages/node-runtime/**",
@@ -134,40 +165,61 @@
       ],
       "semanticConstraints": [
         "JSON Schema 2020-12 is runtime authority.",
-        "Reject unknown fields and unsupported versions at public/persisted boundaries.",
+        "Reject unknown fields and unsupported versions at public and persisted boundaries.",
         "Generated TypeScript types cannot replace runtime validation.",
-        "Every implemented schema must update schema-inventory.json and valid/invalid examples in the same change."
+        "Schema, inventory, registry, examples and compatibility Evidence change together."
       ],
       "requiredOutputs": [
-        "schema registry/validator",
+        "schema registry and validator",
         "inventory validation",
         "first-slice example suite",
         "schema/type consistency tests",
         "compatibility test harness"
+      ],
+      "requiredOutputPathGlobs": [
+        "packages/contracts/**",
+        "tests/contract/**",
+        "operations/phase-1/evidence/o02/**"
       ]
     },
     {
       "operationId": "P1-O03",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         ".dependency-cruiser.*",
         "package.json",
         "pnpm-lock.yaml",
-        "packages/*/package.json",
-        "packages/*/tsconfig.json",
-        "packages/*/src/index.ts",
+        "packages/contracts/package.json",
+        "packages/contracts/tsconfig.json",
+        "packages/contracts/src/index.ts",
+        "packages/kernel/package.json",
+        "packages/kernel/tsconfig.json",
+        "packages/kernel/src/index.ts",
+        "packages/policy/package.json",
+        "packages/policy/tsconfig.json",
+        "packages/policy/src/index.ts",
+        "packages/persistence/package.json",
+        "packages/persistence/tsconfig.json",
+        "packages/persistence/src/index.ts",
+        "packages/platform/package.json",
+        "packages/platform/tsconfig.json",
+        "packages/platform/src/index.ts",
+        "packages/observability/package.json",
+        "packages/observability/tsconfig.json",
+        "packages/observability/src/index.ts",
+        "packages/adapters/tool/windows-process-restricted/package.json",
+        "packages/adapters/tool/windows-process-restricted/tsconfig.json",
+        "packages/adapters/tool/windows-process-restricted/src/index.ts",
         "tests/architecture/**",
         "scripts/architecture/**",
-        "docs/engineering/**",
-        "operations/phase-1/**"
+        "docs/implementation/phase-1/o03/**",
+        "operations/phase-1/evidence/o03/**"
       ],
-      "deniedPaths": [
-        "package internal behavior outside the minimal public-entry fixture"
-      ],
+      "deniedPathGlobs": [],
       "semanticConstraints": [
-        "Create only packages needed by a real Phase 1 consumer.",
+        "Create only packages required by a real Phase 1 consumer.",
         "Enforce public entry points, no deep import, no cycles and dependency direction.",
-        "Add machine-checkable canonical-owner declarations for authority semantics.",
-        "Architecture tests must inspect dependency/public metadata, not obsolete file text."
+        "Canonical owner declarations are machine-checkable.",
+        "Architecture tests inspect metadata and public contracts, not obsolete source text."
       ],
       "requiredOutputs": [
         "package DAG check",
@@ -175,72 +227,80 @@
         "cycle denial",
         "dependency-inversion denial",
         "duplicate-semantic-owner denial"
+      ],
+      "requiredOutputPathGlobs": [
+        "tests/architecture/**",
+        "operations/phase-1/evidence/o03/**"
       ]
     },
     {
       "operationId": "P1-O04",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         "packages/policy/**",
         "packages/contracts/schemas/policy/**",
         "packages/contracts/examples/policy/**",
         "tests/contract/policy/**",
         "tests/qualification/policy/**",
-        "docs/contracts/**",
-        "operations/phase-1/**"
+        "docs/implementation/phase-1/o04/**",
+        "operations/phase-1/evidence/o04/**"
       ],
-      "deniedPaths": [
-        "third-party policy runtime",
-        "dynamic policy module/plugin loading"
-      ],
+      "deniedPathGlobs": [],
       "semanticConstraints": [
         "packages/policy is the only V1 authoritative evaluator.",
-        "Policy input and captured clock are explicit; evaluation performs no I/O.",
+        "Policy input and captured clock are explicit and evaluation performs no I/O.",
         "Default deny, deny-overrides and INDETERMINATE fail closed.",
         "Restricted YAML is authoring input only; canonical JSON and hash are authority.",
-        "Accepted ADR files are read-only; any decision change requires stop, a superseding ADR, and an updated approved scope."
+        "No third-party policy authority or dynamic policy module loading."
       ],
       "requiredOutputs": [
-        "PolicySet/Rule/Input/Snapshot schemas",
+        "PolicySet Rule Input Snapshot schemas",
         "restricted parser",
         "canonicalization/hash fixtures",
         "deterministic evaluator skeleton",
         "property and mutation qualification Evidence"
+      ],
+      "requiredOutputPathGlobs": [
+        "packages/policy/**",
+        "tests/qualification/policy/**",
+        "operations/phase-1/evidence/o04/**"
       ]
     },
     {
       "operationId": "P1-O05",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         "packages/persistence/**",
         "packages/contracts/schemas/persistence/**",
         "tests/qualification/persistence/**",
         "tests/fault-injection/persistence/**",
         "scripts/qualification/persistence/**",
-        "operations/phase-1/**"
+        "docs/implementation/phase-1/o05/**",
+        "operations/phase-1/evidence/o05/**"
       ],
-      "deniedPaths": [
-        "any alternate SQLite driver",
-        "business reducer/transition logic"
-      ],
+      "deniedPathGlobs": [],
       "semanticConstraints": [
         "Use only Node.js 24.19.0 node:sqlite and SQLite 3.53.3.",
         "All SQLite calls run in a dedicated PersistenceWorker.",
-        "One authoritative database and one transaction cover Event, receipt, outbox/inbox and required audit.",
-        "No SQL/driver type crosses the persistence public boundary.",
-        "Qualification failure stops work and requires a superseding ADR; no fallback.",
-        "Accepted ADR files are read-only; any decision change requires stop, a superseding ADR, and an updated approved scope."
+        "One authoritative database and transaction cover Event, receipt, outbox, inbox and required audit.",
+        "No SQL or driver type crosses the persistence public boundary.",
+        "No alternate driver or fallback; qualification failure stops and requires a superseding ADR."
       ],
       "requiredOutputs": [
         "SQLite qualification harness",
-        "transaction/crash tests",
-        "WAL/recovery tests",
-        "backup/restore and corruption quarantine",
+        "transaction and crash tests",
+        "WAL and recovery tests",
+        "backup restore and corruption quarantine",
         "event-loop responsiveness Evidence",
-        "package/runtime version attestation"
+        "runtime version attestation"
+      ],
+      "requiredOutputPathGlobs": [
+        "packages/persistence/**",
+        "tests/fault-injection/persistence/**",
+        "operations/phase-1/evidence/o05/**"
       ]
     },
     {
       "operationId": "P1-O06",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         "packages/platform/**",
         "apps/runtime/**",
         "apps/cli/**",
@@ -248,64 +308,70 @@
         "tests/qualification/control-api/**",
         "tests/acceptance/control-api/**",
         "scripts/qualification/control-api/**",
-        "operations/phase-1/**"
+        "docs/implementation/phase-1/o06/**",
+        "operations/phase-1/evidence/o06/**"
       ],
-      "deniedPaths": [
-        "direct CLI Kernel import",
-        "direct SQLite access",
-        "remote binding or second transport"
-      ],
+      "deniedPathGlobs": [],
       "semanticConstraints": [
         "Bind only 127.0.0.1 on an OS-assigned port.",
-        "All endpoints require rotated bearer token from a user-only ACL file.",
-        "Mutations require Idempotency-Key and version/conflict semantics.",
-        "CLI uses only generated/public Control API client.",
-        "SSE is non-authoritative and connection loss does not cancel durable operation.",
-        "Accepted ADR files are read-only; any decision change requires stop, a superseding ADR, and an updated approved scope."
+        "All endpoints require a rotated bearer token stored with user-only ACL.",
+        "Mutations require Idempotency-Key and version conflict semantics.",
+        "CLI uses only the public Control API client and never accesses SQLite or Kernel internals.",
+        "No remote binding, second transport or authoritative SSE."
       ],
       "requiredOutputs": [
         "OpenAPI 3.1.1 baseline",
         "endpoint discovery and stale detection",
-        "token lifecycle/redaction",
-        "exposure/CSRF/Host tests",
-        "minimal version/doctor/start/stop/status acceptance"
+        "token lifecycle and redaction",
+        "exposure and CSRF tests",
+        "minimal version doctor start stop status acceptance"
+      ],
+      "requiredOutputPathGlobs": [
+        "packages/platform/**",
+        "tests/qualification/control-api/**",
+        "operations/phase-1/evidence/o06/**"
       ]
     },
     {
       "operationId": "P1-O07",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         "packages/adapters/tool/windows-process-restricted/**",
         "apps/worker/**",
         "packages/contracts/schemas/isolation/**",
         "tests/qualification/isolation/**",
         "tests/security/isolation/**",
         "scripts/qualification/isolation/**",
-        "operations/phase-1/**"
+        "docs/implementation/phase-1/o07/**",
+        "operations/phase-1/evidence/o07/**"
       ],
-      "deniedPaths": [
-        "OS_SANDBOXED implementation",
-        "CONTAINER_ISOLATED implementation",
-        "REMOTE_ISOLATED implementation"
+      "deniedPathGlobs": [
+        "packages/adapters/tool/os-sandboxed/**",
+        "packages/adapters/tool/container-isolated/**",
+        "packages/adapters/tool/remote-isolated/**"
       ],
       "semanticConstraints": [
-        "PROCESS_RESTRICTED is lifecycle/resource containment, not a security sandbox.",
-        "Use Job Object kill-on-close and bounded process tree/resources.",
+        "PROCESS_RESTRICTED is lifecycle and resource containment, not a security sandbox.",
+        "Use Job Object kill-on-close and bounded process tree and resources.",
         "No shell:true or raw model command string by default.",
-        "No secret/token inheritance; staged cwd and path controls are mandatory.",
-        "Unavailable required isolation blocks; no downward fallback.",
-        "Accepted ADR files are read-only; any decision change requires stop, a superseding ADR, and an updated approved scope."
+        "No secret or token inheritance; staged cwd and path controls are mandatory.",
+        "Unavailable required isolation blocks; no downward fallback."
       ],
       "requiredOutputs": [
         "capability probe",
         "Job Object lifecycle Evidence",
-        "child/grandchild termination tests",
-        "resource/environment/path tests",
-        "IsolationEvidence contract and no-downgrade property tests"
+        "child and grandchild termination tests",
+        "resource environment and path tests",
+        "IsolationEvidence and no-downgrade property tests"
+      ],
+      "requiredOutputPathGlobs": [
+        "packages/adapters/tool/windows-process-restricted/**",
+        "tests/security/isolation/**",
+        "operations/phase-1/evidence/o07/**"
       ]
     },
     {
       "operationId": "P1-O08",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         "apps/runtime/**",
         "apps/cli/**",
         "apps/worker/**",
@@ -317,49 +383,55 @@
         "tests/acceptance/release/**",
         "tests/qualification/packaging/**",
         "docs/operations/**",
-        "operations/phase-1/**"
+        "docs/implementation/phase-1/o08/**",
+        "operations/phase-1/evidence/o08/**"
       ],
-      "deniedPaths": [
-        "production installer auto-update network service",
-        "unsigned floating downloads"
-      ],
+      "deniedPathGlobs": [],
       "semanticConstraints": [
         "Produce a self-contained Windows-first qualification artifact with pinned runtime.",
         "Release directory and local data root are separated.",
-        "Build uses frozen lockfile and pinned actions/downloads.",
-        "Generate checksums, SBOM, provenance/attestation where supported.",
-        "Packaging spike does not claim production Release readiness."
+        "Build uses a frozen lockfile and pinned actions and downloads.",
+        "Generate checksums, SBOM and provenance where supported.",
+        "No production auto-update service or floating unsigned download."
       ],
       "requiredOutputs": [
         "qualification release artifact",
-        "manifest/checksum/SBOM/provenance",
+        "manifest checksum SBOM provenance",
         "clean Windows startup",
-        "Chinese/space path smoke",
+        "Chinese and space path smoke",
         "no-development-toolchain startup Evidence"
+      ],
+      "requiredOutputPathGlobs": [
+        "schemas/release/**",
+        "tests/qualification/packaging/**",
+        "operations/phase-1/evidence/o08/**"
       ]
     },
     {
       "operationId": "P1-O09",
-      "allowedPaths": [
+      "allowedPathGlobs": [
         "tests/architecture/**",
         "tests/contract/**",
         "tests/qualification/**",
         "tests/acceptance/**",
+        "tests/fault-injection/**",
+        "tests/security/**",
         "scripts/verify-phase-1/**",
-        "operations/phase-1/**",
-        "docs/roadmap/**",
-        "docs/reviews/**",
+        "operations/phase-1/implementation-receipt.json",
+        "operations/phase-1/evidence/o09/**",
+        "docs/reviews/phase-1-*.md",
+        "docs/implementation/phase-1/o09/**",
+        "docs/roadmap/progress-status.md",
         "README.md",
         "docs/README.md"
       ],
-      "deniedPaths": [
-        "new production feature implementation"
-      ],
+      "deniedPathGlobs": [],
       "semanticConstraints": [
         "Run verification from a clean checkout and immutable commit.",
         "Do not remediate failures inside the independent verification pass.",
-        "Every skipped, unavailable or inconclusive step is explicit.",
-        "Implementation status may become IMPLEMENTED only; VERIFIED requires independent Gate."
+        "Every skipped unavailable blocked or inconclusive step remains explicit.",
+        "Implementation may declare IMPLEMENTED only; VERIFIED requires independent Gate.",
+        "No new production feature implementation."
       ],
       "requiredOutputs": [
         "complete structured receipt",
@@ -367,21 +439,26 @@
         "known-gap list",
         "independent verification input bundle",
         "Phase 1 Gate recommendation"
+      ],
+      "requiredOutputPathGlobs": [
+        "operations/phase-1/implementation-receipt.json",
+        "operations/phase-1/evidence/o09/**",
+        "docs/reviews/phase-1-*.md"
       ]
     }
   ],
   "scopeExpansion": {
     "mustStop": true,
     "requires": [
-      "A written finding that identifies the missing scope and why the current Contract cannot be satisfied.",
-      "User/architecture authority approval.",
-      "Updated operation plan and WRITE_SCOPE.",
-      "New or superseding ADR when an accepted architectural decision changes."
+      "A written finding identifying the missing path or semantic scope.",
+      "Architecture authority and user approval.",
+      "Updated Operation Plan, WRITE_SCOPE and VerificationPlan.",
+      "A new or superseding ADR when an accepted decision changes."
     ],
     "forbiddenBehavior": [
-      "Do not silently edit outside allowed paths.",
-      "Do not reinterpret a denied path as allowed through generated files or scripts.",
-      "Do not introduce a fallback implementation.",
+      "Do not edit outside allowed paths before approval.",
+      "Do not use generated files, rename or copy to bypass a denied path.",
+      "Do not introduce a temporary fallback.",
       "Do not continue and report success after a scope violation."
     ]
   }

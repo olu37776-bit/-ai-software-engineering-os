@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:operation-schema:m0-remediation-receipt:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "remediationId",
+    "sourceCommit",
+    "branch",
+    "implementationDeclaration",
+    "declaredBy",
+    "completedAt",
+    "authorityLockHash",
+    "resolvedFindings",
+    "verificationStatus",
+    "m0GateStatus",
+    "phase1Status",
+    "productionRuntimeChanged",
+    "acceptedAdrsChanged",
+    "unauthorizedFallbackUsed",
+    "evidenceRefs"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "urn:aseos:operation-schema:m0-remediation-receipt:1.0.0"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "remediationId": {
+      "const": "M0-SCHEMA-PHASE1-GOVERNANCE-REMEDIATION"
+    },
+    "sourceCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "implementationDeclaration": {
+      "const": "IMPLEMENTED"
+    },
+    "declaredBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "actorId"
+      ],
+      "properties": {
+        "role": {
+          "const": "IMPLEMENTATION_AGENT"
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "authorityLockHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "resolvedFindings": {
+      "type": "array",
+      "minItems": 9,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "verificationStatus": {
+      "const": "PENDING_INDEPENDENT_VERIFICATION"
+    },
+    "m0GateStatus": {
+      "const": "NOT_YET_GRANTED"
+    },
+    "phase1Status": {
+      "const": "NOT_STARTED"
+    },
+    "productionRuntimeChanged": {
+      "const": false
+    },
+    "acceptedAdrsChanged": {
+      "const": false
+    },
+    "unauthorizedFallbackUsed": {
+      "const": false
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

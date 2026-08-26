@@ -1,3 +1,27 @@
 {
-  "schemaVersion":"1.0.0","eventId":"0198e0a1-0000-7006-8000-000000000006","eventType":"WorkflowRunCreated","aggregateType":"WorkflowRun","aggregateId":"0198e0a1-0000-7002-8000-000000000002","aggregateVersion":1,"occurredAt":"2026-08-26T08:10:00Z","actor":{"actorType":"SYSTEM","actorId":"kernel","actorVersion":"0.1.0"},"causationId":"0198e0a1-0000-7001-8000-000000000001","correlationId":"0198e0a1-0000-7003-8000-000000000003","payloadSchema":{"schemaId":"urn:aseos:schema:workflow-run-created-payload:1.0.0","schemaVersion":"1.0.0","schemaHash":"4444444444444444444444444444444444444444444444444444444444444444"},"payloadHash":"5555555555555555555555555555555555555555555555555555555555555555","payload":{"workflowDefinitionId":"fixture-change-workflow","workflowDefinitionVersion":"1.0.0","createdByCommandId":"0198e0a1-0000-7001-8000-000000000001"}
+  "schemaVersion": "1.0.0",
+  "eventId": "0198e0a1-0000-7004-8004-000000000004",
+  "eventType": "WorkflowRunCreated",
+  "aggregateType": "WorkflowRun",
+  "aggregateId": "0198e0a1-0000-7002-8002-000000000002",
+  "aggregateVersion": 1,
+  "occurredAt": "2026-08-26T08:10:00Z",
+  "actor": {
+    "actorType": "SYSTEM",
+    "actorId": "kernel",
+    "actorVersion": "0.1.0"
+  },
+  "causationId": "0198e0a1-0000-7001-8001-000000000001",
+  "correlationId": "0198e0a1-0000-7003-8003-000000000003",
+  "payloadSchema": {
+    "schemaId": "urn:aseos:schema:workflow-run-created-payload:1.0.0",
+    "schemaVersion": "1.0.0",
+    "schemaHash": "bb8c6e1011b888de71ae06824f6438de3e51a825883f4080ad309f04a6e75db2"
+  },
+  "payloadHash": "c63d352a147663b11dde8422543527f32d45dc37f4b67893f8faca7270dcd1e5",
+  "payload": {
+    "workflowDefinitionId": "fixture-change-workflow",
+    "workflowDefinitionVersion": "1.0.0",
+    "createdByCommandId": "0198e0a1-0000-7001-8001-000000000001"
+  }
 }

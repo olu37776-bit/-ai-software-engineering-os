@@ -122,3 +122,7 @@ Architecture Decision
 禁止出现多个文件、多个 use case handler 或多个 Adapter 分别复制同一核心业务语义。共享语义必须有一个 canonical owner，其他路径只能委托或使用其公开 Contract。
 
 本文档状态：`BASELINE DRAFT v0.3`
+
+## M0 remediation
+
+- [Phase 0 Schema / Phase 1 Governance Remediation Review](reviews/phase-0-schema-phase1-governance-review.md)

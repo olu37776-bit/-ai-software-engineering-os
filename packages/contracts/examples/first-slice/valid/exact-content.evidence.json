@@ -1,3 +1,37 @@
 {
-  "schemaVersion":"1.0.0","evidenceId":"0198e0a1-0000-700e-8000-00000000000e","evidenceType":"ExactContentOracleResult","subjectRefs":[{"subjectType":"NodeExecution","subjectId":"0198e0a1-0000-7008-8000-000000000008"}],"producer":{"actorType":"SYSTEM","actorId":"exact-content-oracle","actorVersion":"1.0.0"},"producerVersion":"1.0.0","executionRef":{"runId":"0198e0a1-0000-7002-8000-000000000002","nodeId":"verify-change","executionId":"0198e0a1-0000-7008-8000-000000000008","attempt":1},"createdAt":"2026-08-26T08:10:04Z","contentRef":{"artifactId":"0198e0a1-0000-7010-8000-000000000010","sha256":"1111111111111111111111111111111111111111111111111111111111111111","mediaType":"application/vnd.aseos.oracle-result+json","sizeBytes":256,"sensitivity":"INTERNAL"},"contentHash":"1111111111111111111111111111111111111111111111111111111111111111","mediaType":"application/vnd.aseos.oracle-result+json","trustLevel":"SYSTEM_AUTHORITY","collectionMethod":"deterministic-content-hash-comparison","sensitivity":"INTERNAL"
+  "schemaVersion": "1.0.0",
+  "evidenceId": "0198e0a1-0000-7008-8008-000000000008",
+  "evidenceType": "ExactContentOracleResult",
+  "subjectRefs": [
+    {
+      "subjectType": "NodeExecution",
+      "subjectId": "0198e0a1-0000-7006-8006-000000000006"
+    }
+  ],
+  "producer": {
+    "actorType": "SYSTEM",
+    "actorId": "exact-content-oracle",
+    "actorVersion": "1.0.0"
+  },
+  "producerVersion": "1.0.0",
+  "executionRef": {
+    "runId": "0198e0a1-0000-7002-8002-000000000002",
+    "nodeId": "verify-change",
+    "executionId": "0198e0a1-0000-7006-8006-000000000006",
+    "attempt": 1
+  },
+  "createdAt": "2026-08-26T08:10:04Z",
+  "contentRef": {
+    "artifactId": "0198e0a1-0000-7105-8005-000000000105",
+    "sha256": "f62653f2c969abee2f472809024c1943b5e0a578351c3e02a1005a80683fc7a8",
+    "mediaType": "application/vnd.aseos.oracle-result+json",
+    "sizeBytes": 82,
+    "sensitivity": "INTERNAL",
+    "logicalName": "oracle-result.json"
+  },
+  "contentHash": "f62653f2c969abee2f472809024c1943b5e0a578351c3e02a1005a80683fc7a8",
+  "mediaType": "application/vnd.aseos.oracle-result+json",
+  "trustLevel": "SYSTEM_AUTHORITY",
+  "collectionMethod": "deterministic-content-hash-comparison",
+  "sensitivity": "INTERNAL"
 }

@@ -91,3 +91,14 @@ AI Software Engineering OS
 
 本文档状态：`BASELINE DRAFT v0.2`  
 基线日期：`2026-08-26`
+
+## M0 remediation status
+
+```text
+Schema / Phase 1 governance remediation: IMPLEMENTED
+Independent preimplementation verification: PENDING
+M0 final Gate: NOT_YET_GRANTED
+Phase 1: NOT_STARTED
+```
+
+See `docs/reviews/phase-0-schema-phase1-governance-review.md`.

@@ -1,0 +1,12 @@
+{
+  "workflowDefinitionId": "fixture-change-workflow",
+  "workflowDefinitionVersion": "1.0.0",
+  "inputArtifactRef": {
+    "artifactId": "0198e0a1-0000-7101-8001-000000000101",
+    "sha256": "e9d1ef88a2bdb26d711bf2588f1b535020a4c793c3f723af43e52589bea15e15",
+    "mediaType": "application/json",
+    "sizeBytes": 64,
+    "sensitivity": "INTERNAL",
+    "logicalName": "request.json"
+  }
+}

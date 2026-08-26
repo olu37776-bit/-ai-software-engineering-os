@@ -1,1 +1,918 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"urn:aseos:operation-schema:phase-1-receipt:1.1.0","title":"Phase 1 Implementation Receipt","type":"object","additionalProperties":false,"required":["$schema","schemaVersion","operationId","m0GateRef","authorityLockHash","baselineCommit","implementationCommit","implementationDeclaration","declaredBy","startedAt","completedAt","writeScope","suboperations","verification","qualificationObligations","evidenceRefs","knownGaps","stopCondition","unauthorizedFallbackUsed","documentationSynchronized"],"properties":{"$schema":{"const":"urn:aseos:operation-schema:phase-1-receipt:1.1.0"},"schemaVersion":{"const":"1.1.0"},"operationId":{"const":"P1-EXECUTABLE-REPOSITORY-FOUNDATION"},"m0GateRef":{"const":"docs/reviews/m0-architecture-baseline-verified.md"},"authorityLockHash":{"$ref":"urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"},"baselineCommit":{"type":"string","pattern":"^[0-9a-f]{40}$"},"implementationCommit":{"type":"string","pattern":"^[0-9a-f]{40}$"},"implementationDeclaration":{"enum":["IMPLEMENTED","PARTIAL","BLOCKED"]},"declaredBy":{"type":"object","additionalProperties":false,"required":["role","actorId"],"properties":{"role":{"const":"IMPLEMENTATION_AGENT"},"actorId":{"type":"string","minLength":1},"agentVersion":{"type":"string","minLength":1}}},"startedAt":{"type":"string","format":"date-time"},"completedAt":{"type":"string","format":"date-time"},"writeScope":{"type":"object","additionalProperties":false,"required":["scopeId","authorityLockVerified","compliant","changedPaths","generatedPaths","violations"],"properties":{"scopeId":{"const":"P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE"},"authorityLockVerified":{"type":"boolean"},"compliant":{"type":"boolean"},"changedPaths":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"generatedPaths":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"violations":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}}}},"suboperations":{"type":"array","minItems":9,"maxItems":9,"items":{"type":"object","additionalProperties":false,"required":["operationId","status","commitRefs","outputs","findings"],"properties":{"operationId":{"enum":["P1-O01","P1-O02","P1-O03","P1-O04","P1-O05","P1-O06","P1-O07","P1-O08","P1-O09"]},"status":{"enum":["IMPLEMENTED","PARTIAL","BLOCKED","NOT_STARTED"]},"commitRefs":{"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"^[0-9a-f]{40}$"}},"outputs":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"findings":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}}}},"allOf":[{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O01"}},"required":["operationId"]}},{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O02"}},"required":["operationId"]}},{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O03"}},"required":["operationId"]}},{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O04"}},"required":["operationId"]}},{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O05"}},"required":["operationId"]}},{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O06"}},"required":["operationId"]}},{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O07"}},"required":["operationId"]}},{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O08"}},"required":["operationId"]}},{"contains":{"type":"object","properties":{"operationId":{"const":"P1-O09"}},"required":["operationId"]}}]},"verification":{"type":"object","additionalProperties":false,"required":["planId","planHash","executions","overallResult"],"properties":{"planId":{"$ref":"urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"},"planHash":{"$ref":"urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"},"executions":{"type":"array","minItems":11,"maxItems":11,"items":{"type":"object","additionalProperties":false,"required":["stepId","environment","command","result","evidenceRefs"],"properties":{"stepId":{"enum":["P1-V00-M0-AUTHORIZATION","P1-V01-PREFLIGHT","P1-V02-TOOLCHAIN","P1-V03-CONTRACTS","P1-V04-ARCHITECTURE","P1-V05-POLICY","P1-V06-PERSISTENCE","P1-V07-CONTROL-API","P1-V08-ISOLATION","P1-V09-PACKAGING","P1-V10-INTEGRATED-GATE"]},"environment":{"type":"string","minLength":1},"command":{"type":"string","minLength":1},"result":{"enum":["PASS","FAIL","BLOCKED","UNAVAILABLE","INCONCLUSIVE","NOT_RUN"]},"exitCode":{"type":["integer","null"]},"durationMs":{"type":"integer","minimum":0},"evidenceRefs":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"notes":{"type":"string","minLength":1}},"allOf":[{"if":{"properties":{"result":{"const":"PASS"}},"required":["result"]},"then":{"properties":{"evidenceRefs":{"minItems":1}}}}]},"allOf":[{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V00-M0-AUTHORIZATION"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V01-PREFLIGHT"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V02-TOOLCHAIN"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V03-CONTRACTS"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V04-ARCHITECTURE"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V05-POLICY"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V06-PERSISTENCE"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V07-CONTROL-API"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V08-ISOLATION"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V09-PACKAGING"}},"required":["stepId"]}},{"contains":{"type":"object","properties":{"stepId":{"const":"P1-V10-INTEGRATED-GATE"}},"required":["stepId"]}}]},"overallResult":{"enum":["PASS","FAIL","BLOCKED","INCONCLUSIVE","NOT_RUN"]}}},"qualificationObligations":{"type":"array","minItems":5,"items":{"type":"object","additionalProperties":false,"required":["obligationId","adrRef","result","evidenceRefs"],"properties":{"obligationId":{"type":"string","minLength":1},"adrRef":{"enum":["ADR-0007","ADR-0008","ADR-0009","ADR-0010","ADR-0011"]},"result":{"enum":["PASS","FAIL","BLOCKED","INCONCLUSIVE","NOT_RUN"]},"evidenceRefs":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"notes":{"type":"string","minLength":1}},"allOf":[{"if":{"properties":{"result":{"const":"PASS"}},"required":["result"]},"then":{"properties":{"evidenceRefs":{"minItems":1}}}}]},"allOf":[{"contains":{"type":"object","properties":{"adrRef":{"const":"ADR-0007"}},"required":["adrRef"]}},{"contains":{"type":"object","properties":{"adrRef":{"const":"ADR-0008"}},"required":["adrRef"]}},{"contains":{"type":"object","properties":{"adrRef":{"const":"ADR-0009"}},"required":["adrRef"]}},{"contains":{"type":"object","properties":{"adrRef":{"const":"ADR-0010"}},"required":["adrRef"]}},{"contains":{"type":"object","properties":{"adrRef":{"const":"ADR-0011"}},"required":["adrRef"]}}]},"evidenceRefs":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"knownGaps":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"stopCondition":{"type":"object","additionalProperties":false,"required":["triggered","condition","action"],"properties":{"triggered":{"type":"boolean"},"condition":{"type":["string","null"]},"action":{"type":"string","minLength":1}},"allOf":[{"if":{"properties":{"triggered":{"const":false}},"required":["triggered"]},"then":{"properties":{"condition":{"type":"null"}}}},{"if":{"properties":{"triggered":{"const":true}},"required":["triggered"]},"then":{"properties":{"condition":{"type":"string","minLength":1}}}}]},"unauthorizedFallbackUsed":{"const":false},"documentationSynchronized":{"type":"boolean"},"independentVerificationRef":{"type":["string","null"]}},"allOf":[{"if":{"properties":{"implementationDeclaration":{"const":"IMPLEMENTED"}},"required":["implementationDeclaration"]},"then":{"properties":{"writeScope":{"properties":{"authorityLockVerified":{"const":true},"compliant":{"const":true},"violations":{"maxItems":0}}},"suboperations":{"items":{"properties":{"status":{"const":"IMPLEMENTED"},"commitRefs":{"minItems":1},"outputs":{"minItems":1}}}},"verification":{"properties":{"executions":{"items":{"properties":{"result":{"const":"PASS"},"evidenceRefs":{"minItems":1}}}},"overallResult":{"const":"PASS"}}},"qualificationObligations":{"items":{"properties":{"result":{"const":"PASS"},"evidenceRefs":{"minItems":1}}}},"evidenceRefs":{"minItems":1},"stopCondition":{"properties":{"triggered":{"const":false}}},"documentationSynchronized":{"const":true}}}},{"if":{"properties":{"implementationDeclaration":{"const":"BLOCKED"}},"required":["implementationDeclaration"]},"then":{"properties":{"stopCondition":{"properties":{"triggered":{"const":true}}},"verification":{"properties":{"overallResult":{"enum":["FAIL","BLOCKED","INCONCLUSIVE","NOT_RUN"]}}}}}}]}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:operation-schema:phase-1-receipt:1.1.0",
+  "x-schemaVersion": "1.1.0",
+  "title": "Phase 1 Implementation Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "operationId",
+    "m0GateRef",
+    "authorityLockHash",
+    "baselineCommit",
+    "implementationCommit",
+    "implementationDeclaration",
+    "declaredBy",
+    "startedAt",
+    "completedAt",
+    "writeScope",
+    "suboperations",
+    "verification",
+    "qualificationObligations",
+    "evidenceRefs",
+    "knownGaps",
+    "stopCondition",
+    "unauthorizedFallbackUsed",
+    "documentationSynchronized"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "urn:aseos:operation-schema:phase-1-receipt:1.1.0"
+    },
+    "schemaVersion": {
+      "const": "1.1.0"
+    },
+    "operationId": {
+      "const": "P1-EXECUTABLE-REPOSITORY-FOUNDATION"
+    },
+    "m0GateRef": {
+      "const": "docs/reviews/m0-architecture-baseline-verified.md"
+    },
+    "authorityLockHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "baselineCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "implementationCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "implementationDeclaration": {
+      "enum": [
+        "IMPLEMENTED",
+        "PARTIAL",
+        "BLOCKED"
+      ]
+    },
+    "declaredBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "actorId"
+      ],
+      "properties": {
+        "role": {
+          "const": "IMPLEMENTATION_AGENT"
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "agentVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "writeScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scopeId",
+        "authorityLockVerified",
+        "compliant",
+        "changedPaths",
+        "generatedPaths",
+        "violations"
+      ],
+      "properties": {
+        "scopeId": {
+          "const": "P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE"
+        },
+        "authorityLockVerified": {
+          "type": "boolean"
+        },
+        "compliant": {
+          "type": "boolean"
+        },
+        "changedPaths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "generatedPaths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "violations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "suboperations": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "status",
+          "commitRefs",
+          "outputs",
+          "findings"
+        ],
+        "properties": {
+          "operationId": {
+            "enum": [
+              "P1-O01",
+              "P1-O02",
+              "P1-O03",
+              "P1-O04",
+              "P1-O05",
+              "P1-O06",
+              "P1-O07",
+              "P1-O08",
+              "P1-O09"
+            ]
+          },
+          "status": {
+            "enum": [
+              "IMPLEMENTED",
+              "PARTIAL",
+              "BLOCKED",
+              "NOT_STARTED"
+            ]
+          },
+          "commitRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "findings": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O01"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O02"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O03"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O04"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O05"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O06"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O07"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O08"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "operationId": {
+                "const": "P1-O09"
+              }
+            },
+            "required": [
+              "operationId"
+            ]
+          }
+        }
+      ]
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planId",
+        "planHash",
+        "executions",
+        "overallResult"
+      ],
+      "properties": {
+        "planId": {
+          "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+        },
+        "planHash": {
+          "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+        },
+        "executions": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "stepId",
+              "environment",
+              "command",
+              "result",
+              "evidenceRefs"
+            ],
+            "properties": {
+              "stepId": {
+                "enum": [
+                  "P1-V00-M0-AUTHORIZATION",
+                  "P1-V01-PREFLIGHT",
+                  "P1-V02-TOOLCHAIN",
+                  "P1-V03-CONTRACTS",
+                  "P1-V04-ARCHITECTURE",
+                  "P1-V05-POLICY",
+                  "P1-V06-PERSISTENCE",
+                  "P1-V07-CONTROL-API",
+                  "P1-V08-ISOLATION",
+                  "P1-V09-PACKAGING",
+                  "P1-V10-INTEGRATED-GATE"
+                ]
+              },
+              "environment": {
+                "type": "string",
+                "minLength": 1
+              },
+              "command": {
+                "type": "string",
+                "minLength": 1
+              },
+              "result": {
+                "enum": [
+                  "PASS",
+                  "FAIL",
+                  "BLOCKED",
+                  "UNAVAILABLE",
+                  "INCONCLUSIVE",
+                  "NOT_RUN"
+                ]
+              },
+              "exitCode": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "durationMs": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "evidenceRefs": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "result": {
+                      "const": "PASS"
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "evidenceRefs": {
+                      "minItems": 1
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "allOf": [
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V00-M0-AUTHORIZATION"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V01-PREFLIGHT"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V02-TOOLCHAIN"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V03-CONTRACTS"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V04-ARCHITECTURE"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V05-POLICY"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V06-PERSISTENCE"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V07-CONTROL-API"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V08-ISOLATION"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V09-PACKAGING"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            },
+            {
+              "contains": {
+                "properties": {
+                  "stepId": {
+                    "const": "P1-V10-INTEGRATED-GATE"
+                  }
+                },
+                "required": [
+                  "stepId"
+                ]
+              }
+            }
+          ]
+        },
+        "overallResult": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "BLOCKED",
+            "INCONCLUSIVE",
+            "NOT_RUN"
+          ]
+        }
+      }
+    },
+    "qualificationObligations": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "obligationId",
+          "adrRef",
+          "result",
+          "evidenceRefs"
+        ],
+        "properties": {
+          "obligationId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "adrRef": {
+            "enum": [
+              "ADR-0007",
+              "ADR-0008",
+              "ADR-0009",
+              "ADR-0010",
+              "ADR-0011"
+            ]
+          },
+          "result": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "BLOCKED",
+              "INCONCLUSIVE",
+              "NOT_RUN"
+            ]
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "result": {
+                  "const": "PASS"
+                }
+              },
+              "required": [
+                "result"
+              ]
+            },
+            "then": {
+              "properties": {
+                "evidenceRefs": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "adrRef": {
+                "const": "ADR-0007"
+              }
+            },
+            "required": [
+              "adrRef"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "adrRef": {
+                "const": "ADR-0008"
+              }
+            },
+            "required": [
+              "adrRef"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "adrRef": {
+                "const": "ADR-0009"
+              }
+            },
+            "required": [
+              "adrRef"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "adrRef": {
+                "const": "ADR-0010"
+              }
+            },
+            "required": [
+              "adrRef"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "adrRef": {
+                "const": "ADR-0011"
+              }
+            },
+            "required": [
+              "adrRef"
+            ]
+          }
+        }
+      ]
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "knownGaps": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "stopCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "triggered",
+        "condition",
+        "action"
+      ],
+      "properties": {
+        "triggered": {
+          "type": "boolean"
+        },
+        "condition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "triggered": {
+                "const": false
+              }
+            },
+            "required": [
+              "triggered"
+            ]
+          },
+          "then": {
+            "properties": {
+              "condition": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "triggered": {
+                "const": true
+              }
+            },
+            "required": [
+              "triggered"
+            ]
+          },
+          "then": {
+            "properties": {
+              "condition": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "unauthorizedFallbackUsed": {
+      "const": false
+    },
+    "documentationSynchronized": {
+      "type": "boolean"
+    },
+    "independentVerificationRef": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "implementationDeclaration": {
+            "const": "IMPLEMENTED"
+          }
+        },
+        "required": [
+          "implementationDeclaration"
+        ]
+      },
+      "then": {
+        "properties": {
+          "writeScope": {
+            "properties": {
+              "authorityLockVerified": {
+                "const": true
+              },
+              "compliant": {
+                "const": true
+              },
+              "violations": {
+                "maxItems": 0
+              }
+            }
+          },
+          "suboperations": {
+            "items": {
+              "properties": {
+                "status": {
+                  "const": "IMPLEMENTED"
+                },
+                "commitRefs": {
+                  "minItems": 1
+                },
+                "outputs": {
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          "verification": {
+            "properties": {
+              "executions": {
+                "items": {
+                  "properties": {
+                    "result": {
+                      "const": "PASS"
+                    },
+                    "evidenceRefs": {
+                      "minItems": 1
+                    }
+                  }
+                }
+              },
+              "overallResult": {
+                "const": "PASS"
+              }
+            }
+          },
+          "qualificationObligations": {
+            "items": {
+              "properties": {
+                "result": {
+                  "const": "PASS"
+                },
+                "evidenceRefs": {
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          "evidenceRefs": {
+            "minItems": 1
+          },
+          "stopCondition": {
+            "properties": {
+              "triggered": {
+                "const": false
+              }
+            }
+          },
+          "documentationSynchronized": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "implementationDeclaration": {
+            "const": "BLOCKED"
+          }
+        },
+        "required": [
+          "implementationDeclaration"
+        ]
+      },
+      "then": {
+        "properties": {
+          "stopCondition": {
+            "properties": {
+              "triggered": {
+                "const": true
+              }
+            }
+          },
+          "verification": {
+            "properties": {
+              "overallResult": {
+                "enum": [
+                  "FAIL",
+                  "BLOCKED",
+                  "INCONCLUSIVE",
+                  "NOT_RUN"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
