@@ -1,3 +1,34 @@
 {
-  "schemaVersion":"1.0.0","commandId":"0198e0a1-0000-7001-8000-000000000001","commandType":"CreateWorkflowRun","aggregateType":"WorkflowRun","aggregateId":"0198e0a1-0000-7002-8000-000000000002","expectedVersion":0,"issuedAt":"2026-08-26T08:10:00Z","actor":{"actorType":"HUMAN","actorId":"local-operator"},"correlationId":"0198e0a1-0000-7003-8000-000000000003","idempotencyKey":"fixture-change-workflow:create:001","payloadSchema":{"schemaId":"urn:aseos:schema:create-workflow-run-payload:1.0.0","schemaVersion":"1.0.0","schemaHash":"1111111111111111111111111111111111111111111111111111111111111111"},"payloadHash":"2222222222222222222222222222222222222222222222222222222222222222","payload":{"workflowDefinitionId":"fixture-change-workflow","workflowDefinitionVersion":"1.0.0","inputArtifactRef":{"artifactId":"0198e0a1-0000-7004-8000-000000000004","sha256":"3333333333333333333333333333333333333333333333333333333333333333","mediaType":"application/json","sizeBytes":128,"sensitivity":"INTERNAL"}},"requestId":"0198e0a1-0000-7005-8000-000000000005"
+  "schemaVersion": "1.0.0",
+  "commandId": "0198e0a1-0000-7001-8001-000000000001",
+  "commandType": "CreateWorkflowRun",
+  "aggregateType": "WorkflowRun",
+  "aggregateId": "0198e0a1-0000-7002-8002-000000000002",
+  "expectedVersion": 0,
+  "issuedAt": "2026-08-26T08:10:00Z",
+  "actor": {
+    "actorType": "HUMAN",
+    "actorId": "local-operator"
+  },
+  "correlationId": "0198e0a1-0000-7003-8003-000000000003",
+  "idempotencyKey": "fixture-change-workflow:create:001",
+  "payloadSchema": {
+    "schemaId": "urn:aseos:schema:create-workflow-run-payload:1.0.0",
+    "schemaVersion": "1.0.0",
+    "schemaHash": "fa9cc5548a857548e1a7706b216c554951bc52023d28ea03dd8c740a16d92a66"
+  },
+  "payloadHash": "0a1b4a07a144062cf1786d0c9e1920a6b7cfdc6341071b4912fa0b06036d91f7",
+  "payload": {
+    "workflowDefinitionId": "fixture-change-workflow",
+    "workflowDefinitionVersion": "1.0.0",
+    "inputArtifactRef": {
+      "artifactId": "0198e0a1-0000-7101-8001-000000000101",
+      "sha256": "e9d1ef88a2bdb26d711bf2588f1b535020a4c793c3f723af43e52589bea15e15",
+      "mediaType": "application/json",
+      "sizeBytes": 64,
+      "sensitivity": "INTERNAL",
+      "logicalName": "request.json"
+    }
+  },
+  "requestId": "0198e0a1-0000-700f-800f-00000000000f"
 }

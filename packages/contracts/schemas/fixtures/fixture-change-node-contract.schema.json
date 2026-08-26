@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:fixture-change-node-contract:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "FixtureChangeNodeContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractId",
+    "version",
+    "inputSchemaRef",
+    "outputSchemaRef",
+    "allowedSideEffects",
+    "verificationRequirements"
+  ],
+  "properties": {
+    "contractId": {
+      "const": "fixture-change-node"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "inputSchemaRef": {
+      "$ref": "urn:aseos:schema:schema-ref:1.0.0"
+    },
+    "outputSchemaRef": {
+      "$ref": "urn:aseos:schema:schema-ref:1.0.0"
+    },
+    "allowedSideEffects": {
+      "type": "array",
+      "const": [
+        "write_workspace"
+      ]
+    },
+    "verificationRequirements": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

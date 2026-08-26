@@ -1,0 +1,5 @@
+--- a/target.txt
++++ b/target.txt
+@@
+-old
++hello from ASEOS

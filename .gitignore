@@ -1,0 +1,20 @@
+# Python generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# JavaScript / TypeScript generated files
+node_modules/
+dist/
+coverage/
+artifacts/
+
+# Local-only runtime and work data
+.ai-local/
+.ai-work/
+
+# Local secrets
+.env
+.env.*
+!.env.example

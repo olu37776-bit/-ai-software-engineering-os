@@ -1,20 +1,360 @@
 {
+  "$schema": "urn:aseos:schema:example-suite:1.0.0",
   "suiteId": "first-slice-contract-examples",
-  "suiteVersion": "1.0.0",
-  "baselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+  "suiteVersion": "1.1.0",
+  "hashPolicy": {
+    "payload": "SHA256_RFC8785_CANONICAL_JSON_UTF8",
+    "schema": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+    "artifact": "SHA256_RAW_BYTES"
+  },
   "cases": [
-    {"caseId":"command-valid","schemaId":"urn:aseos:schema:command-envelope:1.0.0","path":"packages/contracts/examples/first-slice/valid/create-workflow-run.command.json","expected":"VALID"},
-    {"caseId":"command-missing-idempotency","schemaId":"urn:aseos:schema:command-envelope:1.0.0","path":"packages/contracts/examples/first-slice/invalid/missing-idempotency.command.json","expected":"INVALID"},
-    {"caseId":"event-valid","schemaId":"urn:aseos:schema:domain-event-envelope:1.0.0","path":"packages/contracts/examples/first-slice/valid/workflow-run-created.event.json","expected":"VALID"},
-    {"caseId":"task-valid","schemaId":"urn:aseos:schema:side-effect-task-envelope:1.0.0","path":"packages/contracts/examples/first-slice/valid/apply-change.side-effect-task.json","expected":"VALID"},
-    {"caseId":"task-host-unrestricted","schemaId":"urn:aseos:schema:side-effect-task-envelope:1.0.0","path":"packages/contracts/examples/first-slice/invalid/host-unrestricted.side-effect-task.json","expected":"INVALID"},
-    {"caseId":"result-valid","schemaId":"urn:aseos:schema:side-effect-result-envelope:1.0.0","path":"packages/contracts/examples/first-slice/valid/apply-change.side-effect-result.json","expected":"VALID"},
-    {"caseId":"result-failed-no-error","schemaId":"urn:aseos:schema:side-effect-result-envelope:1.0.0","path":"packages/contracts/examples/first-slice/invalid/failed-result-without-error.json","expected":"INVALID"},
-    {"caseId":"evidence-valid","schemaId":"urn:aseos:schema:evidence-metadata:1.0.0","path":"packages/contracts/examples/first-slice/valid/exact-content.evidence.json","expected":"VALID"},
-    {"caseId":"policy-valid","schemaId":"urn:aseos:schema:policy-decision:1.0.0","path":"packages/contracts/examples/first-slice/valid/fixture-policy-decision.json","expected":"VALID"},
-    {"caseId":"policy-indeterminate-no-reason","schemaId":"urn:aseos:schema:policy-decision:1.0.0","path":"packages/contracts/examples/first-slice/invalid/indeterminate-without-reason.policy-decision.json","expected":"INVALID"},
-    {"caseId":"verification-plan-valid","schemaId":"urn:aseos:schema:verification-plan:1.0.0","path":"packages/contracts/examples/first-slice/valid/fixture-verification-plan.json","expected":"VALID"},
-    {"caseId":"gate-valid","schemaId":"urn:aseos:schema:gate-decision:1.0.0","path":"packages/contracts/examples/first-slice/valid/fixture-gate-decision.json","expected":"VALID"},
-    {"caseId":"gate-pass-without-evidence","schemaId":"urn:aseos:schema:gate-decision:1.0.0","path":"packages/contracts/examples/first-slice/invalid/pass-without-evidence.gate-decision.json","expected":"INVALID"}
+    {
+      "caseId": "command-valid",
+      "schemaId": "urn:aseos:schema:command-envelope:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/create-workflow-run.command.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "PAYLOAD_SCHEMA_RESOLVES",
+        "PAYLOAD_HASH_MATCHES",
+        "SCHEMA_HASH_MATCHES",
+        "ARTIFACT_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "command-missing-idempotency",
+      "schemaId": "urn:aseos:schema:command-envelope:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/missing-idempotency.command.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "required",
+        "instancePath": ""
+      }
+    },
+    {
+      "caseId": "event-valid",
+      "schemaId": "urn:aseos:schema:domain-event-envelope:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/workflow-run-created.event.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "PAYLOAD_SCHEMA_RESOLVES",
+        "PAYLOAD_HASH_MATCHES",
+        "SCHEMA_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "event-version-zero",
+      "schemaId": "urn:aseos:schema:domain-event-envelope:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/event-version-zero.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "minimum",
+        "instancePath": "/aggregateVersion"
+      }
+    },
+    {
+      "caseId": "task-valid",
+      "schemaId": "urn:aseos:schema:side-effect-task-envelope:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/apply-change.side-effect-task.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "PAYLOAD_SCHEMA_RESOLVES",
+        "PAYLOAD_HASH_MATCHES",
+        "SCHEMA_HASH_MATCHES",
+        "ARTIFACT_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "task-host-unrestricted",
+      "schemaId": "urn:aseos:schema:side-effect-task-envelope:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/host-unrestricted.side-effect-task.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "enum",
+        "instancePath": "/requiredIsolationLevel"
+      }
+    },
+    {
+      "caseId": "result-valid",
+      "schemaId": "urn:aseos:schema:side-effect-result-envelope:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/apply-change.side-effect-result.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "PAYLOAD_SCHEMA_RESOLVES",
+        "PAYLOAD_HASH_MATCHES",
+        "SCHEMA_HASH_MATCHES",
+        "ARTIFACT_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "result-failed-no-error",
+      "schemaId": "urn:aseos:schema:side-effect-result-envelope:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/failed-result-without-error.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "required",
+        "instancePath": ""
+      }
+    },
+    {
+      "caseId": "evidence-valid",
+      "schemaId": "urn:aseos:schema:evidence-metadata:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/exact-content.evidence.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "ARTIFACT_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "evidence-without-producer",
+      "schemaId": "urn:aseos:schema:evidence-metadata:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/evidence-without-producer.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "required",
+        "instancePath": ""
+      }
+    },
+    {
+      "caseId": "policy-valid",
+      "schemaId": "urn:aseos:schema:policy-decision:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/fixture-policy-decision.json",
+      "expected": "VALID"
+    },
+    {
+      "caseId": "policy-indeterminate-no-reason",
+      "schemaId": "urn:aseos:schema:policy-decision:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/indeterminate-without-reason.policy-decision.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "minItems",
+        "instancePath": "/reasonCodes"
+      }
+    },
+    {
+      "caseId": "verification-plan-valid",
+      "schemaId": "urn:aseos:schema:verification-plan:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/fixture-verification-plan.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "SCHEMA_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "verification-plan-empty-steps",
+      "schemaId": "urn:aseos:schema:verification-plan:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/verification-plan-empty-steps.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "minItems",
+        "instancePath": "/steps"
+      }
+    },
+    {
+      "caseId": "gate-valid",
+      "schemaId": "urn:aseos:schema:gate-decision:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/fixture-gate-decision.json",
+      "expected": "VALID"
+    },
+    {
+      "caseId": "gate-pass-without-evidence",
+      "schemaId": "urn:aseos:schema:gate-decision:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/pass-without-evidence.gate-decision.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "minItems",
+        "instancePath": "/evidenceRefs"
+      }
+    },
+    {
+      "caseId": "node-identity-valid",
+      "schemaId": "urn:aseos:schema:node-execution-identity:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/node-execution-identity.json",
+      "expected": "VALID"
+    },
+    {
+      "caseId": "node-identity-attempt-zero",
+      "schemaId": "urn:aseos:schema:node-execution-identity:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/node-execution-attempt-zero.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "minimum",
+        "instancePath": "/attempt"
+      }
+    },
+    {
+      "caseId": "actor-valid",
+      "schemaId": "urn:aseos:schema:actor-ref:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/actor-ref.json",
+      "expected": "VALID"
+    },
+    {
+      "caseId": "actor-unknown-field",
+      "schemaId": "urn:aseos:schema:actor-ref:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/actor-ref-unknown-field.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "additionalProperties",
+        "instancePath": ""
+      }
+    },
+    {
+      "caseId": "artifact-valid",
+      "schemaId": "urn:aseos:schema:artifact-ref:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/artifact-ref.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "ARTIFACT_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "artifact-bad-hash",
+      "schemaId": "urn:aseos:schema:artifact-ref:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/artifact-ref-bad-hash.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "pattern",
+        "instancePath": "/sha256"
+      }
+    },
+    {
+      "caseId": "schema-ref-valid",
+      "schemaId": "urn:aseos:schema:schema-ref:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/schema-ref.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "SCHEMA_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "schema-ref-bad-hash",
+      "schemaId": "urn:aseos:schema:schema-ref:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/schema-ref-bad-hash.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "pattern",
+        "instancePath": "/schemaHash"
+      }
+    },
+    {
+      "caseId": "subject-valid",
+      "schemaId": "urn:aseos:schema:subject-ref:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/subject-ref.json",
+      "expected": "VALID"
+    },
+    {
+      "caseId": "subject-bad-type",
+      "schemaId": "urn:aseos:schema:subject-ref:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/subject-ref-bad-type.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "pattern",
+        "instancePath": "/subjectType"
+      }
+    },
+    {
+      "caseId": "typed-error-valid",
+      "schemaId": "urn:aseos:schema:typed-error:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/typed-error.json",
+      "expected": "VALID"
+    },
+    {
+      "caseId": "typed-error-bad-retryability",
+      "schemaId": "urn:aseos:schema:typed-error:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/typed-error-bad-retryability.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "enum",
+        "instancePath": "/retryability"
+      }
+    },
+    {
+      "caseId": "create-payload-valid",
+      "schemaId": "urn:aseos:schema:create-workflow-run-payload:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/create-workflow-run-payload.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "ARTIFACT_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "create-payload-extra",
+      "schemaId": "urn:aseos:schema:create-workflow-run-payload:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/create-workflow-run-payload-extra.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "additionalProperties",
+        "instancePath": ""
+      }
+    },
+    {
+      "caseId": "created-payload-valid",
+      "schemaId": "urn:aseos:schema:workflow-run-created-payload:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/workflow-run-created-payload.json",
+      "expected": "VALID"
+    },
+    {
+      "caseId": "created-payload-missing-command",
+      "schemaId": "urn:aseos:schema:workflow-run-created-payload:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/workflow-run-created-payload-missing-command.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "required",
+        "instancePath": ""
+      }
+    },
+    {
+      "caseId": "apply-payload-valid",
+      "schemaId": "urn:aseos:schema:apply-workspace-change-payload:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/apply-workspace-change-payload.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "ARTIFACT_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "apply-payload-traversal",
+      "schemaId": "urn:aseos:schema:apply-workspace-change-payload:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/apply-workspace-change-payload-traversal.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "pattern",
+        "instancePath": "/targetPath"
+      }
+    },
+    {
+      "caseId": "apply-result-valid",
+      "schemaId": "urn:aseos:schema:apply-workspace-change-result:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/apply-workspace-change-result.json",
+      "expected": "VALID"
+    },
+    {
+      "caseId": "apply-result-empty-paths",
+      "schemaId": "urn:aseos:schema:apply-workspace-change-result:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/apply-workspace-change-result-empty-paths.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "minItems",
+        "instancePath": "/changedPaths"
+      }
+    },
+    {
+      "caseId": "node-contract-valid",
+      "schemaId": "urn:aseos:schema:fixture-change-node-contract:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/valid/fixture-change-node-contract.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "SCHEMA_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "node-contract-invalid-side-effect",
+      "schemaId": "urn:aseos:schema:fixture-change-node-contract:1.0.0",
+      "instancePath": "packages/contracts/examples/first-slice/invalid/fixture-change-node-contract-side-effect.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "const",
+        "instancePath": "/allowedSideEffects"
+      }
+    }
   ]
 }

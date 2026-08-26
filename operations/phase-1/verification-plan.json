@@ -1,55 +1,94 @@
 {
   "schemaVersion": "1.0.0",
-  "planId": "0198e0a1-0000-7019-8000-000000000019",
+  "planId": "0198e0a1-0000-7200-8000-000000000200",
   "subjectRef": {
     "subjectType": "Operation",
     "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-    "subjectVersion": "1.0.0"
+    "subjectVersion": "1.1.0"
   },
   "contractRefs": [
     {
-      "schemaId": "urn:aseos:schema:schema-inventory:1.0.0",
-      "schemaVersion": "1.0.0",
-      "schemaHash": "cc89f18d0c306713c0316ae37caeffb94145f2a54e86082df17cd1a9243d84cb"
+      "schemaId": "urn:aseos:schema:schema-inventory:1.1.0",
+      "schemaVersion": "1.1.0",
+      "schemaHash": "74052347ea14cf560076b729f92d3ba08fdee8d3d01789c1a9c161eb04ea84d4"
     },
     {
-      "schemaId": "urn:aseos:operation-schema:operation-manifest:1.0.0",
+      "schemaId": "urn:aseos:schema:schema-registry:1.0.0",
       "schemaVersion": "1.0.0",
-      "schemaHash": "e2e13991590aab63bd93cb840bab479c70d1af0d04a891a5fe5e991559a55e17"
+      "schemaHash": "0efb80e980c0284d4cf793e4d5b0a053c3d3081dfb7cbbdd02a63657fd1ea977"
     },
     {
-      "schemaId": "urn:aseos:operation-schema:write-scope:1.0.0",
-      "schemaVersion": "1.0.0",
-      "schemaHash": "f7fa3a9402765100edc2980feac2cc890d62ff8ea49550053ca6a48bef3e8f35"
+      "schemaId": "urn:aseos:operation-schema:operation-manifest:1.1.0",
+      "schemaVersion": "1.1.0",
+      "schemaHash": "6d1bb5083d62e0d32182023412b31600ec3cc2ce0a2177c47c8119d5133e2d01"
     },
     {
-      "schemaId": "urn:aseos:operation-schema:phase-1-receipt:1.0.0",
+      "schemaId": "urn:aseos:operation-schema:write-scope:1.1.0",
+      "schemaVersion": "1.1.0",
+      "schemaHash": "03f287ec8b29cff5c2db11d2912148e1d6d7f2b71cf3eafe036d17ff6ee02e87"
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:phase-1-receipt:1.1.0",
+      "schemaVersion": "1.1.0",
+      "schemaHash": "095e163a2dba18c5ae6d7c943546d9bd108e1048519c32efc89aa21e647806b7"
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:authority-lock:1.0.0",
       "schemaVersion": "1.0.0",
-      "schemaHash": "749c0259f4cdf5212f456c0dc0b915ea3bcbe98c95e17464687eff3fd2169b9e"
+      "schemaHash": "e6808a83372d53b0a047a2f412e02dc512f154749a6b7ff8a9ac0dcd11a98336"
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:phase-1-independent-verification-receipt:1.0.0",
+      "schemaVersion": "1.0.0",
+      "schemaHash": "c1be35aaaf666beb558b0865dc1f9538e3e28839085f19c6f0a675c5a664c8a9"
     }
   ],
   "riskClass": "R4",
   "plannerId": "phase-1-minimum-verification-planner",
-  "plannerVersion": "1.0.0",
-  "policySnapshotId": "0198e0a1-0000-7018-8000-000000000018",
-  "createdAt": "2026-08-26T08:30:00Z",
+  "plannerVersion": "1.1.0",
+  "policySnapshotId": "0198e0a1-0000-7201-8001-000000000201",
+  "createdAt": "2026-08-27T00:00:00Z",
   "steps": [
+    {
+      "stepId": "P1-V00-M0-AUTHORIZATION",
+      "kind": "SCHEMA",
+      "required": true,
+      "dependsOn": [],
+      "executorCapability": "verify_m0_authorization",
+      "inputRefs": [
+        {
+          "subjectType": "Operation",
+          "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+          "subjectVersion": "1.1.0"
+        }
+      ],
+      "expectedEvidenceTypes": [
+        "M0GateEvidence",
+        "AuthorityLockEvidence"
+      ],
+      "timeoutMs": 300000,
+      "retryPolicy": {
+        "maxAttempts": 1,
+        "retryableErrorCodes": []
+      }
+    },
     {
       "stepId": "P1-V01-PREFLIGHT",
       "kind": "SCHEMA",
       "required": true,
-      "dependsOn": [],
+      "dependsOn": [
+        "P1-V00-M0-AUTHORIZATION"
+      ],
       "executorCapability": "phase1_preflight",
       "inputRefs": [
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "BaselineIdentityEvidence",
-        "AuthorityReferenceEvidence",
         "WriteScopeValidationResult"
       ],
       "timeoutMs": 300000,
@@ -70,16 +109,15 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "FrozenLockfileInstallResult",
         "TypeScriptBuildResult",
-        "ToolchainManifestEvidence",
         "CrossPlatformBuildEvidence"
       ],
-      "timeoutMs": 3600000,
+      "timeoutMs": 7200000,
       "retryPolicy": {
         "maxAttempts": 1,
         "retryableErrorCodes": []
@@ -97,16 +135,16 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "SchemaMetaValidationResult",
-        "SchemaInventoryValidationResult",
-        "ValidInvalidExampleSuiteResult",
+        "SchemaRegistryValidationResult",
+        "ExampleSuiteResult",
         "SchemaTypeConsistencyResult"
       ],
-      "timeoutMs": 1800000,
+      "timeoutMs": 7200000,
       "retryPolicy": {
         "maxAttempts": 1,
         "retryableErrorCodes": []
@@ -125,16 +163,15 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "DependencyGraphResult",
         "DeepImportDenialResult",
-        "CycleDenialResult",
         "DuplicateSemanticOwnerDenialResult"
       ],
-      "timeoutMs": 1800000,
+      "timeoutMs": 7200000,
       "retryPolicy": {
         "maxAttempts": 1,
         "retryableErrorCodes": []
@@ -153,16 +190,15 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
-        "PolicySchemaResult",
         "CanonicalizationDeterminismResult",
         "FailClosedPropertyResult",
         "PolicyMutationResult"
       ],
-      "timeoutMs": 3600000,
+      "timeoutMs": 7200000,
       "retryPolicy": {
         "maxAttempts": 1,
         "retryableErrorCodes": []
@@ -182,17 +218,14 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "PersistenceAtomicityResult",
         "CrashRecoveryResult",
-        "DedupConcurrencyResult",
         "BackupRestoreResult",
-        "CorruptionQuarantineResult",
-        "PersistenceBenchmarkResult",
-        "EventLoopResponsivenessResult"
+        "CorruptionQuarantineResult"
       ],
       "timeoutMs": 7200000,
       "retryPolicy": {
@@ -214,19 +247,16 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "OpenApiValidationResult",
         "LoopbackExposureResult",
         "TokenAclRedactionResult",
-        "IdempotencyConflictResult",
-        "StaleDiscoveryResult",
-        "SseRecoveryResult",
         "CliPublicApiAcceptanceResult"
       ],
-      "timeoutMs": 5400000,
+      "timeoutMs": 7200000,
       "retryPolicy": {
         "maxAttempts": 1,
         "retryableErrorCodes": []
@@ -246,17 +276,13 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "JobObjectLifecycleResult",
         "ProcessTreeTerminationResult",
-        "ResourceLimitResult",
-        "EnvironmentSecretDenialResult",
-        "PathSafetyFuzzResult",
-        "NoDowngradePropertyResult",
-        "IsolationEvidenceConformanceResult"
+        "NoDowngradePropertyResult"
       ],
       "timeoutMs": 7200000,
       "retryPolicy": {
@@ -281,18 +307,13 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "SelfContainedArtifactResult",
         "ReleaseManifestConsistencyResult",
-        "ChecksumResult",
-        "SbomResult",
-        "BuildProvenanceResult",
-        "CleanWindowsStartupResult",
-        "UnicodeSpacePathResult",
-        "DataRootIsolationResult"
+        "CleanWindowsStartupResult"
       ],
       "timeoutMs": 7200000,
       "retryPolicy": {
@@ -316,14 +337,12 @@
         {
           "subjectType": "Operation",
           "subjectId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
-          "subjectVersion": "1.0.0"
+          "subjectVersion": "1.1.0"
         }
       ],
       "expectedEvidenceTypes": [
         "StructuredReceiptValidationResult",
         "WriteScopeComplianceResult",
-        "QualificationObligationMatrix",
-        "KnownGapAssessment",
         "IndependentGateDecision"
       ],
       "timeoutMs": 7200000,
@@ -336,14 +355,13 @@
   "risksCovered": [
     "toolchain-version-drift",
     "non-reproducible-install-or-build",
-    "schema-invalid-or-unversioned-boundary",
-    "package-dependency-inversion-or-deep-import",
-    "duplicate-authority-semantic-owner",
+    "schema-invalid-unresolved-or-hash-mismatched-boundary",
+    "package-dependency-inversion-deep-import-or-duplicate-owner",
     "policy-default-allow-or-indeterminate-allow",
     "node-sqlite-transaction-crash-recovery-or-packaging-failure",
     "control-api-network-exposure-token-leak-or-idempotency-bypass",
     "orphan-process-resource-overrun-secret-inheritance-or-isolation-downgrade",
-    "release-artifact-version-or-provenance-mismatch",
+    "release-version-or-provenance-mismatch",
     "implementation-agent-self-verification"
   ],
   "risksNotCovered": [

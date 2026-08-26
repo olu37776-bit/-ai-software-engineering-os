@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:operation-schema:phase-1-independent-verification-receipt:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "Phase 1 Independent Verification Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "operationId",
+    "implementationCommit",
+    "implementationReceiptHash",
+    "verifiedBy",
+    "startedAt",
+    "completedAt",
+    "readOnlyVerification",
+    "stepResults",
+    "gateDecision",
+    "evidenceRefs",
+    "remediationPerformed"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "urn:aseos:operation-schema:phase-1-independent-verification-receipt:1.0.0"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "operationId": {
+      "const": "P1-EXECUTABLE-REPOSITORY-FOUNDATION"
+    },
+    "implementationCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "implementationReceiptHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "verifiedBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "actorId"
+      ],
+      "properties": {
+        "role": {
+          "const": "INDEPENDENT_VERIFIER"
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verifierVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "readOnlyVerification": {
+      "const": true
+    },
+    "stepResults": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stepId",
+          "result",
+          "evidenceRefs"
+        ],
+        "properties": {
+          "stepId": {
+            "enum": [
+              "P1-V00-M0-AUTHORIZATION",
+              "P1-V01-PREFLIGHT",
+              "P1-V02-TOOLCHAIN",
+              "P1-V03-CONTRACTS",
+              "P1-V04-ARCHITECTURE",
+              "P1-V05-POLICY",
+              "P1-V06-PERSISTENCE",
+              "P1-V07-CONTROL-API",
+              "P1-V08-ISOLATION",
+              "P1-V09-PACKAGING",
+              "P1-V10-INTEGRATED-GATE"
+            ]
+          },
+          "result": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "BLOCKED",
+              "INCONCLUSIVE"
+            ]
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V00-M0-AUTHORIZATION"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V01-PREFLIGHT"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V02-TOOLCHAIN"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V03-CONTRACTS"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V04-ARCHITECTURE"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V05-POLICY"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V06-PERSISTENCE"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V07-CONTROL-API"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V08-ISOLATION"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V09-PACKAGING"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        },
+        {
+          "contains": {
+            "properties": {
+              "stepId": {
+                "const": "P1-V10-INTEGRATED-GATE"
+              }
+            },
+            "required": [
+              "stepId"
+            ]
+          }
+        }
+      ]
+    },
+    "gateDecision": {
+      "enum": [
+        "PASS",
+        "REWORK",
+        "BLOCK",
+        "INCONCLUSIVE"
+      ]
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "remediationPerformed": {
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "gateDecision": {
+            "const": "PASS"
+          }
+        },
+        "required": [
+          "gateDecision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "stepResults": {
+            "items": {
+              "properties": {
+                "result": {
+                  "const": "PASS"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

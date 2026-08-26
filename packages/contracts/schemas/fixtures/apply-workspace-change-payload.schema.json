@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:apply-workspace-change-payload:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "ApplyWorkspaceChangePayload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workspaceRef",
+    "baseSnapshotHash",
+    "targetPath",
+    "desiredContentArtifactRef"
+  ],
+  "properties": {
+    "workspaceRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "baseSnapshotHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "targetPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "desiredContentArtifactRef": {
+      "$ref": "urn:aseos:schema:artifact-ref:1.0.0"
+    }
+  }
+}

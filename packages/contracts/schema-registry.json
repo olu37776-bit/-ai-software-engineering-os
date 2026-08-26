@@ -1,0 +1,224 @@
+{
+  "$schema": "urn:aseos:schema:schema-registry:1.0.0",
+  "registryVersion": "1.0.0",
+  "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+  "schemas": [
+    {
+      "schemaId": "urn:aseos:operation-schema:authority-lock:1.0.0",
+      "authorityPath": "operations/phase-1/authority-lock.schema.json",
+      "sha256": "e6808a83372d53b0a047a2f412e02dc512f154749a6b7ff8a9ac0dcd11a98336",
+      "category": "GOVERNANCE",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:phase-1-independent-verification-receipt:1.0.0",
+      "authorityPath": "operations/phase-1/independent-verification-receipt.schema.json",
+      "sha256": "c1be35aaaf666beb558b0865dc1f9538e3e28839085f19c6f0a675c5a664c8a9",
+      "category": "GOVERNANCE",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:operation-manifest:1.1.0",
+      "authorityPath": "operations/phase-1/operation-manifest.schema.json",
+      "sha256": "6d1bb5083d62e0d32182023412b31600ec3cc2ce0a2177c47c8119d5133e2d01",
+      "category": "GOVERNANCE",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:preimplementation-policy-snapshot:1.0.0",
+      "authorityPath": "operations/phase-1/preimplementation-policy-snapshot.schema.json",
+      "sha256": "d336f9eed25e4910c06dbba9e563485b105f74774e1a4f2d35e72d6119a51903",
+      "category": "GOVERNANCE",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:phase-1-receipt:1.1.0",
+      "authorityPath": "operations/phase-1/receipt.schema.json",
+      "sha256": "095e163a2dba18c5ae6d7c943546d9bd108e1048519c32efc89aa21e647806b7",
+      "category": "GOVERNANCE",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:m0-remediation-receipt:1.0.0",
+      "authorityPath": "operations/phase-1/remediation-receipt.schema.json",
+      "sha256": "1b6f1f10e7cc25a76902b91ce9cdc69e6ef0c9ea1406897fb610cdaa1548e339",
+      "category": "GOVERNANCE",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:operation-schema:write-scope:1.1.0",
+      "authorityPath": "operations/phase-1/write-scope.schema.json",
+      "sha256": "03f287ec8b29cff5c2db11d2912148e1d6d7f2b71cf3eafe036d17ff6ee02e87",
+      "category": "GOVERNANCE",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:actor-ref:1.0.0",
+      "authorityPath": "packages/contracts/schemas/common/actor-ref.schema.json",
+      "sha256": "67c513a9e37c4f1006d1e7121fbf271498c08f01299b4d8be70c36f0bf6c35c5",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:artifact-ref:1.0.0",
+      "authorityPath": "packages/contracts/schemas/common/artifact-ref.schema.json",
+      "sha256": "bb03989c5784bfd7c9c4dc6367062d1c954de81dee7c29e136f67ef600ba97ba",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:common-identifiers:1.0.0",
+      "authorityPath": "packages/contracts/schemas/common/identifiers.schema.json",
+      "sha256": "6d1b9797270b1bc7fc8e979898c4652c89d67b2bced97337a29f335ab1699f0e",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:schema-ref:1.0.0",
+      "authorityPath": "packages/contracts/schemas/common/schema-ref.schema.json",
+      "sha256": "c43e602c1fc744905bfebf04917effd165865f2d15d7d8b525e77305bedef9cd",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:subject-ref:1.0.0",
+      "authorityPath": "packages/contracts/schemas/common/subject-ref.schema.json",
+      "sha256": "cbd6eac2a9139a6c6fa80eebf29e5e109111e5ba86eb30dfef4f36aee9c91ffa",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:typed-error:1.0.0",
+      "authorityPath": "packages/contracts/schemas/common/typed-error.schema.json",
+      "sha256": "e52e5c840ac729b3da826591f3f9d9d7da962a84ea808bd0c7838671f0bfd2cb",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:evidence-metadata:1.0.0",
+      "authorityPath": "packages/contracts/schemas/evidence/evidence-metadata.schema.json",
+      "sha256": "1415d66b313f6cd67c7a5bd51671422df85d4153444dc6ab941239856907d7f1",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:apply-workspace-change-payload:1.0.0",
+      "authorityPath": "packages/contracts/schemas/fixtures/apply-workspace-change-payload.schema.json",
+      "sha256": "88ce6660b2956f94ba7244fd7688bca5f57a408ff63b278c233fed7c2993a433",
+      "category": "FIXTURE",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:apply-workspace-change-result:1.0.0",
+      "authorityPath": "packages/contracts/schemas/fixtures/apply-workspace-change-result.schema.json",
+      "sha256": "7aaf732ecf5839d0b7a0b6fafe859f88725705f75463cc8f17eea0438137e770",
+      "category": "FIXTURE",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:create-workflow-run-payload:1.0.0",
+      "authorityPath": "packages/contracts/schemas/fixtures/create-workflow-run-payload.schema.json",
+      "sha256": "fa9cc5548a857548e1a7706b216c554951bc52023d28ea03dd8c740a16d92a66",
+      "category": "FIXTURE",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:fixture-change-node-contract:1.0.0",
+      "authorityPath": "packages/contracts/schemas/fixtures/fixture-change-node-contract.schema.json",
+      "sha256": "2d471f657b7369e670d7801ea58b727b70fe1ca1eeac70545f1eb9792a5298f6",
+      "category": "FIXTURE",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:workflow-run-created-payload:1.0.0",
+      "authorityPath": "packages/contracts/schemas/fixtures/workflow-run-created-payload.schema.json",
+      "sha256": "bb8c6e1011b888de71ae06824f6438de3e51a825883f4080ad309f04a6e75db2",
+      "category": "FIXTURE",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:command-envelope:1.0.0",
+      "authorityPath": "packages/contracts/schemas/kernel/command-envelope.schema.json",
+      "sha256": "a7edbfa5aeee2d278c074a5996fd9a71e6278150ad6abc951945c424f433c011",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:domain-event-envelope:1.0.0",
+      "authorityPath": "packages/contracts/schemas/kernel/domain-event-envelope.schema.json",
+      "sha256": "f088267aa6641672c053f48823913c94e147bcd67c293ec5e4c7b1ed2a6d1e43",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:side-effect-result-envelope:1.0.0",
+      "authorityPath": "packages/contracts/schemas/kernel/side-effect-result-envelope.schema.json",
+      "sha256": "f9bc5d3503bada61d8b09908bc1f7430ff5ccddd1277a67febd3a1bbe16364cc",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:side-effect-task-envelope:1.0.0",
+      "authorityPath": "packages/contracts/schemas/kernel/side-effect-task-envelope.schema.json",
+      "sha256": "c1ed4ef0c82932ec8e3bca784b2e6a6f1a6b7b1d5554ca89f5c1b3de249c6af5",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:example-suite:1.0.0",
+      "authorityPath": "packages/contracts/schemas/meta/example-suite.schema.json",
+      "sha256": "c67b00d3313c3f046ef3a494a32e23ab558cee7a191edd3e64c50f5a30d7befa",
+      "category": "META",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:planned-contract-inventory:1.0.0",
+      "authorityPath": "packages/contracts/schemas/meta/planned-contract-inventory.schema.json",
+      "sha256": "119a123ce45cc4be74b027d120f3855411ad2e450dc0ee9e430b0626537b3741",
+      "category": "META",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:schema-inventory:1.1.0",
+      "authorityPath": "packages/contracts/schemas/meta/schema-inventory.schema.json",
+      "sha256": "74052347ea14cf560076b729f92d3ba08fdee8d3d01789c1a9c161eb04ea84d4",
+      "category": "META",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:schema-registry:1.0.0",
+      "authorityPath": "packages/contracts/schemas/meta/schema-registry.schema.json",
+      "sha256": "0efb80e980c0284d4cf793e4d5b0a053c3d3081dfb7cbbdd02a63657fd1ea977",
+      "category": "META",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:node-execution-identity:1.0.0",
+      "authorityPath": "packages/contracts/schemas/node/node-execution-identity.schema.json",
+      "sha256": "a0b60b30362bf3f10370376d8a3a5d30ca8028c47eda2679c7c79c0ab667779c",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:policy-decision:1.0.0",
+      "authorityPath": "packages/contracts/schemas/policy/policy-decision.schema.json",
+      "sha256": "8b20f71119df2e1a5ca3ec7708cb89de2da83975f9c5fa2a512cf2c22fda8a22",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:gate-decision:1.0.0",
+      "authorityPath": "packages/contracts/schemas/verification/gate-decision.schema.json",
+      "sha256": "5a7512058468d9f7b5af163b155b7eed67405bcfc5c27586f9648e5539fdd0e8",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:verification-plan:1.0.0",
+      "authorityPath": "packages/contracts/schemas/verification/verification-plan.schema.json",
+      "sha256": "35ff0e24f7beb2328d445f3a0bab946e310e2095294d690fc0fea1b1f76c272d",
+      "category": "RUNTIME",
+      "examplesRequired": true
+    }
+  ]
+}

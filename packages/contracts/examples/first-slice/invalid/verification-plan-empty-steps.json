@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "planId": "0198e0a1-0000-700b-800b-00000000000b",
+  "subjectRef": {
+    "subjectType": "NodeExecution",
+    "subjectId": "0198e0a1-0000-7006-8006-000000000006"
+  },
+  "contractRefs": [
+    {
+      "schemaId": "urn:aseos:schema:fixture-change-node-contract:1.0.0",
+      "schemaVersion": "1.0.0",
+      "schemaHash": "2d471f657b7369e670d7801ea58b727b70fe1ca1eeac70545f1eb9792a5298f6"
+    }
+  ],
+  "riskClass": "R2",
+  "plannerId": "minimum-policy-verification-planner",
+  "plannerVersion": "1.0.0",
+  "policySnapshotId": "0198e0a1-0000-700a-800a-00000000000a",
+  "createdAt": "2026-08-26T08:10:03Z",
+  "steps": [],
+  "risksCovered": [
+    "malformed-proposal",
+    "wrong-content-with-exit-zero"
+  ],
+  "risksNotCovered": [
+    "strong-malicious-process-containment"
+  ]
+}

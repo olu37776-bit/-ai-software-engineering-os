@@ -1,3 +1,52 @@
 {
-  "schemaVersion":"1.0.0","resultId":"0198e0a1-0000-700d-8000-00000000000d","taskId":"0198e0a1-0000-7007-8000-000000000007","executionId":"0198e0a1-0000-7008-8000-000000000008","attempt":1,"correlationId":"0198e0a1-0000-7003-8000-000000000003","outcome":"SUCCEEDED","startedAt":"2026-08-26T08:10:02Z","completedAt":"2026-08-26T08:10:03Z","adapterId":"windows-process-restricted-workspace","adapterVersion":"1.0.0","selectedIsolationLevel":"PROCESS_RESTRICTED","isolationEvidenceRef":{"artifactId":"0198e0a1-0000-700b-8000-00000000000b","sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","mediaType":"application/vnd.aseos.isolation-evidence+json","sizeBytes":512,"sensitivity":"INTERNAL"},"outputArtifactRefs":[{"artifactId":"0198e0a1-0000-700c-8000-00000000000c","sha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","mediaType":"text/x-diff","sizeBytes":256,"sensitivity":"INTERNAL"}],"evidenceRefs":[{"subjectType":"Evidence","subjectId":"0198e0a1-0000-700e-8000-00000000000e"}],"payloadSchema":{"schemaId":"urn:aseos:schema:apply-workspace-change-result:1.0.0","schemaVersion":"1.0.0","schemaHash":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"},"payloadHash":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","payload":{"changeSetId":"0198e0a1-0000-700f-8000-00000000000f","beforeSnapshotHash":"9999999999999999999999999999999999999999999999999999999999999999","afterSnapshotHash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","changedPaths":["target.txt"]}
+  "schemaVersion": "1.0.0",
+  "resultId": "0198e0a1-0000-7007-8007-000000000007",
+  "taskId": "0198e0a1-0000-7005-8005-000000000005",
+  "executionId": "0198e0a1-0000-7006-8006-000000000006",
+  "attempt": 1,
+  "correlationId": "0198e0a1-0000-7003-8003-000000000003",
+  "outcome": "SUCCEEDED",
+  "startedAt": "2026-08-26T08:10:02Z",
+  "completedAt": "2026-08-26T08:10:03Z",
+  "adapterId": "windows-process-restricted-workspace",
+  "adapterVersion": "1.0.0",
+  "selectedIsolationLevel": "PROCESS_RESTRICTED",
+  "isolationEvidenceRef": {
+    "artifactId": "0198e0a1-0000-7104-8004-000000000104",
+    "sha256": "6a9681f47f43a20a79167ec9868ec1ef10f37c5bfdadff32d1356e314635cb94",
+    "mediaType": "application/vnd.aseos.isolation-evidence+json",
+    "sizeBytes": 76,
+    "sensitivity": "INTERNAL",
+    "logicalName": "isolation-evidence.json"
+  },
+  "outputArtifactRefs": [
+    {
+      "artifactId": "0198e0a1-0000-7103-8003-000000000103",
+      "sha256": "04976d39027e4947d35829b27d851d58adbd502097202de0fbb505d6d6bcaf67",
+      "mediaType": "text/x-diff",
+      "sizeBytes": 60,
+      "sensitivity": "INTERNAL",
+      "logicalName": "change.diff"
+    }
+  ],
+  "evidenceRefs": [
+    {
+      "subjectType": "Evidence",
+      "subjectId": "0198e0a1-0000-7008-8008-000000000008"
+    }
+  ],
+  "payloadSchema": {
+    "schemaId": "urn:aseos:schema:apply-workspace-change-result:1.0.0",
+    "schemaVersion": "1.0.0",
+    "schemaHash": "7aaf732ecf5839d0b7a0b6fafe859f88725705f75463cc8f17eea0438137e770"
+  },
+  "payloadHash": "3943dcfe78faf1b7c0eaf48eecee301839fa946d1ca72b15ef397f1a340d112e",
+  "payload": {
+    "changeSetId": "0198e0a1-0000-700e-800e-00000000000e",
+    "beforeSnapshotHash": "9220e38f08d4e4102e5f174940b4f6b234e27bcff47fc00257599779ef85ce03",
+    "afterSnapshotHash": "fc85386f42e3c8fe4586786c3bd1992dbbf626949e1f0064ad0b8f1ba3740cdb",
+    "changedPaths": [
+      "target.txt"
+    ]
+  }
 }

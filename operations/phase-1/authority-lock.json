@@ -1,0 +1,250 @@
+{
+  "$schema": "urn:aseos:operation-schema:authority-lock:1.0.0",
+  "schemaVersion": "1.0.0",
+  "lockId": "P1-AUTHORITY-LOCK-1",
+  "architectureBaselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+  "planningSourceCommit": "e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45",
+  "hashPolicy": "SHA256_EXACT_UTF8_LF_FILE_BYTES",
+  "authorityFiles": [
+    {
+      "path": "docs/decisions/ADR-0001-full-rebuild.md",
+      "sha256": "9cbd1911bdf7a489f6d29cdf9ac436d21c759821d87cf6ca917b8193596ff7e8",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0002-node-unit-of-execution.md",
+      "sha256": "85b4049a72bd36c9860d3d270c0f433ff98beb7234f5dc05607d9b117387185e",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0003-durable-authority-model.md",
+      "sha256": "ea6d6d862181f7af729494d95168366ef53ca02a9f6bcc11712f46c8357d9b7c",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0004-github-to-local-boundary.md",
+      "sha256": "d3bb501263740e27e8aa13a9f19afb4ac042133c34fe90dc3eb594aae22c6f72",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0005-modular-monolith-workers.md",
+      "sha256": "9bdca00fd0a622dabb969a8fe6aefdbcd09c72d4ecf79ac09ca3497ebb57f079",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0006-model-is-proposer.md",
+      "sha256": "5f685cb4db498c9fa801d3e3e1e372ee4d524d78a2b07b04d23e1e55f9c35c6d",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0007-typescript-toolchain-baseline.md",
+      "sha256": "818c64838545982818aec1afed849cf3be9b4cf0a0c84be8741e4da5c74a1670",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0008-embedded-persistence-sqlite.md",
+      "sha256": "771b1cb32daa431ee0777baf3439a7acea738a04c26058bc1f09c9266874b803",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0009-local-control-api-protocol.md",
+      "sha256": "83958613fd6b0062b2bddd722b0db665d484ce53eec749192837d93fe8a8a5de",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0010-windows-execution-isolation.md",
+      "sha256": "bb5824d6677b4d6104be748793dcc976242e6e02eb03616918d6d89247512f86",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/decisions/ADR-0011-policy-engine-and-representation.md",
+      "sha256": "f67e192d9cd147bfc5716e15222db2176a33f89e64c5b64c2405230d2438d5e0",
+      "role": "ACCEPTED_ADR",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/roadmap/phase-1-operation-plan.md",
+      "sha256": "55a8cdabbb023ca8c5022aec1720696aafd22fb1ebe7816cbf3286e2b0bc77fa",
+      "role": "OPERATION_PLAN",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/roadmap/phase-1-verification-plan.md",
+      "sha256": "a686535aec159afb761fb43cbdafaf75ab0750c8005e05830428f053cbcf34d0",
+      "role": "VERIFICATION_PLAN",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "docs/roadmap/phase-1-write-scope.md",
+      "sha256": "4444559ac1b8a15d2b91a8e008116ee39c4d7af176b7af83381437b0cf16f3cb",
+      "role": "WRITE_SCOPE",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/authority-lock.schema.json",
+      "sha256": "e6808a83372d53b0a047a2f412e02dc512f154749a6b7ff8a9ac0dcd11a98336",
+      "role": "META_SCHEMA",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/independent-verification-receipt.schema.json",
+      "sha256": "c1be35aaaf666beb558b0865dc1f9538e3e28839085f19c6f0a675c5a664c8a9",
+      "role": "RECEIPT_SCHEMA",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/operation-manifest.schema.json",
+      "sha256": "6d1bb5083d62e0d32182023412b31600ec3cc2ce0a2177c47c8119d5133e2d01",
+      "role": "META_SCHEMA",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/operation.json",
+      "sha256": "157d1c83a798fc433b4bfb6a8b6ed12471c52e5a652e61dfb9532088f01f48dc",
+      "role": "OPERATION_PLAN",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/preimplementation-policy-snapshot.json",
+      "sha256": "4365f6a76d814362213491f1f1b58730a7d978c51400f7f1109d5885681c09ac",
+      "role": "VERIFICATION_POLICY",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/preimplementation-policy-snapshot.schema.json",
+      "sha256": "d336f9eed25e4910c06dbba9e563485b105f74774e1a4f2d35e72d6119a51903",
+      "role": "META_SCHEMA",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/receipt.schema.json",
+      "sha256": "095e163a2dba18c5ae6d7c943546d9bd108e1048519c32efc89aa21e647806b7",
+      "role": "RECEIPT_SCHEMA",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/verification-plan.json",
+      "sha256": "8d0758be1fe9fe8555e7c317bfd5d06b8f1a78120883c9a650d6471782108188",
+      "role": "VERIFICATION_PLAN",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/write-scope.json",
+      "sha256": "8e329a3a19ae70406625baa400472ea1f9b4610e0e7b508413e00c35e4c0d13a",
+      "role": "WRITE_SCOPE",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "operations/phase-1/write-scope.schema.json",
+      "sha256": "03f287ec8b29cff5c2db11d2912148e1d6d7f2b71cf3eafe036d17ff6ee02e87",
+      "role": "META_SCHEMA",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
+      "path": "packages/contracts/examples/first-slice/example-suite.json",
+      "sha256": "fada428e90bd4e8507a3911a8248582f31654dba6f9325363ca14fd3a35b8306",
+      "role": "EXAMPLE_SUITE",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": [
+        "P1-O02"
+      ]
+    },
+    {
+      "path": "packages/contracts/planned-contracts.json",
+      "sha256": "7114f6f2f2495742e0cf9291f464f41c82cda2dcec77abac9e37b9ac324ead9c",
+      "role": "CONTRACT_INVENTORY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": [
+        "P1-O02"
+      ]
+    },
+    {
+      "path": "packages/contracts/schema-inventory.json",
+      "sha256": "3135472b8c1812117c8712b049a8ef6fddd3c1636dda7bafd1289b4c0bb04f56",
+      "role": "CONTRACT_INVENTORY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": [
+        "P1-O02"
+      ]
+    },
+    {
+      "path": "packages/contracts/schema-registry.json",
+      "sha256": "4776c6222e01f6346b95c236b27aeb84e21cf119589fe39a0635903e28a55a25",
+      "role": "SCHEMA_REGISTRY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": [
+        "P1-O02"
+      ]
+    },
+    {
+      "path": "packages/contracts/schemas/meta/example-suite.schema.json",
+      "sha256": "c67b00d3313c3f046ef3a494a32e23ab558cee7a191edd3e64c50f5a30d7befa",
+      "role": "META_SCHEMA",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": [
+        "P1-O02"
+      ]
+    },
+    {
+      "path": "packages/contracts/schemas/meta/schema-inventory.schema.json",
+      "sha256": "74052347ea14cf560076b729f92d3ba08fdee8d3d01789c1a9c161eb04ea84d4",
+      "role": "META_SCHEMA",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": [
+        "P1-O02"
+      ]
+    },
+    {
+      "path": "packages/contracts/schemas/meta/schema-registry.schema.json",
+      "sha256": "0efb80e980c0284d4cf793e4d5b0a053c3d3081dfb7cbbdd02a63657fd1ea977",
+      "role": "META_SCHEMA",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": [
+        "P1-O02"
+      ]
+    }
+  ],
+  "excludedSelfPath": "operations/phase-1/authority-lock.json",
+  "verificationRules": [
+    "EVERY_LISTED_PATH_EXISTS",
+    "EVERY_LISTED_HASH_MATCHES_EXACT_BYTES",
+    "NO_DUPLICATE_PATHS",
+    "SELF_PATH_EXCLUDED_FROM_HASH_SET",
+    "IMMUTABLE_PATHS_UNCHANGED_BY_IMPLEMENTATION",
+    "OPERATION_SCOPED_PATHS_CHANGED_ONLY_BY_ALLOWED_OPERATION"
+  ]
+}

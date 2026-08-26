@@ -1,3 +1,41 @@
 {
-  "schemaVersion":"1.0.0","decisionId":"0198e0a1-0000-7011-8000-000000000011","outcome":"ALLOW_WITH_REQUIREMENTS","policySnapshotId":"0198e0a1-0000-7012-8000-000000000012","policySnapshotHash":"2222222222222222222222222222222222222222222222222222222222222222","inputHash":"3333333333333333333333333333333333333333333333333333333333333333","matchedRuleIds":["fixture-write-low-risk"],"hardInvariantIds":["no-model-authority","no-isolation-downgrade"],"requirements":{"permissionScopes":["workspace.write:fixture/target.txt"],"minimumIsolationLevel":"PROCESS_RESTRICTED","verificationProfileRefs":[{"subjectType":"VerificationProfile","subjectId":"fixture-change-r2","subjectVersion":"1.0.0"}],"timeoutMs":30000,"maxConcurrency":1,"postVerificationRequired":true},"reasonCodes":[],"residualRiskRefs":[{"subjectType":"Risk","subjectId":"process-restricted-not-security-sandbox","subjectVersion":"1.0.0"}],"evaluatedAt":"2026-08-26T08:10:01Z","evaluatorVersion":"1.0.0"
+  "schemaVersion": "1.0.0",
+  "decisionId": "0198e0a1-0000-7009-8009-000000000009",
+  "outcome": "ALLOW_WITH_REQUIREMENTS",
+  "policySnapshotId": "0198e0a1-0000-700a-800a-00000000000a",
+  "policySnapshotHash": "a7b639fbe063cf654de4d9a728bff0c5f44de242bee8f1b7c3e2b1a4b855e2a0",
+  "inputHash": "f277eebed6079a80f91bb0d3659ac3abe2d4688c3b280e74ca77160688ee9a4a",
+  "matchedRuleIds": [
+    "fixture-write-low-risk"
+  ],
+  "hardInvariantIds": [
+    "no-model-authority",
+    "no-isolation-downgrade"
+  ],
+  "requirements": {
+    "permissionScopes": [
+      "workspace.write:fixture/target.txt"
+    ],
+    "minimumIsolationLevel": "PROCESS_RESTRICTED",
+    "verificationProfileRefs": [
+      {
+        "subjectType": "VerificationProfile",
+        "subjectId": "fixture-change-r2",
+        "subjectVersion": "1.0.0"
+      }
+    ],
+    "timeoutMs": 30000,
+    "maxConcurrency": 1,
+    "postVerificationRequired": true
+  },
+  "reasonCodes": [],
+  "residualRiskRefs": [
+    {
+      "subjectType": "Risk",
+      "subjectId": "process-restricted-not-security-sandbox",
+      "subjectVersion": "1.0.0"
+    }
+  ],
+  "evaluatedAt": "2026-08-26T08:10:01Z",
+  "evaluatorVersion": "1.0.0"
 }

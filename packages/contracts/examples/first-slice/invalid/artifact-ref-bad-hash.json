@@ -1,0 +1,8 @@
+{
+  "artifactId": "0198e0a1-0000-7102-8002-000000000102",
+  "sha256": "not-a-hash",
+  "mediaType": "text/plain",
+  "sizeBytes": 17,
+  "sensitivity": "INTERNAL",
+  "logicalName": "desired-content.txt"
+}

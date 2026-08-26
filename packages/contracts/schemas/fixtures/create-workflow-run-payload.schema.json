@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:create-workflow-run-payload:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "CreateWorkflowRunPayload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workflowDefinitionId",
+    "workflowDefinitionVersion",
+    "inputArtifactRef"
+  ],
+  "properties": {
+    "workflowDefinitionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "workflowDefinitionVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "inputArtifactRef": {
+      "$ref": "urn:aseos:schema:artifact-ref:1.0.0"
+    }
+  }
+}
