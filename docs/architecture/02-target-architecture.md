@@ -1,6 +1,6 @@
 # 目标系统架构
 
-状态：`BASELINE DRAFT v0.1`  
+状态：`BASELINE DRAFT v0.2`  
 日期：`2026-08-26`
 
 ## 1. 架构风格
@@ -76,7 +76,7 @@ Control Kernel 不直接调用模型、网络、文件系统或任意工具。
 
 ### 3.3 Execution Plane
 
-所有外部副作用经 `SideEffectTask` 执行。每次调用具备：
+所有外部副作用经 `SideEffectTask` 执行。每次调用至少具备：
 
 ```text
 taskId
@@ -84,17 +84,20 @@ executionId
 idempotencyKey
 capability
 permissionSet
+requiredIsolationLevel
 inputArtifactRefs
 timeout
 resourceBudget
 adapterVersion
 ```
 
-Worker 返回结构化 Result 和 Evidence。Control Kernel 决定如何提交结果，不信任 Worker 自行修改状态。
+Worker 返回结构化 Result、IsolationEvidence 和其他 Evidence。Control Kernel 决定如何提交结果，不信任 Worker 自行修改状态。
+
+`PersistenceWorker` 是 Runtime 内部专用 storage worker thread，只执行已经由 Kernel 决定的持久化 batch；它不是 SideEffect Worker，也不能生成业务 Event 或终态。
 
 ## 4. 核心 bounded contexts
 
-建议的代码边界：
+V1 canonical 代码边界：
 
 ```text
 packages/
@@ -103,14 +106,14 @@ packages/
 ├─ workflow               # definition、run、router、scheduler
 ├─ node-runtime           # node lifecycle、attempt、record
 ├─ context                # context snapshot、budget、provenance
-├─ policy                 # permission、risk、approval、gate
+├─ policy                 # permission、risk、approval、minimum requirements
 ├─ verification           # plan、executor registry、oracle、gate
 ├─ evidence               # artifact、edge、attestation、query
 ├─ learning               # attribution、causal validation、proposal
 ├─ persistence            # journal、projection、migration、unit of work
-├─ adapters               # model/tool/workspace/knowledge implementations
+├─ adapters               # model/tool/workspace/knowledge/isolation implementations
 ├─ observability          # OTel mapping、diagnostics、metrics
-└─ platform               # composition root、config、runtime lifecycle
+└─ platform               # composition root、config、runtime/API lifecycle
 
 apps/
 ├─ cli
@@ -118,7 +121,7 @@ apps/
 └─ worker
 ```
 
-最终目录可在工程 ADR 中细化，但依赖方向不可反转。
+目录细节由 [Repository Blueprint](../engineering/repository-blueprint.md) 约束。调整目录不得改变依赖方向或创建平行语义 owner。
 
 ## 5. 依赖规则
 
@@ -131,9 +134,10 @@ contracts <- domain modules <- application services <- adapters/platform
 - Domain 不依赖 Adapter；
 - Kernel 不依赖具体模型、数据库或测试工具；
 - Adapter 不拥有 Workflow/Node 状态语义；
-- UI/CLI 不直接写数据库；
+- UI/CLI 不直接写数据库或 import Kernel internal；
 - Learning 不直接修改 Kernel；
 - Verification Executor 不决定最终 Gate；
+- Policy Adapter/fake 不得替换 V1 canonical evaluator；
 - projection 不是事实源；
 - cache 不是权威状态；
 - package 之间只通过公开入口依赖，不允许 deep import。
@@ -167,46 +171,66 @@ Event 在提交后不可原地修改。Schema 演进使用 versioned decoder/upc
 
 ### 6.3 Artifact Store
 
-大文本、模型响应、diff、测试报告和二进制结果使用 content-addressed artifact store；数据库只保存 metadata、hash、media type、size、provenance 和引用。
+大文本、模型响应、diff、测试报告和二进制结果使用 content-addressed Artifact Store；数据库只保存 metadata、hash、media type、size、provenance 和引用。
 
 ### 6.4 默认本地存储
 
-V1 目标采用本地嵌入式关系数据库作为默认实现，并提供：
+V1 已按 [ADR-0008](../decisions/ADR-0008-embedded-persistence-sqlite.md) 冻结为：
 
-- transaction；
+```text
+SQLite 3.53.3
++ Node.js 24.19.0 内置 node:sqlite
++ 专用 PersistenceWorker
++ 单一 authoritative database
+```
+
+Event、Command dedup、outbox、inbox、必要 projection checkpoint 与 audit 在同一个 SQLite transaction boundary 内提交。大 Artifact 继续保存在 content-addressed filesystem store。
+
+数据库/driver 细节只存在于 `packages/persistence` internal；Kernel、Domain、public Contract 和 persisted event payload 不得依赖 SQL row、table name 或 `node:sqlite` type。
+
+持久化必须提供：
+
+- transaction 与 optimistic concurrency；
 - WAL/崩溃恢复；
 - migration；
 - backup/restore；
-- integrity check；
+- integrity check/quarantine；
 - append-only 约束；
-- optimistic concurrency。
+- inbox/outbox/idempotency；
+- projection rebuild。
 
-首选实现将在工程 ADR 中锁定，架构不得依赖数据库特有业务逻辑。
+`node:sqlite` 的 Release Candidate 风险由 exact runtime pin、Port 隔离和 Phase 1 qualification Gate 管理；失败只能通过 superseding ADR 改变实现，不允许同一 Release 自动 fallback 到平行 driver。
 
-## 7. 技术基线方向
+## 7. 已接受技术基线
 
-为兼顾可靠性、Agent 生态、开发效率和本地部署，V1 优先采用：
+Phase 1/Release 必须同时符合：
 
-- 单语言严格 TypeScript；
-- 当前受支持的 Node.js Active LTS，并在每个 Release 精确锁定；
-- workspace/monorepo 管理；
+- [ADR-0007](../decisions/ADR-0007-typescript-toolchain-baseline.md)：Node.js `24.19.0`、TypeScript `6.0.3`、pnpm `11.24.0`、ESM-only、`tsc -b`；
+- [ADR-0008](../decisions/ADR-0008-embedded-persistence-sqlite.md)：SQLite + `node:sqlite` + PersistenceWorker；
+- [ADR-0009](../decisions/ADR-0009-local-control-api-protocol.md)：`127.0.0.1` HTTP/JSON、token auth、OpenAPI 3.1.1、durable operation 与 SSE；
+- [ADR-0010](../decisions/ADR-0010-windows-execution-isolation.md)：四级 IsolationLevel、capability proof 与禁止 silent downgrade；
+- [ADR-0011](../decisions/ADR-0011-policy-engine-and-representation.md)：内置 deterministic Policy evaluator、declarative PolicySet 与 fail closed。
+
+跨系统基础规则：
+
 - JSON Schema 2020-12 作为跨边界 schema 基线；
 - RFC 3339 UTC 时间；
-- 可排序 execution/event identity（默认候选 UUIDv7）；
+- execution/event identity 必须可稳定排序并显式版本化，具体格式在 Schema inventory 冻结；
 - SHA-256 content identity；
-- OpenTelemetry-compatible trace/log/metric correlation；
+- OpenTelemetry-compatible trace/log/metric correlation，但 telemetry 非权威；
 - 自包含 Windows-first Release，不要求用户安装开发工具链。
 
-最终工具与库版本必须通过工程 ADR 和 spike 验证，不能仅因流行度进入 Core。
+具体 supporting library patch 版本由 `pnpm-lock.yaml` 和 `toolchain/toolchain.json` 唯一记录。不得在文档、workflow 或脚本中维护另一套漂移版本清单。
 
 ## 8. 关键运行链
 
 ```text
 User/API Command
-  -> Command validation
-  -> Policy pre-check
+  -> Control API schema/auth/idempotency validation
+  -> Policy evaluation
   -> deterministic transition
   -> events + side-effect outbox atomic commit
+  -> isolation capability selection/proof
   -> worker executes effect
   -> result + evidence returned
   -> result command validated
@@ -218,7 +242,7 @@ User/API Command
 
 ## 9. 可扩展性
 
-扩展点只允许出现在明确 Port：
+V1 允许外部实现的明确 Port：
 
 - `ModelProviderPort`；
 - `ToolExecutorPort`；
@@ -227,7 +251,9 @@ User/API Command
 - `VerificationExecutorPort`；
 - `ArtifactStorePort`；
 - `SecretProviderPort`；
-- `PolicyEnginePort`；
+- `IsolationProviderPort`；
 - `TelemetryExporterPort`。
 
-每个 Adapter 必须声明 capability、version、permissions、health 和 Contract conformance。无法满足 Contract 时必须 fail closed，而不是静默降级。
+每个 Adapter 必须声明 capability、version、permissions、health、supported Contract range，并用 conformance/probe Evidence 支持其声明。无法满足 Contract 时必须 fail closed，而不是静默降级。
+
+`PolicyEnginePort` 保留为 application boundary、fake 和 conformance seam；V1 的唯一 authority implementation 是 `packages/policy` 内置 evaluator。不得通过 configuration、plugin 或 Adapter 把第三方 evaluator 变成平行 Policy owner。未来替换必须由 superseding ADR 证明 deterministic snapshot、requirements、replay 和 fail-closed 等价。

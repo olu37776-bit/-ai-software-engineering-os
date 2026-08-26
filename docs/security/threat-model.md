@@ -1,6 +1,6 @@
 # Threat Model
 
-状态：`BASELINE DRAFT v0.1`  
+状态：`BASELINE DRAFT v0.2`  
 日期：`2026-08-26`
 
 ## 1. Scope
@@ -40,7 +40,8 @@
 GitHub build/release -> downloaded artifact
 Launcher -> Runtime
 Runtime -> local storage
-Runtime -> Worker process/sandbox
+Runtime -> PersistenceWorker
+Runtime -> SideEffect Worker/sandbox
 Runtime -> Model provider
 Runtime -> Tool/external process
 Runtime -> Workspace
@@ -73,7 +74,7 @@ Learning Proposal -> Policy/Human/Release Gate
 
 ### T4 Unauthorized File/Command/Network Access
 
-控制：capability deny by default；path allowlist；restricted Worker；environment cleanup；network policy；preview；post-verification。
+控制：capability deny by default；typed executable/argv；path allowlist 与 reparse-point validation；受治理 IsolationLevel；environment cleanup；network deny/allowlist；preview；post-verification。具体等级、保证和禁止 silent downgrade 见 [ADR-0010](../decisions/ADR-0010-windows-execution-isolation.md)。
 
 ### T5 Secret Exfiltration
 
@@ -97,7 +98,9 @@ Learning Proposal -> Policy/Human/Release Gate
 
 ### T10 Local Control API Abuse
 
-控制：loopback only；local auth token/OS protection；CSRF/origin policy where UI exists；rate limit；schema validation；audit；no direct DB endpoint。
+控制：只绑定 `127.0.0.1` ephemeral port；startup-rotated bearer token；user-only token ACL；Host/Origin/CORS policy；rate limit；schema/idempotency validation；audit；无 direct DB/generic command endpoint。具体协议见 [ADR-0009](../decisions/ADR-0009-local-control-api-protocol.md)。
+
+Residual risk：该机制不声称抵御已经控制同一 OS user 的恶意进程；未来若将其列为正式防御边界，需要更强 identity-bound transport 的 superseding ADR。
 
 ### T11 Supply-chain Artifact Substitution
 
@@ -121,7 +124,7 @@ Learning Proposal -> Policy/Human/Release Gate
 2. model/Adapter cannot commit authority state；
 3. no high-risk effect without explicit capability and required approval；
 4. no secret in normal model Context/log/Evidence plaintext；
-5. unsupported sandbox/Policy condition fails closed；
+5. unsupported isolation/Policy condition fails closed；
 6. release activation only after integrity verification；
 7. audit persistence failure blocks governed high-risk writes；
 8. duplicate messages cannot produce duplicate committed outcome；
@@ -135,22 +138,36 @@ Learning Proposal -> Policy/Human/Release Gate
 | Prompt injection | curated indirect injection scenarios + capability denial |
 | Hallucinated success | fake success claim/exit-0-but-wrong Oracle tests |
 | Duplicate effects | crash boundary + duplicate delivery property tests |
-| Path/command injection | fuzzing + Windows path cases |
+| Path/command injection | fuzzing + Windows path/reparse-point cases |
 | Secret leakage | canary secret tests + log/artifact scanner |
 | Journal tampering | corruption fixture + startup quarantine |
 | Approval replay | expiry/scope/input-change tests |
 | Supply chain | provenance/checksum verification on clean machine |
 | Learning corruption | counterexample/contradicting Evidence tests |
-| Local API | external bind/auth/rate tests |
+| Local API | external bind/auth/Host/Origin/idempotency/rate tests |
+| Isolation | capability probe + no-downward-fallback + escape/access fixtures |
+| Policy | default-deny/deny-overrides/indeterminate/hard-invariant property tests |
 
-## 8. Open Risks Requiring ADR/Spike
+## 8. Decisions Closed, Implementation Evidence Open
 
-- Windows native sandbox guarantees and fallback levels；
-- local Control API authentication mechanism；
-- event/artifact cryptographic integrity depth；
+以下原设计风险已有唯一 ADR，不再允许实现自行选择，但尚需 Phase 1/6 验证：
+
+- Windows isolation levels/fallback：ADR-0010；
+- Local Control API transport/authentication：ADR-0009；
+- Policy representation/evaluator/fail-closed：ADR-0011；
+- authority storage/driver/transaction boundary：ADR-0008；
+- exact runtime/toolchain/supply-chain baseline：ADR-0007。
+
+这些状态是 `DECIDED_NOT_VERIFIED`。Qualification 失败必须形成 Evidence、remediation 和必要的 superseding ADR；不得自动 fallback 到平行实现。
+
+## 9. Open Design Risks Requiring Future ADR
+
+- Event/Artifact cryptographic integrity depth；
 - third-party Adapter loading policy；
 - local Evidence encryption/key management；
 - provider data-retention verification；
-- signed Human Approval identity in single-user local mode。
+- signed Human Approval identity in single-user local mode；
+- stronger same-user protection for Local Control API；
+- production sandbox provider/image provenance and patch policy。
 
-Open risk 不能被默认实现静默决定。
+Open risk 不能被默认实现静默决定，也不能用“已有 hash/token/sandbox 名称”虚假表示风险已经关闭。
