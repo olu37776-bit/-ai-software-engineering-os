@@ -1,0 +1,63 @@
+name: M0 independent preimplementation verification
+
+on:
+  push:
+    branches:
+      - remediation/m0-preimplementation-governance
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: m0-independent-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: "${{ github.event_name != 'push' || github.event.head_commit.message != 'chore: run M0 remediation build' }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Clone immutable subject
+        env:
+          TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          git clone "https://github.com/${GITHUB_REPOSITORY}.git" repo
+          cd repo
+          git checkout --detach "${TARGET_SHA}"
+
+      - name: Install pinned independent verifier
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input \
+            "jsonschema==4.25.1" \
+            "referencing==0.36.2"
+
+      - name: Run read-only verification
+        working-directory: repo
+        env:
+          TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          BEFORE="$(git status --porcelain)"
+          python scripts/governance/verify_m0.py \
+            --base e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45 \
+            --subject "${TARGET_SHA}" \
+            | tee /tmp/m0-independent-report.json
+          AFTER="$(git status --porcelain)"
+          test "${BEFORE}" = "${AFTER}"
+          {
+            echo "## M0 independent preimplementation verification"
+            echo
+            echo "- Subject: \`${TARGET_SHA}\`"
+            echo "- Result: **PASS**"
+            echo "- Remediation performed: **false**"
+            echo "- M0 final Gate created: **false**"
+            echo "- Phase 1 started: **false**"
+          } >> "${GITHUB_STEP_SUMMARY}"
