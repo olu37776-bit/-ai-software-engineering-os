@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:side-effect-task-envelope:1.0.0",
+  "title": "SideEffectTaskEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "taskId",
+    "executionId",
+    "attempt",
+    "correlationId",
+    "idempotencyKey",
+    "effectScope",
+    "capability",
+    "permissionSet",
+    "requiredIsolationLevel",
+    "inputArtifactRefs",
+    "timeoutMs",
+    "resourceBudget",
+    "adapterContractVersion",
+    "payloadSchema",
+    "payloadHash",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "taskId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "executionId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "correlationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "causationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "idempotencyKey": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/idempotencyKey"
+    },
+    "effectScope": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "capability": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "permissionSet": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    },
+    "requiredIsolationLevel": {
+      "enum": [
+        "PROCESS_RESTRICTED",
+        "OS_SANDBOXED",
+        "CONTAINER_ISOLATED",
+        "REMOTE_ISOLATED"
+      ]
+    },
+    "inputArtifactRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:artifact-ref:1.0.0"
+      },
+      "uniqueItems": true
+    },
+    "timeoutMs": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400000
+    },
+    "resourceBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxMemoryBytes",
+        "maxProcessCount",
+        "maxOutputBytes"
+      ],
+      "properties": {
+        "maxCpuTimeMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxMemoryBytes": {
+          "type": "integer",
+          "minimum": 1048576
+        },
+        "maxProcessCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
+        },
+        "maxOutputBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "networkMode": {
+          "enum": [
+            "DENY",
+            "ALLOWLIST"
+          ]
+        }
+      }
+    },
+    "adapterContractVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "payloadSchema": {
+      "$ref": "urn:aseos:schema:schema-ref:1.0.0"
+    },
+    "payloadHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

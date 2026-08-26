@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:typed-error:1.0.0",
+  "title": "TypedError",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "code",
+    "category",
+    "message",
+    "retryability"
+  ],
+  "properties": {
+    "code": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+    },
+    "category": {
+      "enum": [
+        "VALIDATION",
+        "CONFLICT",
+        "POLICY",
+        "AUTHENTICATION",
+        "AUTHORIZATION",
+        "UNAVAILABLE",
+        "TIMEOUT",
+        "CANCELLED",
+        "INFRASTRUCTURE",
+        "INVARIANT",
+        "SECURITY",
+        "RECONCILIATION"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "retryability": {
+      "enum": [
+        "RETRYABLE",
+        "NON_RETRYABLE",
+        "CONDITIONAL",
+        "UNKNOWN"
+      ]
+    },
+    "subjectRef": {
+      "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+    },
+    "causationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "remediation": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "details": {
+      "type": "object",
+      "description": "Redacted structured details only.",
+      "additionalProperties": true
+    }
+  }
+}

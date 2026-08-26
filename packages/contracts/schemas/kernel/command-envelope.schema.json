@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:command-envelope:1.0.0",
+  "title": "CommandEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "commandId",
+    "commandType",
+    "aggregateType",
+    "aggregateId",
+    "expectedVersion",
+    "issuedAt",
+    "actor",
+    "correlationId",
+    "idempotencyKey",
+    "payloadSchema",
+    "payloadHash",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "commandId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "commandType": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/canonicalTypeName"
+    },
+    "aggregateType": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/canonicalTypeName"
+    },
+    "aggregateId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "expectedVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor": {
+      "$ref": "urn:aseos:schema:actor-ref:1.0.0"
+    },
+    "causationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "correlationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "idempotencyKey": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/idempotencyKey"
+    },
+    "payloadSchema": {
+      "$ref": "urn:aseos:schema:schema-ref:1.0.0"
+    },
+    "payloadHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "requestId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:schema-ref:1.0.0",
+  "title": "SchemaRef",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaId",
+    "schemaVersion",
+    "schemaHash"
+  ],
+  "properties": {
+    "schemaId": {
+      "type": "string",
+      "format": "uri",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/schemaVersion"
+    },
+    "schemaHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    }
+  }
+}

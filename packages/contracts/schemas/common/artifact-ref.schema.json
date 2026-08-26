@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:artifact-ref:1.0.0",
+  "title": "ArtifactRef",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifactId",
+    "sha256",
+    "mediaType",
+    "sizeBytes",
+    "sensitivity"
+  ],
+  "properties": {
+    "artifactId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "sha256": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "mediaType": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 255
+    },
+    "sizeBytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sensitivity": {
+      "enum": [
+        "PUBLIC",
+        "INTERNAL",
+        "CONFIDENTIAL",
+        "SECRET"
+      ]
+    },
+    "logicalName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:actor-ref:1.0.0",
+  "title": "ActorRef",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "actorType",
+    "actorId"
+  ],
+  "properties": {
+    "actorType": {
+      "enum": [
+        "HUMAN",
+        "AGENT",
+        "SYSTEM",
+        "WORKER"
+      ]
+    },
+    "actorId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "actorVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  }
+}

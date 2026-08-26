@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:subject-ref:1.0.0",
+  "title": "SubjectRef",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "subjectType",
+    "subjectId"
+  ],
+  "properties": {
+    "subjectType": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/canonicalTypeName"
+    },
+    "subjectId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "subjectVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  }
+}

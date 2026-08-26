@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:side-effect-result-envelope:1.0.0",
+  "title": "SideEffectResultEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "resultId",
+    "taskId",
+    "executionId",
+    "attempt",
+    "correlationId",
+    "outcome",
+    "startedAt",
+    "completedAt",
+    "adapterId",
+    "adapterVersion",
+    "selectedIsolationLevel",
+    "isolationEvidenceRef",
+    "outputArtifactRefs",
+    "evidenceRefs",
+    "payloadSchema",
+    "payloadHash",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "resultId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "taskId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "executionId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "correlationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "outcome": {
+      "enum": [
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED",
+        "TIMED_OUT",
+        "UNKNOWN_REQUIRES_RECONCILIATION"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "adapterId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "adapterVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "selectedIsolationLevel": {
+      "enum": [
+        "PROCESS_RESTRICTED",
+        "OS_SANDBOXED",
+        "CONTAINER_ISOLATED",
+        "REMOTE_ISOLATED"
+      ]
+    },
+    "isolationEvidenceRef": {
+      "$ref": "urn:aseos:schema:artifact-ref:1.0.0"
+    },
+    "outputArtifactRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:artifact-ref:1.0.0"
+      },
+      "uniqueItems": true
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "error": {
+      "$ref": "urn:aseos:schema:typed-error:1.0.0"
+    },
+    "payloadSchema": {
+      "$ref": "urn:aseos:schema:schema-ref:1.0.0"
+    },
+    "payloadHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "SUCCEEDED"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "error"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "FAILED",
+              "TIMED_OUT",
+              "UNKNOWN_REQUIRES_RECONCILIATION"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "required": [
+          "error"
+        ]
+      }
+    }
+  ]
+}
