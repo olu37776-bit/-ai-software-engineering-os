@@ -1,0 +1,99 @@
+name: M0 governance remediation bootstrap
+
+on:
+  push:
+    branches:
+      - remediation/m0-governance-hardening
+    paths:
+      - .github/workflows/m0-remediate.yml
+      - .github/m0-bootstrap/**
+
+permissions:
+  contents: write
+
+concurrency:
+  group: m0-governance-remediation
+  cancel-in-progress: false
+
+jobs:
+  remediate:
+    if: "${{ github.event.head_commit.message == 'chore: bootstrap M0 remediation' }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Clone remediation branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git clone --branch "${GITHUB_REF_NAME}" --single-branch "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" repo
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Materialize audited remediation scripts
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, json, lzma
+          from pathlib import Path
+          encoded = ''.join(p.read_text(encoding='ascii').strip() for p in sorted(Path('.github/m0-bootstrap').glob('*.txt')))
+          files = json.loads(lzma.decompress(base64.b64decode(encoded)).decode('utf-8'))
+          for rel, content in files.items():
+              path = Path(rel)
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_text(content, encoding='utf-8', newline='\n')
+          PY
+          python -m py_compile scripts/m0/bootstrap_remediation.py scripts/m0/verify_preimplementation.py
+
+      - name: Install pinned verifier dependencies
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input \
+            "jsonschema==4.25.1" \
+            "referencing==0.36.2"
+
+      - name: Generate visible remediation and run implementation verification
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          python scripts/m0/bootstrap_remediation.py
+          python scripts/m0/verify_preimplementation.py \
+            --mode implementation \
+            --output operations/phase-1/evidence/m0-implementation-verification.json
+
+      - name: Commit remediation implementation
+        id: implementation
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          git add -A
+          git diff --cached --check
+          git commit -m "fix: harden M0 contract and Phase 1 governance baseline"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Finalize structured remediation receipt
+        working-directory: repo
+        env:
+          IMPLEMENTATION_COMMIT: ${{ steps.implementation.outputs.commit }}
+        run: |
+          set -euo pipefail
+          python scripts/m0/bootstrap_remediation.py --finalize-receipt "${IMPLEMENTATION_COMMIT}"
+          git add operations/phase-1/remediation-receipt.json
+          git diff --cached --check
+          git commit -m "chore: record M0 remediation receipt"
+
+      - name: Re-run implementation verification on immutable final head
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          python scripts/m0/verify_preimplementation.py --mode implementation
+          test -z "$(git status --porcelain)"
+
+      - name: Push remediation commits
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          git push origin "HEAD:${GITHUB_REF}"
