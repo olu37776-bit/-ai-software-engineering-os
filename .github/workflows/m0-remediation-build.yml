@@ -1,0 +1,84 @@
+name: M0 remediation builder
+
+on:
+  push:
+    branches:
+      - remediation/m0-preimplementation-governance
+    paths:
+      - .github/workflows/m0-remediation-build.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: m0-remediation-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: "${{ github.event.head_commit.message == 'chore: run M0 remediation build' }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Clone remediation branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git clone --branch "${GITHUB_REF_NAME}" --single-branch "https://github.com/${GITHUB_REPOSITORY}.git" repo
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+      - name: Materialize governed remediation tools
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          cat .m0-payload/part-*.b64 > /tmp/m0-payload.b64
+          base64 --decode /tmp/m0-payload.b64 > /tmp/m0-payload.tar.gz
+          tar -xzf /tmp/m0-payload.tar.gz
+          python -m py_compile scripts/governance/build_m0_remediation.py scripts/governance/verify_m0.py
+
+      - name: Install pinned verification dependencies
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-input \
+            "jsonschema==4.25.1" "referencing==0.36.2"
+
+      - name: Generate remediation assets
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          python scripts/governance/build_m0_remediation.py
+          git add -A
+          git commit -m "fix: complete M0 governance remediation"
+
+      - name: Execute implementation self-check
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          SUBJECT="$(git rev-parse HEAD)"
+          python scripts/governance/verify_m0.py \
+            --base e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45 \
+            --subject "${SUBJECT}" \
+            --write-report operations/phase-1/remediation-self-check.json
+          git add operations/phase-1/remediation-self-check.json
+          git commit -m "test: record M0 remediation self-check"
+
+      - name: Re-run verification on immutable final commit
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          SUBJECT="$(git rev-parse HEAD)"
+          python scripts/governance/verify_m0.py \
+            --base e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45 \
+            --subject "${SUBJECT}"
+          test -z "$(git status --porcelain)"
+
+      - name: Push remediation commits
+        working-directory: repo
+        run: |
+          set -euo pipefail
+          git push origin "HEAD:${GITHUB_REF_NAME}"
