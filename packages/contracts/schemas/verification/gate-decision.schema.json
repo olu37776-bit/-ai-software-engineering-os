@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:gate-decision:1.0.0",
+  "title": "GateDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "decisionId",
+    "planId",
+    "subjectRef",
+    "outcome",
+    "policySnapshotId",
+    "assessmentRefs",
+    "evidenceRefs",
+    "missingEvidence",
+    "riskAcceptanceRefs",
+    "reasonCodes",
+    "decidedAt",
+    "evaluatorVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "decisionId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "planId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "subjectRef": {
+      "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+    },
+    "outcome": {
+      "enum": [
+        "PASS",
+        "PASS_WITH_RISK_ACCEPTANCE",
+        "REWORK",
+        "BLOCK",
+        "REQUIRE_HUMAN_APPROVAL",
+        "FAIL_TERMINAL",
+        "INCONCLUSIVE"
+      ]
+    },
+    "policySnapshotId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "assessmentRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+      },
+      "uniqueItems": true
+    },
+    "missingEvidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    },
+    "riskAcceptanceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+      },
+      "uniqueItems": true
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+      },
+      "uniqueItems": true
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evaluatorVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "PASS"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceRefs": {
+            "minItems": 1
+          },
+          "missingEvidence": {
+            "maxItems": 0
+          },
+          "riskAcceptanceRefs": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "PASS_WITH_RISK_ACCEPTANCE"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceRefs": {
+            "minItems": 1
+          },
+          "riskAcceptanceRefs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "REWORK",
+              "BLOCK",
+              "REQUIRE_HUMAN_APPROVAL",
+              "FAIL_TERMINAL",
+              "INCONCLUSIVE"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reasonCodes": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

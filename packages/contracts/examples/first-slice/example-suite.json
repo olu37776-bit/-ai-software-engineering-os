@@ -1,0 +1,20 @@
+{
+  "suiteId": "first-slice-contract-examples",
+  "suiteVersion": "1.0.0",
+  "baselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+  "cases": [
+    {"caseId":"command-valid","schemaId":"urn:aseos:schema:command-envelope:1.0.0","path":"packages/contracts/examples/first-slice/valid/create-workflow-run.command.json","expected":"VALID"},
+    {"caseId":"command-missing-idempotency","schemaId":"urn:aseos:schema:command-envelope:1.0.0","path":"packages/contracts/examples/first-slice/invalid/missing-idempotency.command.json","expected":"INVALID"},
+    {"caseId":"event-valid","schemaId":"urn:aseos:schema:domain-event-envelope:1.0.0","path":"packages/contracts/examples/first-slice/valid/workflow-run-created.event.json","expected":"VALID"},
+    {"caseId":"task-valid","schemaId":"urn:aseos:schema:side-effect-task-envelope:1.0.0","path":"packages/contracts/examples/first-slice/valid/apply-change.side-effect-task.json","expected":"VALID"},
+    {"caseId":"task-host-unrestricted","schemaId":"urn:aseos:schema:side-effect-task-envelope:1.0.0","path":"packages/contracts/examples/first-slice/invalid/host-unrestricted.side-effect-task.json","expected":"INVALID"},
+    {"caseId":"result-valid","schemaId":"urn:aseos:schema:side-effect-result-envelope:1.0.0","path":"packages/contracts/examples/first-slice/valid/apply-change.side-effect-result.json","expected":"VALID"},
+    {"caseId":"result-failed-no-error","schemaId":"urn:aseos:schema:side-effect-result-envelope:1.0.0","path":"packages/contracts/examples/first-slice/invalid/failed-result-without-error.json","expected":"INVALID"},
+    {"caseId":"evidence-valid","schemaId":"urn:aseos:schema:evidence-metadata:1.0.0","path":"packages/contracts/examples/first-slice/valid/exact-content.evidence.json","expected":"VALID"},
+    {"caseId":"policy-valid","schemaId":"urn:aseos:schema:policy-decision:1.0.0","path":"packages/contracts/examples/first-slice/valid/fixture-policy-decision.json","expected":"VALID"},
+    {"caseId":"policy-indeterminate-no-reason","schemaId":"urn:aseos:schema:policy-decision:1.0.0","path":"packages/contracts/examples/first-slice/invalid/indeterminate-without-reason.policy-decision.json","expected":"INVALID"},
+    {"caseId":"verification-plan-valid","schemaId":"urn:aseos:schema:verification-plan:1.0.0","path":"packages/contracts/examples/first-slice/valid/fixture-verification-plan.json","expected":"VALID"},
+    {"caseId":"gate-valid","schemaId":"urn:aseos:schema:gate-decision:1.0.0","path":"packages/contracts/examples/first-slice/valid/fixture-gate-decision.json","expected":"VALID"},
+    {"caseId":"gate-pass-without-evidence","schemaId":"urn:aseos:schema:gate-decision:1.0.0","path":"packages/contracts/examples/first-slice/invalid/pass-without-evidence.gate-decision.json","expected":"INVALID"}
+  ]
+}

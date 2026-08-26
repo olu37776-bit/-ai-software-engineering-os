@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:policy-decision:1.0.0",
+  "title": "PolicyDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "decisionId",
+    "outcome",
+    "policySnapshotId",
+    "policySnapshotHash",
+    "inputHash",
+    "matchedRuleIds",
+    "hardInvariantIds",
+    "requirements",
+    "reasonCodes",
+    "residualRiskRefs",
+    "evaluatedAt",
+    "evaluatorVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "decisionId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "outcome": {
+      "enum": [
+        "ALLOW",
+        "ALLOW_WITH_REQUIREMENTS",
+        "DENY",
+        "INDETERMINATE"
+      ]
+    },
+    "policySnapshotId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "policySnapshotHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "inputHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "matchedRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    },
+    "hardInvariantIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "permissionScopes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "uniqueItems": true
+        },
+        "minimumIsolationLevel": {
+          "enum": [
+            "PROCESS_RESTRICTED",
+            "OS_SANDBOXED",
+            "CONTAINER_ISOLATED",
+            "REMOTE_ISOLATED"
+          ]
+        },
+        "verificationProfileRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+          },
+          "uniqueItems": true
+        },
+        "approvalProfileRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+          },
+          "uniqueItems": true
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxConcurrency": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "postVerificationRequired": {
+          "type": "boolean"
+        }
+      }
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+      },
+      "uniqueItems": true
+    },
+    "residualRiskRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+      },
+      "uniqueItems": true
+    },
+    "evaluatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evaluatorVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "ALLOW_WITH_REQUIREMENTS"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "requirements": {
+            "minProperties": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "DENY",
+              "INDETERMINATE"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reasonCodes": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

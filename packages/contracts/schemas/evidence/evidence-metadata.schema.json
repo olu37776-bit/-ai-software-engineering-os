@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:evidence-metadata:1.0.0",
+  "title": "EvidenceMetadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceId",
+    "evidenceType",
+    "subjectRefs",
+    "producer",
+    "producerVersion",
+    "createdAt",
+    "contentRef",
+    "contentHash",
+    "mediaType",
+    "trustLevel",
+    "collectionMethod",
+    "sensitivity"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "evidenceId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "evidenceType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "subjectRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "producer": {
+      "$ref": "urn:aseos:schema:actor-ref:1.0.0"
+    },
+    "producerVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "executionRef": {
+      "$ref": "urn:aseos:schema:node-execution-identity:1.0.0"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "contentRef": {
+      "$ref": "urn:aseos:schema:artifact-ref:1.0.0"
+    },
+    "contentHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "mediaType": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 255
+    },
+    "trustLevel": {
+      "enum": [
+        "SYSTEM_AUTHORITY",
+        "SIGNED_POLICY",
+        "HUMAN_APPROVAL",
+        "VERIFIED_CONTRACT",
+        "TRUSTED_LOCAL_SOURCE",
+        "UNTRUSTED_CONTENT",
+        "MODEL_PROPOSAL"
+      ]
+    },
+    "collectionMethod": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "sensitivity": {
+      "enum": [
+        "PUBLIC",
+        "INTERNAL",
+        "CONFIDENTIAL",
+        "SECRET"
+      ]
+    }
+  }
+}

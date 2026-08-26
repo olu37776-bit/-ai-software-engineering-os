@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:verification-plan:1.0.0",
+  "title": "VerificationPlan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "planId",
+    "subjectRef",
+    "contractRefs",
+    "riskClass",
+    "plannerId",
+    "plannerVersion",
+    "policySnapshotId",
+    "createdAt",
+    "steps",
+    "risksCovered",
+    "risksNotCovered"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "planId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "subjectRef": {
+      "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+    },
+    "contractRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:schema-ref:1.0.0"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "riskClass": {
+      "enum": [
+        "R0",
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    "plannerId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "plannerVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "policySnapshotId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stepId",
+          "kind",
+          "required",
+          "dependsOn",
+          "executorCapability",
+          "inputRefs",
+          "expectedEvidenceTypes",
+          "timeoutMs",
+          "retryPolicy"
+        ],
+        "properties": {
+          "stepId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "kind": {
+            "enum": [
+              "SCHEMA",
+              "STATIC",
+              "COMPILE",
+              "UNIT",
+              "CONTRACT",
+              "INTEGRATION",
+              "STARTUP_HEALTH",
+              "E2E",
+              "ORACLE",
+              "PROPERTY",
+              "MUTATION",
+              "FUZZ",
+              "ARCHITECTURE",
+              "SECURITY",
+              "REPLAY",
+              "MIGRATION",
+              "ROLLBACK",
+              "HUMAN_REVIEW"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "uniqueItems": true
+          },
+          "executorCapability": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "inputRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+            },
+            "uniqueItems": true
+          },
+          "expectedEvidenceTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "retryPolicy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "maxAttempts",
+              "retryableErrorCodes"
+            ],
+            "properties": {
+              "maxAttempts": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "retryableErrorCodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+                },
+                "uniqueItems": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "risksCovered": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "risksNotCovered": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:node-execution-identity:1.0.0",
+  "title": "NodeExecutionIdentity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "runId",
+    "nodeId",
+    "executionId",
+    "attempt"
+  ],
+  "properties": {
+    "runId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "nodeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "executionId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

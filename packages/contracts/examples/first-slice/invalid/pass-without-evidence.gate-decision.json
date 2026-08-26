@@ -1,0 +1,3 @@
+{
+  "schemaVersion":"1.0.0","decisionId":"0198e0a1-0000-7015-8000-000000000015","planId":"0198e0a1-0000-7013-8000-000000000013","subjectRef":{"subjectType":"NodeExecution","subjectId":"0198e0a1-0000-7008-8000-000000000008"},"outcome":"PASS","policySnapshotId":"0198e0a1-0000-7012-8000-000000000012","assessmentRefs":[{"subjectType":"VerificationAssessment","subjectId":"0198e0a1-0000-7016-8000-000000000016"}],"evidenceRefs":[],"missingEvidence":["ExactContentOracleResult"],"riskAcceptanceRefs":[],"reasonCodes":[],"decidedAt":"2026-08-26T08:10:05Z","evaluatorVersion":"1.0.0"
+}
