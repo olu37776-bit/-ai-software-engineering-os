@@ -12,7 +12,7 @@
 4. **Implementation Plan**：定义阶段、WRITE_SCOPE、验证与退出条件；
 5. **Implementation Note / Evidence**：记录真实实现与验证事实。
 
-发生冲突时不得凭“代码已经存在”自动判定代码正确。必须确定哪一层权威已被批准，并通过 ADR 或 remediation 恢复一致性。
+Review 验证这些层是否一致，但不产生高于 ADR/Contract 的新语义。发生冲突时不得凭“代码已经存在”自动判定代码正确；必须通过 ADR 或 remediation 恢复一致性。
 
 ## 2. 状态词
 
@@ -24,7 +24,7 @@
 - `SUPERSEDED`：已被新文档替代，不得继续作为当前权威；
 - `RETIRED`：语义或能力已正式退役。
 
-实现 Agent 不得自行把状态从 `IMPLEMENTED` 改为 `VERIFIED`。
+实现 Agent 不得自行把状态从 `IMPLEMENTED` 改为 `VERIFIED`。架构文档 Review 通过也不代表尚不存在的代码已验证。
 
 ## 3. 目录
 
@@ -35,6 +35,7 @@ docs/
 ├─ decisions/      Architecture Decision Records
 ├─ engineering/    工程结构、实现标准和质量门禁
 ├─ operations/     本地运行、配置、发布、升级与恢复
+├─ reviews/        独立架构/实现审查与 Gate 结论
 ├─ roadmap/        分阶段建设计划与状态
 ├─ security/       Threat model 与安全验证
 ├─ references/     标准、规范与外部先验
@@ -50,6 +51,20 @@ docs/
 3. [目标系统架构](architecture/02-target-architecture.md)
 4. [完整能力地图](architecture/09-capability-map.md)
 5. [Canonical Glossary](glossary.md)
+
+### 验证架构决策
+
+1. [ADR Index](decisions/README.md)
+2. [Phase 0 Independent Architecture Review](reviews/phase-0-independent-architecture-review.md)
+3. [当前状态](roadmap/progress-status.md)
+
+当前五项实现级基线：
+
+- [Toolchain](decisions/ADR-0007-typescript-toolchain-baseline.md)
+- [Persistence](decisions/ADR-0008-embedded-persistence-sqlite.md)
+- [Local Control API](decisions/ADR-0009-local-control-api-protocol.md)
+- [Windows Isolation](decisions/ADR-0010-windows-execution-isolation.md)
+- [Policy Engine](decisions/ADR-0011-policy-engine-and-representation.md)
 
 ### 理解运行事实链
 
@@ -67,14 +82,14 @@ docs/
 4. [质量门禁](engineering/quality-gates.md)
 5. [非功能需求](architecture/11-nonfunctional-requirements.md)
 6. [Threat Model](security/threat-model.md)
+7. [重建路线图](roadmap/rebuild-roadmap.md)
 
 ### 准备本地运行
 
 1. [本地资源与知识库接入](architecture/07-local-integrations.md)
 2. [Release 与本地运行协议](operations/release-local-runtime.md)
 3. [配置 Contract](operations/configuration-contract.md)
-4. [重建路线图](roadmap/rebuild-roadmap.md)
-5. [当前状态](roadmap/progress-status.md)
+4. [当前状态](roadmap/progress-status.md)
 
 ## 5. 文档变更规则
 
@@ -85,7 +100,8 @@ docs/
 - 状态转换所有权；
 - 并发、幂等、重试、取消或恢复语义；
 - Verification Gate 或 Human Approval Gate；
-- 本地数据边界与外部适配器权限；
+- 本地 Control API、数据边界与外部适配器权限；
+- Policy representation/evaluation 或 execution isolation；
 - persisted schema / public contract 的不兼容变更；
 - Release、升级与回滚协议；
 - 安全边界和默认权限。
@@ -105,4 +121,4 @@ Architecture Decision
 
 禁止出现多个文件、多个 use case handler 或多个 Adapter 分别复制同一核心业务语义。共享语义必须有一个 canonical owner，其他路径只能委托或使用其公开 Contract。
 
-本文档状态：`BASELINE DRAFT v0.2`
+本文档状态：`BASELINE DRAFT v0.3`
