@@ -97,3 +97,5 @@ jobs:
         run: |
           set -euo pipefail
           git push origin "HEAD:${GITHUB_REF}"
+
+# bootstrap revision: 2
