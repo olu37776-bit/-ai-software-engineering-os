@@ -3,6 +3,7 @@ name: M0 independent preimplementation verification
 on:
   push:
     branches:
+      - main
       - remediation/m0-preimplementation-governance
   pull_request:
     branches:
