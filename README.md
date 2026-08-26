@@ -52,20 +52,42 @@ AI Software Engineering OS
 
 ## 文档入口
 
-- [文档索引](docs/README.md)
+### 总览
+
+- [文档体系与权威层级](docs/README.md)
+- [Canonical Glossary](docs/glossary.md)
+- [完整能力地图](docs/architecture/09-capability-map.md)
+- [当前建设状态](docs/roadmap/progress-status.md)
+
+### 架构
+
 - [当前已确认的架构知识](docs/architecture/00-current-knowledge-baseline.md)
-- [框架宪章](docs/architecture/01-framework-charter.md)
+- [Framework Charter](docs/architecture/01-framework-charter.md)
 - [目标系统架构](docs/architecture/02-target-architecture.md)
 - [耐久执行模型](docs/architecture/03-durable-execution-model.md)
 - [Context、Contract 与 Policy](docs/architecture/04-context-contract-policy.md)
-- [验证与证据体系](docs/architecture/05-verification-and-evidence.md)
-- [学习与反馈体系](docs/architecture/06-learning-and-feedback.md)
+- [Verification System 与 Evidence](docs/architecture/05-verification-and-evidence.md)
+- [Learning & Feedback](docs/architecture/06-learning-and-feedback.md)
 - [本地资源与知识库接入](docs/architecture/07-local-integrations.md)
 - [安全与治理](docs/architecture/08-security-and-governance.md)
+- [第一条可执行 Vertical Slice](docs/architecture/10-first-vertical-slice.md)
+- [非功能需求](docs/architecture/11-nonfunctional-requirements.md)
+
+### Contract、工程与运行
+
+- [核心 Contract Catalog](docs/contracts/core-contract-catalog.md)
+- [Repository Blueprint](docs/engineering/repository-blueprint.md)
+- [工程实现标准](docs/engineering/engineering-standard.md)
+- [质量门禁标准](docs/engineering/quality-gates.md)
+- [Release 与本地运行协议](docs/operations/release-local-runtime.md)
+- [配置 Contract](docs/operations/configuration-contract.md)
+- [Threat Model](docs/security/threat-model.md)
+- [完整重建路线图](docs/roadmap/rebuild-roadmap.md)
+- [Architecture Decision Records](docs/decisions/README.md)
 
 ## 当前阶段
 
-当前阶段只冻结权威目标、系统边界、不变量、核心数据模型和建设顺序。任何生产代码必须在文档基线通过一致性审查后开始。
+当前处于 `Phase 0 — Architecture Authority`。目标是完成文档一致性审查、核心 Schema inventory、工具链/存储 ADR 和第一阶段 WRITE_SCOPE，然后才开始生产代码。
 
-本文档状态：`BASELINE DRAFT v0.1`  
+本文档状态：`BASELINE DRAFT v0.2`  
 基线日期：`2026-08-26`

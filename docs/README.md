@@ -26,32 +26,55 @@
 
 实现 Agent 不得自行把状态从 `IMPLEMENTED` 改为 `VERIFIED`。
 
-## 3. 当前目录
+## 3. 目录
 
 ```text
 docs/
 ├─ architecture/   目标架构、运行模型和跨子系统边界
+├─ contracts/      核心对象、Schema inventory 与 public Contract
 ├─ decisions/      Architecture Decision Records
-├─ engineering/    工程标准、代码结构和质量门禁
-├─ operations/     本地运行、发布、升级、恢复与诊断
-├─ roadmap/        分阶段建设计划与退出门禁
+├─ engineering/    工程结构、实现标准和质量门禁
+├─ operations/     本地运行、配置、发布、升级与恢复
+├─ roadmap/        分阶段建设计划与状态
+├─ security/       Threat model 与安全验证
 ├─ references/     标准、规范与外部先验
 └─ glossary.md     Canonical terms 与 aliases
 ```
 
-## 4. 第一批架构文档
+## 4. 阅读顺序
 
-| 文档 | 作用 |
-|---|---|
-| `00-current-knowledge-baseline.md` | 固化从现有工作中已验证的决策和负面经验 |
-| `01-framework-charter.md` | 定义使命、范围、成功标准与非目标 |
-| `02-target-architecture.md` | 定义完整系统的组件、依赖方向和运行拓扑 |
-| `03-durable-execution-model.md` | 定义 Workflow、Node、Command、Event、恢复与并发 |
-| `04-context-contract-policy.md` | 定义 Context、Contract、Skill、Policy 与审批 |
-| `05-verification-and-evidence.md` | 定义 Verification System、Evidence 和门禁 |
-| `06-learning-and-feedback.md` | 定义归因、因果验证、LearningProposal 和 LearningGate |
-| `07-local-integrations.md` | 定义模型、工具、Workspace 和知识库接入边界 |
-| `08-security-and-governance.md` | 定义威胁模型、权限、隔离、供应链和治理 |
+### 建立全局理解
+
+1. [当前知识基线](architecture/00-current-knowledge-baseline.md)
+2. [Framework Charter](architecture/01-framework-charter.md)
+3. [目标系统架构](architecture/02-target-architecture.md)
+4. [完整能力地图](architecture/09-capability-map.md)
+5. [Canonical Glossary](glossary.md)
+
+### 理解运行事实链
+
+1. [耐久执行模型](architecture/03-durable-execution-model.md)
+2. [Context、Contract 与 Policy](architecture/04-context-contract-policy.md)
+3. [Verification 与 Evidence](architecture/05-verification-and-evidence.md)
+4. [Learning & Feedback](architecture/06-learning-and-feedback.md)
+5. [第一条 Vertical Slice](architecture/10-first-vertical-slice.md)
+
+### 准备实现
+
+1. [核心 Contract Catalog](contracts/core-contract-catalog.md)
+2. [Repository Blueprint](engineering/repository-blueprint.md)
+3. [工程实现标准](engineering/engineering-standard.md)
+4. [质量门禁](engineering/quality-gates.md)
+5. [非功能需求](architecture/11-nonfunctional-requirements.md)
+6. [Threat Model](security/threat-model.md)
+
+### 准备本地运行
+
+1. [本地资源与知识库接入](architecture/07-local-integrations.md)
+2. [Release 与本地运行协议](operations/release-local-runtime.md)
+3. [配置 Contract](operations/configuration-contract.md)
+4. [重建路线图](roadmap/rebuild-roadmap.md)
+5. [当前状态](roadmap/progress-status.md)
 
 ## 5. 文档变更规则
 
@@ -80,6 +103,6 @@ Architecture Decision
         -> Release Manifest
 ```
 
-禁止出现多个文件、多个 operation 或多个 adapter 分别复制同一核心业务语义。共享语义必须有一个 canonical owner，其他路径只能委托或使用其公开 Contract。
+禁止出现多个文件、多个 use case handler 或多个 Adapter 分别复制同一核心业务语义。共享语义必须有一个 canonical owner，其他路径只能委托或使用其公开 Contract。
 
-本文档状态：`BASELINE DRAFT v0.1`
+本文档状态：`BASELINE DRAFT v0.2`
