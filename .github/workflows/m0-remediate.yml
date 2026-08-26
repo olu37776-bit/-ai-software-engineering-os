@@ -1,12 +1,6 @@
 name: M0 governance remediation bootstrap
 
-on:
-  push:
-    branches:
-      - remediation/m0-governance-hardening
-    paths:
-      - .github/workflows/m0-remediate.yml
-      - .github/m0-bootstrap/**
+on: push
 
 permissions:
   contents: write
@@ -97,5 +91,3 @@ jobs:
         run: |
           set -euo pipefail
           git push origin "HEAD:${GITHUB_REF}"
-
-# bootstrap revision: 2
