@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:operation-schema:write-scope:1.0.0",
+  "title": "ASEOS Operation Write Scope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "scopeId",
+    "baselineCommit",
+    "enforcementMode",
+    "globalAllowedPaths",
+    "globalDeniedPaths",
+    "prohibitedSemantics",
+    "operations",
+    "scopeExpansion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "scopeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baselineCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "enforcementMode": {
+      "const": "DENY_BY_DEFAULT"
+    },
+    "globalAllowedPaths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "globalDeniedPaths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "prohibitedSemantics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "allowedPaths",
+          "deniedPaths",
+          "semanticConstraints",
+          "requiredOutputs"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "pattern": "^P1-O[0-9]{2}$"
+          },
+          "allowedPaths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "deniedPaths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "semanticConstraints": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "requiredOutputs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "scopeExpansion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mustStop",
+        "requires",
+        "forbiddenBehavior"
+      ],
+      "properties": {
+        "mustStop": {
+          "const": true
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "forbiddenBehavior": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "$schema": {
+      "const": "urn:aseos:operation-schema:write-scope:1.0.0"
+    }
+  }
+}

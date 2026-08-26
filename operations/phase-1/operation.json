@@ -1,0 +1,254 @@
+{
+  "$schema": "urn:aseos:operation-schema:operation-manifest:1.0.0",
+  "schemaVersion": "1.0.0",
+  "operationId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+  "title": "Phase 1 — Executable Repository Foundation",
+  "baselineCommit": "f4f10855f5bfcce2d56ff4b110f271b4d7cfd116",
+  "riskClass": "R4",
+  "status": "PLANNED",
+  "authorityRefs": [
+    "docs/architecture/01-framework-charter.md",
+    "docs/architecture/02-target-architecture.md",
+    "docs/architecture/03-durable-execution-model.md",
+    "docs/architecture/08-security-and-governance.md",
+    "docs/architecture/11-nonfunctional-requirements.md",
+    "docs/contracts/core-contract-catalog.md",
+    "packages/contracts/schema-inventory.json",
+    "docs/engineering/repository-blueprint.md",
+    "docs/engineering/engineering-standard.md",
+    "docs/engineering/quality-gates.md",
+    "docs/reviews/phase-0-independent-architecture-review.md",
+    "docs/decisions/ADR-0007-typescript-toolchain-baseline.md",
+    "docs/decisions/ADR-0008-embedded-persistence-sqlite.md",
+    "docs/decisions/ADR-0009-local-control-api-protocol.md",
+    "docs/decisions/ADR-0010-windows-execution-isolation.md",
+    "docs/decisions/ADR-0011-policy-engine-and-representation.md"
+  ],
+  "prerequisites": [
+    "Phase 0 independent architecture review is PASS_WITH_RESIDUAL_WORK with no open P0/P1 ownership conflict.",
+    "ADR-0001 through ADR-0011 are ACCEPTED.",
+    "The machine-readable schema inventory and first-slice examples exist and validate.",
+    "Implementation begins from the exact baseline commit or an explicitly rebased approved baseline.",
+    "Every suboperation uses a short-lived branch/PR and its own Evidence."
+  ],
+  "objectives": [
+    "Create a reproducible strict TypeScript monorepo that builds from a clean checkout.",
+    "Establish runtime-validated Contract and schema infrastructure.",
+    "Enforce package dependency direction and unique authority ownership.",
+    "Qualify the accepted toolchain, node:sqlite, Control API, PROCESS_RESTRICTED and Policy decisions.",
+    "Produce a self-contained Windows-first qualification artifact and release evidence.",
+    "Provide a repository foundation on which Phase 2 can implement the durable Kernel without hidden technical decisions."
+  ],
+  "nonGoals": [
+    "Do not implement production Workflow, Node Runtime, Router, Scheduler or terminal transitions.",
+    "Do not implement production Verification System, EvidenceGraph or Learning runtime.",
+    "Do not connect real models, tools, GBrain or private Workspaces.",
+    "Do not implement OS_SANDBOXED, Human Approval lifecycle or remote execution.",
+    "Do not claim a production-ready installer or complete Framework.",
+    "Do not migrate or copy old local Framework source."
+  ],
+  "suboperations": [
+    {
+      "operationId": "P1-O01",
+      "title": "Toolchain and reproducible monorepo foundation",
+      "riskClass": "R3",
+      "dependsOn": [],
+      "writeScopeOperationId": "P1-O01",
+      "outputs": [
+        "Exact toolchain manifest and frozen lockfile",
+        "Strict ESM project-reference build",
+        "Windows/Linux clean-build Evidence"
+      ],
+      "gateStepIds": [
+        "P1-V01-PREFLIGHT",
+        "P1-V02-TOOLCHAIN"
+      ]
+    },
+    {
+      "operationId": "P1-O02",
+      "title": "Machine-readable Contract system foundation",
+      "riskClass": "R3",
+      "dependsOn": [
+        "P1-O01"
+      ],
+      "writeScopeOperationId": "P1-O02",
+      "outputs": [
+        "Schema registry and runtime validator",
+        "Inventory/example validation",
+        "Schema/type consistency harness"
+      ],
+      "gateStepIds": [
+        "P1-V03-CONTRACTS"
+      ]
+    },
+    {
+      "operationId": "P1-O03",
+      "title": "Architecture dependency and semantic-owner enforcement",
+      "riskClass": "R3",
+      "dependsOn": [
+        "P1-O01",
+        "P1-O02"
+      ],
+      "writeScopeOperationId": "P1-O03",
+      "outputs": [
+        "Machine-checkable package DAG",
+        "Public-entry/deep-import/cycle checks",
+        "Duplicate semantic-owner check"
+      ],
+      "gateStepIds": [
+        "P1-V04-ARCHITECTURE"
+      ]
+    },
+    {
+      "operationId": "P1-O04",
+      "title": "Deterministic Policy compiler and evaluator qualification",
+      "riskClass": "R4",
+      "dependsOn": [
+        "P1-O02",
+        "P1-O03"
+      ],
+      "writeScopeOperationId": "P1-O04",
+      "outputs": [
+        "Policy schemas and restricted compiler",
+        "Canonical JSON/hash fixtures",
+        "Fail-closed evaluator skeleton and Evidence"
+      ],
+      "gateStepIds": [
+        "P1-V05-POLICY"
+      ]
+    },
+    {
+      "operationId": "P1-O05",
+      "title": "SQLite/node:sqlite authority-storage qualification",
+      "riskClass": "R4",
+      "dependsOn": [
+        "P1-O01",
+        "P1-O02",
+        "P1-O03"
+      ],
+      "writeScopeOperationId": "P1-O05",
+      "outputs": [
+        "PersistenceWorker qualification implementation",
+        "Crash/transaction/recovery Evidence",
+        "Backup/corruption/performance Evidence"
+      ],
+      "gateStepIds": [
+        "P1-V06-PERSISTENCE"
+      ]
+    },
+    {
+      "operationId": "P1-O06",
+      "title": "Authenticated loopback Control API and lifecycle qualification",
+      "riskClass": "R4",
+      "dependsOn": [
+        "P1-O01",
+        "P1-O02",
+        "P1-O03"
+      ],
+      "writeScopeOperationId": "P1-O06",
+      "outputs": [
+        "OpenAPI 3.1.1 baseline",
+        "Runtime discovery/token lifecycle",
+        "CLI public-client acceptance"
+      ],
+      "gateStepIds": [
+        "P1-V07-CONTROL-API"
+      ]
+    },
+    {
+      "operationId": "P1-O07",
+      "title": "Windows PROCESS_RESTRICTED worker qualification",
+      "riskClass": "R4",
+      "dependsOn": [
+        "P1-O01",
+        "P1-O02",
+        "P1-O03",
+        "P1-O04"
+      ],
+      "writeScopeOperationId": "P1-O07",
+      "outputs": [
+        "Capability probe and IsolationEvidence",
+        "Job Object process-tree lifecycle",
+        "No-downgrade/path/environment Evidence"
+      ],
+      "gateStepIds": [
+        "P1-V08-ISOLATION"
+      ]
+    },
+    {
+      "operationId": "P1-O08",
+      "title": "Self-contained qualification release and supply-chain baseline",
+      "riskClass": "R4",
+      "dependsOn": [
+        "P1-O01",
+        "P1-O02",
+        "P1-O03",
+        "P1-O05",
+        "P1-O06",
+        "P1-O07"
+      ],
+      "writeScopeOperationId": "P1-O08",
+      "outputs": [
+        "Windows qualification artifact",
+        "Release manifest/checksum/SBOM/provenance",
+        "Clean-machine startup Evidence"
+      ],
+      "gateStepIds": [
+        "P1-V09-PACKAGING"
+      ]
+    },
+    {
+      "operationId": "P1-O09",
+      "title": "Integrated Phase 1 verification handoff",
+      "riskClass": "R4",
+      "dependsOn": [
+        "P1-O01",
+        "P1-O02",
+        "P1-O03",
+        "P1-O04",
+        "P1-O05",
+        "P1-O06",
+        "P1-O07",
+        "P1-O08"
+      ],
+      "writeScopeOperationId": "P1-O09",
+      "outputs": [
+        "Structured implementation receipt",
+        "Evidence index and known gaps",
+        "Independent-verification input bundle"
+      ],
+      "gateStepIds": [
+        "P1-V10-INTEGRATED-GATE"
+      ]
+    }
+  ],
+  "writeScopeRef": "operations/phase-1/write-scope.json",
+  "verificationPlanRef": "operations/phase-1/verification-plan.json",
+  "receiptSchemaRef": "operations/phase-1/receipt.schema.json",
+  "stopConditions": [
+    "An accepted ADR cannot be implemented as specified or qualification contradicts its safety/correctness claims.",
+    "Any required change falls outside the current operation WRITE_SCOPE.",
+    "A second authority implementation, fallback driver/transport/evaluator or silent isolation downgrade appears necessary.",
+    "A public or persisted Contract has ambiguous owner, incompatible fields or cannot be runtime-validated.",
+    "A required R4 verification step is unavailable, skipped or inconclusive.",
+    "Secrets/private local data would need to enter the repository or GitHub workflow.",
+    "Clean Windows/Linux build, local API exposure control or process-tree containment cannot be demonstrated.",
+    "Repository baseline changes concurrently and invalidates Evidence or path scope."
+  ],
+  "completionCriteria": [
+    "All P1-O01 through P1-O09 outputs exist and their required verification steps have Evidence.",
+    "The repository builds and validates from a clean checkout with the exact accepted toolchain.",
+    "Architecture checks prevent dependency inversion, deep imports, cycles and duplicate authority ownership.",
+    "All accepted ADR qualification obligations are either PASS or explicitly BLOCKED; no unauthorized fallback is used.",
+    "A self-contained Windows qualification artifact starts without local development tools and does not write outside its test data root.",
+    "The implementation receipt validates against receipt.schema.json and declares at most IMPLEMENTED.",
+    "An independent verifier can reproduce the Gate using public scripts and recorded environment facts."
+  ],
+  "declarationRules": [
+    "The implementation Agent may declare IMPLEMENTED, PARTIAL or BLOCKED.",
+    "The implementation Agent must not declare VERIFIED.",
+    "Each suboperation records actual commands, environment, commit, results, Evidence and known gaps.",
+    "Skipped, unavailable and inconclusive results remain visible and cannot be converted to PASS.",
+    "Independent verification occurs after implementation on an immutable commit without remediation in the same pass."
+  ]
+}

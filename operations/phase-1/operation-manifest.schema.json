@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:operation-schema:operation-manifest:1.0.0",
+  "title": "ASEOS Operation Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "operationId",
+    "title",
+    "baselineCommit",
+    "riskClass",
+    "status",
+    "authorityRefs",
+    "prerequisites",
+    "objectives",
+    "nonGoals",
+    "suboperations",
+    "writeScopeRef",
+    "verificationPlanRef",
+    "receiptSchemaRef",
+    "stopConditions",
+    "completionCriteria",
+    "declarationRules"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "urn:aseos:operation-schema:operation-manifest:1.0.0"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "operationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baselineCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "riskClass": {
+      "enum": [
+        "R0",
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    "status": {
+      "enum": [
+        "PLANNED",
+        "IN_PROGRESS",
+        "IMPLEMENTED",
+        "PARTIAL",
+        "BLOCKED",
+        "VERIFIED",
+        "RETIRED"
+      ]
+    },
+    "authorityRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "objectives": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "nonGoals": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "suboperations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operationId",
+          "title",
+          "riskClass",
+          "dependsOn",
+          "writeScopeOperationId",
+          "outputs",
+          "gateStepIds"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "pattern": "^P1-O[0-9]{2}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "riskClass": {
+            "enum": [
+              "R1",
+              "R2",
+              "R3",
+              "R4"
+            ]
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^P1-O[0-9]{2}$"
+            },
+            "uniqueItems": true
+          },
+          "writeScopeOperationId": {
+            "type": "string",
+            "pattern": "^P1-O[0-9]{2}$"
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "gateStepIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^P1-V[0-9]{2}-.+$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "writeScopeRef": {
+      "type": "string",
+      "const": "operations/phase-1/write-scope.json"
+    },
+    "verificationPlanRef": {
+      "type": "string",
+      "const": "operations/phase-1/verification-plan.json"
+    },
+    "receiptSchemaRef": {
+      "type": "string",
+      "const": "operations/phase-1/receipt.schema.json"
+    },
+    "stopConditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "completionCriteria": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "declarationRules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}
