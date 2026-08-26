@@ -113,3 +113,5 @@ jobs:
         working-directory: repo
         run: |
           python -c 'import json,os,pathlib; r=json.loads(pathlib.Path("m0-independent-preimplementation-report.json").read_text()); s="# M0 Independent Preimplementation Verification\n\n- Decision: **{}**\n- Subject commit: `{}`\n- Subject tree: `{}`\n- Required checks: {}\n".format(r["decision"],r["subjectCommit"],r["subjectTree"],len(r["checks"])); pathlib.Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8").write(s)'
+
+# execution revision: 1
