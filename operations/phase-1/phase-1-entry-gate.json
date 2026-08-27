@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.0.0",
+  "gateId": "PHASE1-ENTRY-GATE",
+  "gateType": "PHASE_ENTRY",
+  "decision": "PASS",
+  "decidedAt": "2026-08-27T12:00:00+08:00",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "m0GateCommit": "ac5245d16d20c2679c03bdb2cb7c3cb9bf31ef39",
+    "m0ApprovedArchitectureCommit": "3b01e905f6a638d0aa64e7e2e50e39414c35fb45",
+    "rulesetId": 21648824,
+    "rulesetName": "phase-1-main-protection"
+  },
+  "preconditions": {
+    "phase0ArchitectureAuthority": "VERIFIED_COMPLETE",
+    "m0ArchitectureBaselineGate": "PASS",
+    "repositoryProtection": "PASS",
+    "requiredStatusCheck": "verify",
+    "requiredStatusCheckProvider": "GitHub Actions",
+    "requiredStatusCheckIntegrationId": 15368,
+    "pullRequestRequired": true,
+    "strictUpToDateBeforeMerge": true,
+    "bypassListEmpty": true,
+    "forcePushBlocked": true,
+    "branchDeletionBlocked": true
+  },
+  "repositoryProtectionEvidence": {
+    "rulesetEnforcement": "active",
+    "target": "~DEFAULT_BRANCH",
+    "mainProtected": true,
+    "requiredApprovingReviewCount": 0,
+    "requiredReviewThreadResolution": false,
+    "conversationResolutionClassification": "NON_BLOCKING_HARDENING",
+    "issueRef": 4,
+    "issueStatus": "CLOSED_COMPLETED"
+  },
+  "authorization": {
+    "phase1Entry": "AUTHORIZED",
+    "phase1StatusAfterGateMerge": "READY_TO_START",
+    "firstAuthorizedOperation": "P1-O01",
+    "firstAuthorizedOperationTitle": "Toolchain and reproducible monorepo foundation",
+    "implementationBasePolicy": "USE_PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE",
+    "productionRuntimeScope": "NOT_AUTHORIZED_IN_P1-O01"
+  },
+  "constraints": [
+    "operations/phase-1/operation.json and the Authority Lock remain immutable.",
+    "P1-O01 must use its frozen WRITE_SCOPE and VerificationPlan.",
+    "P1-O01 may create only the repository/toolchain foundation outputs authorized by the Phase 1 plan.",
+    "No production Workflow, Node Runtime, Router, Verification System, EvidenceGraph, Learning runtime, real model adapter or GBrain adapter is authorized by this Gate.",
+    "Implementation Agent may declare at most IMPLEMENTED; VERIFIED requires independent verification.",
+    "Every merge into main must satisfy the repository ruleset and required verify check."
+  ],
+  "evidenceRefs": [
+    "operations/m0/architecture-baseline-gate.json",
+    "docs/reviews/m0-architecture-baseline-verified.md",
+    "docs/roadmap/progress-status.md",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/4",
+    "https://api.github.com/repos/olu37776-bit/-ai-software-engineering-os/rulesets/21648824",
+    "https://api.github.com/repos/olu37776-bit/-ai-software-engineering-os/branches/main"
+  ],
+  "nextAction": {
+    "afterThisGateIsMergedToProtectedMain": [
+      "Create short-lived branch phase-1/p1-o01-toolchain-foundation from the protected main Gate commit.",
+      "Create a P1-O01 execution record without modifying locked operation authority files.",
+      "Implement only P1-O01 WRITE_SCOPE outputs.",
+      "Submit a PR and require verify plus P1-O01 qualification Evidence before merge."
+    ]
+  }
+}
