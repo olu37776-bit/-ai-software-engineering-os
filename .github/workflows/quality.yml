@@ -51,6 +51,14 @@ jobs:
       - name: Verify actual toolchain versions
         run: pnpm run verify:versions
 
+      - name: Verify operation-aware Phase 1 scope
+        env:
+          PHASE1_SCOPE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          PHASE1_SCOPE_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          PHASE1_SCOPE_EVENT: ${{ github.event_name }}
+          PHASE1_SCOPE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: pnpm run verify:scope
+
       - name: Quality baseline
         run: pnpm run quality
 

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-TRANSITION-SCOPE-2026-08-28-01",
+  "executionType": "PHASE_1_TRANSITION_REMEDIATION",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Operation-aware WRITE_SCOPE transition before P1-O02",
+  "riskClass": "R3",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-08-28T10:00:00Z",
+  "completedAt": "2026-08-28T10:07:00Z",
+  "implementationBranch": "phase-1/issue-11-transition-remediation",
+  "baseCommit": "6bc651f7db0dc979b63cdafbc6d4747fdd26f8e9",
+  "trackingIssue": 11,
+  "authorityRefs": [
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/authority-lock.json"
+  ],
+  "purpose": [
+    "Remove the P1-O01 hard-code from root Phase 1 WRITE_SCOPE validation.",
+    "Select P1-O01 through P1-O09 deterministically from frozen operation metadata and an execution record.",
+    "Keep DENY_BY_DEFAULT, Authority Lock and fail-closed behavior intact."
+  ],
+  "p1O02StartGate": {
+    "status": "BLOCKED_PENDING_INDEPENDENT_VERIFICATION",
+    "releaseCondition": "Issue #11 independent verification Gate is PASS on protected main",
+    "requiredGatePath": "operations/phase-1/evidence/o01/p1-transition-scope-independent-gate.json",
+    "productionOrContractImplementationAuthorized": false
+  },
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "p1O01VerifiedCapabilityChanged": false,
+    "p1O02Started": false,
+    "productionRuntimeChanged": false
+  },
+  "qualifiedImplementationCommit": "158e23e662744bff6e210d50160787c88b469aab",
+  "qualifiedImplementationTree": "d91163759a2f62be9604d6718fcd2bc2823cdb56",
+  "implementationCommits": [
+    {
+      "sha": "158e23e662744bff6e210d50160787c88b469aab",
+      "message": "fix: make Phase 1 scope validation operation-aware"
+    }
+  ],
+  "verification": [
+    {
+      "stepId": "P1-V00-M0-AUTHORIZATION",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-transition-scope-remediation.json"
+    },
+    {
+      "stepId": "P1-V01-PREFLIGHT",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-transition-scope-remediation.json"
+    },
+    {
+      "stepId": "P1-V02-TOOLCHAIN",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-transition-scope-remediation.json"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-transition-scope-remediation.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/12",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33162033043",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33162032993"
+  ],
+  "remainingGaps": [
+    "Issue #11 independent verification and protected-main post-merge qualification remain pending.",
+    "P1-O02 remains blocked until independent verification passes after merge."
+  ]
+}
