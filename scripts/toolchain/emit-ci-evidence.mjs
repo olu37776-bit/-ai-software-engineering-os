@@ -1,4 +1,4 @@
-import { reportAndExit, run, sha256File } from "./lib.mjs";
+import { reportAndExit, run, sha256Utf8LfFile } from "./lib.mjs";
 
 reportAndExit({
   schemaVersion: "1.0.0",
@@ -14,6 +14,6 @@ reportAndExit({
     runnerImage: process.env.ImageOS ?? "local",
     runnerImageVersion: process.env.ImageVersion ?? "local",
   },
-  lockfileSha256: await sha256File("pnpm-lock.yaml"),
+  lockfileSha256: await sha256Utf8LfFile("pnpm-lock.yaml"),
   authorityBuild: "pnpm exec tsc -b tsconfig.build.json --pretty false",
 });

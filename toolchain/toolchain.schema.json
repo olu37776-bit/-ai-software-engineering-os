@@ -58,6 +58,7 @@
       "required": [
         "lockfileVersion",
         "lockfileSha256",
+        "lockfileHashPolicy",
         "frozenInstallCommand",
         "dependencyBuildPolicy",
         "dependencyBuildAllowlist",
@@ -70,6 +71,7 @@
           "type": "string",
           "pattern": "^[0-9a-f]{64}$"
         },
+        "lockfileHashPolicy": { "const": "SHA256_UTF8_LF_NORMALIZED" },
         "frozenInstallCommand": { "const": "pnpm install --frozen-lockfile" },
         "dependencyBuildPolicy": { "const": "DENY_UNLESS_ALLOW_BUILDS" },
         "dependencyBuildAllowlist": {

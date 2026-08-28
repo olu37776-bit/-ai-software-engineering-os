@@ -4,6 +4,8 @@ import { resolve } from "node:path";
 import Ajv2020 from "ajv/dist/2020.js";
 import { describe, expect, test } from "vitest";
 
+import { sha256Utf8Lf } from "../../../scripts/toolchain/lib.mjs";
+
 const root = resolve(import.meta.dirname, "../../..");
 
 async function readJson(path) {
@@ -32,5 +34,17 @@ describe("exact toolchain manifest", () => {
       moduleResolution: "NodeNext",
       target: "ES2025",
     });
+  });
+
+  test("uses one canonical lockfile hash for LF and CRLF checkouts", async () => {
+    const [manifest, lockfile] = await Promise.all([
+      readJson("toolchain/toolchain.json"),
+      readFile(resolve(root, "pnpm-lock.yaml"), "utf8"),
+    ]);
+    expect(manifest.packageManager.lockfileHashPolicy).toBe("SHA256_UTF8_LF_NORMALIZED");
+    expect(sha256Utf8Lf(lockfile)).toBe(manifest.packageManager.lockfileSha256);
+    expect(sha256Utf8Lf(lockfile.replace(/\n/g, "\r\n"))).toBe(
+      manifest.packageManager.lockfileSha256,
+    );
   });
 });

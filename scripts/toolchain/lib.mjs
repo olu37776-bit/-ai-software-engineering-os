@@ -10,9 +10,14 @@ export async function readJson(relativePath) {
   return JSON.parse(await readFile(resolve(repositoryRoot, relativePath), "utf8"));
 }
 
-export async function sha256File(relativePath) {
-  const contents = await readFile(resolve(repositoryRoot, relativePath));
-  return createHash("sha256").update(contents).digest("hex");
+export function sha256Utf8Lf(contents) {
+  const normalized = contents.replace(/\r\n?/g, "\n");
+  return createHash("sha256").update(normalized, "utf8").digest("hex");
+}
+
+export async function sha256Utf8LfFile(relativePath) {
+  const contents = await readFile(resolve(repositoryRoot, relativePath), "utf8");
+  return sha256Utf8Lf(contents);
 }
 
 export function run(command, args, options = {}) {

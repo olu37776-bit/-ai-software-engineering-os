@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { readJson, reportAndExit, repositoryRoot, run, sha256File } from "./lib.mjs";
+import { readJson, reportAndExit, repositoryRoot, run, sha256Utf8LfFile } from "./lib.mjs";
 
 const packageManifest = await readJson("package.json");
 const toolchain = await readJson("toolchain/toolchain.json");
@@ -30,7 +30,7 @@ for (const [name, version] of Object.entries(packageManifest.devDependencies)) {
   assert.match(version, /^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$/, `${name} is not exact`);
 }
 
-const lockfileSha256 = await sha256File("pnpm-lock.yaml");
+const lockfileSha256 = await sha256Utf8LfFile("pnpm-lock.yaml");
 assert.equal(lockfileSha256, toolchain.packageManager.lockfileSha256);
 
 reportAndExit({
