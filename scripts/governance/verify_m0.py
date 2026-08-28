@@ -443,11 +443,19 @@ def verify_governance(documents: dict[pathlib.Path, Any], ids: dict[str, pathlib
         raise AssertionError(f"Operation Gate coverage mismatch missing={expected_steps-gate_refs} extra={gate_refs-expected_steps}")
     return {"operations": len(op_items), "steps": len(step_items), "gateCoverage": len(gate_refs)}
 
-def verify_write_scope(documents: dict[pathlib.Path, Any]) -> dict[str, int]:
+def verify_write_scope(documents: dict[pathlib.Path, Any]) -> dict[str, Any]:
     scope = documents[ROOT / "operations/phase-1/write-scope.json"]
     global_allowed = scope["globalAllowedPathGlobs"]
     global_denied = scope["globalDeniedPathGlobs"]
-    required_global = {"tests/fault-injection/**", "tests/security/**"}
+    if scope["enforcementMode"] != "DENY_BY_DEFAULT":
+        raise AssertionError("WRITE_SCOPE enforcementMode is not DENY_BY_DEFAULT")
+    if "operations/phase-1/**" in global_allowed:
+        raise AssertionError("WRITE_SCOPE contains prohibited broad Phase 1 operations allow")
+    required_global = {
+        "tests/fault-injection/**",
+        "tests/security/**",
+        "operations/phase-1/executions/**",
+    }
     for required in required_global:
         if not any(pattern_covers(parent, required) for parent in global_allowed):
             raise AssertionError(f"Global scope missing {required}")
@@ -455,8 +463,25 @@ def verify_write_scope(documents: dict[pathlib.Path, Any]) -> dict[str, int]:
     expected_ops = {f"P1-O{i:02d}" for i in range(1, 10)}
     if set(operations) != expected_ops:
         raise AssertionError("WRITE_SCOPE operation set mismatch")
+    execution_globs = {
+        oid: f"operations/phase-1/executions/{oid.lower()}-*.json"
+        for oid in expected_ops
+    }
+    receipt_path = "operations/phase-1/implementation-receipt.json"
     total_paths = 0
     for oid, item in operations.items():
+        expected_execution_glob = execution_globs[oid]
+        if expected_execution_glob not in item["allowedPathGlobs"]:
+            raise AssertionError(f"{oid} missing exact execution-record scope: {expected_execution_glob}")
+        foreign_execution_globs = sorted(
+            glob for owner, glob in execution_globs.items()
+            if owner != oid and glob in item["allowedPathGlobs"]
+        )
+        if foreign_execution_globs:
+            raise AssertionError(f"{oid} owns foreign execution-record scope: {foreign_execution_globs}")
+        owns_receipt = receipt_path in item["allowedPathGlobs"]
+        if owns_receipt != (oid == "P1-O09"):
+            raise AssertionError(f"{oid} integrated receipt ownership is invalid")
         for path_glob in item["allowedPathGlobs"]:
             total_paths += 1
             if not any(pattern_covers(parent, path_glob) for parent in global_allowed):
@@ -474,7 +499,13 @@ def verify_write_scope(documents: dict[pathlib.Path, Any]) -> dict[str, int]:
         for path_rule in item["allowedPathGlobs"] + item["deniedPathGlobs"]:
             if " " in path_rule and not any(ch in path_rule for ch in "*?["):
                 raise AssertionError(f"{oid} probable semantic prose mixed into path rules: {path_rule}")
-    return {"operations": len(operations), "allowedPathGlobs": total_paths}
+    return {
+        "operations": len(operations),
+        "allowedPathGlobs": total_paths,
+        "executionRecordScopes": len(execution_globs),
+        "denyByDefault": True,
+        "integratedReceiptOwner": "P1-O09",
+    }
 
 def verify_authority_lock(documents: dict[pathlib.Path, Any], registry: Registry) -> dict[str, int]:
     lock_path = ROOT / "operations/phase-1/authority-lock.json"

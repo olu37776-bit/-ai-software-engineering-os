@@ -1,6 +1,6 @@
 # Phase 1 WRITE_SCOPE
 
-状态：`BASELINE — PENDING M0 FINAL GATE`  
+状态：`AMENDED — ISSUE #7 SCOPE CLOSURE`
 机器权威：`operations/phase-1/write-scope.json`  
 执行模式：`DENY_BY_DEFAULT`
 
@@ -23,9 +23,28 @@ Global scope explicitly includes:
 - `tests/fault-injection/**`;
 - `tests/security/**`;
 - operation-specific Evidence paths;
-- the final implementation receipt path.
+- `operations/phase-1/executions/**` as the global execution-record parent;
+- the final integrated implementation receipt path.
+
+Each operation owns only its exact execution-record namespace:
+
+| Operation | Execution-record scope |
+|---|---|
+| P1-O01 | `operations/phase-1/executions/p1-o01-*.json` |
+| P1-O02 | `operations/phase-1/executions/p1-o02-*.json` |
+| P1-O03 | `operations/phase-1/executions/p1-o03-*.json` |
+| P1-O04 | `operations/phase-1/executions/p1-o04-*.json` |
+| P1-O05 | `operations/phase-1/executions/p1-o05-*.json` |
+| P1-O06 | `operations/phase-1/executions/p1-o06-*.json` |
+| P1-O07 | `operations/phase-1/executions/p1-o07-*.json` |
+| P1-O08 | `operations/phase-1/executions/p1-o08-*.json` |
+| P1-O09 | `operations/phase-1/executions/p1-o09-*.json` |
+
+`operations/phase-1/implementation-receipt.json` is not a P1-O01 output. It remains the whole-Phase-1 receipt produced by P1-O09 at the integrated handoff.
 
 The Phase 1 plan, WRITE_SCOPE, VerificationPlan, Receipt Schemas, Authority Lock, preimplementation policy, accepted ADRs and their human-readable authority documents are immutable during implementation. Contract inventory and registry are operation-scoped to P1-O02.
+
+Issue #7 repairs a scope-closure defect only. It changes no accepted ADR and no Operation Plan or VerificationPlan semantics. P1-O01 may resume only from the protected `main` commit containing the amendment and its passing required `verify` result.
 
 ## Expansion
 

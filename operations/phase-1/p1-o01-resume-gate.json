@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "gateId": "P1-O01-RESUME-AFTER-EXECUTION-SCOPE-AMENDMENT",
+  "gateType": "OPERATION_RESUME",
+  "decision": "AUTHORIZED_AFTER_PROTECTED_MAIN_MERGE",
+  "decidedAt": "2026-08-28T02:19:51Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "issueRef": 7,
+    "blockedOperation": "P1-O01",
+    "sourceMainCommit": "8ae3f00cb68e63bbeab88a7f53dc7d5ae70a51ff",
+    "amendmentBranch": "governance/p1-execution-scope-amendment"
+  },
+  "finding": {
+    "classification": "SCOPE_CLOSURE_DEFECT",
+    "architectureExpansion": false,
+    "productionImplementationStarted": false
+  },
+  "authorization": {
+    "p1O01Resume": "AUTHORIZED_AFTER_REQUIRED_VERIFY_AND_PROTECTED_MAIN_MERGE",
+    "implementationBasePolicy": "USE_PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE",
+    "executionRecordPathGlob": "operations/phase-1/executions/p1-o01-*.json",
+    "integratedReceiptOwner": "P1-O09",
+    "integratedReceiptPath": "operations/phase-1/implementation-receipt.json"
+  },
+  "constraints": [
+    "Do not modify ADR-0001 through ADR-0011.",
+    "Do not change operation.json or VerificationPlan semantics.",
+    "Do not weaken DENY_BY_DEFAULT.",
+    "Do not begin production Runtime implementation in this governance remediation.",
+    "Do not declare P1-O01 IMPLEMENTED or VERIFIED.",
+    "Rebase or recreate the P1-O01 implementation branch from the protected main commit containing this Gate."
+  ],
+  "evidenceRefs": [
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/7",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/6",
+    "docs/reviews/phase-1-execution-scope-amendment.md",
+    "operations/phase-1/write-scope.json",
+    "docs/roadmap/phase-1-write-scope.md",
+    "operations/phase-1/authority-lock.json"
+  ],
+  "claimBoundary": {
+    "governanceRemediation": "IMPLEMENTED",
+    "p1O01": "NOT_IMPLEMENTED",
+    "p1O01Verification": "NOT_PERFORMED",
+    "productionRuntime": "NOT_IMPLEMENTED"
+  }
+}
