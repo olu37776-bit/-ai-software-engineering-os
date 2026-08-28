@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsc -b tsconfig.build.json --pretty false",
     "clean": "tsc -b tsconfig.build.json --clean",
+    "evidence:ci": "node scripts/toolchain/emit-ci-evidence.mjs",
     "format": "prettier --check package.json pnpm-workspace.yaml \"tsconfig*.json\" \"*.config.mjs\" .github/workflows/quality.yml \"toolchain/**/*.json\" \"scripts/toolchain/**/*.mjs\" \"tests/qualification/toolchain/**/*.{json,mjs,ts}\" \"docs/implementation/phase-1/o01/**/*.md\" \"operations/phase-1/evidence/o01/**/*.json\" \"operations/phase-1/executions/p1-o01-*.json\"",
     "format:write": "prettier --write package.json pnpm-workspace.yaml \"tsconfig*.json\" \"*.config.mjs\" .github/workflows/quality.yml \"toolchain/**/*.json\" \"scripts/toolchain/**/*.mjs\" \"tests/qualification/toolchain/**/*.{json,mjs,ts}\" \"docs/implementation/phase-1/o01/**/*.md\" \"operations/phase-1/evidence/o01/**/*.json\" \"operations/phase-1/executions/p1-o01-*.json\"",
     "lint": "eslint .",

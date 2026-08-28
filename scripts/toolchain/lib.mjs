@@ -16,8 +16,13 @@ export async function sha256File(relativePath) {
 }
 
 export function run(command, args, options = {}) {
-  const executable = process.platform === "win32" && command === "pnpm" ? "pnpm.cmd" : command;
-  const result = spawnSync(executable, args, {
+  let executable = command;
+  let effectiveArgs = args;
+  if (command === "pnpm" && process.env.npm_execpath) {
+    executable = process.execPath;
+    effectiveArgs = [process.env.npm_execpath, ...args];
+  }
+  const result = spawnSync(executable, effectiveArgs, {
     cwd: repositoryRoot,
     encoding: "utf8",
     env: process.env,
@@ -29,7 +34,11 @@ export function run(command, args, options = {}) {
   }
   if (result.status !== 0) {
     throw new Error(
-      [`${executable} ${args.join(" ")} exited ${result.status}`, result.stdout, result.stderr]
+      [
+        `${executable} ${effectiveArgs.join(" ")} exited ${result.status}`,
+        result.stdout,
+        result.stderr,
+      ]
         .filter(Boolean)
         .join("\n"),
     );

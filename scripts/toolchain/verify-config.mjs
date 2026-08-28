@@ -48,6 +48,7 @@ assert.match(workflow, /windows-2025/);
 assert.match(workflow, /node-version: 24\.19\.0/);
 assert.match(workflow, /pnpm@11\.24\.0/);
 assert.match(workflow, /pnpm install --frozen-lockfile/);
+assert.match(workflow, /fetch-depth: 0/);
 for (const [action, sha] of Object.entries(toolchain.workflowActions)) {
   assert.match(workflow, new RegExp(`${action.replace("/", "\\/")}@${sha}`));
 }

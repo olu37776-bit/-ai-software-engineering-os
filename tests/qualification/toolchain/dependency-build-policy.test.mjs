@@ -46,12 +46,16 @@ describe("dependency lifecycle policy", () => {
         ].join("\n"),
       );
 
-      const executable = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
-      const result = spawnSync(executable, ["install", "--no-frozen-lockfile"], {
-        cwd: fixture,
-        encoding: "utf8",
-        shell: false,
-      });
+      expect(process.env.npm_execpath).toBeTruthy();
+      const result = spawnSync(
+        process.execPath,
+        [process.env.npm_execpath, "install", "--no-frozen-lockfile"],
+        {
+          cwd: fixture,
+          encoding: "utf8",
+          shell: false,
+        },
+      );
       expect(result.status, result.stderr).toBe(0);
       await expect(readFile(marker)).rejects.toMatchObject({ code: "ENOENT" });
     } finally {
