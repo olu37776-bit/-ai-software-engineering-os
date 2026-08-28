@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-GOVERNANCE-AMENDMENT-MODE-2026-08-28-01",
+  "executionType": "SCOPE_ENFORCEMENT_INFRASTRUCTURE_REMEDIATION",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Prior-gate-authorized Phase 1 governance amendment mode",
+  "riskClass": "R3",
+  "status": "IN_PROGRESS",
+  "startedAt": "2026-08-28T20:14:31Z",
+  "implementationBranch": "phase-1/p1-o01-governance-amendment-mode",
+  "baseCommit": "099ce3a125ba20823f529b97a8db1b305afb1da5",
+  "trackingIssue": 15,
+  "authorityRefs": [
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/evidence/o01/p1-transition-scope-independent-gate.json"
+  ],
+  "purpose": [
+    "Add a deterministic GOVERNANCE_AMENDMENT mode to P1-O01 scope-enforcement tooling.",
+    "Require a prior independent authorization Gate already present in the protected-main base.",
+    "Preserve existing operation, merge, independent Evidence and non-operation behavior."
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "issue15Verified": false,
+    "issue14AuthorizationGateCreated": false,
+    "p1O02Started": false,
+    "productionRuntimeChanged": false
+  },
+  "verification": [],
+  "evidenceRefs": [],
+  "remainingGaps": [
+    "Implementation and cross-platform qualification are pending.",
+    "Independent verification is required before Issue #15 can be VERIFIED."
+  ]
+}

@@ -2,19 +2,38 @@ import { readdir, readFile } from "node:fs/promises";
 import { relative, resolve } from "node:path";
 
 import {
+  GOVERNANCE_AMENDMENT_EVIDENCE_TYPE,
   isPhase1GovernedPath,
   operationIdFromExecutionPath,
   P1_O02_START_GATE_PATH,
   resolveOperationDefinition,
   selectEvidenceOperation,
+  selectGovernanceAmendmentAuthorizationGate,
+  validateAuthorityLockHashes,
+  validateAuthorityLockTransition,
   validateExecutionRecord,
+  validateGovernanceAmendmentAuthorizationGate,
+  validateGovernanceAmendmentChangedPaths,
+  validateGovernanceAmendmentExecution,
   validateOperationChangedPaths,
   validateP1O02StartGate,
 } from "./scope-policy.mjs";
-import { readJson, reportAndExit, repositoryRoot, run, sha256Utf8LfFile } from "./lib.mjs";
+import {
+  readJson,
+  reportAndExit,
+  repositoryRoot,
+  run,
+  runRaw,
+  sha256Utf8Lf,
+  sha256Utf8LfFile,
+} from "./lib.mjs";
 
 const CHECK = "PHASE1_OPERATION_AWARE_WRITE_SCOPE";
 const EXECUTION_DIRECTORY = "operations/phase-1/executions";
+const GOVERNANCE_AMENDMENT_GATE_DIRECTORY = "operations/phase-1/evidence/o01";
+const GOVERNANCE_AMENDMENT_GATE_FILE_PATTERN =
+  /^p1-governance-amendment-authorization-issue-[1-9][0-9]*\.json$/;
+const REPOSITORY = "olu37776-bit/-ai-software-engineering-os";
 
 function parseArguments(argv) {
   const values = {};
@@ -99,6 +118,83 @@ async function verifyImmutableAuthority(authorityLock) {
   return verified;
 }
 
+function readJsonAtCommit(commit, path) {
+  return JSON.parse(gitFileAtCommit(commit, path));
+}
+
+function gitFileAtCommit(commit, path) {
+  return runRaw("git", ["-c", "core.quotepath=false", "show", `${commit}:${path}`]);
+}
+
+function loadGovernanceAmendmentGatesFromBase(baseCommit) {
+  let paths;
+  try {
+    paths = gitOutput([
+      "ls-tree",
+      "-r",
+      "--name-only",
+      baseCommit,
+      GOVERNANCE_AMENDMENT_GATE_DIRECTORY,
+    ])
+      .split(/\r?\n/)
+      .filter((path) => GOVERNANCE_AMENDMENT_GATE_FILE_PATTERN.test(path.split("/").at(-1) ?? ""));
+  } catch {
+    throw new Error("FAILED_TO_ENUMERATE_PRIOR_GOVERNANCE_AMENDMENT_GATES");
+  }
+
+  return paths.map((path) => {
+    let gate;
+    try {
+      gate = readJsonAtCommit(baseCommit, path);
+    } catch {
+      throw new Error(`MALFORMED_PRIOR_GOVERNANCE_AMENDMENT_GATE: ${path}`);
+    }
+    return { path, gate };
+  });
+}
+
+async function verifyCompleteAuthorityLock(authorityLock) {
+  const actualHashes = new Map();
+  for (const entry of authorityLock.authorityFiles) {
+    try {
+      actualHashes.set(entry.path, await sha256Utf8LfFile(entry.path));
+    } catch {
+      // The policy validator reports the missing path with a stable failure code.
+    }
+  }
+  const failures = validateAuthorityLockHashes(authorityLock, actualHashes);
+  if (failures.length > 0) {
+    throw new Error(failures.join("\n"));
+  }
+  return actualHashes.size;
+}
+
+async function verifyUnrelatedAuthorityBytes(baseCommit, baseLock, allowedChangedPaths) {
+  const allowed = new Set(allowedChangedPaths);
+  const failures = [];
+  let verified = 0;
+  for (const entry of baseLock.authorityFiles) {
+    if (allowed.has(entry.path)) {
+      continue;
+    }
+    try {
+      const baseHash = sha256Utf8Lf(gitFileAtCommit(baseCommit, entry.path));
+      const headHash = await sha256Utf8LfFile(entry.path);
+      if (baseHash !== headHash) {
+        failures.push(`UNRELATED_AUTHORITY_MUTATION: ${entry.path}`);
+      } else {
+        verified += 1;
+      }
+    } catch {
+      failures.push(`UNRELATED_AUTHORITY_MISSING: ${entry.path}`);
+    }
+  }
+  if (failures.length > 0) {
+    throw new Error(failures.join("\n"));
+  }
+  return verified;
+}
+
 function validateEventBase(event, branch, eventBase, executionBase, headCommit) {
   if (!eventBase) {
     return;
@@ -143,6 +239,105 @@ function verifyOperationStartGate(operationId, baseCommit) {
   };
 }
 
+async function verifyGovernanceAmendment({
+  record,
+  event,
+  branch,
+  eventBase,
+  headCommit,
+  authorityLock,
+  writeScope,
+}) {
+  const request = validateGovernanceAmendmentExecution(record.execution);
+  if (!request) {
+    throw new Error("INVALID_GOVERNANCE_AMENDMENT_EXECUTION_TYPE");
+  }
+  const baseCommit = request.baseCommit;
+  assertCommit(baseCommit, "EXECUTION_BASE");
+  assertAncestor(baseCommit, headCommit);
+  validateEventBase(event, branch, eventBase, baseCommit, headCommit);
+  if (event !== "push" || branch !== "main") {
+    if (branch !== request.implementationBranch) {
+      throw new Error(
+        `MISMATCHED_GOVERNANCE_AMENDMENT_BRANCH: event=${branch || "<missing>"} authorization=${request.implementationBranch}`,
+      );
+    }
+  }
+
+  let baseParentCommit;
+  try {
+    baseParentCommit = gitOutput(["rev-parse", `${baseCommit}^1`]);
+  } catch {
+    throw new Error(`GOVERNANCE_AMENDMENT_BASE_HAS_NO_PARENT: ${baseCommit}`);
+  }
+  const candidates = loadGovernanceAmendmentGatesFromBase(baseCommit);
+  const gate = selectGovernanceAmendmentAuthorizationGate(candidates, request);
+  const { allowedChangedPaths } = validateGovernanceAmendmentAuthorizationGate(gate, {
+    request,
+    repository: REPOSITORY,
+    baseCommit,
+    baseParentCommit,
+  });
+
+  try {
+    gitOutput(["cat-file", "-e", `${baseParentCommit}:${request.gatePath}`]);
+    throw new Error(`GOVERNANCE_AMENDMENT_GATE_NOT_PRIOR: ${request.gatePath}`);
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith("GOVERNANCE_AMENDMENT_GATE_NOT_PRIOR")) {
+      throw error;
+    }
+  }
+
+  const changedPaths = changedPathsFrom(baseCommit, headCommit);
+  const violations = validateGovernanceAmendmentChangedPaths(changedPaths, allowedChangedPaths);
+  if (violations.length > 0) {
+    throw new Error(violations.join("\n"));
+  }
+
+  let baseLock;
+  try {
+    baseLock = readJsonAtCommit(baseCommit, "operations/phase-1/authority-lock.json");
+  } catch {
+    throw new Error("MALFORMED_BASE_AUTHORITY_LOCK");
+  }
+  const transitionViolations = validateAuthorityLockTransition(
+    baseLock,
+    authorityLock,
+    allowedChangedPaths,
+  );
+  if (transitionViolations.length > 0) {
+    throw new Error(transitionViolations.join("\n"));
+  }
+  const unrelatedAuthorityFilesVerified = await verifyUnrelatedAuthorityBytes(
+    baseCommit,
+    baseLock,
+    allowedChangedPaths,
+  );
+  const authorityFilesVerified = await verifyCompleteAuthorityLock(authorityLock);
+
+  reportAndExit({
+    schemaVersion: "1.0.0",
+    check: CHECK,
+    result: "PASS",
+    mode: "GOVERNANCE_AMENDMENT",
+    operationId: record.execution.operationId,
+    executionRecord: record.path,
+    trackingIssue: request.trackingIssue,
+    authorizationGate: request.gatePath,
+    authorizationGateEvidenceType: GOVERNANCE_AMENDMENT_EVIDENCE_TYPE,
+    authorizationBase: baseParentCommit,
+    baseCommit,
+    headCommit,
+    branch,
+    enforcementMode: writeScope.enforcementMode,
+    authorityFilesVerified,
+    unrelatedAuthorityFilesVerified,
+    allowedChangedPaths,
+    changedPaths,
+    violations: [],
+  });
+}
+
 async function main() {
   const args = parseArguments(process.argv.slice(2));
   const operationManifest = await readJson("operations/phase-1/operation.json");
@@ -151,7 +346,6 @@ async function main() {
   if (writeScope.enforcementMode !== "DENY_BY_DEFAULT") {
     throw new Error(`INVALID_ENFORCEMENT_MODE: ${writeScope.enforcementMode}`);
   }
-  const immutableAuthorityFilesVerified = await verifyImmutableAuthority(authorityLock);
   const records = await loadExecutionRecords(operationManifest, writeScope);
 
   const event = args.event ?? process.env.PHASE1_SCOPE_EVENT ?? "local";
@@ -195,6 +389,19 @@ async function main() {
   }
 
   if (selectedRecord) {
+    if (validateGovernanceAmendmentExecution(selectedRecord.execution)) {
+      await verifyGovernanceAmendment({
+        record: selectedRecord,
+        event,
+        branch,
+        eventBase,
+        headCommit,
+        authorityLock,
+        writeScope,
+      });
+      return;
+    }
+    const immutableAuthorityFilesVerified = await verifyImmutableAuthority(authorityLock);
     const operationId = selectedRecord.execution.operationId;
     const baseCommit = selectedRecord.execution.baseCommit;
     assertCommit(baseCommit, "EXECUTION_BASE");
@@ -244,6 +451,19 @@ async function main() {
   }
   if (changedExecutionRecords.length === 1) {
     const [record] = changedExecutionRecords;
+    if (validateGovernanceAmendmentExecution(record.execution)) {
+      await verifyGovernanceAmendment({
+        record,
+        event,
+        branch,
+        eventBase,
+        headCommit,
+        authorityLock,
+        writeScope,
+      });
+      return;
+    }
+    const immutableAuthorityFilesVerified = await verifyImmutableAuthority(authorityLock);
     const operationId = operationIdFromExecutionPath(record.path);
     if (explicitOperation && operationId !== explicitOperation) {
       throw new Error(
@@ -286,6 +506,7 @@ async function main() {
 
   const evidenceOperation = selectEvidenceOperation(changedPaths);
   if (evidenceOperation) {
+    const immutableAuthorityFilesVerified = await verifyImmutableAuthority(authorityLock);
     resolveOperationDefinition(evidenceOperation, operationManifest, writeScope);
     if (explicitOperation && explicitOperation !== evidenceOperation) {
       throw new Error(
@@ -327,6 +548,7 @@ async function main() {
   if (governedPaths.length > 0) {
     throw new Error(`MISSING_OPERATION_CONTEXT: ${governedPaths.join(",")}`);
   }
+  const immutableAuthorityFilesVerified = await verifyImmutableAuthority(authorityLock);
   reportAndExit({
     schemaVersion: "1.0.0",
     check: CHECK,
