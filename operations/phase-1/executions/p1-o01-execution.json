@@ -11,7 +11,7 @@
   "phase1EntryGateRef": "operations/phase-1/phase-1-entry-gate.json",
   "resumeGateRef": "operations/phase-1/p1-o01-resume-gate.json",
   "resumedAt": "2026-08-28T04:00:00Z",
-  "completedAt": "2026-08-28T07:18:36Z",
+  "completedAt": "2026-08-28T08:58:24Z",
   "trackingIssue": 6,
   "authorityRefs": [
     "operations/phase-1/operation.json",
@@ -38,7 +38,7 @@
     "clean frozen-lockfile install",
     "Windows and Linux clean-build Evidence"
   ],
-  "qualifiedImplementationCommit": "3c2ee1e4b37c9d73094197cb563490ae2514c2a0",
+  "qualifiedImplementationCommit": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c",
   "implementationCommits": [
     {
       "sha": "a25a24715f1bd9f1c7ac8ff1ea6f8f69defb8a96",
@@ -63,6 +63,22 @@
     {
       "sha": "3c2ee1e4b37c9d73094197cb563490ae2514c2a0",
       "message": "fix: keep offline qualification on one volume"
+    },
+    {
+      "sha": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c",
+      "message": "fix: isolate P1-O01 status-check authority"
+    }
+  ],
+  "remediationFindings": [
+    {
+      "findingId": "P1-O01-IV-01",
+      "classification": "BLOCKING",
+      "priorHead": "ad1b07ab29c249fc21f7ee31c4180bdf47839ceb",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "remediationCommit": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c",
+      "m0RequiredCheck": "verify",
+      "qualityAggregatorCheck": "p1-o01-toolchain-qualify",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-v02-toolchain.json"
     }
   ],
   "verification": [
@@ -86,7 +102,9 @@
     "operations/phase-1/evidence/o01/p1-v00-authorization.json",
     "operations/phase-1/evidence/o01/p1-v01-preflight.json",
     "operations/phase-1/evidence/o01/p1-v02-toolchain.json",
-    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33150909894"
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33157374004",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33157374028",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33157371331"
   ],
   "declarationBoundary": {
     "implementationAgentMaximum": "IMPLEMENTED",
@@ -94,13 +112,14 @@
   },
   "productionRuntimeAuthorized": false,
   "remainingGaps": [
-    "Independent verification has not been performed; P1-O01 is IMPLEMENTED, not VERIFIED.",
+    "P1-O01-IV-01 remediation awaits independent re-verification; P1-O01 remains IMPLEMENTED, not VERIFIED.",
     "P1-O02 and later operations remain unauthorized until the independent P1-V02 gate passes."
   ],
   "notes": [
     "Frozen operation authority files remain immutable.",
     "Execution status is recorded here instead of mutating operations/phase-1/operation.json.",
     "Execution resumed from the protected main governance-amendment baseline 7700b608586868cc6e4c19d519b8eef6fc770ae3.",
+    "P1-O01 quality uses p1-o01-toolchain-qualify; the M0 independent workflow remains the sole owner of verify.",
     "P1-O02 and later operations are not authorized until P1-O01 independent verification passes."
   ]
 }

@@ -38,11 +38,12 @@ x64. Its uniquely named `p1-o01-toolchain-qualify` aggregator succeeds only when
 qualifications succeed. The pre-existing M0 independent workflow remains the sole owner of the
 required `verify` check context.
 
-The qualified implementation commit is `3c2ee1e4b37c9d73094197cb563490ae2514c2a0`.
-[GitHub Actions run 33150909894](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33150909894)
-passed `ubuntu-24.04` and `windows-2025`, including clean frozen installs, the complete quality
-baseline, clean authority rebuilds, and platform Evidence emission. Independent P1-V02
-verification remains a later gate.
+The qualified implementation commit is `eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c`.
+[Quality run 33157374028](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33157374028)
+passed `ubuntu-24.04`, `windows-2025`, and `p1-o01-toolchain-qualify` on PR #9. The concurrent
+[M0 independent run 33157374004](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33157374004)
+was the sole producer of `verify` and also passed. This remediates `P1-O01-IV-01`; independent
+P1-O01 re-verification remains a later gate.
 
 ## Supply-chain boundary
 

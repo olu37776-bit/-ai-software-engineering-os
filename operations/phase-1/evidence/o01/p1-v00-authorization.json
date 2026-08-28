@@ -8,8 +8,8 @@
     "baselineCommit": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
     "implementationBranch": "phase-1/p1-o01-toolchain-foundation"
   },
-  "executedAt": "2026-08-28T07:22:35Z",
-  "command": "python3 scripts/governance/verify_m0.py --base 7700b608586868cc6e4c19d519b8eef6fc770ae3 --subject P1-O01-final-implementation-evidence",
+  "executedAt": "2026-08-28T09:01:05Z",
+  "command": "python3 scripts/governance/verify_m0.py --base 7700b608586868cc6e4c19d519b8eef6fc770ae3 --subject P1-O01-IV-01-remediation-final",
   "environment": {
     "python": "3.12",
     "jsonschema": "4.25.1",
@@ -25,7 +25,7 @@
     "acceptedAdrs": 11
   },
   "authorityLockSha256": "aa4134f9bcb8cd7160941092d63277f1a63cbf2191e6c25a89e1e9fc086d282c",
-  "qualifiedImplementationCommit": "3c2ee1e4b37c9d73094197cb563490ae2514c2a0",
+  "qualifiedImplementationCommit": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c",
   "frozenAuthorityHashes": {
     "operations/phase-1/operation.json": "157d1c83a798fc433b4bfb6a8b6ed12471c52e5a652e61dfb9532088f01f48dc",
     "operations/phase-1/write-scope.json": "08adb2952c037c66a6c7d3898fca4e44ac4f2147b1f8bb26d3792b5703def095",
