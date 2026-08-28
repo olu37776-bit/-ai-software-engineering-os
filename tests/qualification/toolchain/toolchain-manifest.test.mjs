@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import Ajv2020 from "ajv/dist/2020.js";
 import { describe, expect, test } from "vitest";
 
-import { sha256Utf8Lf } from "../../../scripts/toolchain/lib.mjs";
+import { normalizeUtf8Lf, sha256Utf8Lf } from "../../../scripts/toolchain/lib.mjs";
 
 const root = resolve(import.meta.dirname, "../../..");
 
@@ -43,7 +43,7 @@ describe("exact toolchain manifest", () => {
     ]);
     expect(manifest.packageManager.lockfileHashPolicy).toBe("SHA256_UTF8_LF_NORMALIZED");
     expect(sha256Utf8Lf(lockfile)).toBe(manifest.packageManager.lockfileSha256);
-    expect(sha256Utf8Lf(lockfile.replace(/\n/g, "\r\n"))).toBe(
+    expect(sha256Utf8Lf(normalizeUtf8Lf(lockfile).replace(/\n/g, "\r\n"))).toBe(
       manifest.packageManager.lockfileSha256,
     );
   });

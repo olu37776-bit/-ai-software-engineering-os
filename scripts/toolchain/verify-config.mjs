@@ -2,13 +2,15 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { extname, join, resolve } from "node:path";
 
-import { readJson, reportAndExit, repositoryRoot } from "./lib.mjs";
+import { normalizeUtf8Lf, readJson, reportAndExit, repositoryRoot } from "./lib.mjs";
 
 const packageManifest = await readJson("package.json");
 const toolchain = await readJson("toolchain/toolchain.json");
 const baseConfig = await readJson("tsconfig.base.json");
 const buildConfig = await readJson("tsconfig.build.json");
-const workspace = await readFile(resolve(repositoryRoot, "pnpm-workspace.yaml"), "utf8");
+const workspace = normalizeUtf8Lf(
+  await readFile(resolve(repositoryRoot, "pnpm-workspace.yaml"), "utf8"),
+);
 const npmrc = await readFile(resolve(repositoryRoot, ".npmrc"), "utf8");
 const workflow = await readFile(resolve(repositoryRoot, ".github/workflows/quality.yml"), "utf8");
 
