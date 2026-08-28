@@ -41,6 +41,7 @@
     "schemas/release/**",
     "scripts/**",
     "operations/phase-1/evidence/**",
+    "operations/phase-1/executions/**",
     "operations/phase-1/implementation-receipt.json",
     "docs/contracts/**",
     "docs/operations/**",
@@ -115,7 +116,8 @@
         "tests/qualification/toolchain/**",
         ".github/workflows/quality.yml",
         "docs/implementation/phase-1/o01/**",
-        "operations/phase-1/evidence/o01/**"
+        "operations/phase-1/evidence/o01/**",
+        "operations/phase-1/executions/p1-o01-*.json"
       ],
       "deniedPathGlobs": [
         "apps/**",
@@ -146,7 +148,8 @@
         "scripts/contracts/**",
         "docs/contracts/**",
         "docs/implementation/phase-1/o02/**",
-        "operations/phase-1/evidence/o02/**"
+        "operations/phase-1/evidence/o02/**",
+        "operations/phase-1/executions/p1-o02-*.json"
       ],
       "deniedPathGlobs": [
         "packages/kernel/**",
@@ -212,7 +215,8 @@
         "tests/architecture/**",
         "scripts/architecture/**",
         "docs/implementation/phase-1/o03/**",
-        "operations/phase-1/evidence/o03/**"
+        "operations/phase-1/evidence/o03/**",
+        "operations/phase-1/executions/p1-o03-*.json"
       ],
       "deniedPathGlobs": [],
       "semanticConstraints": [
@@ -242,7 +246,8 @@
         "tests/contract/policy/**",
         "tests/qualification/policy/**",
         "docs/implementation/phase-1/o04/**",
-        "operations/phase-1/evidence/o04/**"
+        "operations/phase-1/evidence/o04/**",
+        "operations/phase-1/executions/p1-o04-*.json"
       ],
       "deniedPathGlobs": [],
       "semanticConstraints": [
@@ -274,7 +279,8 @@
         "tests/fault-injection/persistence/**",
         "scripts/qualification/persistence/**",
         "docs/implementation/phase-1/o05/**",
-        "operations/phase-1/evidence/o05/**"
+        "operations/phase-1/evidence/o05/**",
+        "operations/phase-1/executions/p1-o05-*.json"
       ],
       "deniedPathGlobs": [],
       "semanticConstraints": [
@@ -309,7 +315,8 @@
         "tests/acceptance/control-api/**",
         "scripts/qualification/control-api/**",
         "docs/implementation/phase-1/o06/**",
-        "operations/phase-1/evidence/o06/**"
+        "operations/phase-1/evidence/o06/**",
+        "operations/phase-1/executions/p1-o06-*.json"
       ],
       "deniedPathGlobs": [],
       "semanticConstraints": [
@@ -342,7 +349,8 @@
         "tests/security/isolation/**",
         "scripts/qualification/isolation/**",
         "docs/implementation/phase-1/o07/**",
-        "operations/phase-1/evidence/o07/**"
+        "operations/phase-1/evidence/o07/**",
+        "operations/phase-1/executions/p1-o07-*.json"
       ],
       "deniedPathGlobs": [
         "packages/adapters/tool/os-sandboxed/**",
@@ -384,7 +392,8 @@
         "tests/qualification/packaging/**",
         "docs/operations/**",
         "docs/implementation/phase-1/o08/**",
-        "operations/phase-1/evidence/o08/**"
+        "operations/phase-1/evidence/o08/**",
+        "operations/phase-1/executions/p1-o08-*.json"
       ],
       "deniedPathGlobs": [],
       "semanticConstraints": [
@@ -419,6 +428,7 @@
         "scripts/verify-phase-1/**",
         "operations/phase-1/implementation-receipt.json",
         "operations/phase-1/evidence/o09/**",
+        "operations/phase-1/executions/p1-o09-*.json",
         "docs/reviews/phase-1-*.md",
         "docs/implementation/phase-1/o09/**",
         "docs/roadmap/progress-status.md",

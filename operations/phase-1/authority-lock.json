@@ -99,7 +99,7 @@
     },
     {
       "path": "docs/roadmap/phase-1-write-scope.md",
-      "sha256": "4444559ac1b8a15d2b91a8e008116ee39c4d7af176b7af83381437b0cf16f3cb",
+      "sha256": "51a3b2cabf45706a65af67de023ef1aa218020b98e335f5bf4810db5019a5477",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
@@ -133,6 +133,13 @@
       "allowedOperationIds": []
     },
     {
+      "path": "operations/phase-1/p1-o01-resume-gate.json",
+      "sha256": "5115722d1ded28dd5ec572425f832c4ab60d1d8202d65b089155b7087fbb2eb2",
+      "role": "RESUME_GATE",
+      "mutationPolicy": "IMMUTABLE",
+      "allowedOperationIds": []
+    },
+    {
       "path": "operations/phase-1/preimplementation-policy-snapshot.json",
       "sha256": "4365f6a76d814362213491f1f1b58730a7d978c51400f7f1109d5885681c09ac",
       "role": "VERIFICATION_POLICY",
@@ -162,7 +169,7 @@
     },
     {
       "path": "operations/phase-1/write-scope.json",
-      "sha256": "8e329a3a19ae70406625baa400472ea1f9b4610e0e7b508413e00c35e4c0d13a",
+      "sha256": "08adb2952c037c66a6c7d3898fca4e44ac4f2147b1f8bb26d3792b5703def095",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
