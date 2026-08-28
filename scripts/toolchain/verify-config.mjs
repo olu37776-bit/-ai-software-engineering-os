@@ -12,7 +12,10 @@ const workspace = normalizeUtf8Lf(
   await readFile(resolve(repositoryRoot, "pnpm-workspace.yaml"), "utf8"),
 );
 const npmrc = await readFile(resolve(repositoryRoot, ".npmrc"), "utf8");
-const workflow = await readFile(resolve(repositoryRoot, ".github/workflows/quality.yml"), "utf8");
+const workflow = normalizeUtf8Lf(
+  await readFile(resolve(repositoryRoot, ".github/workflows/quality.yml"), "utf8"),
+);
+const qualityAggregatorCheck = "p1-o01-toolchain-qualify";
 
 const requiredCompilerOptions = {
   target: "ES2025",
@@ -51,6 +54,10 @@ assert.match(workflow, /node-version: 24\.19\.0/);
 assert.match(workflow, /pnpm@11\.24\.0/);
 assert.match(workflow, /pnpm install --frozen-lockfile/);
 assert.match(workflow, /fetch-depth: 0/);
+assert.match(workflow, new RegExp(`^ {2}${qualityAggregatorCheck}:$`, "m"));
+assert.match(workflow, new RegExp(`^ {4}name: ${qualityAggregatorCheck}$`, "m"));
+assert.doesNotMatch(workflow, /^ {2}verify:$/m);
+assert.doesNotMatch(workflow, /^ {4}name: verify$/m);
 for (const [action, sha] of Object.entries(toolchain.workflowActions)) {
   assert.match(workflow, new RegExp(`${action.replace("/", "\\/")}@${sha}`));
 }
@@ -80,6 +87,7 @@ reportAndExit({
   authorityBuild: packageManifest.scripts.build,
   projectReferences: buildConfig.references.length,
   esmOnly: true,
+  qualityAggregatorCheck,
   dependencyBuildPolicy: toolchain.packageManager.dependencyBuildPolicy,
   dependencyBuildAllowlist: toolchain.packageManager.dependencyBuildAllowlist,
 });

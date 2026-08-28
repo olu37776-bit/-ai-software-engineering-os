@@ -34,7 +34,9 @@ pnpm run test
 ```
 
 The GitHub quality workflow runs the same lockfile and authority build on Linux x64 and Windows
-x64. The final `verify` job succeeds only when both platform qualifications succeed.
+x64. Its uniquely named `p1-o01-toolchain-qualify` aggregator succeeds only when both platform
+qualifications succeed. The pre-existing M0 independent workflow remains the sole owner of the
+required `verify` check context.
 
 The qualified implementation commit is `3c2ee1e4b37c9d73094197cb563490ae2514c2a0`.
 [GitHub Actions run 33150909894](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33150909894)

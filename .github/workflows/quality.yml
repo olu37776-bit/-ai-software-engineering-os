@@ -63,8 +63,8 @@ jobs:
       - name: Emit cross-platform Evidence
         run: pnpm run evidence:ci
 
-  verify:
-    name: verify
+  p1-o01-toolchain-qualify:
+    name: p1-o01-toolchain-qualify
     if: always()
     needs:
       - qualification
