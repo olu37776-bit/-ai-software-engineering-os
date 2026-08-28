@@ -1,0 +1,59 @@
+{
+  "$schema": "urn:aseos:toolchain-manifest:1.0.0",
+  "schemaVersion": "1.0.0",
+  "authority": {
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "packageType": "module",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2025",
+    "lib": ["ES2025"],
+    "buildCommand": "pnpm exec tsc -b tsconfig.build.json --pretty false"
+  },
+  "packageManager": {
+    "lockfileVersion": "9.0",
+    "lockfileSha256": "13af515bb4f8ba46236183876a97f4e3817d6aca724da4a5f1ce987311eae998",
+    "lockfileHashPolicy": "SHA256_UTF8_LF_NORMALIZED",
+    "frozenInstallCommand": "pnpm install --frozen-lockfile",
+    "dependencyBuildPolicy": "DENY_UNLESS_ALLOW_BUILDS",
+    "dependencyBuildAllowlist": ["protobufjs@7.6.5"],
+    "minimumReleaseAgeMinutes": 1440,
+    "blockExoticSubdeps": true
+  },
+  "tools": {
+    "@eslint/js": "10.0.1",
+    "@opentelemetry/sdk-node": "0.221.0",
+    "@stryker-mutator/core": "10.0.0",
+    "@stryker-mutator/typescript-checker": "10.0.0",
+    "@stryker-mutator/vitest-runner": "10.0.0",
+    "@types/node": "24.13.3",
+    "ajv": "8.20.0",
+    "dependency-cruiser": "18.2.0",
+    "eslint": "10.9.1",
+    "fast-check": "4.9.0",
+    "prettier": "3.9.6",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.68.0",
+    "vitest": "4.1.11"
+  },
+  "platforms": [
+    {
+      "id": "linux-x64",
+      "os": "linux",
+      "arch": "x64",
+      "runner": "ubuntu-24.04"
+    },
+    {
+      "id": "windows-x64",
+      "os": "windows",
+      "arch": "x64",
+      "runner": "windows-2025"
+    }
+  ],
+  "workflowActions": {
+    "actions/checkout": "11bd71901bbe5b1630ceea73d27597364c9af683",
+    "actions/setup-node": "49933ea5288caeca8642d1e84afbd3f7d6820020"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "../../../artifacts/qualification/toolchain/build",
+    "tsBuildInfoFile": "../../../artifacts/qualification/toolchain/toolchain.tsbuildinfo"
+  },
+  "include": ["src/**/*.ts"]
+}

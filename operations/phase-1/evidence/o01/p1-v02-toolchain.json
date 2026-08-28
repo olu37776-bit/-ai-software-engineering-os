@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O01-P1-V02-2026-08-28-01",
+  "evidenceType": "FrozenLockfileInstallResult+TypeScriptBuildResult+CrossPlatformBuildEvidence",
+  "stepId": "P1-V02-TOOLCHAIN",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "implementationBranch": "phase-1/p1-o01-toolchain-foundation",
+    "baselineCommit": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
+    "qualifiedImplementationCommit": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c"
+  },
+  "executedAt": "2026-08-28T08:58:24Z",
+  "result": "PASS",
+  "toolchain": {
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "packageType": "module",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2025",
+    "authorityBuild": "pnpm exec tsc -b tsconfig.build.json --pretty false"
+  },
+  "lockfile": {
+    "path": "pnpm-lock.yaml",
+    "sha256": "13af515bb4f8ba46236183876a97f4e3817d6aca724da4a5f1ce987311eae998",
+    "hashPolicy": "SHA256_UTF8_LF_NORMALIZED",
+    "frozen": true,
+    "cleanInstall": "PASS",
+    "offlineReproduction": "PASS",
+    "unchangedAfterInstall": true
+  },
+  "build": {
+    "cleanCommand": "pnpm run clean",
+    "buildCommand": "pnpm run build",
+    "typecheckCommand": "pnpm run typecheck",
+    "strict": true,
+    "projectReferences": 1,
+    "result": "PASS"
+  },
+  "quality": {
+    "format": "PASS",
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "tests": {
+      "result": "PASS",
+      "files": 4,
+      "cases": 7
+    },
+    "build": "PASS",
+    "configurationConsistency": "PASS",
+    "buildVersionConsistency": "PASS",
+    "frozenOfflineInstall": "PASS",
+    "writeScope": "PASS"
+  },
+  "crossPlatformQualification": {
+    "workflow": ".github/workflows/quality.yml",
+    "runId": 33157374028,
+    "runNumber": 10,
+    "runUrl": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33157374028",
+    "event": "pull_request",
+    "result": "PASS",
+    "aggregator": {
+      "jobName": "p1-o01-toolchain-qualify",
+      "jobId": 98803503067,
+      "result": "PASS"
+    },
+    "platforms": [
+      {
+        "platform": "linux-x64",
+        "jobId": 98803270410,
+        "workflowRunner": "ubuntu-24.04",
+        "runnerImage": "ubuntu-24.04",
+        "runnerImageVersion": "20260823.283.1",
+        "runnerVersion": "2.336.0",
+        "os": "linux",
+        "arch": "x64",
+        "node": "24.19.0",
+        "pnpm": "11.24.0",
+        "typescript": "6.0.3",
+        "cleanFrozenInstall": "PASS",
+        "qualityBaseline": "PASS",
+        "cleanAuthorityRebuild": "PASS",
+        "evidenceEmission": "PASS",
+        "result": "PASS"
+      },
+      {
+        "platform": "windows-x64",
+        "jobId": 98803270557,
+        "workflowRunner": "windows-2025",
+        "runnerImage": "windows-2025-vs2026",
+        "runnerImageVersion": "20260824.214.3",
+        "runnerVersion": "2.336.0",
+        "os": "win32",
+        "arch": "x64",
+        "node": "24.19.0",
+        "pnpm": "11.24.0",
+        "typescript": "6.0.3",
+        "cleanFrozenInstall": "PASS",
+        "qualityBaseline": "PASS",
+        "cleanAuthorityRebuild": "PASS",
+        "evidenceEmission": "PASS",
+        "result": "PASS"
+      }
+    ]
+  },
+  "requiredStatusCheckAuthority": {
+    "findingId": "P1-O01-IV-01",
+    "findingClassification": "BLOCKING",
+    "priorHead": "ad1b07ab29c249fc21f7ee31c4180bdf47839ceb",
+    "remediationCommit": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c",
+    "result": "REMEDIATED",
+    "authorityUnique": true,
+    "m0Independent": {
+      "workflow": ".github/workflows/m0-independent-verify.yml",
+      "checkName": "verify",
+      "runId": 33157374004,
+      "jobId": 98803270365,
+      "result": "PASS"
+    },
+    "quality": {
+      "workflow": ".github/workflows/quality.yml",
+      "aggregatorCheckName": "p1-o01-toolchain-qualify",
+      "pullRequestRunId": 33157374028,
+      "pullRequestAggregatorJobId": 98803503067,
+      "pushRunId": 33157371331,
+      "pushAggregatorJobId": 98803512254,
+      "result": "PASS"
+    },
+    "headCheckInventory": {
+      "verifyCount": 1,
+      "verifyOwner": "M0 independent preimplementation verification",
+      "qualityAggregatorName": "p1-o01-toolchain-qualify"
+    }
+  },
+  "localQualification": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm run quality",
+      "result": "PASS"
+    },
+    {
+      "command": "pnpm run clean && pnpm run build && pnpm run test",
+      "result": "PASS"
+    },
+    {
+      "command": "CRLF checkout: pnpm install --offline --frozen-lockfile; pnpm run format; pnpm run typecheck; pnpm run test; pnpm run verify:config; pnpm run verify:versions; pnpm run verify:scope",
+      "result": "PASS"
+    }
+  ],
+  "authorization": {
+    "authorityLockSha256": "aa4134f9bcb8cd7160941092d63277f1a63cbf2191e6c25a89e1e9fc086d282c",
+    "writeScopeResult": "PASS",
+    "productionRuntimePathsChanged": [],
+    "acceptedAdrPathsChanged": []
+  },
+  "qualificationRemediationHistory": [
+    {
+      "runId": 33149904647,
+      "result": "FAIL",
+      "remediatedCause": "shallow baseline checkout and Windows pnpm child-process invocation"
+    },
+    {
+      "runId": 33150072056,
+      "result": "FAIL",
+      "remediatedCause": "Windows CRLF changed the raw lockfile byte hash"
+    },
+    {
+      "runId": 33150264805,
+      "result": "FAIL",
+      "remediatedCause": "Prettier enforced LF against a platform-native CRLF checkout"
+    },
+    {
+      "runId": 33150440507,
+      "result": "FAIL",
+      "remediatedCause": "qualification assertions assumed LF input"
+    },
+    {
+      "runId": 33150656978,
+      "result": "FAIL",
+      "remediatedCause": "Windows offline pnpm store and temporary checkout were on different volumes"
+    },
+    {
+      "findingId": "P1-O01-IV-01",
+      "result": "REMEDIATED",
+      "priorHead": "ad1b07ab29c249fc21f7ee31c4180bdf47839ceb",
+      "remediationCommit": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c",
+      "remediatedCause": "quality and M0 independent workflows emitted the same verify check context"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-v00-authorization.json",
+    "operations/phase-1/evidence/o01/p1-v01-preflight.json"
+  ],
+  "claimBoundary": {
+    "executor": "IMPLEMENTATION_AGENT",
+    "maximumDeclaration": "IMPLEMENTED",
+    "declared": "IMPLEMENTED",
+    "independentVerification": "REMEDIATION_AWAITING_INDEPENDENT_REVERIFICATION",
+    "verified": false
+  }
+}

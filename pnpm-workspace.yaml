@@ -1,0 +1,6 @@
+packages: []
+
+allowBuilds:
+  protobufjs: true
+blockExoticSubdeps: true
+minimumReleaseAge: 1440

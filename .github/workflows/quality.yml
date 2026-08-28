@@ -1,0 +1,76 @@
+name: quality
+
+on:
+  push:
+    branches:
+      - main
+      - "phase-1/**"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualification:
+    name: qualify (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux-x64
+            runner: ubuntu-24.04
+          - platform: windows-x64
+            runner: windows-2025
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Install exact Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.19.0
+          check-latest: false
+
+      - name: Activate exact pnpm
+        run: |
+          corepack enable
+          corepack install --global pnpm@11.24.0
+
+      - name: Clean frozen-lockfile install
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify actual toolchain versions
+        run: pnpm run verify:versions
+
+      - name: Quality baseline
+        run: pnpm run quality
+
+      - name: Clean authority rebuild
+        run: |
+          pnpm run clean
+          pnpm run build
+          pnpm run test
+
+      - name: Emit cross-platform Evidence
+        run: pnpm run evidence:ci
+
+  p1-o01-toolchain-qualify:
+    name: p1-o01-toolchain-qualify
+    if: always()
+    needs:
+      - qualification
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require every qualification platform
+        env:
+          QUALIFICATION_RESULT: ${{ needs.qualification.result }}
+        run: test "$QUALIFICATION_RESULT" = "success"

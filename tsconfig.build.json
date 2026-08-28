@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tests/qualification/toolchain"
+    }
+  ]
+}
