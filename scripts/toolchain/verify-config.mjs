@@ -54,6 +54,16 @@ assert.match(workflow, /node-version: 24\.19\.0/);
 assert.match(workflow, /pnpm@11\.24\.0/);
 assert.match(workflow, /pnpm install --frozen-lockfile/);
 assert.match(workflow, /fetch-depth: 0/);
+assert.match(workflow, /PHASE1_SCOPE_BASE:/);
+assert.match(workflow, /PHASE1_SCOPE_BRANCH:/);
+assert.match(workflow, /PHASE1_SCOPE_EVENT:/);
+assert.match(workflow, /PHASE1_SCOPE_HEAD:/);
+assert.match(workflow, /run: pnpm run verify:scope/);
+assert.doesNotMatch(packageManifest.scripts.quality, /verify:scope/);
+assert.equal(
+  packageManifest.scripts["quality:phase1"],
+  "pnpm run quality && pnpm run verify:scope",
+);
 assert.match(workflow, new RegExp(`^ {2}${qualityAggregatorCheck}:$`, "m"));
 assert.match(workflow, new RegExp(`^ {4}name: ${qualityAggregatorCheck}$`, "m"));
 assert.doesNotMatch(workflow, /^ {2}verify:$/m);

@@ -21,7 +21,8 @@
     "verify:frozen-install": "node scripts/toolchain/verify-frozen-install.mjs",
     "verify:scope": "node scripts/toolchain/verify-scope.mjs",
     "verify:versions": "node scripts/toolchain/verify-versions.mjs",
-    "quality": "pnpm run format && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run verify:config && pnpm run verify:versions && pnpm run verify:frozen-install && pnpm run verify:scope"
+    "quality": "pnpm run format && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run verify:config && pnpm run verify:versions && pnpm run verify:frozen-install",
+    "quality:phase1": "pnpm run quality && pnpm run verify:scope"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

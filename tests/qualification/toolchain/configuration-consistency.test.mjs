@@ -12,7 +12,6 @@ describe("repository toolchain consistency", () => {
       { result: "PASS", qualityAggregatorCheck: "p1-o01-toolchain-qualify" },
     ],
     ["scripts/toolchain/verify-versions.mjs", { result: "PASS" }],
-    ["scripts/toolchain/verify-scope.mjs", { result: "PASS" }],
   ]);
 
   for (const [script, expected] of scriptExpectations) {
