@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O01-P1-V00-2026-08-28-01",
+  "evidenceType": "M0GateEvidence+AuthorityLockEvidence",
+  "stepId": "P1-V00-M0-AUTHORIZATION",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "baselineCommit": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
+    "implementationBranch": "phase-1/p1-o01-toolchain-foundation"
+  },
+  "executedAt": "2026-08-28T06:43:48Z",
+  "command": "python3 scripts/governance/verify_m0.py --base 7700b608586868cc6e4c19d519b8eef6fc770ae3 --subject P1-O01-resume-preflight",
+  "environment": {
+    "python": "3.12",
+    "jsonschema": "4.25.1",
+    "referencing": "0.36.2"
+  },
+  "result": "PASS",
+  "checks": {
+    "passed": 14,
+    "failed": 0,
+    "authorityLockPaths": 32,
+    "immutablePaths": 25,
+    "operationScopedPaths": 7,
+    "acceptedAdrs": 11
+  },
+  "authorityLockSha256": "aa4134f9bcb8cd7160941092d63277f1a63cbf2191e6c25a89e1e9fc086d282c",
+  "resumeGateRef": "operations/phase-1/p1-o01-resume-gate.json",
+  "claimBoundary": "AUTHORIZATION_AND_AUTHORITY_LOCK_ONLY"
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O01-P1-V01-2026-08-28-01",
+  "evidenceType": "BaselineIdentityEvidence+WriteScopeValidationResult",
+  "stepId": "P1-V01-PREFLIGHT",
+  "subject": {
+    "baselineCommit": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
+    "rebasedExecutionCommit": "dbef7aecaad72ce723571a35d4245bd917f83417"
+  },
+  "executedAt": "2026-08-28T06:43:48Z",
+  "result": "PASS",
+  "baselineChecks": {
+    "protectedMainMatchesAuthorizedBaseline": true,
+    "implementationCommitParentMatchesBaseline": true,
+    "resumeGatePresent": true,
+    "worktreeCleanBeforeResumeRecordUpdate": true
+  },
+  "writeScope": {
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "operationId": "P1-O01",
+    "executionRecordAuthorized": true,
+    "preflightChangedPaths": ["operations/phase-1/executions/p1-o01-execution.json"],
+    "violations": []
+  },
+  "productionRuntimePathsChanged": [],
+  "acceptedAdrPathsChanged": [],
+  "claimBoundary": "BASELINE_AND_PREFLIGHT_ONLY"
+}

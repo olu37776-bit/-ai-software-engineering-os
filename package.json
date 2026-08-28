@@ -1,0 +1,41 @@
+{
+  "name": "@aseos/repository",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": "24.19.0",
+    "pnpm": "11.24.0"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json --pretty false",
+    "clean": "tsc -b tsconfig.build.json --clean",
+    "format": "prettier --check package.json pnpm-workspace.yaml \"tsconfig*.json\" \"*.config.mjs\" .github/workflows/quality.yml \"toolchain/**/*.json\" \"scripts/toolchain/**/*.mjs\" \"tests/qualification/toolchain/**/*.{json,mjs,ts}\" \"docs/implementation/phase-1/o01/**/*.md\" \"operations/phase-1/evidence/o01/**/*.json\" \"operations/phase-1/executions/p1-o01-*.json\"",
+    "format:write": "prettier --write package.json pnpm-workspace.yaml \"tsconfig*.json\" \"*.config.mjs\" .github/workflows/quality.yml \"toolchain/**/*.json\" \"scripts/toolchain/**/*.mjs\" \"tests/qualification/toolchain/**/*.{json,mjs,ts}\" \"docs/implementation/phase-1/o01/**/*.md\" \"operations/phase-1/evidence/o01/**/*.json\" \"operations/phase-1/executions/p1-o01-*.json\"",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "typecheck": "tsc -b tsconfig.build.json --pretty false",
+    "verify:config": "node scripts/toolchain/verify-config.mjs",
+    "verify:frozen-install": "node scripts/toolchain/verify-frozen-install.mjs",
+    "verify:scope": "node scripts/toolchain/verify-scope.mjs",
+    "verify:versions": "node scripts/toolchain/verify-versions.mjs",
+    "quality": "pnpm run format && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run verify:config && pnpm run verify:versions && pnpm run verify:frozen-install && pnpm run verify:scope"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@opentelemetry/sdk-node": "0.221.0",
+    "@stryker-mutator/core": "10.0.0",
+    "@stryker-mutator/typescript-checker": "10.0.0",
+    "@stryker-mutator/vitest-runner": "10.0.0",
+    "@types/node": "24.13.3",
+    "ajv": "8.20.0",
+    "dependency-cruiser": "18.2.0",
+    "eslint": "10.9.1",
+    "fast-check": "4.9.0",
+    "prettier": "3.9.6",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.68.0",
+    "vitest": "4.1.11"
+  }
+}

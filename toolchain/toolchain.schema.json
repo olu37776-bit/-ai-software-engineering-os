@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:toolchain-manifest:1.0.0",
+  "title": "ASEOS exact toolchain manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "authority",
+    "packageManager",
+    "tools",
+    "platforms",
+    "workflowActions"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "urn:aseos:toolchain-manifest:1.0.0"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node",
+        "pnpm",
+        "typescript",
+        "packageType",
+        "module",
+        "moduleResolution",
+        "target",
+        "lib",
+        "buildCommand"
+      ],
+      "properties": {
+        "node": { "const": "24.19.0" },
+        "pnpm": { "const": "11.24.0" },
+        "typescript": { "const": "6.0.3" },
+        "packageType": { "const": "module" },
+        "module": { "const": "NodeNext" },
+        "moduleResolution": { "const": "NodeNext" },
+        "target": { "const": "ES2025" },
+        "lib": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "prefixItems": [{ "const": "ES2025" }],
+          "items": false
+        },
+        "buildCommand": { "const": "pnpm exec tsc -b tsconfig.build.json --pretty false" }
+      }
+    },
+    "packageManager": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lockfileVersion",
+        "lockfileSha256",
+        "frozenInstallCommand",
+        "dependencyBuildPolicy",
+        "dependencyBuildAllowlist",
+        "minimumReleaseAgeMinutes",
+        "blockExoticSubdeps"
+      ],
+      "properties": {
+        "lockfileVersion": { "const": "9.0" },
+        "lockfileSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "frozenInstallCommand": { "const": "pnpm install --frozen-lockfile" },
+        "dependencyBuildPolicy": { "const": "DENY_UNLESS_ALLOW_BUILDS" },
+        "dependencyBuildAllowlist": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "prefixItems": [{ "const": "protobufjs@7.6.5" }],
+          "items": false
+        },
+        "minimumReleaseAgeMinutes": { "const": 1440 },
+        "blockExoticSubdeps": { "const": true }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+      },
+      "minProperties": 1
+    },
+    "platforms": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "os", "arch", "runner"],
+        "properties": {
+          "id": { "type": "string" },
+          "os": { "enum": ["linux", "windows"] },
+          "arch": { "const": "x64" },
+          "runner": { "type": "string" }
+        }
+      }
+    },
+    "workflowActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actions/checkout": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "actions/setup-node": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": ["actions/checkout", "actions/setup-node"]
+    }
+  }
+}

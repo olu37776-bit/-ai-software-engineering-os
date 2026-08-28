@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-2026-08-27-01",
+  "operationId": "P1-O01",
+  "title": "Toolchain and reproducible monorepo foundation",
+  "riskClass": "R3",
+  "status": "IN_PROGRESS",
+  "startedAt": "2026-08-27T12:03:46+08:00",
+  "implementationBranch": "phase-1/p1-o01-toolchain-foundation",
+  "baseCommit": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
+  "phase1EntryGateRef": "operations/phase-1/phase-1-entry-gate.json",
+  "resumeGateRef": "operations/phase-1/p1-o01-resume-gate.json",
+  "resumedAt": "2026-08-28T04:00:00Z",
+  "trackingIssue": 6,
+  "authorityRefs": [
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/authority-lock.json",
+    "docs/decisions/ADR-0007-typescript-toolchain-baseline.md"
+  ],
+  "writeScopeOperationId": "P1-O01",
+  "gateStepIds": ["P1-V00-M0-AUTHORIZATION", "P1-V01-PREFLIGHT", "P1-V02-TOOLCHAIN"],
+  "exactToolchain": {
+    "node": "24.19.0",
+    "typescript": "6.0.3",
+    "pnpm": "11.24.0",
+    "moduleSystem": "ESM_ONLY",
+    "typescriptModule": "NodeNext",
+    "typescriptModuleResolution": "NodeNext",
+    "target": "ES2025",
+    "authorityBuild": "tsc -b"
+  },
+  "requiredOutputs": [
+    "exact toolchain manifest and frozen lockfile",
+    "strict ESM project-reference build",
+    "clean frozen-lockfile install",
+    "Windows and Linux clean-build Evidence"
+  ],
+  "declarationBoundary": {
+    "implementationAgentMaximum": "IMPLEMENTED",
+    "verifiedRequiresIndependentGate": true
+  },
+  "productionRuntimeAuthorized": false,
+  "notes": [
+    "Frozen operation authority files remain immutable.",
+    "Execution status is recorded here instead of mutating operations/phase-1/operation.json.",
+    "Execution resumed from the protected main governance-amendment baseline 7700b608586868cc6e4c19d519b8eef6fc770ae3.",
+    "P1-O02 and later operations are not authorized until P1-O01 independent verification passes."
+  ]
+}
