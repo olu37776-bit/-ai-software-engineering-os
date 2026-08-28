@@ -4,13 +4,14 @@
   "operationId": "P1-O01",
   "title": "Toolchain and reproducible monorepo foundation",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-27T12:03:46+08:00",
   "implementationBranch": "phase-1/p1-o01-toolchain-foundation",
   "baseCommit": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
   "phase1EntryGateRef": "operations/phase-1/phase-1-entry-gate.json",
   "resumeGateRef": "operations/phase-1/p1-o01-resume-gate.json",
   "resumedAt": "2026-08-28T04:00:00Z",
+  "completedAt": "2026-08-28T07:18:36Z",
   "trackingIssue": 6,
   "authorityRefs": [
     "operations/phase-1/operation.json",
@@ -37,11 +38,65 @@
     "clean frozen-lockfile install",
     "Windows and Linux clean-build Evidence"
   ],
+  "qualifiedImplementationCommit": "3c2ee1e4b37c9d73094197cb563490ae2514c2a0",
+  "implementationCommits": [
+    {
+      "sha": "a25a24715f1bd9f1c7ac8ff1ea6f8f69defb8a96",
+      "message": "build: establish reproducible TypeScript monorepo foundation"
+    },
+    {
+      "sha": "c374535f14fcb05d41f187e84b1276323b8b07f4",
+      "message": "fix: qualify shallow checkout and Windows pnpm execution"
+    },
+    {
+      "sha": "7889000c491b533f267a10e8ea31b3291b1dd2f4",
+      "message": "fix: canonicalize lockfile hash across platforms"
+    },
+    {
+      "sha": "5855d5c34c8b35805bfb1d7dd8e97df50e09e08e",
+      "message": "fix: accept platform-native source line endings"
+    },
+    {
+      "sha": "4e1e0d6de12560e932ebf171b0fd8f5faf5fda47",
+      "message": "test: normalize checkout line endings"
+    },
+    {
+      "sha": "3c2ee1e4b37c9d73094197cb563490ae2514c2a0",
+      "message": "fix: keep offline qualification on one volume"
+    }
+  ],
+  "verification": [
+    {
+      "stepId": "P1-V00-M0-AUTHORIZATION",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-v00-authorization.json"
+    },
+    {
+      "stepId": "P1-V01-PREFLIGHT",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-v01-preflight.json"
+    },
+    {
+      "stepId": "P1-V02-TOOLCHAIN",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-v02-toolchain.json"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-v00-authorization.json",
+    "operations/phase-1/evidence/o01/p1-v01-preflight.json",
+    "operations/phase-1/evidence/o01/p1-v02-toolchain.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33150909894"
+  ],
   "declarationBoundary": {
     "implementationAgentMaximum": "IMPLEMENTED",
     "verifiedRequiresIndependentGate": true
   },
   "productionRuntimeAuthorized": false,
+  "remainingGaps": [
+    "Independent verification has not been performed; P1-O01 is IMPLEMENTED, not VERIFIED.",
+    "P1-O02 and later operations remain unauthorized until the independent P1-V02 gate passes."
+  ],
   "notes": [
     "Frozen operation authority files remain immutable.",
     "Execution status is recorded here instead of mutating operations/phase-1/operation.json.",

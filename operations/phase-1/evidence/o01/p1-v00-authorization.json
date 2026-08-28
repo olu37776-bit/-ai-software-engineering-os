@@ -8,8 +8,8 @@
     "baselineCommit": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
     "implementationBranch": "phase-1/p1-o01-toolchain-foundation"
   },
-  "executedAt": "2026-08-28T06:43:48Z",
-  "command": "python3 scripts/governance/verify_m0.py --base 7700b608586868cc6e4c19d519b8eef6fc770ae3 --subject P1-O01-resume-preflight",
+  "executedAt": "2026-08-28T07:22:35Z",
+  "command": "python3 scripts/governance/verify_m0.py --base 7700b608586868cc6e4c19d519b8eef6fc770ae3 --subject P1-O01-final-implementation-evidence",
   "environment": {
     "python": "3.12",
     "jsonschema": "4.25.1",
@@ -25,6 +25,13 @@
     "acceptedAdrs": 11
   },
   "authorityLockSha256": "aa4134f9bcb8cd7160941092d63277f1a63cbf2191e6c25a89e1e9fc086d282c",
+  "qualifiedImplementationCommit": "3c2ee1e4b37c9d73094197cb563490ae2514c2a0",
+  "frozenAuthorityHashes": {
+    "operations/phase-1/operation.json": "157d1c83a798fc433b4bfb6a8b6ed12471c52e5a652e61dfb9532088f01f48dc",
+    "operations/phase-1/write-scope.json": "08adb2952c037c66a6c7d3898fca4e44ac4f2147b1f8bb26d3792b5703def095",
+    "operations/phase-1/verification-plan.json": "8d0758be1fe9fe8555e7c317bfd5d06b8f1a78120883c9a650d6471782108188",
+    "docs/decisions/ADR-0007-typescript-toolchain-baseline.md": "818c64838545982818aec1afed849cf3be9b4cf0a0c84be8741e4da5c74a1670"
+  },
   "resumeGateRef": "operations/phase-1/p1-o01-resume-gate.json",
   "claimBoundary": "AUTHORIZATION_AND_AUTHORITY_LOCK_ONLY"
 }

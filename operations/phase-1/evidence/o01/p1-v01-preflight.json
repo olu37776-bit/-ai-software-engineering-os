@@ -5,13 +5,14 @@
   "stepId": "P1-V01-PREFLIGHT",
   "subject": {
     "baselineCommit": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
-    "rebasedExecutionCommit": "dbef7aecaad72ce723571a35d4245bd917f83417"
+    "firstImplementationCommit": "a25a24715f1bd9f1c7ac8ff1ea6f8f69defb8a96",
+    "qualifiedImplementationCommit": "3c2ee1e4b37c9d73094197cb563490ae2514c2a0"
   },
-  "executedAt": "2026-08-28T06:43:48Z",
+  "executedAt": "2026-08-28T07:22:36Z",
   "result": "PASS",
   "baselineChecks": {
     "protectedMainMatchesAuthorizedBaseline": true,
-    "implementationCommitParentMatchesBaseline": true,
+    "firstImplementationCommitParentMatchesBaseline": true,
     "resumeGatePresent": true,
     "worktreeCleanBeforeResumeRecordUpdate": true
   },
@@ -19,9 +20,11 @@
     "enforcementMode": "DENY_BY_DEFAULT",
     "operationId": "P1-O01",
     "executionRecordAuthorized": true,
-    "preflightChangedPaths": ["operations/phase-1/executions/p1-o01-execution.json"],
+    "finalChangedPathCount": 30,
+    "scopeValidatorCommand": "pnpm run verify:scope",
     "violations": []
   },
+  "frozenAuthorityFilesUnchanged": true,
   "productionRuntimePathsChanged": [],
   "acceptedAdrPathsChanged": [],
   "claimBoundary": "BASELINE_AND_PREFLIGHT_ONLY"

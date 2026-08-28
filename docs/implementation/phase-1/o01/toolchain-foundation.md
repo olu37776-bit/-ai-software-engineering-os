@@ -1,6 +1,6 @@
 # P1-O01 Toolchain Foundation
 
-Status: `IN_PROGRESS`
+Status: `IMPLEMENTED` (not independently `VERIFIED`)
 
 P1-O01 establishes the reproducible repository and TypeScript build baseline only. It does not
 create production packages or implement Workflow, Node Runtime, Router, Verification System, or
@@ -35,6 +35,12 @@ pnpm run test
 
 The GitHub quality workflow runs the same lockfile and authority build on Linux x64 and Windows
 x64. The final `verify` job succeeds only when both platform qualifications succeed.
+
+The qualified implementation commit is `3c2ee1e4b37c9d73094197cb563490ae2514c2a0`.
+[GitHub Actions run 33150909894](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33150909894)
+passed `ubuntu-24.04` and `windows-2025`, including clean frozen installs, the complete quality
+baseline, clean authority rebuilds, and platform Evidence emission. Independent P1-V02
+verification remains a later gate.
 
 ## Supply-chain boundary
 
