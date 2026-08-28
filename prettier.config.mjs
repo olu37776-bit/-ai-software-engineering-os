@@ -1,6 +1,6 @@
 /** @type {import("prettier").Config} */
 const config = {
-  endOfLine: "lf",
+  endOfLine: "auto",
   printWidth: 100,
   proseWrap: "preserve",
   semi: true,
