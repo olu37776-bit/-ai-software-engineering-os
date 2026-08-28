@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O01-INDEPENDENT-GATE-2026-08-28-01",
+  "evidenceType": "IndependentOperationVerificationGate",
+  "operationId": "P1-O01",
+  "decision": "PASS",
+  "decidedAt": "2026-08-28T09:21:20Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "authorizedBaseline": "7700b608586868cc6e4c19d519b8eef6fc770ae3",
+    "implementationBranchHead": "1ffee6b2cd722599c08daaf227e7368f85fe49b7",
+    "qualifiedImplementationCommit": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c",
+    "mergedMainCommit": "aa4183efe39df984b42cd74910437fda8511a672",
+    "mergedMainTree": "a781bdb42ba79ffe464d22a88b7dafd20c696051"
+  },
+  "verifier": {
+    "role": "INDEPENDENT_VERIFIER",
+    "readOnlyVerification": true,
+    "remediationPerformed": false
+  },
+  "findingClosure": [
+    {
+      "findingId": "P1-O01-IV-01",
+      "classification": "BLOCKING",
+      "priorHead": "ad1b07ab29c249fc21f7ee31c4180bdf47839ceb",
+      "remediationCommit": "eba4ebf219529cca2c34fd813d37f8bd7b1f5a6c",
+      "status": "CLOSED",
+      "result": "PASS",
+      "detail": "M0 independent verification is the sole owner of required check context verify; P1-O01 quality uses the unique p1-o01-toolchain-qualify context."
+    }
+  ],
+  "preMergeVerification": {
+    "subjectCommit": "1ffee6b2cd722599c08daaf227e7368f85fe49b7",
+    "m0Independent": {
+      "runId": 33157709357,
+      "result": "PASS",
+      "checkName": "verify"
+    },
+    "qualityPullRequest": {
+      "runId": 33157709376,
+      "result": "PASS",
+      "linuxX64": "PASS",
+      "windowsX64": "PASS",
+      "aggregatorCheckName": "p1-o01-toolchain-qualify",
+      "aggregatorResult": "PASS"
+    },
+    "qualityPush": {
+      "runId": 33157705985,
+      "result": "PASS"
+    },
+    "requiredCheckAuthorityUnique": true
+  },
+  "postMergeVerification": {
+    "subjectCommit": "aa4183efe39df984b42cd74910437fda8511a672",
+    "m0Independent": {
+      "runId": 33158934580,
+      "jobId": 98808396790,
+      "checkName": "verify",
+      "result": "PASS"
+    },
+    "quality": {
+      "runId": 33158934535,
+      "result": "PASS",
+      "linuxX64": {
+        "jobId": 98808396559,
+        "result": "PASS"
+      },
+      "windowsX64": {
+        "jobId": 98808396372,
+        "result": "PASS"
+      },
+      "aggregator": {
+        "jobId": 98808646014,
+        "checkName": "p1-o01-toolchain-qualify",
+        "result": "PASS"
+      }
+    },
+    "requiredCheckAuthorityUnique": true
+  },
+  "scopeVerification": {
+    "implementationChangedPathCount": 30,
+    "implementationScopeViolations": 0,
+    "remediationChangedPathCount": 8,
+    "remediationScopeViolations": 0,
+    "denyByDefaultPreserved": true,
+    "acceptedAdrPathsChanged": [],
+    "frozenOperationAuthorityChanged": false,
+    "productionRuntimePathsChanged": []
+  },
+  "gateAuthorization": {
+    "p1O01StatusAfterGateMerge": "VERIFIED",
+    "p1O02EntryAfterGateMerge": "AUTHORIZED",
+    "p1O02BasePolicy": "USE_PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE"
+  },
+  "nonClaims": [
+    "This Gate verifies only P1-O01 toolchain and reproducible-monorepo foundation capability.",
+    "This Gate does not implement or verify production Workflow, Node Runtime, Router, Verification System, EvidenceGraph, Learning runtime, model adapter, GBrain adapter, persistence, Control API, Policy evaluator or Windows process isolation.",
+    "The P1-O01 implementation execution record remains an implementation-owned IMPLEMENTED record; VERIFIED authority is established by this independent Gate."
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/executions/p1-o01-execution.json",
+    "operations/phase-1/evidence/o01/p1-v00-authorization.json",
+    "operations/phase-1/evidence/o01/p1-v01-preflight.json",
+    "operations/phase-1/evidence/o01/p1-v02-toolchain.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/9",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33157709357",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33157709376",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33158934580",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33158934535"
+  ]
+}
