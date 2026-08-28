@@ -6,8 +6,9 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Operation-aware WRITE_SCOPE transition before P1-O02",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-28T10:00:00Z",
+  "completedAt": "2026-08-28T10:07:00Z",
   "implementationBranch": "phase-1/issue-11-transition-remediation",
   "baseCommit": "6bc651f7db0dc979b63cdafbc6d4747fdd26f8e9",
   "trackingIssue": 11,
@@ -34,11 +35,39 @@
     "p1O02Started": false,
     "productionRuntimeChanged": false
   },
-  "implementationCommits": [],
-  "verification": [],
-  "evidenceRefs": [],
+  "qualifiedImplementationCommit": "158e23e662744bff6e210d50160787c88b469aab",
+  "qualifiedImplementationTree": "d91163759a2f62be9604d6718fcd2bc2823cdb56",
+  "implementationCommits": [
+    {
+      "sha": "158e23e662744bff6e210d50160787c88b469aab",
+      "message": "fix: make Phase 1 scope validation operation-aware"
+    }
+  ],
+  "verification": [
+    {
+      "stepId": "P1-V00-M0-AUTHORIZATION",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-transition-scope-remediation.json"
+    },
+    {
+      "stepId": "P1-V01-PREFLIGHT",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-transition-scope-remediation.json"
+    },
+    {
+      "stepId": "P1-V02-TOOLCHAIN",
+      "result": "PASS",
+      "evidenceRef": "operations/phase-1/evidence/o01/p1-transition-scope-remediation.json"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-transition-scope-remediation.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/12",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33162033043",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33162032993"
+  ],
   "remainingGaps": [
-    "Remediation implementation and cross-platform qualification are in progress.",
+    "Issue #11 independent verification and protected-main post-merge qualification remain pending.",
     "P1-O02 remains blocked until independent verification passes after merge."
   ]
 }
