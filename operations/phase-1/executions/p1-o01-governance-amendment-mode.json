@@ -6,10 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Prior-gate-authorized Phase 1 governance amendment mode",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-28T20:14:31Z",
+  "completedAt": "2026-08-28T20:30:00Z",
   "implementationBranch": "phase-1/p1-o01-governance-amendment-mode",
   "baseCommit": "099ce3a125ba20823f529b97a8db1b305afb1da5",
+  "implementationCommit": "a660fefd137fe1cc3a97ad5b29e6d9033d21c802",
+  "implementationTree": "223146243977a86d20e765148ef270f225dbbc56",
+  "pullRequest": 16,
   "trackingIssue": 15,
   "authorityRefs": [
     "operations/phase-1/operation.json",
@@ -30,10 +34,35 @@
     "p1O02Started": false,
     "productionRuntimeChanged": false
   },
-  "verification": [],
-  "evidenceRefs": [],
+  "verification": [
+    {
+      "check": "P1-V00 / M0 regression",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "check": "operation-aware WRITE_SCOPE preflight",
+      "result": "PASS",
+      "mode": "OPERATION_EXECUTION",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "immutableAuthorityFilesVerified": 25
+    },
+    {
+      "check": "Linux and Windows qualification",
+      "result": "PASS",
+      "workflowRun": 33208362280
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-governance-amendment-mode.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/16",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33208362380",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33208362280"
+  ],
   "remainingGaps": [
-    "Implementation and cross-platform qualification are pending.",
-    "Independent verification is required before Issue #15 can be VERIFIED."
+    "Independent verification is required before Issue #15 can be VERIFIED.",
+    "Issue #14 still requires a separate prior independent authorization Gate on protected main.",
+    "P1-O02 remains outside this remediation and has not started."
   ]
 }
