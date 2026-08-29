@@ -6,10 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Issue #14 P1-O02 root integration WRITE_SCOPE amendment",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-29T12:34:52Z",
+  "completedAt": "2026-08-29T12:44:32Z",
   "implementationBranch": "governance/p1-o02-root-integration-scope-amendment",
   "baseCommit": "a455d2d145585b68c2f7201fa01a64be5efa37d4",
+  "implementationCommit": "09fc96fe49400a8037631d14a3e507f126af9729",
+  "implementationTree": "e3b687b790e086fa0471370d38aeb1d3d53ec62b",
+  "pullRequest": 19,
   "trackingIssue": 14,
   "priorAuthorizationGateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-14.json",
   "authorityRefs": [
@@ -26,5 +30,76 @@
     "p1O02Implemented": false,
     "p1O02Resumed": false,
     "productionRuntimeChanged": false
-  }
+  },
+  "verification": [
+    {
+      "check": "GOVERNANCE_AMENDMENT preflight",
+      "result": "PASS",
+      "mode": "GOVERNANCE_AMENDMENT",
+      "authorizationBase": "0b89d2b1557f250c80a978d9562f0427852fc90a",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "violations": 0
+    },
+    {
+      "check": "P1-O02 exact root integration scope",
+      "result": "PASS",
+      "addedPaths": [
+        "package.json",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
+        "tsconfig.build.json",
+        "vitest.config.mjs"
+      ],
+      "unrelatedRootPathRejected": true,
+      "otherOperationScopeExpansion": false
+    },
+    {
+      "check": "Authority Lock",
+      "result": "PASS",
+      "authorityFilesVerified": 32,
+      "unrelatedAuthorityFilesVerified": 30,
+      "pathSetChanged": false,
+      "ownershipChanged": false
+    },
+    {
+      "check": "P1-V00 / M0 regression",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "check": "local quality and clean build",
+      "result": "PASS",
+      "testsPassed": 31,
+      "testsFailed": 0,
+      "frozenOfflineInstall": "PASS"
+    },
+    {
+      "check": "Linux and Windows qualification",
+      "result": "PASS",
+      "workflowRun": 33253203695,
+      "linuxJob": 99102327539,
+      "windowsJob": 99102327491,
+      "aggregatorJob": 99102439730
+    },
+    {
+      "check": "required verify authority uniqueness",
+      "result": "PASS",
+      "workflowRun": 33253203686,
+      "verifyJob": 99102327476,
+      "verifyProducers": 1
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o02-root-integration-scope-amendment.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/14",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/19",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33253203686",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33253203695"
+  ],
+  "remainingGaps": [
+    "Issue #14 requires independent verification before any VERIFIED declaration.",
+    "P1-O02 remains blocked until the Issue #14 amendment is independently verified and merged to protected main.",
+    "No P1-O02 Contract implementation or root integration file mutation occurred in this amendment."
+  ]
 }
