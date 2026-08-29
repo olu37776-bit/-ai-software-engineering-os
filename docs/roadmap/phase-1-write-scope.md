@@ -1,6 +1,6 @@
 # Phase 1 WRITE_SCOPE
 
-状态：`AMENDED — ISSUE #7 SCOPE CLOSURE`
+状态：`AMENDED — ISSUE #14 P1-O02 ROOT INTEGRATION SCOPE CLOSURE`
 机器权威：`operations/phase-1/write-scope.json`  
 执行模式：`DENY_BY_DEFAULT`
 
@@ -45,6 +45,18 @@ Each operation owns only its exact execution-record namespace:
 The Phase 1 plan, WRITE_SCOPE, VerificationPlan, Receipt Schemas, Authority Lock, preimplementation policy, accepted ADRs and their human-readable authority documents are immutable during implementation. Contract inventory and registry are operation-scoped to P1-O02.
 
 Issue #7 repairs a scope-closure defect only. It changes no accepted ADR and no Operation Plan or VerificationPlan semantics. P1-O01 may resume only from the protected `main` commit containing the amendment and its passing required `verify` result.
+
+## P1-O02 root integration amendment
+
+Issue #14 grants only P1-O02 the minimum exact root paths required to integrate the Contract package with the authoritative workspace, lockfile, project-reference build and test selection:
+
+- `package.json`;
+- `pnpm-workspace.yaml`;
+- `pnpm-lock.yaml`;
+- `tsconfig.build.json`;
+- `vitest.config.mjs`.
+
+This grant does not modify the files above. They remain future P1-O02 implementation paths until this governance amendment is independently verified. P1-O01 and P1-O03 through P1-O09 receive no authority expansion. `DENY_BY_DEFAULT`, global denial, semantic constraints and Authority Lock ownership remain unchanged.
 
 ## Expansion
 
