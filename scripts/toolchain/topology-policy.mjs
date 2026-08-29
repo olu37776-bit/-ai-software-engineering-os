@@ -128,19 +128,6 @@ export function validateMonorepoTopology({
     fail("MISSING_TOOLCHAIN_QUALIFICATION_REFERENCE", TOOLCHAIN_QUALIFICATION_PROJECT);
   }
 
-  const packageReferences = projectReferences.filter(
-    (path) => path !== TOOLCHAIN_QUALIFICATION_PROJECT,
-  );
-  const packageReferenceSet = new Set(packageReferences);
-  const missingBuildReferences = workspacePackages.filter((path) => !packageReferenceSet.has(path));
-  if (missingBuildReferences.length > 0) {
-    fail("WORKSPACE_PACKAGE_MISSING_BUILD_REFERENCE", missingBuildReferences.join(","));
-  }
-  const referencesOutsideWorkspace = packageReferences.filter((path) => !workspaceSet.has(path));
-  if (referencesOutsideWorkspace.length > 0) {
-    fail("PACKAGE_BUILD_REFERENCE_OUTSIDE_WORKSPACE", referencesOutsideWorkspace.join(","));
-  }
-
   const missingProjects = projectReferences.filter((path) => !existingProjectPaths.has(path));
   if (missingProjects.length > 0) {
     fail("BUILD_REFERENCE_PROJECT_MISSING", missingProjects.join(","));
@@ -149,10 +136,28 @@ export function validateMonorepoTopology({
   if (missingPackages.length > 0) {
     fail("WORKSPACE_PACKAGE_MANIFEST_MISSING", missingPackages.join(","));
   }
+  const missingWorkspaceProjects = workspacePackages.filter(
+    (path) => !existingProjectPaths.has(path),
+  );
+  if (missingWorkspaceProjects.length > 0) {
+    fail("WORKSPACE_PACKAGE_PROJECT_MISSING", missingWorkspaceProjects.join(","));
+  }
+
+  const missingBuildReferences = workspacePackages.filter((path) => !referenceSet.has(path));
+  if (missingBuildReferences.length > 0) {
+    fail("WORKSPACE_PACKAGE_MISSING_BUILD_REFERENCE", missingBuildReferences.join(","));
+  }
+  const packageReferences = projectReferences.filter((path) => existingPackagePaths.has(path));
+  const nonPackageReferences = projectReferences.filter((path) => !existingPackagePaths.has(path));
+  const referencesOutsideWorkspace = packageReferences.filter((path) => !workspaceSet.has(path));
+  if (referencesOutsideWorkspace.length > 0) {
+    fail("PACKAGE_BUILD_REFERENCE_OUTSIDE_WORKSPACE", referencesOutsideWorkspace.join(","));
+  }
 
   return {
     toolchainQualificationProject: TOOLCHAIN_QUALIFICATION_PROJECT,
     workspacePackages,
+    nonPackageProjectReferences: nonPackageReferences,
     packageProjectReferences: packageReferences,
     projectReferences,
   };

@@ -48,10 +48,12 @@ async function repositoryFileExists(path, filename) {
     if (pathFromRoot === "" || pathFromRoot.startsWith("..") || isAbsolute(pathFromRoot)) {
       return false;
     }
-    const [directory, file] = await Promise.all([
-      stat(directoryRealPath),
-      stat(resolve(directoryRealPath, filename)),
-    ]);
+    const fileRealPath = await realpath(resolve(directoryRealPath, filename));
+    const filePathFromRoot = relative(repositoryRealPath, fileRealPath);
+    if (filePathFromRoot.startsWith("..") || isAbsolute(filePathFromRoot)) {
+      return false;
+    }
+    const [directory, file] = await Promise.all([stat(directoryRealPath), stat(fileRealPath)]);
     return directory.isDirectory() && file.isFile();
   } catch {
     return false;
@@ -140,6 +142,7 @@ reportAndExit({
   projectReferences: topology.projectReferences.length,
   workspacePackages: topology.workspacePackages.length,
   packageProjectReferences: topology.packageProjectReferences.length,
+  nonPackageProjectReferences: topology.nonPackageProjectReferences.length,
   toolchainQualificationProject: topology.toolchainQualificationProject,
   esmOnly: true,
   qualityAggregatorCheck,

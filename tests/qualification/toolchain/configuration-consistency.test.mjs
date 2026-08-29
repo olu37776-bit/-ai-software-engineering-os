@@ -52,7 +52,25 @@ describe("repository toolchain consistency", () => {
     ).toMatchObject({
       workspacePackages: [],
       packageProjectReferences: [],
+      nonPackageProjectReferences: [toolchainProject],
       projectReferences: [toolchainProject],
+    });
+  });
+
+  test("accepts a real generic non-package project in the authority build", () => {
+    const genericProject = "tests/architecture";
+    expect(
+      validateFixture(
+        "packages: []\n",
+        [{ path: "./tests/qualification/toolchain" }, { path: "./tests/architecture" }],
+        [toolchainProject, genericProject],
+        [],
+      ),
+    ).toMatchObject({
+      workspacePackages: [],
+      packageProjectReferences: [],
+      nonPackageProjectReferences: [toolchainProject, genericProject],
+      projectReferences: [toolchainProject, genericProject],
     });
   });
 
@@ -67,6 +85,7 @@ describe("repository toolchain consistency", () => {
     ).toMatchObject({
       workspacePackages: ["packages/contracts"],
       packageProjectReferences: ["packages/contracts"],
+      nonPackageProjectReferences: [toolchainProject],
     });
   });
 
