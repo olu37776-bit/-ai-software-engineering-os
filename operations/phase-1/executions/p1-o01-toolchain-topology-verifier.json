@@ -6,10 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Topology-aware toolchain configuration verifier before P1-O02",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-29T13:41:49Z",
+  "completedAt": "2026-08-29T13:52:05Z",
   "implementationBranch": "phase-1/p1-o01-toolchain-topology-verifier",
   "baseCommit": "370b342a521839a16787ffaae68db272d3ad38b8",
+  "implementationCommit": "4e2076be9d4c76b6f0ac5d7bc7e891a5baa16841",
+  "implementationTree": "283e5a5e25496d7fdc3c853042d350b283e9353e",
+  "pullRequest": 22,
   "trackingIssue": 21,
   "authorityRefs": [
     "operations/phase-1/operation.json",
@@ -31,11 +35,59 @@
     "contractImplementationChanged": false,
     "productionRuntimeChanged": false
   },
-  "verification": [],
-  "evidenceRefs": [],
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight",
+      "result": "PASS",
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O01",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "immutableAuthorityFilesVerified": 25
+    },
+    {
+      "check": "topology consistency fixtures",
+      "result": "PASS",
+      "positiveFixtures": 2,
+      "negativeFixtureCategories": 14
+    },
+    {
+      "check": "local quality and clean build",
+      "result": "PASS",
+      "testsPassed": 45,
+      "testsFailed": 0,
+      "frozenOfflineInstall": "PASS"
+    },
+    {
+      "check": "P1-V00 / M0 regression",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "check": "Linux and Windows qualification",
+      "result": "PASS",
+      "workflowRun": 33256013813,
+      "linuxJob": 99109732412,
+      "windowsJob": 99109732568,
+      "aggregatorJob": 99109865621
+    },
+    {
+      "check": "required verify authority",
+      "result": "PASS",
+      "workflowRun": 33256013878,
+      "verifyProducers": 1
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-toolchain-topology-verifier.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/21",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/22",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33256013878",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33256013813"
+  ],
   "remainingGaps": [
-    "Implementation and cross-platform qualification are pending.",
     "Independent verification is required before Issue #21 can be VERIFIED.",
+    "PR #22 must merge and receive protected-main post-merge verification before a new P1-O02 baseline exists.",
     "P1-O02 remains blocked and is not resumed by this remediation."
   ]
 }
