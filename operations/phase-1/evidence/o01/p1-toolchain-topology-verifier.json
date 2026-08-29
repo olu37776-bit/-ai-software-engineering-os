@@ -4,14 +4,14 @@
   "evidenceType": "P1O01ToolchainTopologyVerifierImplementationEvidence",
   "trackingIssue": 21,
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-29T13:52:05Z",
+  "recordedAt": "2026-08-29T14:19:02Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "branch": "phase-1/p1-o01-toolchain-topology-verifier",
     "pullRequest": 22,
     "authorizedBase": "370b342a521839a16787ffaae68db272d3ad38b8",
-    "qualifiedImplementationCommit": "4e2076be9d4c76b6f0ac5d7bc7e891a5baa16841",
-    "qualifiedImplementationTree": "283e5a5e25496d7fdc3c853042d350b283e9353e"
+    "qualifiedImplementationCommit": "7a9b4dec7346d45a445bf9a86f584622c7addea7",
+    "qualifiedImplementationTree": "1d448000b9415e8861db530234174504bdde0dd8"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -21,6 +21,16 @@
     "writeScopeEnforcementMode": "DENY_BY_DEFAULT",
     "immutableAuthorityFilesVerified": 25,
     "scopeViolations": 0
+  },
+  "independentReviewRemediation": {
+    "findingId": "P1-O02-TOOLCHAIN-CONFIG-01-IV-01",
+    "reviewedHead": "504e32fdb21b86819a69261e11b91851fd709f3e",
+    "status": "REMEDIATED",
+    "remediationCommit": "7a9b4dec7346d45a445bf9a86f584622c7addea7",
+    "classification": {
+      "packageProject": "A referenced project with package.json must be a pnpm workspace package.",
+      "nonPackageProject": "A referenced project without package.json and with a valid tsconfig.json is allowed outside the pnpm workspace."
+    }
   },
   "topologyConsistency": {
     "result": "PASS",
@@ -36,9 +46,14 @@
       "buildReferences": ["./tests/qualification/toolchain", "./packages/contracts"],
       "result": "PASS"
     },
+    "genericNonPackageProjectFixture": {
+      "workspacePackages": [],
+      "buildReferences": ["./tests/qualification/toolchain", "./tests/architecture"],
+      "result": "PASS"
+    },
     "negativeFixtures": {
       "workspacePackageWithoutBuildReference": "FAIL_CLOSED",
-      "buildReferenceOutsideWorkspace": "FAIL_CLOSED",
+      "packageBuildReferenceOutsideWorkspace": "FAIL_CLOSED",
       "duplicateWorkspacePackage": "FAIL_CLOSED",
       "duplicateBuildReference": "FAIL_CLOSED",
       "absoluteWorkspacePath": "FAIL_CLOSED",
@@ -97,34 +112,34 @@
         "failed": 0
       }
     ],
-    "topologyTestsPassed": 16,
+    "topologyTestsPassed": 17,
     "testFilesPassed": 5,
-    "testsPassed": 45,
+    "testsPassed": 46,
     "testsFailed": 0,
     "frozenOfflineInstall": "PASS",
     "lockfileUnchanged": true
   },
   "githubQualification": {
-    "subjectCommit": "4e2076be9d4c76b6f0ac5d7bc7e891a5baa16841",
+    "subjectCommit": "7a9b4dec7346d45a445bf9a86f584622c7addea7",
     "m0Independent": {
-      "runId": 33256013878,
+      "runId": 33257161844,
       "checkName": "verify",
       "result": "PASS",
       "verifyProducers": 1
     },
     "quality": {
-      "runId": 33256013813,
+      "runId": 33257161884,
       "result": "PASS",
       "linuxX64": {
-        "jobId": 99109732412,
+        "jobId": 99112801706,
         "result": "PASS"
       },
       "windowsX64": {
-        "jobId": 99109732568,
+        "jobId": 99112801811,
         "result": "PASS"
       },
       "aggregator": {
-        "jobId": 99109865621,
+        "jobId": 99112955123,
         "checkName": "p1-o01-toolchain-qualify",
         "result": "PASS"
       }
@@ -147,7 +162,7 @@
   "evidenceRefs": [
     "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/21",
     "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/22",
-    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33256013878",
-    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33256013813"
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33257161844",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33257161884"
   ]
 }

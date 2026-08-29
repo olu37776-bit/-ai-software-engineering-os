@@ -8,11 +8,11 @@
   "riskClass": "R3",
   "status": "IMPLEMENTED",
   "startedAt": "2026-08-29T13:41:49Z",
-  "completedAt": "2026-08-29T13:52:05Z",
+  "completedAt": "2026-08-29T14:19:02Z",
   "implementationBranch": "phase-1/p1-o01-toolchain-topology-verifier",
   "baseCommit": "370b342a521839a16787ffaae68db272d3ad38b8",
-  "implementationCommit": "4e2076be9d4c76b6f0ac5d7bc7e891a5baa16841",
-  "implementationTree": "283e5a5e25496d7fdc3c853042d350b283e9353e",
+  "implementationCommit": "7a9b4dec7346d45a445bf9a86f584622c7addea7",
+  "implementationTree": "1d448000b9415e8861db530234174504bdde0dd8",
   "pullRequest": 22,
   "trackingIssue": 21,
   "authorityRefs": [
@@ -35,6 +35,13 @@
     "contractImplementationChanged": false,
     "productionRuntimeChanged": false
   },
+  "independentReviewRemediation": {
+    "findingId": "P1-O02-TOOLCHAIN-CONFIG-01-IV-01",
+    "reviewedHead": "504e32fdb21b86819a69261e11b91851fd709f3e",
+    "status": "REMEDIATED",
+    "remediationCommit": "7a9b4dec7346d45a445bf9a86f584622c7addea7",
+    "summary": "Root build references are classified by project package.json presence; valid non-package TypeScript projects remain in the authority build without being forced into the pnpm workspace."
+  },
   "verification": [
     {
       "check": "operation-aware WRITE_SCOPE preflight",
@@ -47,13 +54,13 @@
     {
       "check": "topology consistency fixtures",
       "result": "PASS",
-      "positiveFixtures": 2,
+      "positiveFixtures": 3,
       "negativeFixtureCategories": 14
     },
     {
       "check": "local quality and clean build",
       "result": "PASS",
-      "testsPassed": 45,
+      "testsPassed": 46,
       "testsFailed": 0,
       "frozenOfflineInstall": "PASS"
     },
@@ -66,15 +73,15 @@
     {
       "check": "Linux and Windows qualification",
       "result": "PASS",
-      "workflowRun": 33256013813,
-      "linuxJob": 99109732412,
-      "windowsJob": 99109732568,
-      "aggregatorJob": 99109865621
+      "workflowRun": 33257161884,
+      "linuxJob": 99112801706,
+      "windowsJob": 99112801811,
+      "aggregatorJob": 99112955123
     },
     {
       "check": "required verify authority",
       "result": "PASS",
-      "workflowRun": 33256013878,
+      "workflowRun": 33257161844,
       "verifyProducers": 1
     }
   ],
@@ -82,8 +89,8 @@
     "operations/phase-1/evidence/o01/p1-toolchain-topology-verifier.json",
     "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/21",
     "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/22",
-    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33256013878",
-    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33256013813"
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33257161844",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33257161884"
   ],
   "remainingGaps": [
     "Independent verification is required before Issue #21 can be VERIFIED.",
