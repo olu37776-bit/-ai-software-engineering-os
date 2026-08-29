@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-GOVERNANCE-AMENDMENT-AUTHORIZATION-ISSUE-14-2026-08-29-01",
+  "evidenceType": "Phase1GovernanceAmendmentAuthorization",
+  "trackingIssue": 14,
+  "decision": "AUTHORIZED",
+  "recordedAt": "2026-08-29T12:23:00Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "authorizationBase": "0b89d2b1557f250c80a978d9562f0427852fc90a",
+    "authorizedBasePolicy": "DIRECT_PROTECTED_MAIN_CHILD_CONTAINING_THIS_GATE",
+    "implementationBranch": "governance/p1-o02-root-integration-scope-amendment"
+  },
+  "verifier": {
+    "role": "INDEPENDENT_VERIFIER",
+    "independent": true,
+    "readOnlySubjectVerification": true,
+    "remediationPerformed": false
+  },
+  "authorization": {
+    "mode": "GOVERNANCE_AMENDMENT",
+    "allowedChangedPaths": [
+      "docs/roadmap/phase-1-write-scope.md",
+      "operations/phase-1/authority-lock.json",
+      "operations/phase-1/evidence/o01/p1-o02-root-integration-scope-amendment.json",
+      "operations/phase-1/executions/p1-o01-o02-root-scope-amendment.json",
+      "operations/phase-1/write-scope.json"
+    ],
+    "unlistedPhase1AuthorityPaths": "DENIED"
+  },
+  "claimBoundary": {
+    "acceptedAdrMutationAuthorized": false,
+    "productionRuntimeAuthorized": false,
+    "p1O02ImplementationAuthorized": false
+  },
+  "purpose": [
+    "Authorize only the Issue #14 governance amendment needed to close the P1-O02 root integration WRITE_SCOPE defect.",
+    "Do not authorize the P1-O02 Contract implementation or the five root integration files themselves in this governance amendment."
+  ],
+  "targetAmendment": {
+    "finding": "P1-O02-SCOPE-01",
+    "targetOperationId": "P1-O02",
+    "rootPathsToBecomeOperationAuthorized": [
+      "package.json",
+      "pnpm-workspace.yaml",
+      "pnpm-lock.yaml",
+      "tsconfig.build.json",
+      "vitest.config.mjs"
+    ],
+    "otherOperationAuthorityExpansionAuthorized": false
+  },
+  "prerequisites": {
+    "issue15Verified": true,
+    "issue15ProtectedMainCommit": "0b89d2b1557f250c80a978d9562f0427852fc90a",
+    "p1O02CurrentState": "BLOCKED_SCOPE_CLOSURE"
+  },
+  "evidenceRefs": [
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/14",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/15",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/16"
+  ]
+}
