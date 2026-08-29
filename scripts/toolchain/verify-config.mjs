@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
-import { readFile, readdir } from "node:fs/promises";
-import { extname, join, resolve } from "node:path";
+import { readFile, readdir, realpath, stat } from "node:fs/promises";
+import { extname, isAbsolute, join, relative, resolve } from "node:path";
 
 import { normalizeUtf8Lf, readJson, reportAndExit, repositoryRoot } from "./lib.mjs";
+import { parseWorkspacePackagePaths, validateMonorepoTopology } from "./topology-policy.mjs";
 
 const packageManifest = await readJson("package.json");
 const toolchain = await readJson("toolchain/toolchain.json");
@@ -38,11 +39,54 @@ const requiredCompilerOptions = {
 for (const [key, expected] of Object.entries(requiredCompilerOptions)) {
   assert.deepEqual(baseConfig.compilerOptions[key], expected, `tsconfig.base.json: ${key}`);
 }
-assert.deepEqual(buildConfig.references, [{ path: "./tests/qualification/toolchain" }]);
+
+const repositoryRealPath = await realpath(repositoryRoot);
+async function repositoryFileExists(path, filename) {
+  try {
+    const directoryRealPath = await realpath(resolve(repositoryRoot, path));
+    const pathFromRoot = relative(repositoryRealPath, directoryRealPath);
+    if (pathFromRoot === "" || pathFromRoot.startsWith("..") || isAbsolute(pathFromRoot)) {
+      return false;
+    }
+    const fileRealPath = await realpath(resolve(directoryRealPath, filename));
+    const filePathFromRoot = relative(repositoryRealPath, fileRealPath);
+    if (filePathFromRoot.startsWith("..") || isAbsolute(filePathFromRoot)) {
+      return false;
+    }
+    const [directory, file] = await Promise.all([stat(directoryRealPath), stat(fileRealPath)]);
+    return directory.isDirectory() && file.isFile();
+  } catch {
+    return false;
+  }
+}
+
+const workspacePackagePaths = parseWorkspacePackagePaths(workspace);
+const candidateReferencePaths = Array.isArray(buildConfig.references)
+  ? buildConfig.references
+      .filter((reference) => reference && typeof reference.path === "string")
+      .map((reference) => reference.path.replace(/^\.\//, ""))
+  : [];
+const candidatePaths = [...new Set([...workspacePackagePaths, ...candidateReferencePaths])];
+const existingProjectPaths = new Set();
+const existingPackagePaths = new Set();
+for (const path of candidatePaths) {
+  if (await repositoryFileExists(path, "tsconfig.json")) {
+    existingProjectPaths.add(path);
+  }
+  if (await repositoryFileExists(path, "package.json")) {
+    existingPackagePaths.add(path);
+  }
+}
+const topology = validateMonorepoTopology({
+  workspacePackagePaths,
+  buildReferences: buildConfig.references,
+  existingProjectPaths,
+  existingPackagePaths,
+});
+
 assert.match(packageManifest.scripts.build, /^tsc -b /);
 assert.equal(toolchain.authority.buildCommand, `pnpm exec ${packageManifest.scripts.build}`);
 
-assert.match(workspace, /^packages: \[\]$/m);
 assert.match(workspace, /^allowBuilds:\n\s{2}protobufjs: true$/m);
 assert.match(workspace, /^blockExoticSubdeps: true$/m);
 assert.match(workspace, /^minimumReleaseAge: 1440$/m);
@@ -95,7 +139,11 @@ reportAndExit({
   check: "TOOLCHAIN_CONFIGURATION_CONSISTENCY",
   result: "PASS",
   authorityBuild: packageManifest.scripts.build,
-  projectReferences: buildConfig.references.length,
+  projectReferences: topology.projectReferences.length,
+  workspacePackages: topology.workspacePackages.length,
+  packageProjectReferences: topology.packageProjectReferences.length,
+  nonPackageProjectReferences: topology.nonPackageProjectReferences.length,
+  toolchainQualificationProject: topology.toolchainQualificationProject,
   esmOnly: true,
   qualityAggregatorCheck,
   dependencyBuildPolicy: toolchain.packageManager.dependencyBuildPolicy,
