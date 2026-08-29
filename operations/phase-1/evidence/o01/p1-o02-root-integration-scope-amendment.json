@@ -1,0 +1,176 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O01-O02-ROOT-SCOPE-AMENDMENT-2026-08-29-01",
+  "evidenceType": "Phase1GovernanceAmendmentImplementationEvidence",
+  "trackingIssue": 14,
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-08-29T12:44:32Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "branch": "governance/p1-o02-root-integration-scope-amendment",
+    "pullRequest": 19,
+    "authorizedBase": "a455d2d145585b68c2f7201fa01a64be5efa37d4",
+    "qualifiedImplementationCommit": "09fc96fe49400a8037631d14a3e507f126af9729",
+    "qualifiedImplementationTree": "e3b687b790e086fa0471370d38aeb1d3d53ec62b"
+  },
+  "authorizationPreflight": {
+    "result": "PASS",
+    "mode": "GOVERNANCE_AMENDMENT",
+    "operationId": "P1-O01",
+    "writeScopeOperationId": "P1-O01",
+    "trackingIssue": 14,
+    "authorizationGate": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-14.json",
+    "authorizationGateLoadedFrom": "a455d2d145585b68c2f7201fa01a64be5efa37d4",
+    "authorizationBase": "0b89d2b1557f250c80a978d9562f0427852fc90a",
+    "writeScopeEnforcementMode": "DENY_BY_DEFAULT",
+    "allowedChangedPaths": [
+      "docs/roadmap/phase-1-write-scope.md",
+      "operations/phase-1/authority-lock.json",
+      "operations/phase-1/evidence/o01/p1-o02-root-integration-scope-amendment.json",
+      "operations/phase-1/executions/p1-o01-o02-root-scope-amendment.json",
+      "operations/phase-1/write-scope.json"
+    ],
+    "violations": []
+  },
+  "amendment": {
+    "result": "PASS",
+    "targetOperationId": "P1-O02",
+    "newExactAllowedPathGlobs": [
+      "package.json",
+      "pnpm-workspace.yaml",
+      "pnpm-lock.yaml",
+      "tsconfig.build.json",
+      "vitest.config.mjs"
+    ],
+    "wildcardGrantAdded": false,
+    "unrelatedRootPathProbe": {
+      "path": "README.md",
+      "result": "REJECTED",
+      "failureCode": "NOT_ALLOWED"
+    },
+    "p1O01ScopeUnchanged": true,
+    "p1O03ThroughP1O09ScopeUnchanged": true,
+    "otherOperationAuthorityExpansion": false,
+    "rootIntegrationFilesModifiedByAmendment": [],
+    "acceptedAdrPathsChanged": [],
+    "contractImplementationPathsChanged": [],
+    "productionRuntimePathsChanged": []
+  },
+  "authorityLock": {
+    "result": "PASS",
+    "hashPolicy": "SHA256_EXACT_UTF8_LF_FILE_BYTES",
+    "authorityFilesVerified": 32,
+    "unrelatedAuthorityFilesVerified": 30,
+    "pathSetChanged": false,
+    "roleChanged": false,
+    "mutationPolicyChanged": false,
+    "allowedOperationIdsChanged": false,
+    "updatedHashEntries": [
+      {
+        "path": "docs/roadmap/phase-1-write-scope.md",
+        "sha256": "d2beaec5242e30c6facffedc9855ab246a11995ea861452c5ba3ce6f16c7d516"
+      },
+      {
+        "path": "operations/phase-1/write-scope.json",
+        "sha256": "64814e9e1d6894f67162083f25bd07df2f6d919fbd391cdff5fd6a65e4b015a6"
+      }
+    ]
+  },
+  "localQualification": {
+    "platform": "linux-x64",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "commands": [
+      {
+        "command": "python scripts/governance/verify_m0.py --base e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45 --subject working-tree",
+        "result": "PASS",
+        "passed": 14,
+        "failed": 0
+      },
+      {
+        "command": "pnpm run verify:scope --operation P1-O01 --base a455d2d145585b68c2f7201fa01a64be5efa37d4 --head a455d2d145585b68c2f7201fa01a64be5efa37d4 --branch governance/p1-o02-root-integration-scope-amendment --event local",
+        "result": "PASS",
+        "mode": "GOVERNANCE_AMENDMENT"
+      },
+      {
+        "command": "pnpm exec vitest run tests/qualification/toolchain/scope-policy.test.mjs",
+        "result": "PASS",
+        "testsPassed": 25,
+        "testsFailed": 0
+      },
+      {
+        "command": "pnpm run quality",
+        "result": "PASS",
+        "testsPassed": 31,
+        "testsFailed": 0
+      },
+      {
+        "command": "pnpm run clean && pnpm run build && pnpm run test",
+        "result": "PASS",
+        "testsPassed": 31,
+        "testsFailed": 0
+      }
+    ],
+    "frozenOfflineInstall": "PASS",
+    "lockfileUnchanged": true,
+    "qualificationPreparation": {
+      "repositoryMutation": false,
+      "exactPnpmPathRequired": true,
+      "offlineStorePrimedByCleanFrozenOnlineInstall": true
+    }
+  },
+  "githubQualification": {
+    "subjectCommit": "09fc96fe49400a8037631d14a3e507f126af9729",
+    "m0Independent": {
+      "runId": 33253203686,
+      "jobId": 99102327476,
+      "checkName": "verify",
+      "result": "PASS"
+    },
+    "quality": {
+      "runId": 33253203695,
+      "result": "PASS",
+      "linuxX64": {
+        "jobId": 99102327539,
+        "result": "PASS"
+      },
+      "windowsX64": {
+        "jobId": 99102327491,
+        "result": "PASS"
+      },
+      "aggregator": {
+        "jobId": 99102439730,
+        "checkName": "p1-o01-toolchain-qualify",
+        "result": "PASS"
+      }
+    },
+    "checkAuthority": {
+      "verifyProducerCount": 1,
+      "verifyProducerWorkflow": "M0 independent preimplementation verification",
+      "qualityAggregatorName": "p1-o01-toolchain-qualify",
+      "result": "PASS"
+    }
+  },
+  "declarationBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "p1O02Implemented": false,
+    "p1O02Resumed": false,
+    "acceptedAdrChanged": false,
+    "contractImplementationChanged": false,
+    "productionRuntimeChanged": false
+  },
+  "remainingGaps": [
+    "Issue #14 requires independent verification before any VERIFIED declaration.",
+    "P1-O02 remains blocked until the Issue #14 amendment is independently verified and merged to protected main.",
+    "No P1-O02 Contract implementation or root integration file mutation occurred in this amendment."
+  ],
+  "evidenceRefs": [
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/14",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/15",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/19",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33253203686",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33253203695"
+  ]
+}

@@ -143,6 +143,11 @@
     {
       "operationId": "P1-O02",
       "allowedPathGlobs": [
+        "package.json",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
+        "tsconfig.build.json",
+        "vitest.config.mjs",
         "packages/contracts/**",
         "tests/contract/**",
         "scripts/contracts/**",
