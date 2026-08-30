@@ -4,13 +4,13 @@
   "evidenceType": "P1V03ContractsImplementationEvidence",
   "gateStepId": "P1-V03-CONTRACTS",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-30T12:41:02Z",
+  "recordedAt": "2026-08-30T12:45:10Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "branch": "phase-1/p1-o02-contract-foundation-resume-3",
     "authorizedBase": "9d7b4fc0ad8bf2cbbf708ae298ec502ae5326715",
-    "qualifiedImplementationCommit": "1ed45cc6fa1b214e0e18f6fa6d3a272ad2157009",
-    "qualifiedImplementationTree": "25839be682b5c11dafe53a864ca7cd454c6a4d1b"
+    "qualifiedImplementationCommit": "82d50e81a433ae544ebf450d81e0d88fb25f125c",
+    "qualifiedImplementationTree": "34a6cdecd244cbd800a211ee622fcb6b67df1f2e"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -70,7 +70,8 @@
     "duplicateIdentityProbes": "FAIL_CLOSED",
     "duplicatePathProbes": "FAIL_CLOSED",
     "unresolvedReferenceProbes": "FAIL_CLOSED",
-    "metadataVersionMismatchProbes": "FAIL_CLOSED"
+    "metadataVersionMismatchProbes": "FAIL_CLOSED",
+    "publicPayloadUnknownRootFieldMutation": "FAIL_CLOSED"
   },
   "exampleSuite": {
     "evidenceType": "ExampleSuiteResult",
@@ -130,7 +131,7 @@
     "cleanBuild": "PASS",
     "rootTest": "PASS",
     "testFilesPassed": 13,
-    "testsPassed": 72,
+    "testsPassed": 73,
     "testsFailed": 0,
     "frozenOfflineInstall": "PASS",
     "lockfileUnchanged": true,
