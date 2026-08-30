@@ -692,5 +692,13 @@ describe("required verify workflow transition wiring", () => {
     expect(workflow).toContain('--head "${PHASE1_SCOPE_HEAD}"');
     expect(workflow).toContain('--branch "${PHASE1_SCOPE_BRANCH}"');
     expect(workflow).not.toContain("Phase 1 started");
+
+    const qualityWorkflow = await readFile(join(directory, "quality.yml"), "utf8");
+    const dependencyInstall =
+      'python -m pip install --disable-pip-version-check --no-input "jsonschema==4.25.1" "referencing==0.36.2"';
+    expect(qualityWorkflow).toContain(dependencyInstall);
+    expect(qualityWorkflow.indexOf(dependencyInstall)).toBeLessThan(
+      qualityWorkflow.indexOf("pnpm run quality"),
+    );
   });
 });
