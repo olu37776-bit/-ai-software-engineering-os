@@ -1,6 +1,6 @@
 # Phase 1 WRITE_SCOPE
 
-状态：`AMENDED — ISSUE #29 PRELIMINARY P1-O04 TRANSITION ENFORCEMENT SCOPE CLOSURE`
+状态：`AMENDED — ISSUE #41 FINAL P1-O04 SCOPE AND AUTHORITY CLOSURE`
 机器权威：`operations/phase-1/write-scope.json`  
 执行模式：`DENY_BY_DEFAULT`
 
@@ -67,6 +67,30 @@ Issue #29 grants P1-O01 the exact paths required to keep the M0 transition enfor
 - `scripts/governance/verify_m0.py` is added to P1-O01 scope and remains globally covered by `scripts/**`.
 
 P1-O02 through P1-O09 receive neither added path. This preliminary amendment does not modify the workflow or M0 verifier, start P1-O04, change production semantics, change accepted ADRs, or change the Authority Lock path set, roles, mutation policies or operation ownership. `DENY_BY_DEFAULT` remains unchanged.
+
+## P1-O04 final scope and Authority amendment
+
+Issue #29 and the independent Issue #41 Gate grant P1-O04 only the minimum integration and Contract-activation paths required for the frozen policy-engine operation:
+
+- `package.json`;
+- `pnpm-workspace.yaml`;
+- `pnpm-lock.yaml`;
+- `tsconfig.build.json`;
+- `vitest.config.mjs`;
+- `packages/contracts/README.md`;
+- `packages/contracts/planned-contracts.json`;
+- `packages/contracts/schema-inventory.json`;
+- `packages/contracts/schema-registry.json`;
+- `packages/contracts/src/types.generated.ts`;
+- `packages/contracts/type-bindings.json`;
+- `tests/contract/inventory-integrity.test.mjs`;
+- `tests/contract/registry-integrity.test.mjs`;
+- `tests/contract/runtime-validator.test.mjs`;
+- `tests/contract/schema-type-consistency.test.mjs`.
+
+Authority ownership changes only for `packages/contracts/planned-contracts.json`, `packages/contracts/schema-inventory.json` and `packages/contracts/schema-registry.json`: each expands from `["P1-O02"]` to `["P1-O02", "P1-O04"]`. Roles, mutation policies, path set, all other ownership, accepted ADRs and required-check identity remain unchanged.
+
+This amendment authorizes future P1-O04 implementation paths but does not modify those paths or start P1-O04. P1-O04 remains blocked until an independent Resume Gate is merged to protected main and passes post-merge qualification. `DENY_BY_DEFAULT` remains unchanged.
 
 ## Expansion
 

@@ -99,7 +99,7 @@
     },
     {
       "path": "docs/roadmap/phase-1-write-scope.md",
-      "sha256": "b65d20f06d1dcb61effa72d630a7695c60ea25edb8e4a8feaf46d1504e919289",
+      "sha256": "b0ea0dc2d63f6a9c367fdd86ec167a073c3c4f8bb5b99baee845818800225f9e",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
@@ -169,7 +169,7 @@
     },
     {
       "path": "operations/phase-1/write-scope.json",
-      "sha256": "6cee1a5a0c419e920336172cf8e89a9561a4a6bdcc3f4d7b9e5d5a108909c908",
+      "sha256": "a00a741714ee6984175a55034d7811a4c577e2cdc43472308c8f0243d840c33e",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
@@ -196,7 +196,8 @@
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
-        "P1-O02"
+        "P1-O02",
+        "P1-O04"
       ]
     },
     {
@@ -205,7 +206,8 @@
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
-        "P1-O02"
+        "P1-O02",
+        "P1-O04"
       ]
     },
     {
@@ -214,7 +216,8 @@
       "role": "SCHEMA_REGISTRY",
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
-        "P1-O02"
+        "P1-O02",
+        "P1-O04"
       ]
     },
     {
