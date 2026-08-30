@@ -42,6 +42,14 @@ example suite 必须证明：
 - `INDETERMINATE` PolicyDecision 无 reason code 无效；
 - `PASS` GateDecision 缺 Evidence 或仍有 missing Evidence 无效。
 
-Phase 1 必须使用冻结工具链中的 JSON Schema 2020-12 validator 重新执行本 suite 并生成正式 Evidence。Phase 0 的预验证不替代 Phase 1 verification。
+P1-O02 已把本目录接入 pnpm workspace、root `tsc -b` authority build 和 Vitest quality path。`src/` 提供基于 canonical registry 的 Ajv Draft 2020-12 validator；未知 schema、unsupported version、identity/version mismatch 和 public/persisted boundary 的 unknown field 全部 fail closed。编译 cache 仅优化执行，不改变 registry/JSON Schema authority。
+
+确定性验证入口：
+
+```bash
+pnpm run contracts:qualify
+```
+
+该入口执行 schema meta-validation、registry/inventory/hash/reference integrity、first-slice examples、Schema ↔ TypeScript semantic consistency、compatibility 和 runtime fail-closed probes，产生 P1-V03 所需四类结构化结果。TypeScript declarations 由 canonical schemas 生成并在 quality 中检查漂移，但不替代 runtime validation。
 
 任何 Contract 变更在同一 PR 中必须同步 Schema、inventory、examples、producer/consumer、compatibility、generated/runtime type、verification obligations 和相关 ADR/文档。禁止只修改 TypeScript interface、只改 example 或创建第二份 Schema authority。
