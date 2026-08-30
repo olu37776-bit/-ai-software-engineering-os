@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-P1-O04-FINAL-SCOPE-AUTHORITY-AMENDMENT-ISSUE-44-2026-08-30-01",
+  "executionType": "PHASE_1_GOVERNANCE_AMENDMENT",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Issue #44 final P1-O04 scope and Authority amendment",
+  "riskClass": "R3",
+  "status": "IN_PROGRESS",
+  "startedAt": "2026-08-30T20:36:00Z",
+  "implementationBranch": "governance/p1-o04-final-scope-authority-amendment-issue-44",
+  "baseCommit": "17809a7ec6bed6ad9a2e221a146f302d812dcdc7",
+  "trackingIssue": 44,
+  "priorAuthorizationGateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-44.json",
+  "authorityRefs": [
+    "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-44.json",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/authority-lock.json",
+    "docs/roadmap/phase-1-write-scope.md",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/29",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/44"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IN_PROGRESS",
+    "independentlyVerified": false,
+    "p1O04Implemented": false,
+    "p1O04Started": false,
+    "productionRuntimeChanged": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false
+  }
+}
