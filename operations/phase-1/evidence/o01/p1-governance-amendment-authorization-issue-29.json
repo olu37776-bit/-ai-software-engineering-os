@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-GOVERNANCE-AMENDMENT-AUTHORIZATION-ISSUE-29-2026-08-30-01",
+  "evidenceType": "Phase1GovernanceAmendmentAuthorization",
+  "trackingIssue": 29,
+  "decision": "AUTHORIZED",
+  "recordedAt": "2026-08-30T15:34:51Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "authorizationBase": "37cdb4d47f446b6b0968c290257b8a86c4e70709",
+    "authorizedBasePolicy": "DIRECT_PROTECTED_MAIN_CHILD_CONTAINING_THIS_GATE",
+    "implementationBranch": "governance/p1-o04-transition-enforcement-scope-amendment"
+  },
+  "verifier": {
+    "role": "INDEPENDENT_VERIFIER",
+    "independent": true,
+    "readOnlySubjectVerification": true,
+    "remediationPerformed": false
+  },
+  "authorization": {
+    "mode": "GOVERNANCE_AMENDMENT",
+    "allowedChangedPaths": [
+      "docs/roadmap/phase-1-write-scope.md",
+      "operations/phase-1/authority-lock.json",
+      "operations/phase-1/evidence/o01/p1-o04-transition-enforcement-scope-amendment.json",
+      "operations/phase-1/executions/p1-o01-p1-o04-transition-enforcement-scope-amendment.json",
+      "operations/phase-1/write-scope.json"
+    ],
+    "unlistedPhase1AuthorityPaths": "DENIED"
+  },
+  "claimBoundary": {
+    "acceptedAdrMutationAuthorized": false,
+    "productionRuntimeAuthorized": false,
+    "p1O02ImplementationAuthorized": false
+  },
+  "purpose": [
+    "Authorize only the Issue #29 preliminary P1-O01-owned governance amendment required to make transition enforcement machine-closed.",
+    "Do not authorize P1-O04 implementation, accepted ADR mutation, package changes, production-semantic changes, required-check identity changes, or unrelated authority changes."
+  ],
+  "targetAmendment": {
+    "finding": "ISSUE29-GATE-01",
+    "targetOperationId": "P1-O01",
+    "globalAllowedPathGlobsToAdd": [
+      ".github/workflows/m0-independent-verify.yml"
+    ],
+    "p1O01AllowedPathGlobsToAdd": [
+      ".github/workflows/m0-independent-verify.yml",
+      "scripts/governance/verify_m0.py"
+    ],
+    "operationsReceivingNeitherAddedPath": [
+      "P1-O02",
+      "P1-O03",
+      "P1-O04",
+      "P1-O05",
+      "P1-O06",
+      "P1-O07",
+      "P1-O08",
+      "P1-O09"
+    ],
+    "roadmapMirrorUpdateRequired": true,
+    "authorityLockHashRefreshPaths": [
+      "docs/roadmap/phase-1-write-scope.md",
+      "operations/phase-1/write-scope.json"
+    ],
+    "authorityLockPathRoleMutationPolicyOrAllowedOperationIdsMutationAuthorized": false,
+    "requiredCheckProducerOrNameMutationAuthorized": false,
+    "otherAuthorityExpansionAuthorized": false,
+    "enforcementModeAfterAmendment": "DENY_BY_DEFAULT"
+  },
+  "prerequisites": {
+    "authorizationClarification": "ISSUE29-GATE-01",
+    "protectedMainAuthorizationBase": "37cdb4d47f446b6b0968c290257b8a86c4e70709",
+    "p1O04CurrentState": "BLOCKED_PENDING_GOVERNANCE_AMENDMENT_AND_RESUME_GATE"
+  },
+  "evidenceRefs": [
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/29",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/29#issuecomment-5469591574"
+  ]
+}
