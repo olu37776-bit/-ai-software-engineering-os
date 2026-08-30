@@ -7,11 +7,11 @@
   "riskClass": "R3",
   "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T13:54:16Z",
-  "completedAt": "2026-08-30T14:26:47Z",
+  "completedAt": "2026-08-30T14:48:29Z",
   "implementationBranch": "phase-1/p1-o03-architecture-enforcement",
   "baseCommit": "bd0efb007728aae65d46f4f776b090150e06193f",
-  "implementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
-  "implementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c",
+  "implementationCommit": "60e832aae4426a0fc076109821029addf197d106",
+  "implementationTree": "43d1ab3bc2cac1b651d3746f2d86dd652fff711f",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -47,6 +47,26 @@
       "qualifiedImplementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
       "qualifiedImplementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c",
       "result": "IMPLEMENTED"
+    },
+    {
+      "findingId": "P1-O03-IV-01",
+      "reviewedImmutableHead": "52885e39084fba34c08aa270e04b93554c2e3114",
+      "diagnosis": "Relative imports resolved across governed package roots were recorded as workspace edges but were not classified as deep imports, allowing a package to reach another package's internal source path.",
+      "change": "Classify every resolved relative import that crosses governed package roots as DEEP_IMPORT while preserving public package-entry imports, direction, cycle and unresolved-import checks.",
+      "executableRegression": "Real dependency-cruiser rejects packages/policy/src/probe.mjs importing ../../contracts/src/internal.mjs.",
+      "qualifiedImplementationCommit": "60e832aae4426a0fc076109821029addf197d106",
+      "qualifiedImplementationTree": "43d1ab3bc2cac1b651d3746f2d86dd652fff711f",
+      "result": "IMPLEMENTED"
+    },
+    {
+      "findingId": "P1-O03-IV-02",
+      "reviewedImmutableHead": "52885e39084fba34c08aa270e04b93554c2e3114",
+      "diagnosis": "Package records were selected by manifest name, so a manifest at an existing governed root with an unexpected name could bypass that root's public-entry and workspace-dependency checks.",
+      "change": "Select existing governed manifests by canonical root, reject a non-canonical manifest name, and continue evaluating public entries and workspace dependencies under the expected package policy.",
+      "executableRegression": "Package-graph evaluation reports the name mismatch together with missing public entry, dependency inversion and non-canonical workspace range.",
+      "qualifiedImplementationCommit": "60e832aae4426a0fc076109821029addf197d106",
+      "qualifiedImplementationTree": "43d1ab3bc2cac1b651d3746f2d86dd652fff711f",
+      "result": "IMPLEMENTED"
     }
   ],
   "verification": [
@@ -68,12 +88,15 @@
       "modules": 18,
       "moduleDependencies": 40,
       "semanticOwners": 73,
-      "architectureTestsPassed": 7
+      "architectureTestsPassed": 9
     },
     {
       "check": "executable fail-closed architecture fixtures",
       "result": "PASS",
       "deepImportRejected": true,
+      "relativeCrossPackageDeepImportRejected": true,
+      "governedRootPackageNameMismatchRejected": true,
+      "mismatchedNamePublicEntryAndDependencyChecksEnforced": true,
       "moduleCycleRejected": true,
       "packageCycleRejected": true,
       "dependencyInversionRejected": true,
@@ -84,7 +107,7 @@
       "check": "quality and clean build/test",
       "result": "PASS",
       "testFilesPassed": 16,
-      "testsPassed": 89,
+      "testsPassed": 91,
       "testsFailed": 0,
       "rootVitestMaxWorkers": 1,
       "testTimeoutChanged": false,

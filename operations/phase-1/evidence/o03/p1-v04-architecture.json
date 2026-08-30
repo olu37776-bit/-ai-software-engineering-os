@@ -4,13 +4,13 @@
   "evidenceType": "P1V04ArchitectureImplementationEvidence",
   "gateStepId": "P1-V04-ARCHITECTURE",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-30T14:26:47Z",
+  "recordedAt": "2026-08-30T14:48:29Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "branch": "phase-1/p1-o03-architecture-enforcement",
     "authorizedBase": "bd0efb007728aae65d46f4f776b090150e06193f",
-    "qualifiedImplementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
-    "qualifiedImplementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c"
+    "qualifiedImplementationCommit": "60e832aae4426a0fc076109821029addf197d106",
+    "qualifiedImplementationTree": "43d1ab3bc2cac1b651d3746f2d86dd652fff711f"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -94,7 +94,7 @@
     "frozenLockfileInstall": "PASS",
     "quality": "PASS",
     "rootTestFilesPassed": 16,
-    "rootTestsPassed": 89,
+    "rootTestsPassed": 91,
     "rootTestsFailed": 0,
     "rootVitestMaxWorkers": 1,
     "focusedRepeatedRootRuns": 2,
@@ -132,6 +132,31 @@
     },
     "qualifiedImplementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
     "qualifiedImplementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c"
+  },
+  "independentVerificationRemediation": {
+    "result": "IMPLEMENTED",
+    "pullRequest": 28,
+    "reviewBase": "bd0efb007728aae65d46f4f776b090150e06193f",
+    "reviewedImmutableHead": "52885e39084fba34c08aa270e04b93554c2e3114",
+    "reviewedImmutableTree": "e82dcac9cfef9e861c22eab23b4cf078cc909ce3",
+    "qualifiedImplementationCommit": "60e832aae4426a0fc076109821029addf197d106",
+    "qualifiedImplementationTree": "43d1ab3bc2cac1b651d3746f2d86dd652fff711f",
+    "findings": [
+      {
+        "findingId": "P1-O03-IV-01",
+        "findingClass": "RELATIVE_CROSS_PACKAGE_DEEP_IMPORT_BYPASS",
+        "change": "Resolved relative imports crossing governed package roots are rejected as DEEP_IMPORT; canonical public package-entry imports remain accepted.",
+        "executableRegression": "Real dependency-cruiser rejects packages/policy/src/probe.mjs -> ../../contracts/src/internal.mjs.",
+        "result": "IMPLEMENTED"
+      },
+      {
+        "findingId": "P1-O03-IV-02",
+        "findingClass": "GOVERNED_ROOT_PACKAGE_NAME_BYPASS",
+        "change": "Existing governed roots are selected by root, non-canonical manifest names are rejected, and public-entry plus workspace-dependency constraints continue to run.",
+        "executableRegression": "Package-graph evaluation reports PACKAGE_NAME_MISMATCH, MISSING_PUBLIC_ENTRY, DEPENDENCY_INVERSION and NON_CANONICAL_WORKSPACE_RANGE for one mismatched governed root.",
+        "result": "IMPLEMENTED"
+      }
+    ]
   },
   "authority": {
     "result": "PASS",

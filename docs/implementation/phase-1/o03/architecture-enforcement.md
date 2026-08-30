@@ -49,14 +49,15 @@ build, configuration, version, and frozen-install gates.
 
 The negative suite invokes the real verifier paths:
 
-| Boundary         | Executed subject                                           | Expected decision                    |
-| ---------------- | ---------------------------------------------------------- | ------------------------------------ |
-| Deep import      | dependency-cruiser over `@aseos/contracts/src/registry.js` | reject                               |
-| Module cycle     | dependency-cruiser over two mutually importing modules     | reject                               |
-| Inversion        | dependency-cruiser over contracts importing root           | reject                               |
-| Future direction | dependency-cruiser over policy imports                     | contracts accepted; adapter rejected |
-| Package cycle    | package manifest graph evaluator                           | reject                               |
-| Semantic owner   | duplicate inventory declaration fixture                    | reject                               |
+| Boundary          | Executed subject                                           | Expected decision                    |
+| ----------------- | ---------------------------------------------------------- | ------------------------------------ |
+| Deep import       | dependency-cruiser over `@aseos/contracts/src/registry.js` | reject                               |
+| Relative crossing | dependency-cruiser across governed package roots           | reject                               |
+| Module cycle      | dependency-cruiser over two mutually importing modules     | reject                               |
+| Inversion         | dependency-cruiser over contracts importing root           | reject                               |
+| Future direction  | dependency-cruiser over policy imports                     | contracts accepted; adapter rejected |
+| Package cycle     | package manifest graph evaluator                           | reject                               |
+| Semantic owner    | duplicate inventory declaration fixture                    | reject                               |
 
 ## P1-O03-CI-01 deterministic scheduling remediation
 
@@ -68,12 +69,39 @@ all assertions intact, while both Linux attempts, M0 and P1-V04 passed. This iso
 cross-platform high-I/O fixture scheduling rather than Contract or architecture semantics.
 
 The root test command now fixes Vitest at one worker. The 10 second per-test boundary, all 82 root
-tests, all seven architecture tests, the separate architecture Vitest invocation, and the duplicate
+tests, all seven then-existing architecture tests, the separate architecture Vitest invocation, and the duplicate
 clean/build/test qualification remain unchanged. No Contract test, Vitest config, workflow,
 toolchain script or timeout threshold was modified. Two direct repeated root runs, full quality,
 P1-V04, a clean build/test rerun, frozen offline install, M0 14/14 and final WRITE_SCOPE all pass on
 qualified implementation commit `6200fc4cef958b0bf35f89825e0eb75ae1b8e93a` (tree
 `9075b22842436201ace3a3958276b61e8dbb2e7c`).
+
+## P1-O03-IV-01 and P1-O03-IV-02 remediation
+
+Independent verification reviewed PR #28 immutable head
+`52885e39084fba34c08aa270e04b93554c2e3114` (tree
+`e82dcac9cfef9e861c22eab23b4cf078cc909ce3`) against authorized base
+`bd0efb007728aae65d46f4f776b090150e06193f`.
+
+`P1-O03-IV-01` identified that a relative import could cross from a governed package root into
+another package's internal source while the cruiser reported only an allowed workspace edge. The
+inspector now classifies every resolved relative cross-root import as `DEEP_IMPORT`. The executable
+fixture runs the real dependency-cruiser over
+`packages/policy/src/probe.mjs -> ../../contracts/src/internal.mjs` and requires rejection. Existing
+public entry imports such as `@aseos/contracts` remain accepted, and direction, cycle and unresolved
+checks are unchanged.
+
+`P1-O03-IV-02` identified that selecting records by manifest name skipped checks when a manifest at
+an existing governed root declared an unexpected name. Package-graph evaluation now selects by the
+canonical governed root, reports `PACKAGE_NAME_MISMATCH`, and still evaluates that manifest's public
+entry, allowed workspace dependencies and canonical workspace ranges. Its executable regression
+requires all four violations from one mismatched governed-root record.
+
+Both findings are `IMPLEMENTED` by code/test commit
+`60e832aae4426a0fc076109821029addf197d106` (tree
+`43d1ab3bc2cac1b651d3746f2d86dd652fff711f`). The dedicated architecture suite now passes 9/9; no
+package, production runtime path, timeout threshold, workflow, toolchain authority, accepted ADR or
+frozen governance authority changed.
 
 Implementation Evidence is recorded in
 `operations/phase-1/evidence/o03/p1-v04-architecture.json`. The implementation claim remains
