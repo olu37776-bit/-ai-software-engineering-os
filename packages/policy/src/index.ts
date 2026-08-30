@@ -919,9 +919,7 @@ function equalJson(left: PolicyJson | undefined, right: PolicyJson | undefined):
   return left !== undefined && right !== undefined && canonicalJson(left) === canonicalJson(right);
 }
 
-function isPolicyArray(
-  value: PolicyJson | undefined,
-): value is readonly PolicyJson[] {
+function isPolicyArray(value: PolicyJson | undefined): value is readonly PolicyJson[] {
   return Array.isArray(value);
 }
 
