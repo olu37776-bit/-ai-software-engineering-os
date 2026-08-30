@@ -10,6 +10,9 @@ importers:
       "@aseos/contracts":
         specifier: workspace:*
         version: link:packages/contracts
+      "@aseos/policy":
+        specifier: workspace:*
+        version: link:packages/policy
     devDependencies:
       "@eslint/js":
         specifier: 10.0.1
@@ -59,6 +62,12 @@ importers:
       ajv:
         specifier: 8.20.0
         version: 8.20.0
+
+  packages/policy:
+    dependencies:
+      "@aseos/contracts":
+        specifier: workspace:*
+        version: link:../contracts
 
 packages:
   "@babel/code-frame@8.0.0":

@@ -1,0 +1,356 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:policy-rule:1.0.0",
+  "title": "PolicyRule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "ruleId",
+    "domain",
+    "subjectSelector",
+    "action",
+    "resourceSelector",
+    "when",
+    "ruleEffect",
+    "requirements",
+    "reasonCode",
+    "metadata"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "ruleId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "subjectSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subjectTypes"
+      ],
+      "properties": {
+        "subjectTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "action": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "resourceSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resourceTypes"
+      ],
+      "properties": {
+        "resourceTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "when": {
+      "type": "object",
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "$ref": "#/$defs/conditionDepth4"
+        }
+      ]
+    },
+    "ruleEffect": {
+      "enum": [
+        "ALLOW",
+        "DENY"
+      ]
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "permissionScopes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "uniqueItems": true
+        },
+        "minimumIsolationLevel": {
+          "enum": [
+            "PROCESS_RESTRICTED",
+            "OS_SANDBOXED",
+            "CONTAINER_ISOLATED",
+            "REMOTE_ISOLATED"
+          ]
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxConcurrency": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "postVerificationRequired": {
+          "type": "boolean"
+        }
+      }
+    },
+    "reasonCode": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "conditionLeaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator",
+        "reference"
+      ],
+      "properties": {
+        "operator": {
+          "enum": [
+            "eq",
+            "notEq",
+            "in",
+            "contains",
+            "lt",
+            "lte",
+            "gt",
+            "gte",
+            "exists",
+            "startsWith",
+            "setSubset",
+            "setIntersects"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "pattern": "^(?:input\\.(?:action|domain|subjectType|resourceType|riskClass|dataClassification|direction|authorityMutation|controlVerified|permissionScopes|capabilityIds)|constant\\.[A-Z][A-Z0-9_]*)$"
+        },
+        "operand": {}
+      }
+    },
+    "conditionDepth0": {
+      "$ref": "#/$defs/conditionLeaf"
+    },
+    "conditionDepth1": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/conditionLeaf"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "conditions"
+          ],
+          "properties": {
+            "operator": {
+              "enum": [
+                "all",
+                "any"
+              ]
+            },
+            "conditions": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 32,
+              "items": {
+                "$ref": "#/$defs/conditionDepth0"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "condition"
+          ],
+          "properties": {
+            "operator": {
+              "const": "not"
+            },
+            "condition": {
+              "$ref": "#/$defs/conditionDepth0"
+            }
+          }
+        }
+      ]
+    },
+    "conditionDepth2": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/conditionLeaf"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "conditions"
+          ],
+          "properties": {
+            "operator": {
+              "enum": [
+                "all",
+                "any"
+              ]
+            },
+            "conditions": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 32,
+              "items": {
+                "$ref": "#/$defs/conditionDepth1"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "condition"
+          ],
+          "properties": {
+            "operator": {
+              "const": "not"
+            },
+            "condition": {
+              "$ref": "#/$defs/conditionDepth1"
+            }
+          }
+        }
+      ]
+    },
+    "conditionDepth3": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/conditionLeaf"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "conditions"
+          ],
+          "properties": {
+            "operator": {
+              "enum": [
+                "all",
+                "any"
+              ]
+            },
+            "conditions": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 32,
+              "items": {
+                "$ref": "#/$defs/conditionDepth2"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "condition"
+          ],
+          "properties": {
+            "operator": {
+              "const": "not"
+            },
+            "condition": {
+              "$ref": "#/$defs/conditionDepth2"
+            }
+          }
+        }
+      ]
+    },
+    "conditionDepth4": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/conditionLeaf"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "conditions"
+          ],
+          "properties": {
+            "operator": {
+              "enum": [
+                "all",
+                "any"
+              ]
+            },
+            "conditions": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 32,
+              "items": {
+                "$ref": "#/$defs/conditionDepth3"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "condition"
+          ],
+          "properties": {
+            "operator": {
+              "const": "not"
+            },
+            "condition": {
+              "$ref": "#/$defs/conditionDepth3"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

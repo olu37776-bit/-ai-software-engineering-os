@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:policy-set:1.0.0",
+  "title": "PolicySet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "policySetId",
+    "version",
+    "description",
+    "source",
+    "defaultOutcome",
+    "constants",
+    "rules"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "policySetId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "version": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "ref"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "RELEASE",
+            "MACHINE",
+            "USER",
+            "WORKSPACE",
+            "NODE",
+            "WORKFLOW"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    },
+    "defaultOutcome": {
+      "const": "DENY"
+    },
+    "constants": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "rules": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "$ref": "urn:aseos:schema:policy-rule:1.0.0"
+      }
+    }
+  }
+}

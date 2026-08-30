@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "ruleId": "allow-read",
+  "domain": "tool",
+  "subjectSelector": {
+    "subjectTypes": [
+      "NODE"
+    ]
+  },
+  "action": "read",
+  "resourceSelector": {
+    "resourceTypes": [
+      "WORKSPACE"
+    ]
+  },
+  "when": {
+    "operator": "regex",
+    "reference": "input.action",
+    "operand": ".*"
+  },
+  "ruleEffect": "ALLOW",
+  "requirements": {
+    "permissionScopes": [
+      "workspace:read"
+    ],
+    "postVerificationRequired": true
+  },
+  "reasonCode": "POLICY_ALLOW_READ",
+  "metadata": {
+    "owner": "release"
+  }
+}

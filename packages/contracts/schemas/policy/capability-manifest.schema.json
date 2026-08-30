@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:capability-manifest:1.0.0",
+  "title": "CapabilityManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "capabilityId",
+    "capabilityVersion",
+    "operations",
+    "riskClasses",
+    "permissionScopes",
+    "isolationLevels"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "capabilityId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "capabilityVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    },
+    "riskClasses": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "R0",
+          "R1",
+          "R2",
+          "R3",
+          "R4"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "permissionScopes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    },
+    "isolationLevels": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "PROCESS_RESTRICTED",
+          "OS_SANDBOXED",
+          "CONTAINER_ISOLATED",
+          "REMOTE_ISOLATED"
+        ]
+      },
+      "uniqueItems": true
+    }
+  }
+}

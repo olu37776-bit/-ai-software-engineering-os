@@ -24,9 +24,9 @@ describe("machine-executable schema registry", () => {
       evidenceType: "SchemaMetaValidationResult",
       result: "PASS",
       dialect: "https://json-schema.org/draft/2020-12/schema",
-      registeredSchemas: 31,
-      metaValidatedSchemas: 31,
-      compiledSchemas: 31,
+      registeredSchemas: 36,
+      metaValidatedSchemas: 36,
+      compiledSchemas: 36,
       unresolvedReferences: 0,
     });
   });
