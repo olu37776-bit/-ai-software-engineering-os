@@ -206,7 +206,7 @@ describe("operation-aware Phase 1 scope policy", () => {
 
   test("enforces every declared Authority Lock owner and rejects an unrelated operation", () => {
     const path = "packages/contracts/schema-registry.json";
-    const authority = authorityLock.authorities.find((entry) => entry.path === path);
+    const authority = authorityLock.authorityFiles.find((entry) => entry.path === path);
     expect(authority).toBeDefined();
 
     for (const operationId of authority.allowedOperationIds) {
