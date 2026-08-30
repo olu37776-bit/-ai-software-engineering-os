@@ -18,8 +18,10 @@ other later Phase 1 capabilities.
 
 The exact dependency and workflow-action versions are canonical in
 `toolchain/toolchain.json`; dependency identity and integrity are canonical in
-`pnpm-lock.yaml`. The manifest hashes the lockfile as UTF-8 with LF-normalized line endings so
-that Git's Windows checkout conversion cannot create a second dependency identity.
+`pnpm-lock.yaml`. Verification computes and emits the current lockfile SHA-256 from UTF-8 content
+with LF-normalized line endings so Git's Windows checkout conversion cannot create a second
+dependency identity. The derived hash is Evidence, not a historical authority value in the
+toolchain manifest.
 
 ## Reproduction
 

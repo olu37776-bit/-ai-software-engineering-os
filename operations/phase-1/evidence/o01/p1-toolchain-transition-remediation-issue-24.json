@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O01-TOOLCHAIN-TRANSITION-REMEDIATION-ISSUE-24-2026-08-30-01",
+  "evidenceType": "P1O01ToolchainTransitionRemediationImplementationEvidence",
+  "trackingIssue": 24,
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-08-30T11:51:11Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "branch": "phase-1/p1-o01-toolchain-transition-remediation-issue-24",
+    "authorizedBase": "a8cff3ea9589798fd65ee981061508a3026657d8",
+    "qualifiedImplementationCommit": "380785f5d94406dddf9740b03cabee174c92eb2f",
+    "qualifiedImplementationTree": "d892e35a8700a80e55f6f6654df71dab37cc03af"
+  },
+  "authorizationPreflight": {
+    "result": "PASS",
+    "mode": "OPERATION_EXECUTION",
+    "operationId": "P1-O01",
+    "writeScopeOperationId": "P1-O01",
+    "writeScopeEnforcementMode": "DENY_BY_DEFAULT",
+    "immutableAuthorityFilesVerified": 25,
+    "scopeViolations": 0
+  },
+  "lockfileAuthorityRemediation": {
+    "findingId": "P1-O02-TOOLCHAIN-LOCK-AUTHORITY-01",
+    "result": "PASS",
+    "canonicalDependencyIdentity": "pnpm-lock.yaml",
+    "historicalSnapshotFieldRemoved": true,
+    "manifestSchemaRejectsHistoricalSnapshotField": true,
+    "hashPolicy": "SHA256_UTF8_LF_NORMALIZED",
+    "liveLockfileSha256": "13af515bb4f8ba46236183876a97f4e3817d6aca724da4a5f1ce987311eae998",
+    "lfCrLfNormalizedHashEqual": true,
+    "frozenOfflineInstall": "PASS",
+    "lockfileUnchanged": true,
+    "secondLockfileAuthorityIntroduced": false,
+    "fallbackAcceptanceIntroduced": false
+  },
+  "topologyFixtureRemediation": {
+    "findingId": "P1-O02-TOPOLOGY-QUALIFICATION-02",
+    "result": "PASS",
+    "liveRepositoryTopology": "PASS",
+    "historicalEmptyWorkspaceFixture": "PASS_SYNTHETIC",
+    "genericWorkspacePackageFixture": "PASS",
+    "genericNonPackageProjectFixture": "PASS",
+    "negativeFixtureCategories": 14,
+    "negativeFixtures": "FAIL_CLOSED",
+    "p1O02SpecificExceptionAdded": false,
+    "topologyPolicyChanged": false
+  },
+  "toolchain": {
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "exactVersionsUnchanged": true,
+    "authorityBuild": "pnpm exec tsc -b tsconfig.build.json --pretty false"
+  },
+  "localQualification": {
+    "platform": "linux-x64",
+    "commands": [
+      {
+        "command": "pnpm install --frozen-lockfile",
+        "result": "PASS"
+      },
+      {
+        "command": "pnpm run verify:scope --operation P1-O01 --base a8cff3ea9589798fd65ee981061508a3026657d8 --head 380785f5d94406dddf9740b03cabee174c92eb2f --branch phase-1/p1-o01-toolchain-transition-remediation-issue-24 --event local",
+        "result": "PASS"
+      },
+      {
+        "command": "pnpm run verify:config",
+        "result": "PASS"
+      },
+      {
+        "command": "pnpm run verify:versions",
+        "result": "PASS"
+      },
+      {
+        "command": "pnpm run verify:frozen-install",
+        "result": "PASS"
+      },
+      {
+        "command": "pnpm run quality",
+        "result": "PASS"
+      },
+      {
+        "command": "pnpm run clean && pnpm run build && pnpm run test",
+        "result": "PASS"
+      },
+      {
+        "command": "python scripts/governance/verify_m0.py --base e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45 --subject 380785f5d94406dddf9740b03cabee174c92eb2f",
+        "result": "PASS",
+        "passed": 14,
+        "failed": 0
+      }
+    ],
+    "testFilesPassed": 5,
+    "testsPassed": 46,
+    "testsFailed": 0
+  },
+  "requiredStatusCheckAuthority": {
+    "staticWorkflowInventory": "PASS",
+    "verifyProducerCount": 1,
+    "verifyOwner": ".github/workflows/m0-independent-verify.yml",
+    "qualityAggregatorCount": 1,
+    "qualityAggregatorName": "p1-o01-toolchain-qualify"
+  },
+  "crossPlatformQualification": {
+    "status": "PENDING_IMMUTABLE_HEAD_PUBLICATION",
+    "linuxWorkflow": "NOT_RUN",
+    "windowsWorkflow": "NOT_RUN",
+    "reason": "The implementation role was explicitly instructed not to push or create a PR; the orchestrator publishes the immutable head and records GitHub workflow runs."
+  },
+  "forbiddenChanges": {
+    "rootIntegrationChanged": false,
+    "frozenGovernanceChanged": false,
+    "acceptedAdrChanged": false,
+    "contractsChanged": false,
+    "productionRuntimeChanged": false
+  },
+  "declarationBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "declared": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "p1O02Resumed": false,
+    "phase1Verified": false
+  },
+  "remainingGaps": [
+    "Publish the immutable implementation head and obtain Linux and Windows quality workflow PASS.",
+    "Run independent read-only verification on the immutable subject and merge through protected main.",
+    "Run protected-main post-merge verification and create an independently verified P1-O02 resume Gate before resuming P1-O02."
+  ],
+  "evidenceRefs": ["https://github.com/olu37776-bit/-ai-software-engineering-os/issues/24"]
+}
