@@ -12,31 +12,39 @@ Workflow runtime semantics, an external policy engine, or dynamic evaluation I/O
 ## Determinism and fail-closed behavior
 
 The compiler accepts canonical PolicySet JSON or the bounded block-only authoring
-subset of YAML. It rejects duplicate keys, tags, anchors, aliases, merge keys,
-flow collections, templates, environment substitution, unsafe prototype keys,
-unbounded structures, invalid references, unknown operators, and unsupported
-versions.
+subset of YAML. It rejects duplicate keys and set items, tags, anchors, aliases,
+merge keys, flow collections, templates, environment substitution, unsafe
+prototype keys, unbounded structures, invalid references, unknown operators, and
+unsupported versions. Evaluation requires the exact input and snapshot schema
+shape, bounded fields, RFC 3339 timestamps, SemVer metadata, and internally
+consistent snapshot identities before any allow path.
 
 Compiled rules remain canonical PolicySet values. Rule IDs and set-like fields are
-sorted, canonical JSON is hashed with SHA-256, and the snapshot hash excludes the
-snapshot envelope to avoid self-reference. The evaluator consumes only captured
+sorted with explicit code-unit ordering independent of ambient locale, canonical
+JSON is hashed with SHA-256, and the snapshot hash excludes the snapshot envelope
+to avoid self-reference. I-JSON validation rejects lone surrogates in values and
+property names. The evaluator consumes only captured
 input, never reads I/O or system time, applies built-in hard invariants first,
 uses deny-overrides and default-deny, and maps invalid or conflicting evaluation
 states to `INDETERMINATE`.
 
 ## Qualification
 
-The qualified implementation is
-`a1bd6b3374b9a1b8e51ab6431b2b36892e05aef9` with tree
-`0c84e148ebf6a17ea366ef9fb3cd7172343d6031`.
+The remediated qualified implementation is
+`f5aa27e3b6e0378b231267d5d6bd08a897ceae8f` with tree
+`0a5fbc1ada884504e98c387c85b5b81cd9ce9d0e`.
 
 - M0 required `verify`: PASS.
 - Linux and Windows frozen qualification: PASS.
-- Root suite: 21 files / 139 tests.
-- P1-V05 focused suite: 8 tests, including 20 property permutations.
+- Root suite: 21 files / 141 tests.
+- P1-V05 focused suite: 10 tests, including 20 property permutations and
+  adversarial schema, locale, and I-JSON key regressions.
 - Architecture regression: 9 tests.
 - Contract registry: 36 entries; inventory: 20 active / 53 planned; type bindings: 24.
 - Five Policy schemas each have direct valid and invalid Contract fixtures.
+- Independent findings `P1-O04-IV-01`, `P1-O04-IV-02`, and
+  `P1-O04-IV-03` are remediated with executable regressions; exact-head
+  re-verification is still required.
 
 The implementation Evidence is
 `operations/phase-1/evidence/o04/p1-v05-policy.json`. Its status is

@@ -4,14 +4,14 @@
   "evidenceType": "P1V05PolicyImplementationEvidence",
   "gateStepId": "P1-V05-POLICY",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-30T22:07:00Z",
+  "recordedAt": "2026-08-30T22:41:00Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "pullRequest": 52,
     "branch": "phase-1/p1-o04-deterministic-policy",
     "authorizedBase": "7ceff40760f4c8477ea9d74dfc10b591f2e9d25c",
-    "qualifiedImplementationCommit": "a1bd6b3374b9a1b8e51ab6431b2b36892e05aef9",
-    "qualifiedImplementationTree": "0c84e148ebf6a17ea366ef9fb3cd7172343d6031"
+    "qualifiedImplementationCommit": "f5aa27e3b6e0378b231267d5d6bd08a897ceae8f",
+    "qualifiedImplementationTree": "0a5fbc1ada884504e98c387c85b5b81cd9ce9d0e"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -58,7 +58,9 @@
     "cyclesAndAccessorsRejected": true,
     "snapshotSelfHashing": false,
     "capturedClockRequired": true,
-    "replayByteStable": true
+    "replayByteStable": true,
+    "loneSurrogatePropertyNamesRejected": true,
+    "ambientLocaleIndependentOrdering": true
   },
   "failClosedProperties": {
     "evidenceType": "FailClosedPropertyResult",
@@ -73,7 +75,10 @@
     "requirementsUnionCanonical": true,
     "noEvaluationIo": true,
     "noSystemClock": true,
-    "dynamicCodeForbidden": true
+    "dynamicCodeForbidden": true,
+    "exactEvaluationInputShape": true,
+    "exactSnapshotShapeAndMetadata": true,
+    "duplicateSetItemsRejected": true
   },
   "mutationQualification": {
     "evidenceType": "PolicyMutationResult",
@@ -112,8 +117,15 @@
     "package": "@aseos/policy",
     "canonicalOwner": "packages/policy",
     "publicEntryOnly": true,
-    "dependencies": ["@aseos/contracts"],
-    "outcomes": ["ALLOW", "ALLOW_WITH_REQUIREMENTS", "DENY", "INDETERMINATE"],
+    "dependencies": [
+      "@aseos/contracts"
+    ],
+    "outcomes": [
+      "ALLOW",
+      "ALLOW_WITH_REQUIREMENTS",
+      "DENY",
+      "INDETERMINATE"
+    ],
     "registeredOperators": 15,
     "maximumConditionDepth": 4,
     "hardInvariantCount": 3,
@@ -131,9 +143,9 @@
     "generatedTypes": "PASS",
     "typecheck": "PASS",
     "rootTestFilesPassed": 21,
-    "rootTestsPassed": 139,
+    "rootTestsPassed": 141,
     "rootTestsFailed": 0,
-    "policyTestsPassed": 8,
+    "policyTestsPassed": 10,
     "architectureTestsPassed": 9,
     "schemaMetaValidation": "PASS",
     "schemaRegistryValidation": "PASS",
@@ -141,12 +153,12 @@
     "linuxX64": "PASS",
     "windowsX64": "PASS",
     "m0Independent": "PASS",
-    "qualityWorkflowRunId": 33338138070,
-    "linuxJobId": 99328705525,
-    "windowsJobId": 99328705650,
-    "aggregatorJobId": 99329137490,
-    "m0WorkflowRunId": 33338138075,
-    "verifyJobId": 99328681485
+    "qualityWorkflowRunId": 33339584116,
+    "linuxJobId": 99333193337,
+    "windowsJobId": 99333192503,
+    "aggregatorJobId": 99333604792,
+    "m0WorkflowRunId": 33339584110,
+    "verifyJobId": 99332658446
   },
   "remediationHistory": [
     {
@@ -172,6 +184,42 @@
       "class": "COMPILED_POLICY_SHAPE_DRIFT",
       "result": "CLOSED",
       "resolution": "The compiled payload preserves canonical PolicySet selector structure, so snapshots remain schema-valid and replayable."
+    },
+    {
+      "findingId": "P1-O04-IV-01",
+      "class": "SCHEMA_SEMANTIC_VALIDATION_BYPASS",
+      "result": "CLOSED",
+      "resolution": "Evaluation now requires the exact PolicyEvaluationInput and PolicySnapshot shapes, bounds, unique set items, RFC 3339 timestamps, SemVer metadata, and snapshot-to-compiled-policy identity consistency before any ALLOW path."
+    },
+    {
+      "findingId": "P1-O04-IV-02",
+      "class": "AMBIENT_LOCALE_NONDETERMINISM",
+      "result": "CLOSED",
+      "resolution": "Policy constants and rules use explicit UTF-16 code-unit comparison; an executable regression replaces localeCompare with adversarial reverse ordering and proves canonical rule order remains byte-stable."
+    },
+    {
+      "findingId": "P1-O04-IV-03",
+      "class": "I_JSON_PROPERTY_KEY_SURROGATE_BYPASS",
+      "result": "CLOSED",
+      "resolution": "I-JSON validation now rejects lone Unicode surrogates in both string values and property names, plus non-enumerable properties."
+    },
+    {
+      "findingId": "P1-O04-IV-CI-01",
+      "class": "FROZEN_FORMATTING",
+      "result": "CLOSED",
+      "resolution": "The new regression was formatted by the frozen Prettier version; the temporary diagnostic formatter command was restored exactly and the final strict check-only format gate passed."
+    },
+    {
+      "findingId": "P1-O04-IV-CI-02",
+      "class": "STRICT_VALIDATED_TYPE_NARROWING",
+      "result": "CLOSED",
+      "resolution": "The evaluator reuses the validated snapshot object with the canonical compiled payload, eliminating unnecessary assertions and dot-notation violations without changing decision semantics."
+    },
+    {
+      "findingId": "P1-O04-IV-CI-03",
+      "class": "WINDOWS_EXISTING_TRANSITION_TEST_TIMEOUT",
+      "result": "CLOSED",
+      "resolution": "The first Windows second-pass run exceeded the unchanged 10-second limit in an existing P1-O01 transition fixture after all Policy tests passed; an unchanged exact-head rerun passed quality, clean rebuild, and the aggregator without lowering the gate."
     }
   ],
   "authority": {

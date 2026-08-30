@@ -26,9 +26,9 @@
     "acceptedAdrChanged": false,
     "independentVerificationRequired": true
   },
-  "completedAt": "2026-08-30T22:07:00Z",
-  "qualifiedImplementationCommit": "a1bd6b3374b9a1b8e51ab6431b2b36892e05aef9",
-  "qualifiedImplementationTree": "0c84e148ebf6a17ea366ef9fb3cd7172343d6031",
+  "completedAt": "2026-08-30T22:41:00Z",
+  "qualifiedImplementationCommit": "f5aa27e3b6e0378b231267d5d6bd08a897ceae8f",
+  "qualifiedImplementationTree": "0a5fbc1ada884504e98c387c85b5b81cd9ce9d0e",
   "evidenceRef": "operations/phase-1/evidence/o04/p1-v05-policy.json",
   "results": {
     "writeScope": "PASS",
@@ -37,7 +37,7 @@
     "m0Independent": "PASS",
     "linuxX64": "PASS",
     "windowsX64": "PASS",
-    "rootTests": "139/139",
+    "rootTests": "141/141",
     "architectureTests": "9/9"
   }
 }
