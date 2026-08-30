@@ -43,7 +43,7 @@ Each operation owns only its exact execution-record namespace:
 
 `operations/phase-1/implementation-receipt.json` is not a P1-O01 output. It remains the whole-Phase-1 receipt produced by P1-O09 at the integrated handoff.
 
-The Phase 1 plan, WRITE_SCOPE, VerificationPlan, Receipt Schemas, Authority Lock, preimplementation policy, accepted ADRs and their human-readable authority documents are immutable during implementation. Contract inventory and registry are operation-scoped to P1-O02.
+The Phase 1 plan, WRITE_SCOPE, VerificationPlan, Receipt Schemas, Authority Lock, preimplementation policy, accepted ADRs and their human-readable authority documents are immutable during implementation. Contract inventory and registry remain operation-scoped exactly as recorded in the Authority Lock.
 
 Issue #7 repairs a scope-closure defect only. It changes no accepted ADR and no Operation Plan or VerificationPlan semantics. P1-O01 may resume only from the protected `main` commit containing the amendment and its passing required `verify` result.
 
@@ -91,6 +91,26 @@ Issue #48 closes the previously authorized P1-O04 integration boundary without s
 The Authority Lock ownership of `packages/contracts/planned-contracts.json`, `packages/contracts/schema-inventory.json` and `packages/contracts/schema-registry.json` changes only from `[P1-O02]` to `[P1-O02, P1-O04]`. All other authority paths, roles, mutation policies, hashes and operation ownership remain unchanged except the transactional hashes for this WRITE_SCOPE file and its roadmap mirror.
 
 This amendment does not modify any package, Contract asset, root integration file, workflow, verifier, accepted ADR or Runtime behavior. The paths above remain future P1-O04 implementation scope. P1-O04 stays blocked until a separate independent Resume Gate is merged and passes protected-main post-merge qualification.
+
+## P1-O05 scope and Authority amendment
+
+Issue #53 closes only the P1-O05 repository-integration and Contract-activation boundary. P1-O05 receives these exact additional paths:
+
+- `package.json`;
+- `packages/contracts/README.md`;
+- `packages/contracts/planned-contracts.json`;
+- `packages/contracts/schema-inventory.json`;
+- `packages/contracts/schema-registry.json`;
+- `packages/contracts/src/types.generated.ts`;
+- `packages/contracts/type-bindings.json`;
+- `pnpm-lock.yaml`;
+- `pnpm-workspace.yaml`;
+- `tsconfig.build.json`;
+- `vitest.config.mjs`.
+
+The Authority Lock ownership of `packages/contracts/planned-contracts.json`, `packages/contracts/schema-inventory.json` and `packages/contracts/schema-registry.json` changes only from `[P1-O02, P1-O04]` to `[P1-O02, P1-O04, P1-O05]`. All other authority paths, roles, mutation policies, hashes and operation ownership remain unchanged except the transactional hashes for this WRITE_SCOPE file and its roadmap mirror.
+
+This amendment does not modify any package, Contract asset, root integration file, workflow, verifier, accepted ADR or Runtime behavior. The paths remain future P1-O05 implementation scope. P1-O05 stays blocked until the P1-O05 start-Gate enforcement and a separate independent start Gate are merged and pass protected-main post-merge qualification.
 
 ## Expansion
 

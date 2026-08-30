@@ -99,7 +99,7 @@
     },
     {
       "path": "docs/roadmap/phase-1-write-scope.md",
-      "sha256": "f16c9f1f11303c9e9fb6a72de532960ceab8f4334cfe9bb8d517fa523aeb3551",
+      "sha256": "0467153c5257088a71f9a444f4e83ea96da2d64eb8b17a153bb3916a5b261f86",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
@@ -169,7 +169,7 @@
     },
     {
       "path": "operations/phase-1/write-scope.json",
-      "sha256": "a00a741714ee6984175a55034d7811a4c577e2cdc43472308c8f0243d840c33e",
+      "sha256": "dac2dac8ca6d8c3a9edec3a6c16488e1aaa2f74ed12946d5d2c109882b9e2ded",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
@@ -197,7 +197,8 @@
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
         "P1-O02",
-        "P1-O04"
+        "P1-O04",
+        "P1-O05"
       ]
     },
     {
@@ -207,7 +208,8 @@
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
         "P1-O02",
-        "P1-O04"
+        "P1-O04",
+        "P1-O05"
       ]
     },
     {
@@ -217,7 +219,8 @@
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
         "P1-O02",
-        "P1-O04"
+        "P1-O04",
+        "P1-O05"
       ]
     },
     {
