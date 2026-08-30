@@ -4,13 +4,13 @@
   "evidenceType": "P1V03ContractsImplementationEvidence",
   "gateStepId": "P1-V03-CONTRACTS",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-30T13:17:30Z",
+  "recordedAt": "2026-08-30T13:31:04Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "branch": "phase-1/p1-o02-contract-foundation-resume-3",
     "authorizedBase": "9d7b4fc0ad8bf2cbbf708ae298ec502ae5326715",
-    "qualifiedImplementationCommit": "0502fb738e9b638b8228353a9b4a05700cbfa8c5",
-    "qualifiedImplementationTree": "12d6be3774839632f9a58602043c8325e812e91f"
+    "qualifiedImplementationCommit": "aaabf8d2e61366a4e6d7e8188db7a1262d88d78e",
+    "qualifiedImplementationTree": "ffa0624f3b12a873166ab6cbdc34c30993d1464c"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -124,6 +124,30 @@
     "loneCarriageReturn": "FAIL_CLOSED",
     "rawArtifactHashing": "UNCHANGED_RAW_BYTES_AND_SIZE"
   },
+  "rawArtifactCheckoutIdentity": {
+    "result": "PASS",
+    "finding": "P1-O02-IV-03",
+    "failedQualityRun": 33313888475,
+    "priorLinuxJob": {
+      "jobId": 99263656692,
+      "result": "PASS"
+    },
+    "priorWindowsJob": {
+      "jobId": 99263656782,
+      "result": "FAIL"
+    },
+    "gitAttributePath": "packages/contracts/.gitattributes",
+    "gitAttributePattern": "examples/first-slice/artifacts/**",
+    "artifactTextAttribute": "UNSET",
+    "trackedArtifactsChecked": 5,
+    "coreAutocrlfTrueFilteredBytes": "CANONICAL_BLOB_IDENTITY",
+    "workingBytes": "CANONICAL_BLOB_IDENTITY",
+    "normalTextControl": "CRLF_CONVERTED",
+    "executableRegressionTests": true,
+    "artifactContentsRewritten": false,
+    "artifactRefHashesAndSizesRewritten": false,
+    "sha256ArtifactSemantics": "UNCHANGED_RAW_BYTES_AND_SIZE"
+  },
   "compatibility": {
     "evidenceType": "ContractCompatibilityResult",
     "result": "PASS",
@@ -153,8 +177,8 @@
     "quality": "PASS",
     "cleanBuild": "PASS",
     "rootTest": "PASS",
-    "testFilesPassed": 14,
-    "testsPassed": 80,
+    "testFilesPassed": 15,
+    "testsPassed": 82,
     "testsFailed": 0,
     "frozenOfflineInstall": "PASS",
     "lockfileUnchanged": true,

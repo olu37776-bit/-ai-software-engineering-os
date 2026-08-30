@@ -7,11 +7,11 @@
   "riskClass": "R3",
   "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T12:18:59Z",
-  "completedAt": "2026-08-30T13:17:30Z",
+  "completedAt": "2026-08-30T13:31:04Z",
   "implementationBranch": "phase-1/p1-o02-contract-foundation-resume-3",
   "baseCommit": "9d7b4fc0ad8bf2cbbf708ae298ec502ae5326715",
-  "implementationCommit": "0502fb738e9b638b8228353a9b4a05700cbfa8c5",
-  "implementationTree": "12d6be3774839632f9a58602043c8325e812e91f",
+  "implementationCommit": "aaabf8d2e61366a4e6d7e8188db7a1262d88d78e",
+  "implementationTree": "ffa0624f3b12a873166ab6cbdc34c30993d1464c",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -82,10 +82,22 @@
       "rawArtifactHashingUnchanged": true
     },
     {
+      "check": "raw example ArtifactRef checkout identity",
+      "result": "PASS",
+      "finding": "P1-O02-IV-03",
+      "gitAttributePath": "packages/contracts/.gitattributes",
+      "artifactTextAttributeUnset": true,
+      "coreAutocrlfTrueFilteredBytesMatchCanonicalBlobs": true,
+      "workingBytesMatchCanonicalBlobs": true,
+      "normalTextControlConvertedToCrLf": true,
+      "artifactContentsAndRefsUnchanged": true,
+      "sha256ArtifactSemanticsUnchanged": true
+    },
+    {
       "check": "quality and clean build/test",
       "result": "PASS",
-      "testFilesPassed": 14,
-      "testsPassed": 80,
+      "testFilesPassed": 15,
+      "testsPassed": 82,
       "testsFailed": 0
     },
     {
