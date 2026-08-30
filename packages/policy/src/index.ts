@@ -129,7 +129,7 @@ export type RestrictedYamlLimits = Readonly<{
   maxScalarLength?: number;
 }>;
 
-interface MutableJsonObject extends Record<string, PolicyJson> {}
+type MutableJsonObject = Record<string, PolicyJson>;
 type ParseResult = Readonly<{ value: PolicyJson; next: number }>;
 type ConditionResult = Readonly<{ ok: boolean; matched: boolean }>;
 type LeafCondition = PolicyLeafCondition;
@@ -678,7 +678,7 @@ function parseYamlNode(
       lines[index]?.indent === indent &&
       lines[index]?.content.startsWith("-")
     ) {
-      const line = lines[index]!;
+      const line = requiredYamlLine(lines, index);
       if (line.content !== "-" && !line.content.startsWith("- ")) {
         yamlFailure("INVALID_YAML", line.line, "Sequence marker requires a space");
       }
@@ -743,7 +743,7 @@ function parseYamlNode(
     lines[index]?.indent === indent &&
     !lines[index]?.content.startsWith("-")
   ) {
-    const line = lines[index]!;
+    const line = requiredYamlLine(lines, index);
     nodeCounter.value += 1;
     if (nodeCounter.value > limits.maxNodes) {
       yamlFailure("YAML_LIMIT_EXCEEDED", line.line, "Node limit");
@@ -793,7 +793,7 @@ export function parseRestrictedPolicyYaml(
   }
   const lines: YamlLine[] = [];
   for (let index = 0; index < rawLines.length; index += 1) {
-    const raw = rawLines[index]!;
+    const raw = rawLines[index] ?? "";
     if (raw.trim() === "" || raw.trimStart().startsWith("#")) continue;
     if (raw.includes("\t")) {
       yamlFailure("INVALID_YAML", index + 1, "Tabs are forbidden");
@@ -946,7 +946,7 @@ function evaluateCondition(
     case "notEq":
       return { ok: true, matched: !equalJson(actual, expected) };
     case "in":
-      return Array.isArray(expected)
+      return isPolicyArray(expected)
         ? {
             ok: true,
             matched: expected.some((item) => equalJson(actual, item)),
@@ -956,7 +956,7 @@ function evaluateCondition(
       if (typeof actual === "string" && typeof expected === "string") {
         return { ok: true, matched: actual.includes(expected) };
       }
-      return Array.isArray(actual)
+      return isPolicyArray(actual)
         ? {
             ok: true,
             matched: actual.some((item) => equalJson(item, expected)),
@@ -985,7 +985,7 @@ function evaluateCondition(
         ? { ok: true, matched: actual.startsWith(expected) }
         : { ok: false, matched: false };
     case "setSubset":
-      return Array.isArray(actual) && Array.isArray(expected)
+      return isPolicyArray(actual) && isPolicyArray(expected)
         ? {
             ok: true,
             matched: actual.every((item) =>
@@ -994,7 +994,7 @@ function evaluateCondition(
           }
         : { ok: false, matched: false };
     case "setIntersects":
-      return Array.isArray(actual) && Array.isArray(expected)
+      return isPolicyArray(actual) && isPolicyArray(expected)
         ? {
             ok: true,
             matched: actual.some((item) =>
