@@ -31,8 +31,8 @@ states to `INDETERMINATE`.
 ## Qualification
 
 The remediated qualified implementation is
-`f5aa27e3b6e0378b231267d5d6bd08a897ceae8f` with tree
-`0a5fbc1ada884504e98c387c85b5b81cd9ce9d0e`.
+`fbf8818cf3e8c69570e9d0671d86a01e247ded34` with tree
+`5ff0f51d4866f42ff9f4c20a04e02bc5d7941a13`.
 
 - M0 required `verify`: PASS.
 - Linux and Windows frozen qualification: PASS.
@@ -43,8 +43,9 @@ The remediated qualified implementation is
 - Contract registry: 36 entries; inventory: 20 active / 53 planned; type bindings: 24.
 - Five Policy schemas each have direct valid and invalid Contract fixtures.
 - Independent findings `P1-O04-IV-01`, `P1-O04-IV-02`, and
-  `P1-O04-IV-03` are remediated with executable regressions; exact-head
-  re-verification is still required.
+  `P1-O04-IV-03`, including residuals `P1-O04-IV-01-R1` and
+  `P1-O04-IV-01-R2`, are remediated with executable regressions;
+  exact-head re-verification is still required.
 
 The implementation Evidence is
 `operations/phase-1/evidence/o04/p1-v05-policy.json`. Its status is

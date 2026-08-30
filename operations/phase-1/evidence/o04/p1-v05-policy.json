@@ -4,14 +4,14 @@
   "evidenceType": "P1V05PolicyImplementationEvidence",
   "gateStepId": "P1-V05-POLICY",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-30T22:41:00Z",
+  "recordedAt": "2026-08-30T23:03:00Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "pullRequest": 52,
     "branch": "phase-1/p1-o04-deterministic-policy",
     "authorizedBase": "7ceff40760f4c8477ea9d74dfc10b591f2e9d25c",
-    "qualifiedImplementationCommit": "f5aa27e3b6e0378b231267d5d6bd08a897ceae8f",
-    "qualifiedImplementationTree": "0a5fbc1ada884504e98c387c85b5b81cd9ce9d0e"
+    "qualifiedImplementationCommit": "fbf8818cf3e8c69570e9d0671d86a01e247ded34",
+    "qualifiedImplementationTree": "5ff0f51d4866f42ff9f4c20a04e02bc5d7941a13"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -78,7 +78,9 @@
     "dynamicCodeForbidden": true,
     "exactEvaluationInputShape": true,
     "exactSnapshotShapeAndMetadata": true,
-    "duplicateSetItemsRejected": true
+    "duplicateSetItemsRejected": true,
+    "rfc3339DecisionAndSnapshotOutputs": true,
+    "stableCodeBoundsEnforced": true
   },
   "mutationQualification": {
     "evidenceType": "PolicyMutationResult",
@@ -146,12 +148,12 @@
     "linuxX64": "PASS",
     "windowsX64": "PASS",
     "m0Independent": "PASS",
-    "qualityWorkflowRunId": 33339584116,
-    "linuxJobId": 99333193337,
-    "windowsJobId": 99333192503,
-    "aggregatorJobId": 99333604792,
-    "m0WorkflowRunId": 33339584110,
-    "verifyJobId": 99332658446
+    "qualityWorkflowRunId": 33340558410,
+    "linuxJobId": 99335318987,
+    "windowsJobId": 99335318821,
+    "aggregatorJobId": 99335724672,
+    "m0WorkflowRunId": 33340558401,
+    "verifyJobId": 99335318554
   },
   "remediationHistory": [
     {
@@ -213,6 +215,24 @@
       "class": "WINDOWS_EXISTING_TRANSITION_TEST_TIMEOUT",
       "result": "CLOSED",
       "resolution": "The first Windows second-pass run exceeded the unchanged 10-second limit in an existing P1-O01 transition fixture after all Policy tests passed; an unchanged exact-head rerun passed quality, clean rebuild, and the aggregator without lowering the gate."
+    },
+    {
+      "findingId": "P1-O04-IV-01-R1",
+      "class": "NON_RFC3339_DECISION_AND_SNAPSHOT_OUTPUT",
+      "result": "CLOSED",
+      "resolution": "Snapshot construction and decision output use the same RFC 3339 validator as evaluation input; invalid captured timestamps now yield the canonical fallback evaluatedAt and invalid snapshot metadata is rejected."
+    },
+    {
+      "findingId": "P1-O04-IV-01-R2",
+      "class": "STABLE_CODE_BOUND_BYPASS",
+      "result": "CLOSED",
+      "resolution": "PolicyRule reasonCode compilation enforces the Contract's 3-to-128 character stableCode bounds, preventing schema-invalid denial reason codes."
+    },
+    {
+      "findingId": "P1-O04-IV-CI-04",
+      "class": "RESIDUAL_REMEDIATION_FORMATTING",
+      "result": "CLOSED",
+      "resolution": "The residual validator change was formatted under the frozen check-only gate; no diagnostic command was introduced and both platforms passed the final strict format check."
     }
   ],
   "authority": {
