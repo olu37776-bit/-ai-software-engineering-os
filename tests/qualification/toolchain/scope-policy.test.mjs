@@ -204,12 +204,24 @@ describe("operation-aware Phase 1 scope policy", () => {
     ).toBe(true);
   });
 
-  test("enforces operation-scoped Authority Lock ownership", () => {
+  test("enforces every declared Authority Lock owner and rejects an unrelated operation", () => {
     const path = "packages/contracts/schema-registry.json";
-    expect(validateOperationChangedPaths([path], "P1-O02", writeScope, authorityLock)).toEqual([]);
-    expect(validateOperationChangedPaths([path], "P1-O04", writeScope, authorityLock)).toContain(
-      `AUTHORITY_OPERATION_DENIED: ${path}`,
-    );
+    const authority = authorityLock.authorities.find((entry) => entry.path === path);
+    expect(authority).toBeDefined();
+
+    for (const operationId of authority.allowedOperationIds) {
+      expect(validateOperationChangedPaths([path], operationId, writeScope, authorityLock)).toEqual(
+        [],
+      );
+    }
+
+    const unrelatedOperationId = operationManifest.suboperations
+      .map(({ operationId }) => operationId)
+      .find((operationId) => !authority.allowedOperationIds.includes(operationId));
+    expect(unrelatedOperationId).toBeDefined();
+    expect(
+      validateOperationChangedPaths([path], unrelatedOperationId, writeScope, authorityLock),
+    ).toContain(`AUTHORITY_OPERATION_DENIED: ${path}`);
   });
 
   test("binds execution path, operation identity, branch and base metadata", () => {
