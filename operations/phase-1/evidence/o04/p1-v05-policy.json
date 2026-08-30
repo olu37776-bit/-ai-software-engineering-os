@@ -112,15 +112,8 @@
     "package": "@aseos/policy",
     "canonicalOwner": "packages/policy",
     "publicEntryOnly": true,
-    "dependencies": [
-      "@aseos/contracts"
-    ],
-    "outcomes": [
-      "ALLOW",
-      "ALLOW_WITH_REQUIREMENTS",
-      "DENY",
-      "INDETERMINATE"
-    ],
+    "dependencies": ["@aseos/contracts"],
+    "outcomes": ["ALLOW", "ALLOW_WITH_REQUIREMENTS", "DENY", "INDETERMINATE"],
     "registeredOperators": 15,
     "maximumConditionDepth": 4,
     "hardInvariantCount": 3,
