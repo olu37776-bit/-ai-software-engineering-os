@@ -657,6 +657,30 @@ export function validateP1O04StartGate(gate) {
   };
 }
 
+export function selectMergeExecutionRecord(changedExecutionRecords, eventBase) {
+  const baseMatchingRecords = changedExecutionRecords.filter(
+    ({ execution }) => execution.baseCommit === eventBase,
+  );
+  if (baseMatchingRecords.length > 1) {
+    throw new Error(
+      `AMBIGUOUS_BASE_MATCHING_CHANGED_EXECUTION_RECORD: ${baseMatchingRecords
+        .map(({ path }) => path)
+        .join(",")}`,
+    );
+  }
+  if (baseMatchingRecords.length === 1) {
+    return baseMatchingRecords[0];
+  }
+  if (changedExecutionRecords.length > 1) {
+    throw new Error(
+      `MISSING_BASE_MATCHING_CHANGED_EXECUTION_RECORD: event=${eventBase} changed=${changedExecutionRecords
+        .map(({ path }) => path)
+        .join(",")}`,
+    );
+  }
+  return changedExecutionRecords[0];
+}
+
 export function selectEvidenceOperation(changedPaths) {
   const operationIds = new Set(changedPaths.map(operationIdFromEvidencePath));
   if (operationIds.has(undefined) || operationIds.size !== 1) {
