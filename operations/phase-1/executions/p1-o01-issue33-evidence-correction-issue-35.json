@@ -6,11 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Issue #35 correct Issue #33 post-merge observability Evidence",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T18:19:28Z",
+  "completedAt": "2026-08-30T18:25:00Z",
   "implementationBranch": "phase-1/p1-o01-issue33-evidence-correction-issue-35",
   "baseCommit": "d98c92ed2d54b25e1e2d22031e73261846dd14a4",
   "trackingIssue": 35,
+  "implementationCommit": "927b5c74228b317a0db2da7ef2540d40e88d4639",
+  "implementationTree": "f9c787bd2920e3e636e865dd754c7b6423d13c06",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -19,10 +22,56 @@
     "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/35"
   ],
   "claimBoundary": {
-    "maximumImplementationClaim": "IN_PROGRESS",
+    "maximumImplementationClaim": "IMPLEMENTED",
     "issue35Verified": false,
     "p1O04Implemented": false,
     "acceptedAdrChanged": false,
-    "requiredCheckIdentityChanged": false
-  }
+    "requiredCheckIdentityChanged": false,
+    "independentVerificationRequired": true
+  },
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight",
+      "result": "PASS",
+      "executionHead": "5764f38e5a3834f97f33fc1c4d7687c78d582532",
+      "workflowRun": 33327904343,
+      "jobId": 99301206040,
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O01",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "immutableAuthorityFilesVerified": 25,
+      "scopeViolations": 0
+    },
+    {
+      "check": "complete GitHub Actions historical collection and logs",
+      "result": "PASS",
+      "target": "2336fa3faa9123512f85091f61c4465d64e18233",
+      "base": "69804341c21c220863389571d9b5be8796eb0382",
+      "m0Run": 33325868577,
+      "qualityRun": 33325868598
+    },
+    {
+      "check": "Issue #33 protected-main post-merge qualification",
+      "result": "PASS",
+      "merge": "d98c92ed2d54b25e1e2d22031e73261846dd14a4",
+      "m0Run": 33327152584,
+      "qualityRun": 33327152622
+    },
+    {
+      "check": "required verify authority uniqueness",
+      "result": "PASS",
+      "verifyProducers": 1,
+      "producer": ".github/workflows/m0-independent-verify.yml#verify"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o01-issue33-observability-correction-issue-35.json",
+    "docs/implementation/phase-1/o01/issue33-observability-correction-issue-35.md",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/35"
+  ],
+  "remainingGaps": [
+    "Immutable-head GitHub qualification of the correction remains pending.",
+    "Independent verification is required before the correction can be VERIFIED.",
+    "P1-O04 final amendment and Resume Gate remain blocked until exact merge and post-merge PASS."
+  ]
 }
