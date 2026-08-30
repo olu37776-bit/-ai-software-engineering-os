@@ -612,6 +612,14 @@ function yamlFailure(code: PolicyDiagnostic["code"], line: number, message: stri
   throw new PolicyFailure(code, "$/line/" + String(line), message);
 }
 
+function requiredYamlLine(lines: readonly YamlLine[], index: number): YamlLine {
+  const line = lines[index];
+  if (line === undefined) {
+    yamlFailure("INVALID_YAML", 1, "Missing YAML line");
+  }
+  return line;
+}
+
 function parseScalar(source: string, line: number, maxScalarLength: number): PolicyJson {
   if (source.length > maxScalarLength) {
     yamlFailure("YAML_LIMIT_EXCEEDED", line, "Scalar too long");
@@ -909,6 +917,12 @@ function referencedValue(input: PolicyEvaluationInput, reference: string): Polic
 
 function equalJson(left: PolicyJson | undefined, right: PolicyJson | undefined): boolean {
   return left !== undefined && right !== undefined && canonicalJson(left) === canonicalJson(right);
+}
+
+function isPolicyArray(
+  value: PolicyJson | undefined,
+): value is readonly PolicyJson[] {
+  return Array.isArray(value);
 }
 
 function evaluateCondition(
