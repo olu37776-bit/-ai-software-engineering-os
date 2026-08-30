@@ -50,9 +50,7 @@
     },
     "verifyAuthority": {
       "result": "PASS",
-      "producers": [
-        ".github/workflows/m0-independent-verify.yml#verify"
-      ]
+      "producers": [".github/workflows/m0-independent-verify.yml#verify"]
     }
   },
   "enforcedOutcome": {
@@ -65,12 +63,7 @@
     "scopeHead": "TARGET_SHA",
     "scopeBranch": "main",
     "controllerRemovedBeforeQualification": true,
-    "targetOwnedQualification": [
-      "WRITE_SCOPE",
-      "M0",
-      "QUALITY",
-      "CLEAN_BUILD_TEST"
-    ],
+    "targetOwnedQualification": ["WRITE_SCOPE", "M0", "QUALITY", "CLEAN_BUILD_TEST"],
     "requiredCheckProducer": ".github/workflows/m0-independent-verify.yml#verify"
   },
   "recoveryTargetsAfterMerge": [
