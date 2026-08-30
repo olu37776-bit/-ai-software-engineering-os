@@ -31,24 +31,26 @@ export type PolicyRequirements = Readonly<{
   postVerificationRequired?: boolean;
 }>;
 
+export type PolicyLeafCondition = Readonly<{
+  operator:
+    | "eq"
+    | "notEq"
+    | "in"
+    | "contains"
+    | "lt"
+    | "lte"
+    | "gt"
+    | "gte"
+    | "exists"
+    | "startsWith"
+    | "setSubset"
+    | "setIntersects";
+  reference: string;
+  operand?: PolicyJson;
+}>;
+
 export type PolicyCondition =
-  | Readonly<{
-      operator:
-        | "eq"
-        | "notEq"
-        | "in"
-        | "contains"
-        | "lt"
-        | "lte"
-        | "gt"
-        | "gte"
-        | "exists"
-        | "startsWith"
-        | "setSubset"
-        | "setIntersects";
-      reference: string;
-      operand?: PolicyJson;
-    }>
+  | PolicyLeafCondition
   | Readonly<{ operator: "all" | "any"; conditions: readonly PolicyCondition[] }>
   | Readonly<{ operator: "not"; condition: PolicyCondition }>;
 
@@ -127,10 +129,10 @@ export type RestrictedYamlLimits = Readonly<{
   maxScalarLength?: number;
 }>;
 
-type MutableJsonObject = { [key: string]: PolicyJson };
+interface MutableJsonObject extends Record<string, PolicyJson> {}
 type ParseResult = Readonly<{ value: PolicyJson; next: number }>;
 type ConditionResult = Readonly<{ ok: boolean; matched: boolean }>;
-type LeafCondition = Extract<PolicyCondition, { reference: string }>;
+type LeafCondition = PolicyLeafCondition;
 
 const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 const semver =
@@ -169,7 +171,7 @@ const protectedKeys = new Set(["__proto__", "prototype", "constructor"]);
 const fallbackId = "00000000-0000-7000-8000-000000000000";
 const fallbackTime = "1970-01-01T00:00:00.000Z";
 
-export const POLICY_EVALUATOR_VERSION: string = "0.1.0";
+export const POLICY_EVALUATOR_VERSION = "0.1.0";
 export const HARD_INVARIANT_IDS: readonly string[] = Object.freeze([
   "NO_DIRECT_AUTHORITY_WRITE",
   "R4_REQUIRES_VERIFIED_CONTROL",
@@ -188,7 +190,7 @@ class PolicyFailure extends Error {
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
-  const prototype = Object.getPrototypeOf(value);
+  const prototype: object | null = Reflect.getPrototypeOf(value);
   return prototype === Object.prototype || prototype === null;
 }
 
@@ -218,13 +220,15 @@ function assertPolicyJson(
     }
     return;
   }
-  if (typeof value !== "object" || value === null) {
+  if (typeof value !== "object") {
     throw new PolicyFailure("INVALID_POLICY_VALUE", path, "Value is not I-JSON compatible");
   }
   if (seen.has(value)) throw new PolicyFailure("INVALID_POLICY_VALUE", path, "Cyclic value");
   seen.add(value);
   if (Array.isArray(value)) {
-    value.forEach((child, index) => assertPolicyJson(child, path + "/" + String(index), seen));
+    value.forEach((child, index) => {
+      assertPolicyJson(child, path + "/" + String(index), seen);
+    });
     seen.delete(value);
     return;
   }
@@ -663,7 +667,7 @@ function parseYamlNode(
     yamlFailure("YAML_LIMIT_EXCEEDED", lines[start]?.line ?? 1, "Depth limit");
   }
   const first = lines[start];
-  if (!first || first.indent !== indent) {
+  if (first?.indent !== indent) {
     yamlFailure("INVALID_YAML", first?.line ?? 1, "Invalid indentation");
   }
   if (first.content.startsWith("-")) {
@@ -674,7 +678,7 @@ function parseYamlNode(
       lines[index]?.indent === indent &&
       lines[index]?.content.startsWith("-")
     ) {
-      const line = lines[index] as YamlLine;
+      const line = lines[index]!;
       if (line.content !== "-" && !line.content.startsWith("- ")) {
         yamlFailure("INVALID_YAML", line.line, "Sequence marker requires a space");
       }
@@ -685,7 +689,7 @@ function parseYamlNode(
       const rest = line.content === "-" ? "" : line.content.slice(2);
       if (rest === "") {
         const next = lines[index + 1];
-        if (!next || next.indent !== indent + 2) {
+        if (next?.indent !== indent + 2) {
           yamlFailure("INVALID_YAML", line.line, "Missing sequence child");
         }
         const parsed = parseYamlNode(lines, index + 1, indent + 2, limits, depth + 1, nodeCounter);
@@ -696,7 +700,7 @@ function parseYamlNode(
         const object: MutableJsonObject = Object.create(null) as MutableJsonObject;
         if (scalar === "") {
           const next = lines[index + 1];
-          if (!next || next.indent !== indent + 4) {
+          if (next?.indent !== indent + 4) {
             yamlFailure("INVALID_YAML", line.line, "Missing mapping child");
           }
           const child = parseYamlNode(lines, index + 1, indent + 4, limits, depth + 2, nodeCounter);
@@ -719,7 +723,7 @@ function parseYamlNode(
             if (Object.hasOwn(object, tailKey)) {
               yamlFailure("INVALID_YAML", line.line, "Duplicate mapping key");
             }
-            object[tailKey] = tailValue as PolicyJson;
+            object[tailKey] = tailValue;
           }
           index = tail.next;
         }
@@ -739,7 +743,7 @@ function parseYamlNode(
     lines[index]?.indent === indent &&
     !lines[index]?.content.startsWith("-")
   ) {
-    const line = lines[index] as YamlLine;
+    const line = lines[index]!;
     nodeCounter.value += 1;
     if (nodeCounter.value > limits.maxNodes) {
       yamlFailure("YAML_LIMIT_EXCEEDED", line.line, "Node limit");
@@ -750,7 +754,7 @@ function parseYamlNode(
     }
     if (scalar === "") {
       const next = lines[index + 1];
-      if (!next || next.indent !== indent + 2) {
+      if (next?.indent !== indent + 2) {
         yamlFailure("INVALID_YAML", line.line, "Missing mapping child");
       }
       const child = parseYamlNode(lines, index + 1, indent + 2, limits, depth + 1, nodeCounter);
@@ -789,7 +793,7 @@ export function parseRestrictedPolicyYaml(
   }
   const lines: YamlLine[] = [];
   for (let index = 0; index < rawLines.length; index += 1) {
-    const raw = rawLines[index] as string;
+    const raw = rawLines[index]!;
     if (raw.trim() === "" || raw.trimStart().startsWith("#")) continue;
     if (raw.includes("\t")) {
       yamlFailure("INVALID_YAML", index + 1, "Tabs are forbidden");
@@ -929,11 +933,12 @@ function evaluateCondition(
     const result = evaluateCondition(condition.condition, input, constants);
     return { ok: result.ok, matched: result.ok && !result.matched };
   }
-  const actual = condition.reference.startsWith("constant.")
-    ? constants[condition.reference.slice("constant.".length)]
-    : referencedValue(input, condition.reference);
-  const expected = condition.operand;
-  switch (condition.operator) {
+  const leaf: LeafCondition = condition;
+  const actual = leaf.reference.startsWith("constant.")
+    ? constants[leaf.reference.slice("constant.".length)]
+    : referencedValue(input, leaf.reference);
+  const expected = leaf.operand;
+  switch (leaf.operator) {
     case "exists":
       return { ok: true, matched: actual !== undefined };
     case "eq":
@@ -967,11 +972,11 @@ function evaluateCondition(
       return {
         ok: true,
         matched:
-          condition.operator === "lt"
+          leaf.operator === "lt"
             ? actual < expected
-            : condition.operator === "lte"
+            : leaf.operator === "lte"
               ? actual <= expected
-              : condition.operator === "gt"
+              : leaf.operator === "gt"
                 ? actual > expected
                 : actual >= expected,
       };
@@ -1151,10 +1156,10 @@ export function evaluatePolicy(snapshotValue: unknown, inputValue: unknown): Pol
     assertPolicyJson(snapshotValue, "$/snapshot", new WeakSet<object>());
     assertPolicyJson(inputValue, "$/input", new WeakSet<object>());
     if (isRecord(snapshotValue)) {
-      snapshot = snapshotValue as Partial<PolicySnapshot>;
+      snapshot = snapshotValue;
     }
     if (isRecord(inputValue)) {
-      input = inputValue as Partial<PolicyEvaluationInput>;
+      input = inputValue;
     }
     inputHash = hashPolicyValue(inputValue);
   } catch {
@@ -1201,10 +1206,10 @@ export function evaluatePolicy(snapshotValue: unknown, inputValue: unknown): Pol
   }
   const typedSnapshot: PolicySnapshot = {
     schemaVersion: "1.0.0",
-    snapshotId: snapshotValue["snapshotId"] as string,
+    snapshotId: snapshotValue["snapshotId"],
     policySetId: snapshotValue["policySetId"] as string,
     policyVersion: snapshotValue["policyVersion"] as string,
-    policyHash: snapshotValue["policyHash"] as string,
+    policyHash: snapshotValue["policyHash"],
     compiledPolicySet: compiled.value,
     compilerVersion: snapshotValue["compilerVersion"] as string,
     createdAt: snapshotValue["createdAt"] as string,
