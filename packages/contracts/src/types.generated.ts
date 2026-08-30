@@ -188,15 +188,11 @@ export type PolicyRule = Readonly<{
     readonly postVerificationRequired?: boolean;
     readonly timeoutMs?: number;
   }>;
-  readonly resourceSelector: Readonly<{
-    readonly resourceTypes: readonly string[];
-  }>;
+  readonly resourceSelector: Readonly<{ readonly resourceTypes: readonly string[] }>;
   readonly ruleEffect: "ALLOW" | "DENY";
   readonly ruleId: string;
   readonly schemaVersion: "1.0.0";
-  readonly subjectSelector: Readonly<{
-    readonly subjectTypes: readonly string[];
-  }>;
+  readonly subjectSelector: Readonly<{ readonly subjectTypes: readonly string[] }>;
   readonly when: Readonly<Record<string, unknown>>;
 }>;
 export type PolicySet = Readonly<{
