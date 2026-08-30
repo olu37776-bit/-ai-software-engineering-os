@@ -1,5 +1,6 @@
 packages:
   - packages/contracts
+  - packages/policy
 
 allowBuilds:
   protobufjs: true

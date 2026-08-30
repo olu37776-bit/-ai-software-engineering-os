@@ -528,6 +528,45 @@
       "exampleRequired": true
     },
     {
+      "contractId": "aseos.policy.capability-manifest",
+      "canonicalName": "CapabilityManifest",
+      "domain": "policy",
+      "canonicalOwner": "packages/contracts",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/policy/capability-manifest.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "adapter-capability-probes"
+      ],
+      "consumers": [
+        "canonical-policy-evaluator"
+      ],
+      "dependsOn": [],
+      "adrRefs": [
+        "ADR-0010",
+        "ADR-0011"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/policy/valid/capability-manifest.json",
+        "packages/contracts/examples/policy/invalid/capability-manifest-unknown-field.json"
+      ],
+      "verificationObligations": [
+        "capability-facts-explicit",
+        "no-unknown-fields",
+        "isolation-level-bounded"
+      ],
+      "schemaId": "urn:aseos:schema:capability-manifest:1.0.0",
+      "sha256": "f9907ab82f6fea5e698eb11ba02a7709ea0e93b5ac39c8dd865d6923a89e21b7",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
       "contractId": "aseos.policy.policy-decision",
       "canonicalName": "PolicyDecision",
       "domain": "policy",
@@ -573,6 +612,168 @@
       "sha256": "8b20f71119df2e1a5ca3ec7708cb89de2da83975f9c5fa2a512cf2c22fda8a22",
       "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
       "exampleRequired": true
+    },
+    {
+      "contractId": "aseos.policy.policy-evaluation-input",
+      "canonicalName": "PolicyEvaluationInput",
+      "domain": "policy",
+      "canonicalOwner": "packages/policy",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/policy/policy-evaluation-input.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "kernel-policy-port"
+      ],
+      "consumers": [
+        "canonical-policy-evaluator"
+      ],
+      "dependsOn": [
+        "aseos.policy.policy-snapshot"
+      ],
+      "adrRefs": [
+        "ADR-0011"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/policy/valid/policy-evaluation-input.json",
+        "packages/contracts/examples/policy/invalid/policy-evaluation-input-missing-clock.json"
+      ],
+      "verificationObligations": [
+        "captured-clock-required",
+        "typed-input-namespace",
+        "no-unknown-fields"
+      ],
+      "schemaId": "urn:aseos:schema:policy-evaluation-input:1.0.0",
+      "sha256": "bf2f6abec25ec407413b54ab37874308963ce9240f02458a555a07f292aebb33",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.policy.policy-rule",
+      "canonicalName": "PolicyRule",
+      "domain": "policy",
+      "canonicalOwner": "packages/policy",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/policy/policy-rule.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "policy-compiler"
+      ],
+      "consumers": [
+        "canonical-policy-evaluator"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0011"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/policy/valid/policy-rule.json",
+        "packages/contracts/examples/policy/invalid/policy-rule-unknown-operator.json"
+      ],
+      "verificationObligations": [
+        "bounded-condition-ast",
+        "registered-operators-only",
+        "deny-overrides"
+      ],
+      "schemaId": "urn:aseos:schema:policy-rule:1.0.0",
+      "sha256": "16f7ade10b951c2577e53d9776e5631da7cbb39df9cc34299556b7f24c732d94",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.policy.policy-set",
+      "canonicalName": "PolicySet",
+      "domain": "policy",
+      "canonicalOwner": "packages/policy",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/policy/policy-set.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "policy-authoring-boundary"
+      ],
+      "consumers": [
+        "policy-compiler"
+      ],
+      "dependsOn": [
+        "aseos.policy.policy-rule"
+      ],
+      "adrRefs": [
+        "ADR-0011"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/policy/valid/policy-set.json",
+        "packages/contracts/examples/policy/invalid/policy-set-default-allow.json"
+      ],
+      "verificationObligations": [
+        "canonical-default-deny",
+        "duplicate-rule-rejection",
+        "no-unknown-fields"
+      ],
+      "schemaId": "urn:aseos:schema:policy-set:1.0.0",
+      "sha256": "e767fee8e9f1ec5e1e260e45c56d0d58fa6457d152a9a3b9fbfe5690d3034a77",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.policy.policy-snapshot",
+      "canonicalName": "PolicySnapshot",
+      "domain": "policy",
+      "canonicalOwner": "packages/policy",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/policy/policy-snapshot.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "policy-compiler"
+      ],
+      "consumers": [
+        "canonical-policy-evaluator",
+        "kernel"
+      ],
+      "dependsOn": [
+        "aseos.policy.policy-set",
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0011"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/policy/valid/policy-snapshot.json",
+        "packages/contracts/examples/policy/invalid/policy-snapshot-unknown-field.json"
+      ],
+      "verificationObligations": [
+        "canonical-json-sha256",
+        "immutable-snapshot",
+        "deterministic-replay"
+      ],
+      "schemaId": "urn:aseos:schema:policy-snapshot:1.0.0",
+      "sha256": "50bec6a45b8da296dee952bf70112fd3549c8dc1f2fb0653f6489517a46e5cdc",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
     },
     {
       "contractId": "aseos.verification.gate-decision",

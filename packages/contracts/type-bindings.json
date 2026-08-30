@@ -1,7 +1,10 @@
 {
   "schemaVersion": "1.0.0",
   "bindings": [
-    { "schemaId": "urn:aseos:schema:actor-ref:1.0.0", "exportName": "ActorRef" },
+    {
+      "schemaId": "urn:aseos:schema:actor-ref:1.0.0",
+      "exportName": "ActorRef"
+    },
     {
       "schemaId": "urn:aseos:schema:apply-workspace-change-payload:1.0.0",
       "exportName": "ApplyWorkspaceChangePayload"
@@ -10,8 +13,18 @@
       "schemaId": "urn:aseos:schema:apply-workspace-change-result:1.0.0",
       "exportName": "ApplyWorkspaceChangeResult"
     },
-    { "schemaId": "urn:aseos:schema:artifact-ref:1.0.0", "exportName": "ArtifactRef" },
-    { "schemaId": "urn:aseos:schema:command-envelope:1.0.0", "exportName": "CommandEnvelope" },
+    {
+      "schemaId": "urn:aseos:schema:artifact-ref:1.0.0",
+      "exportName": "ArtifactRef"
+    },
+    {
+      "schemaId": "urn:aseos:schema:capability-manifest:1.0.0",
+      "exportName": "CapabilityManifest"
+    },
+    {
+      "schemaId": "urn:aseos:schema:command-envelope:1.0.0",
+      "exportName": "CommandEnvelope"
+    },
     {
       "schemaId": "urn:aseos:schema:create-workflow-run-payload:1.0.0",
       "exportName": "CreateWorkflowRunPayload"
@@ -20,18 +33,46 @@
       "schemaId": "urn:aseos:schema:domain-event-envelope:1.0.0",
       "exportName": "DomainEventEnvelope"
     },
-    { "schemaId": "urn:aseos:schema:evidence-metadata:1.0.0", "exportName": "EvidenceMetadata" },
+    {
+      "schemaId": "urn:aseos:schema:evidence-metadata:1.0.0",
+      "exportName": "EvidenceMetadata"
+    },
     {
       "schemaId": "urn:aseos:schema:fixture-change-node-contract:1.0.0",
       "exportName": "FixtureChangeNodeContract"
     },
-    { "schemaId": "urn:aseos:schema:gate-decision:1.0.0", "exportName": "GateDecision" },
+    {
+      "schemaId": "urn:aseos:schema:gate-decision:1.0.0",
+      "exportName": "GateDecision"
+    },
     {
       "schemaId": "urn:aseos:schema:node-execution-identity:1.0.0",
       "exportName": "NodeExecutionIdentity"
     },
-    { "schemaId": "urn:aseos:schema:policy-decision:1.0.0", "exportName": "PolicyDecision" },
-    { "schemaId": "urn:aseos:schema:schema-ref:1.0.0", "exportName": "SchemaRef" },
+    {
+      "schemaId": "urn:aseos:schema:policy-decision:1.0.0",
+      "exportName": "PolicyDecision"
+    },
+    {
+      "schemaId": "urn:aseos:schema:policy-evaluation-input:1.0.0",
+      "exportName": "PolicyEvaluationInput"
+    },
+    {
+      "schemaId": "urn:aseos:schema:policy-rule:1.0.0",
+      "exportName": "PolicyRule"
+    },
+    {
+      "schemaId": "urn:aseos:schema:policy-set:1.0.0",
+      "exportName": "PolicySet"
+    },
+    {
+      "schemaId": "urn:aseos:schema:policy-snapshot:1.0.0",
+      "exportName": "PolicySnapshot"
+    },
+    {
+      "schemaId": "urn:aseos:schema:schema-ref:1.0.0",
+      "exportName": "SchemaRef"
+    },
     {
       "schemaId": "urn:aseos:schema:side-effect-result-envelope:1.0.0",
       "exportName": "SideEffectResultEnvelope"
@@ -40,9 +81,18 @@
       "schemaId": "urn:aseos:schema:side-effect-task-envelope:1.0.0",
       "exportName": "SideEffectTaskEnvelope"
     },
-    { "schemaId": "urn:aseos:schema:subject-ref:1.0.0", "exportName": "SubjectRef" },
-    { "schemaId": "urn:aseos:schema:typed-error:1.0.0", "exportName": "TypedError" },
-    { "schemaId": "urn:aseos:schema:verification-plan:1.0.0", "exportName": "VerificationPlan" },
+    {
+      "schemaId": "urn:aseos:schema:subject-ref:1.0.0",
+      "exportName": "SubjectRef"
+    },
+    {
+      "schemaId": "urn:aseos:schema:typed-error:1.0.0",
+      "exportName": "TypedError"
+    },
+    {
+      "schemaId": "urn:aseos:schema:verification-plan:1.0.0",
+      "exportName": "VerificationPlan"
+    },
     {
       "schemaId": "urn:aseos:schema:workflow-run-created-payload:1.0.0",
       "exportName": "WorkflowRunCreatedPayload"

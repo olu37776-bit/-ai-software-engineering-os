@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O04-DETERMINISTIC-POLICY-2026-08-30-01",
+  "executionType": "P1_O04_DETERMINISTIC_POLICY_QUALIFICATION",
+  "operationId": "P1-O04",
+  "writeScopeOperationId": "P1-O04",
+  "title": "Deterministic Policy compiler and evaluator qualification",
+  "riskClass": "R4",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-08-30T21:20:00Z",
+  "implementationBranch": "phase-1/p1-o04-deterministic-policy",
+  "baseCommit": "7ceff40760f4c8477ea9d74dfc10b591f2e9d25c",
+  "authorityRefs": [
+    "docs/decisions/ADR-0011-policy-engine-and-representation.md",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/evidence/o01/p1-o04-resume-after-issue-29-independent-gate.json"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "productionWorkflowRuntimeImplemented": false,
+    "kernelIntegrationImplemented": false,
+    "externalPolicyAuthorityIntroduced": false,
+    "acceptedAdrChanged": false,
+    "independentVerificationRequired": true
+  },
+  "completedAt": "2026-08-30T23:03:00Z",
+  "qualifiedImplementationCommit": "fbf8818cf3e8c69570e9d0671d86a01e247ded34",
+  "qualifiedImplementationTree": "5ff0f51d4866f42ff9f4c20a04e02bc5d7941a13",
+  "evidenceRef": "operations/phase-1/evidence/o04/p1-v05-policy.json",
+  "results": {
+    "writeScope": "PASS",
+    "authorityLock": "PASS",
+    "p1V05": "PASS",
+    "m0Independent": "PASS",
+    "linuxX64": "PASS",
+    "windowsX64": "PASS",
+    "rootTests": "141/141",
+    "architectureTests": "9/9"
+  }
+}

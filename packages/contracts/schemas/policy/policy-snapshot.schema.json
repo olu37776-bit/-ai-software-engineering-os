@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:policy-snapshot:1.0.0",
+  "title": "PolicySnapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "snapshotId",
+    "policySetId",
+    "policyVersion",
+    "policyHash",
+    "compiledPolicySet",
+    "compilerVersion",
+    "createdAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "snapshotId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "policySetId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "policyVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "policyHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "compiledPolicySet": {
+      "$ref": "urn:aseos:schema:policy-set:1.0.0"
+    },
+    "compilerVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

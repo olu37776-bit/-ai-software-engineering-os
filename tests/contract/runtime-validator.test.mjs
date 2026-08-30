@@ -59,6 +59,6 @@ describe("canonical runtime Contract validator", () => {
     const second = registry.validate(identity, { actorType: "SYSTEM", actorId: "two" });
     expect(first.ok).toBe(true);
     expect(second.ok).toBe(true);
-    expect(registry.list()).toHaveLength(31);
+    expect(registry.list()).toHaveLength(36);
   });
 });

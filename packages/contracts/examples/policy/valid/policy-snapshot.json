@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "snapshotId": "018f0f55-7d9b-7d32-8b6e-4e87d5e6c403",
+  "policySetId": "018f0f55-7d9b-7d32-8b6e-4e87d5e6c401",
+  "policyVersion": "1.0.0",
+  "policyHash": "e767fee8e9f1ec5e1e260e45c56d0d58fa6457d152a9a3b9fbfe5690d3034a77",
+  "compiledPolicySet": {
+    "schemaVersion": "1.0.0",
+    "policySetId": "018f0f55-7d9b-7d32-8b6e-4e87d5e6c401",
+    "version": "1.0.0",
+    "description": "Phase 1 deterministic policy fixture",
+    "source": {
+      "kind": "RELEASE",
+      "ref": "release://phase-1"
+    },
+    "defaultOutcome": "DENY",
+    "constants": {
+      "LOW_RISK": "R1"
+    },
+    "rules": [
+      {
+        "schemaVersion": "1.0.0",
+        "ruleId": "allow-read",
+        "domain": "tool",
+        "subjectSelector": {
+          "subjectTypes": [
+            "NODE"
+          ]
+        },
+        "action": "read",
+        "resourceSelector": {
+          "resourceTypes": [
+            "WORKSPACE"
+          ]
+        },
+        "when": {
+          "operator": "eq",
+          "reference": "input.riskClass",
+          "operand": "R1"
+        },
+        "ruleEffect": "ALLOW",
+        "requirements": {
+          "permissionScopes": [
+            "workspace:read"
+          ],
+          "postVerificationRequired": true
+        },
+        "reasonCode": "POLICY_ALLOW_READ",
+        "metadata": {
+          "owner": "release"
+        }
+      }
+    ]
+  },
+  "compilerVersion": "0.1.0",
+  "createdAt": "2026-08-30T21:29:00Z"
+}

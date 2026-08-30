@@ -192,24 +192,33 @@
     },
     {
       "path": "packages/contracts/planned-contracts.json",
-      "sha256": "7114f6f2f2495742e0cf9291f464f41c82cda2dcec77abac9e37b9ac324ead9c",
+      "sha256": "204d49f0dcc627e4d2742a7edc6fef6fd55b6a041b9ae0936fba8ff4d73f460a",
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
-      "allowedOperationIds": ["P1-O02", "P1-O04"]
+      "allowedOperationIds": [
+        "P1-O02",
+        "P1-O04"
+      ]
     },
     {
       "path": "packages/contracts/schema-inventory.json",
-      "sha256": "3135472b8c1812117c8712b049a8ef6fddd3c1636dda7bafd1289b4c0bb04f56",
+      "sha256": "e0046aedadbc0260e46c36e8dd0230b6b19a8e1d4625a49dcf80da06e4a62136",
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
-      "allowedOperationIds": ["P1-O02", "P1-O04"]
+      "allowedOperationIds": [
+        "P1-O02",
+        "P1-O04"
+      ]
     },
     {
       "path": "packages/contracts/schema-registry.json",
-      "sha256": "4776c6222e01f6346b95c236b27aeb84e21cf119589fe39a0635903e28a55a25",
+      "sha256": "8d58c84b3a27c938dfc2b7ed17c724d6f7179c37b50de7175835721e0cd5fead",
       "role": "SCHEMA_REGISTRY",
       "mutationPolicy": "OPERATION_SCOPED",
-      "allowedOperationIds": ["P1-O02", "P1-O04"]
+      "allowedOperationIds": [
+        "P1-O02",
+        "P1-O04"
+      ]
     },
     {
       "path": "packages/contracts/schemas/meta/example-suite.schema.json",

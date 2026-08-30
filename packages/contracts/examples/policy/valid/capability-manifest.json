@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0.0",
+  "capabilityId": "workspace-reader",
+  "capabilityVersion": "1.0.0",
+  "operations": [
+    "read"
+  ],
+  "riskClasses": [
+    "R0",
+    "R1"
+  ],
+  "permissionScopes": [
+    "workspace:read"
+  ],
+  "isolationLevels": [
+    "PROCESS_RESTRICTED"
+  ]
+}

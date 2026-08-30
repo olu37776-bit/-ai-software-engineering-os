@@ -53,3 +53,11 @@ pnpm run contracts:qualify
 该入口执行 schema meta-validation、registry/inventory/hash/reference integrity、first-slice examples、Schema ↔ TypeScript semantic consistency、compatibility 和 runtime fail-closed probes，产生 P1-V03 所需四类结构化结果。TypeScript declarations 由 canonical schemas 生成并在 quality 中检查漂移，但不替代 runtime validation。
 
 任何 Contract 变更在同一 PR 中必须同步 Schema、inventory、examples、producer/consumer、compatibility、generated/runtime type、verification obligations 和相关 ADR/文档。禁止只修改 TypeScript interface、只改 example 或创建第二份 Schema authority。
+
+## Phase 1 Policy authority
+
+P1-O04 activates five Draft 2020-12 authorities under `schemas/policy`:
+`CapabilityManifest`, `PolicyEvaluationInput`, `PolicyRule`, `PolicySet`, and
+`PolicySnapshot`. `PolicyDecision` remains the existing canonical output
+Contract. Restricted YAML is authoring input only; canonical persisted authority
+is schema-valid PolicySet JSON and its deterministic PolicySnapshot hash.

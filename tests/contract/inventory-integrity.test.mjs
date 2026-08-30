@@ -17,14 +17,14 @@ describe("active and planned Contract inventories", () => {
     expect(inventory.result).toMatchObject({
       evidenceType: "SchemaRegistryValidationResult",
       result: "PASS",
-      registryEntries: 31,
-      uniqueSchemaIdentities: 31,
-      uniqueAuthorityPaths: 31,
-      inventoryActiveContracts: 15,
-      inventoryPlannedContracts: 58,
+      registryEntries: 36,
+      uniqueSchemaIdentities: 36,
+      uniqueAuthorityPaths: 36,
+      inventoryActiveContracts: 20,
+      inventoryPlannedContracts: 53,
       uniqueCanonicalOwners: 73,
     });
-    expect(inventory.publicOrPersistedBoundaries).toBe(15);
+    expect(inventory.publicOrPersistedBoundaries).toBe(20);
   });
 
   test("rejects active/planned ownership collisions", async () => {

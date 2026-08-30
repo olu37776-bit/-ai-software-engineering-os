@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O04-P1-V05-POLICY-2026-08-30-01",
+  "evidenceType": "P1V05PolicyImplementationEvidence",
+  "gateStepId": "P1-V05-POLICY",
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-08-30T23:03:00Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "pullRequest": 52,
+    "branch": "phase-1/p1-o04-deterministic-policy",
+    "authorizedBase": "7ceff40760f4c8477ea9d74dfc10b591f2e9d25c",
+    "qualifiedImplementationCommit": "fbf8818cf3e8c69570e9d0671d86a01e247ded34",
+    "qualifiedImplementationTree": "5ff0f51d4866f42ff9f4c20a04e02bc5d7941a13"
+  },
+  "authorizationPreflight": {
+    "result": "PASS",
+    "mode": "OPERATION_EXECUTION",
+    "operationId": "P1-O04",
+    "writeScopeOperationId": "P1-O04",
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "operationStartGateRequired": true,
+    "operationStartGateDecision": "PASS",
+    "operationStartGateMainCommit": "7ceff40760f4c8477ea9d74dfc10b591f2e9d25c",
+    "immutableAuthorityFilesVerified": 25,
+    "scopeViolations": 0
+  },
+  "contracts": {
+    "result": "PASS",
+    "registryEntries": 36,
+    "activeInventoryContracts": 20,
+    "plannedInventoryContracts": 53,
+    "typeBindings": 24,
+    "activated": [
+      "CapabilityManifest",
+      "PolicyEvaluationInput",
+      "PolicyRule",
+      "PolicySet",
+      "PolicySnapshot"
+    ],
+    "existingDecisionAuthority": "PolicyDecision",
+    "draft": "JSON Schema 2020-12",
+    "positiveExamples": 5,
+    "negativeExamples": 5,
+    "firstSliceSuiteMutated": false
+  },
+  "canonicalizationDeterminism": {
+    "evidenceType": "CanonicalizationDeterminismResult",
+    "result": "PASS",
+    "canonicalDomain": "I-JSON-compatible Policy values",
+    "serialization": "@aseos/contracts canonicalJson",
+    "hash": "SHA-256 over canonical UTF-8 JSON",
+    "keyOrderIndependent": true,
+    "negativeZeroCanonicalized": true,
+    "unicodeNormalizationApplied": false,
+    "nonFiniteRejected": true,
+    "loneSurrogateRejected": true,
+    "cyclesAndAccessorsRejected": true,
+    "snapshotSelfHashing": false,
+    "capturedClockRequired": true,
+    "replayByteStable": true,
+    "loneSurrogatePropertyNamesRejected": true,
+    "ambientLocaleIndependentOrdering": true
+  },
+  "failClosedProperties": {
+    "evidenceType": "FailClosedPropertyResult",
+    "result": "PASS",
+    "defaultDeny": true,
+    "denyOverrides": true,
+    "ruleOrderInvariantRuns": 20,
+    "hardInvariantsBeforePolicy": true,
+    "invalidSchemaOrSemanticInput": "INDETERMINATE",
+    "conditionTypeMismatch": "INDETERMINATE",
+    "requirementConflict": "INDETERMINATE",
+    "requirementsUnionCanonical": true,
+    "noEvaluationIo": true,
+    "noSystemClock": true,
+    "dynamicCodeForbidden": true,
+    "exactEvaluationInputShape": true,
+    "exactSnapshotShapeAndMetadata": true,
+    "duplicateSetItemsRejected": true,
+    "rfc3339DecisionAndSnapshotOutputs": true,
+    "stableCodeBoundsEnforced": true
+  },
+  "mutationQualification": {
+    "evidenceType": "PolicyMutationResult",
+    "result": "PASS",
+    "engine": "SCOPED_SEMANTIC_MUTATION_MATRIX",
+    "mutationCases": 8,
+    "killedMutations": 8,
+    "survivingMutations": 0,
+    "cases": [
+      "default-allow",
+      "deny-override-removal",
+      "rule-order-dependence",
+      "hard-invariant-bypass",
+      "requirement-conflict-coercion",
+      "unknown-reference-acceptance",
+      "unknown-operator-acceptance",
+      "evaluation-time-clock"
+    ],
+    "executableTest": "tests/qualification/policy/p1-v05-policy.test.mjs"
+  },
+  "restrictedYaml": {
+    "result": "PASS",
+    "authorityBytes": false,
+    "indentation": "2-space block-only",
+    "crlfNormalization": "WHOLE_FILE_ONLY",
+    "duplicateKeysRejected": true,
+    "anchorsAliasesTagsMergeRejected": true,
+    "flowCollectionsRejected": true,
+    "singleQuotesAndBlockScalarsRejected": true,
+    "includeEnvironmentTemplateRejected": true,
+    "prototypeKeysRejected": true,
+    "boundedBytesLinesDepthNodesAndScalars": true
+  },
+  "evaluator": {
+    "result": "PASS",
+    "package": "@aseos/policy",
+    "canonicalOwner": "packages/policy",
+    "publicEntryOnly": true,
+    "dependencies": ["@aseos/contracts"],
+    "outcomes": ["ALLOW", "ALLOW_WITH_REQUIREMENTS", "DENY", "INDETERMINATE"],
+    "registeredOperators": 15,
+    "maximumConditionDepth": 4,
+    "hardInvariantCount": 3,
+    "productionKernelIntegration": false,
+    "workflowRuntimeSemantics": false
+  },
+  "qualification": {
+    "result": "PASS",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "frozenLockfileInstall": "PASS",
+    "format": "PASS",
+    "lint": "PASS",
+    "generatedTypes": "PASS",
+    "typecheck": "PASS",
+    "rootTestFilesPassed": 21,
+    "rootTestsPassed": 141,
+    "rootTestsFailed": 0,
+    "policyTestsPassed": 10,
+    "architectureTestsPassed": 9,
+    "schemaMetaValidation": "PASS",
+    "schemaRegistryValidation": "PASS",
+    "cleanAuthorityRebuild": "PASS",
+    "linuxX64": "PASS",
+    "windowsX64": "PASS",
+    "m0Independent": "PASS",
+    "qualityWorkflowRunId": 33340558410,
+    "linuxJobId": 99335318987,
+    "windowsJobId": 99335318821,
+    "aggregatorJobId": 99335724672,
+    "m0WorkflowRunId": 33340558401,
+    "verifyJobId": 99335318554
+  },
+  "remediationHistory": [
+    {
+      "findingId": "P1-O04-CI-01",
+      "class": "EXAMPLE_SUITE_OWNERSHIP_AND_FORMATTING",
+      "result": "CLOSED",
+      "resolution": "Policy examples remain under the P1-O04-owned directory and are executed by dedicated Contract tests without claiming P1-O02 first-slice coverage; placeholder bytes and frozen formatting drift were removed."
+    },
+    {
+      "findingId": "P1-O04-CI-02",
+      "class": "STRICT_TYPE_NARROWING",
+      "result": "CLOSED",
+      "resolution": "Condition leaves, YAML line access, Policy arrays, and exact optional properties use explicit fail-closed narrowing under the frozen strict TypeScript/ESLint baseline."
+    },
+    {
+      "findingId": "P1-O04-CI-03",
+      "class": "GENERATED_TYPE_DRIFT",
+      "result": "CLOSED",
+      "resolution": "Public declarations are the exact output of the frozen Contract type generator for all 24 bindings."
+    },
+    {
+      "findingId": "P1-O04-CI-04",
+      "class": "COMPILED_POLICY_SHAPE_DRIFT",
+      "result": "CLOSED",
+      "resolution": "The compiled payload preserves canonical PolicySet selector structure, so snapshots remain schema-valid and replayable."
+    },
+    {
+      "findingId": "P1-O04-IV-01",
+      "class": "SCHEMA_SEMANTIC_VALIDATION_BYPASS",
+      "result": "CLOSED",
+      "resolution": "Evaluation now requires the exact PolicyEvaluationInput and PolicySnapshot shapes, bounds, unique set items, RFC 3339 timestamps, SemVer metadata, and snapshot-to-compiled-policy identity consistency before any ALLOW path."
+    },
+    {
+      "findingId": "P1-O04-IV-02",
+      "class": "AMBIENT_LOCALE_NONDETERMINISM",
+      "result": "CLOSED",
+      "resolution": "Policy constants and rules use explicit UTF-16 code-unit comparison; an executable regression replaces localeCompare with adversarial reverse ordering and proves canonical rule order remains byte-stable."
+    },
+    {
+      "findingId": "P1-O04-IV-03",
+      "class": "I_JSON_PROPERTY_KEY_SURROGATE_BYPASS",
+      "result": "CLOSED",
+      "resolution": "I-JSON validation now rejects lone Unicode surrogates in both string values and property names, plus non-enumerable properties."
+    },
+    {
+      "findingId": "P1-O04-IV-CI-01",
+      "class": "FROZEN_FORMATTING",
+      "result": "CLOSED",
+      "resolution": "The new regression was formatted by the frozen Prettier version; the temporary diagnostic formatter command was restored exactly and the final strict check-only format gate passed."
+    },
+    {
+      "findingId": "P1-O04-IV-CI-02",
+      "class": "STRICT_VALIDATED_TYPE_NARROWING",
+      "result": "CLOSED",
+      "resolution": "The evaluator reuses the validated snapshot object with the canonical compiled payload, eliminating unnecessary assertions and dot-notation violations without changing decision semantics."
+    },
+    {
+      "findingId": "P1-O04-IV-CI-03",
+      "class": "WINDOWS_EXISTING_TRANSITION_TEST_TIMEOUT",
+      "result": "CLOSED",
+      "resolution": "The first Windows second-pass run exceeded the unchanged 10-second limit in an existing P1-O01 transition fixture after all Policy tests passed; an unchanged exact-head rerun passed quality, clean rebuild, and the aggregator without lowering the gate."
+    },
+    {
+      "findingId": "P1-O04-IV-01-R1",
+      "class": "NON_RFC3339_DECISION_AND_SNAPSHOT_OUTPUT",
+      "result": "CLOSED",
+      "resolution": "Snapshot construction and decision output use the same RFC 3339 validator as evaluation input; invalid captured timestamps now yield the canonical fallback evaluatedAt and invalid snapshot metadata is rejected."
+    },
+    {
+      "findingId": "P1-O04-IV-01-R2",
+      "class": "STABLE_CODE_BOUND_BYPASS",
+      "result": "CLOSED",
+      "resolution": "PolicyRule reasonCode compilation enforces the Contract's 3-to-128 character stableCode bounds, preventing schema-invalid denial reason codes."
+    },
+    {
+      "findingId": "P1-O04-IV-CI-04",
+      "class": "RESIDUAL_REMEDIATION_FORMATTING",
+      "result": "CLOSED",
+      "resolution": "The residual validator change was formatted under the frozen check-only gate; no diagnostic command was introduced and both platforms passed the final strict format check."
+    }
+  ],
+  "authority": {
+    "result": "PASS",
+    "authorityLock": "PASS",
+    "authorityHashRefreshPaths": [
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json"
+    ],
+    "acceptedAdrMutations": 0,
+    "frozenGovernanceSemanticMutations": 0,
+    "architectureAuthorityMutations": 0,
+    "workflowFilesChanged": 0,
+    "externalPolicyAuthorityIntroduced": false
+  },
+  "requiredCheckAuthority": {
+    "result": "PASS",
+    "verifyProducerCount": 1,
+    "verifyOwner": ".github/workflows/m0-independent-verify.yml",
+    "qualityAggregator": "p1-o01-toolchain-qualify",
+    "collision": false
+  },
+  "independentVerification": {
+    "required": true,
+    "performed": false,
+    "immutableReviewHead": "PENDING_EVIDENCE_PUBLICATION"
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "phase1Verified": false,
+    "productionPolicyRuntimeImplemented": false,
+    "kernelIntegrationImplemented": false,
+    "externalPolicyEngineIntroduced": false
+  },
+  "remainingGaps": [
+    "Publish the Evidence commit and requalify its immutable head on Linux, Windows and the unique M0 verify authority.",
+    "Obtain an independent read-only PASS verdict bound to the exact base and head.",
+    "Merge the exact reviewed head and complete protected-main post-merge verification."
+  ]
+}

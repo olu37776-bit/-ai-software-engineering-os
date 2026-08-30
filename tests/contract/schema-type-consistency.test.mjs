@@ -14,7 +14,7 @@ describe("JSON Schema and TypeScript public-shape consistency", () => {
     await expect(runSchemaTypeConsistency({ repositoryRoot })).resolves.toMatchObject({
       evidenceType: "SchemaTypeConsistencyResult",
       result: "PASS",
-      bindings: 19,
+      bindings: 24,
     });
   });
 

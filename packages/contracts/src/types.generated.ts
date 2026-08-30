@@ -27,6 +27,17 @@ export type ArtifactRef = Readonly<{
   readonly sha256: string;
   readonly sizeBytes: number;
 }>;
+export type CapabilityManifest = Readonly<{
+  readonly capabilityId: string;
+  readonly capabilityVersion: string;
+  readonly isolationLevels: readonly (
+    "PROCESS_RESTRICTED" | "OS_SANDBOXED" | "CONTAINER_ISOLATED" | "REMOTE_ISOLATED"
+  )[];
+  readonly operations: readonly string[];
+  readonly permissionScopes: readonly string[];
+  readonly riskClasses: readonly ("R0" | "R1" | "R2" | "R3" | "R4")[];
+  readonly schemaVersion: "1.0.0";
+}>;
 export type CommandEnvelope = Readonly<{
   readonly actor: ActorRef;
   readonly aggregateId: string;
@@ -146,6 +157,66 @@ export type PolicyDecision = Readonly<{
   }>;
   readonly residualRiskRefs: readonly SubjectRef[];
   readonly schemaVersion: "1.0.0";
+}>;
+export type PolicyEvaluationInput = Readonly<{
+  readonly action: string;
+  readonly authorityMutation: boolean;
+  readonly capabilityIds: readonly string[];
+  readonly capturedAt: string;
+  readonly controlVerified: boolean;
+  readonly dataClassification: "PUBLIC" | "INTERNAL" | "CONFIDENTIAL" | "SECRET";
+  readonly direction: "LOCAL" | "INBOUND" | "OUTBOUND";
+  readonly domain: string;
+  readonly evaluationId: string;
+  readonly permissionScopes: readonly string[];
+  readonly policySnapshotId: string;
+  readonly resourceType: string;
+  readonly riskClass: "R0" | "R1" | "R2" | "R3" | "R4";
+  readonly schemaVersion: "1.0.0";
+  readonly subjectType: string;
+}>;
+export type PolicyRule = Readonly<{
+  readonly action: string;
+  readonly domain: string;
+  readonly metadata: Readonly<Record<string, unknown>>;
+  readonly reasonCode: string;
+  readonly requirements: Readonly<{
+    readonly maxConcurrency?: number;
+    readonly minimumIsolationLevel?:
+      "PROCESS_RESTRICTED" | "OS_SANDBOXED" | "CONTAINER_ISOLATED" | "REMOTE_ISOLATED";
+    readonly permissionScopes?: readonly string[];
+    readonly postVerificationRequired?: boolean;
+    readonly timeoutMs?: number;
+  }>;
+  readonly resourceSelector: Readonly<{ readonly resourceTypes: readonly string[] }>;
+  readonly ruleEffect: "ALLOW" | "DENY";
+  readonly ruleId: string;
+  readonly schemaVersion: "1.0.0";
+  readonly subjectSelector: Readonly<{ readonly subjectTypes: readonly string[] }>;
+  readonly when: Readonly<Record<string, unknown>>;
+}>;
+export type PolicySet = Readonly<{
+  readonly constants: Readonly<Record<string, unknown>>;
+  readonly defaultOutcome: "DENY";
+  readonly description: string;
+  readonly policySetId: string;
+  readonly rules: readonly PolicyRule[];
+  readonly schemaVersion: "1.0.0";
+  readonly source: Readonly<{
+    readonly kind: "RELEASE" | "MACHINE" | "USER" | "WORKSPACE" | "NODE" | "WORKFLOW";
+    readonly ref: string;
+  }>;
+  readonly version: string;
+}>;
+export type PolicySnapshot = Readonly<{
+  readonly compiledPolicySet: PolicySet;
+  readonly compilerVersion: string;
+  readonly createdAt: string;
+  readonly policyHash: string;
+  readonly policySetId: string;
+  readonly policyVersion: string;
+  readonly schemaVersion: "1.0.0";
+  readonly snapshotId: string;
 }>;
 export type SchemaRef = Readonly<{
   readonly schemaHash: string;

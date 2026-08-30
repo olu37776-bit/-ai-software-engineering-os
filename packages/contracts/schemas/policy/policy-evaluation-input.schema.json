@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:policy-evaluation-input:1.0.0",
+  "title": "PolicyEvaluationInput",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evaluationId",
+    "capturedAt",
+    "policySnapshotId",
+    "domain",
+    "subjectType",
+    "action",
+    "resourceType",
+    "riskClass",
+    "dataClassification",
+    "direction",
+    "authorityMutation",
+    "controlVerified",
+    "permissionScopes",
+    "capabilityIds"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "evaluationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "policySnapshotId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "subjectType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "action": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "resourceType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "riskClass": {
+      "enum": [
+        "R0",
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    "dataClassification": {
+      "enum": [
+        "PUBLIC",
+        "INTERNAL",
+        "CONFIDENTIAL",
+        "SECRET"
+      ]
+    },
+    "direction": {
+      "enum": [
+        "LOCAL",
+        "INBOUND",
+        "OUTBOUND"
+      ]
+    },
+    "authorityMutation": {
+      "type": "boolean"
+    },
+    "controlVerified": {
+      "type": "boolean"
+    },
+    "permissionScopes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    },
+    "capabilityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "uniqueItems": true
+    }
+  }
+}
