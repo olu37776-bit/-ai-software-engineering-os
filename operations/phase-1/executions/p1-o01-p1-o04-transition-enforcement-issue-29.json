@@ -6,11 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Issue #29 Phase 1 governance and toolchain transition enforcement",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T00:00:00Z",
+  "completedAt": "2026-08-30T16:57:07Z",
   "implementationBranch": "phase-1/p1-o01-p1-o04-transition-enforcement-issue-29",
   "baseCommit": "69804341c21c220863389571d9b5be8796eb0382",
   "trackingIssue": 29,
+  "implementationCommit": "7852733fb31e16350b5a907defffaa0556bd1538",
+  "implementationTree": "deed7eb3e94e20e6260d90cf1785e086b0e04995",
   "authorityRefs": [
     "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
     "operations/phase-1/operation.json",
@@ -25,5 +28,78 @@
     "p1O04Implemented": false,
     "acceptedAdrChanged": false,
     "requiredCheckIdentityChanged": false
-  }
+  },
+  "remediationFindings": [
+    {
+      "findingId": "ISSUE29-PRE-IV-01",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "summary": "Use NUL-delimited raw Git paths, strict UTF-8 and one canonical repository-path contract before any scope classification."
+    },
+    {
+      "findingId": "ISSUE29-PRE-IV-02",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "summary": "Bind the P1-O04 release Gate to the final root-scope and Authority ownership amendment after transition enforcement."
+    },
+    {
+      "findingId": "ISSUE29-PRE-IV-03",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "summary": "Bind exact implementation trees, reviewed heads, merge parents, canonical preliminary main and final amendment Evidence."
+    },
+    {
+      "findingId": "ISSUE29-PRE-IV-04",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "summary": "Make M0 independently enforce complete event parameters, checkout/head equality, ancestry and the exact scope report."
+    }
+  ],
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight",
+      "result": "PASS",
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O01",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "immutableAuthorityFilesVerified": 25,
+      "scopeViolations": 0
+    },
+    {
+      "check": "Issue #29 focused and adversarial transition enforcement",
+      "result": "PASS",
+      "testsPassed": 30,
+      "testsFailed": 0,
+      "rawGitPathAttackRejected": true,
+      "renameAndDeleteRemainGoverned": true,
+      "exactEventBindings": true,
+      "completeP1O04TransitionChain": true
+    },
+    {
+      "check": "local quality and clean build",
+      "result": "PASS",
+      "rootTestFilesPassed": 18,
+      "rootTestsPassed": 112,
+      "architectureTestsPassed": 9,
+      "frozenOfflineInstall": "PASS"
+    },
+    {
+      "check": "P1-V00 / M0 regression",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "check": "required verify authority uniqueness",
+      "result": "PASS",
+      "verifyProducers": 1,
+      "producer": ".github/workflows/m0-independent-verify.yml#verify"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o04-transition-enforcement-issue-29.json",
+    "docs/implementation/phase-1/o01/p1-o04-transition-enforcement-issue-29.md",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/29"
+  ],
+  "remainingGaps": [
+    "Immutable-head GitHub Linux, Windows and required verify qualification remain pending.",
+    "Independent verification is required before transition enforcement can be VERIFIED.",
+    "The final P1-O04 scope/Authority amendment and separate resume Gate remain blocked until this enforcement is merged and post-merge PASS."
+  ]
 }
