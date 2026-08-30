@@ -7,11 +7,11 @@
   "riskClass": "R3",
   "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T12:18:59Z",
-  "completedAt": "2026-08-30T13:03:56Z",
+  "completedAt": "2026-08-30T13:17:30Z",
   "implementationBranch": "phase-1/p1-o02-contract-foundation-resume-3",
   "baseCommit": "9d7b4fc0ad8bf2cbbf708ae298ec502ae5326715",
-  "implementationCommit": "93e1b848e6c29aca9b945d807b09892178be87a9",
-  "implementationTree": "5724d46e012ff00500f0fdf8301eb99c44f27870",
+  "implementationCommit": "0502fb738e9b638b8228353a9b4a05700cbfa8c5",
+  "implementationTree": "12d6be3774839632f9a58602043c8325e812e91f",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -70,10 +70,22 @@
       "loneCarriageReturnRejected": true
     },
     {
+      "check": "authority text hash line-ending drift detection",
+      "result": "PASS",
+      "finding": "P1-O02-IV-02",
+      "authorityPath": "operations/phase-1/authority-lock.schema.json",
+      "existingLfRegistryHashPreserved": true,
+      "crlfSemanticEquivalenceAccepted": true,
+      "semanticContentDriftRejected": true,
+      "mixedLineEndingsRejected": true,
+      "loneCarriageReturnRejected": true,
+      "rawArtifactHashingUnchanged": true
+    },
+    {
       "check": "quality and clean build/test",
       "result": "PASS",
       "testFilesPassed": 14,
-      "testsPassed": 77,
+      "testsPassed": 80,
       "testsFailed": 0
     },
     {
@@ -95,7 +107,7 @@
   ],
   "evidenceRefs": ["operations/phase-1/evidence/o02/p1-v03-contracts.json"],
   "remainingGaps": [
-    "The orchestrator must publish the new final immutable head and record Linux and Windows workflow PASS.",
+    "The orchestrator must publish the new final immutable head and record Linux, Windows and M0 workflow PASS.",
     "P1-O02 requires independent verification and protected-main post-merge verification before any VERIFIED declaration."
   ]
 }
