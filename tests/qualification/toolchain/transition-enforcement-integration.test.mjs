@@ -38,6 +38,29 @@ function git(cwd, ...args) {
   return runPass("git", args, cwd);
 }
 
+function createControlPathCommit(repository, parent) {
+  const ref = "refs/heads/attack/noncanonical-object";
+  const stream = `blob
+mark :1
+data <<BLOB
+export const bypass = true;
+BLOB
+commit ${ref}
+mark :2
+author Issue 29 test <issue29-test@example.invalid> 0 +0000
+committer Issue 29 test <issue29-test@example.invalid> 0 +0000
+data <<MESSAGE
+test: adversarial tracked path
+MESSAGE
+from ${parent}
+M 100644 :1 "packages/policy/control\\tname.ts"
+
+done
+`;
+  runPass("git", ["fast-import", "--quiet"], repository, { input: stream });
+  return git(repository, "rev-parse", ref);
+}
+
 async function writeJson(path, value) {
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
@@ -462,6 +485,8 @@ describe("Issue #29 executable transition enforcement", () => {
       validBranch,
       "issue29-valid-gate",
     );
+    git(repository, "config", "core.autocrlf", "true");
+    git(repository, "checkout-index", "--force", "--all");
     const valid = runScope(repository, "P1-O04", gateBase, validHead, validBranch);
     expect(valid.status, valid.stderr).toBe(0);
     const report = JSON.parse(valid.stdout);
@@ -523,6 +548,34 @@ describe("Issue #29 executable transition enforcement", () => {
         branch: validBranch,
       },
     });
+
+    const authorityPath = join(repository, "operations/phase-1/authority-lock.schema.json");
+    const canonicalAuthority = (await readFile(authorityPath, "utf8")).replaceAll("\r\n", "\n");
+    await writeFile(authorityPath, canonicalAuthority.replace("\n", "\r\n"), "utf8");
+    const mixedLineEndings = run(
+      "python",
+      [
+        "scripts/governance/verify_m0.py",
+        "--base",
+        gateBase,
+        "--head",
+        validHead,
+        "--branch",
+        validBranch,
+        "--scope-report",
+        reportPath,
+      ],
+      repository,
+    );
+    expect(mixedLineEndings.status).toBe(1);
+    expect(mixedLineEndings.stderr).toContain("mixed LF and CRLF line endings");
+    git(
+      repository,
+      "checkout-index",
+      "--force",
+      "--",
+      "operations/phase-1/authority-lock.schema.json",
+    );
 
     const missingReport = run(
       "python",
@@ -596,7 +649,7 @@ describe("Issue #29 executable transition enforcement", () => {
     const { repository, transitionMainCommit } = await makeRepository();
     const branch = "attack/noncanonical-path";
     git(repository, "checkout", "--quiet", "-B", branch, transitionMainCommit);
-    const badPath = join(repository, "packages/policy/control\tname.ts");
+    const badPath = join(repository, "packages/policy/control-e\u0301.ts");
     await mkdir(join(repository, "packages/policy"), { recursive: true });
     await writeFile(badPath, "export const bypass = true;\n", "utf8");
 
@@ -609,9 +662,8 @@ describe("Issue #29 executable transition enforcement", () => {
     expect(untracked.status).toBe(1);
     expect(untracked.stderr).toContain("NON_CANONICAL_GIT_PATH");
 
-    git(repository, "add", "-A");
-    git(repository, "commit", "--quiet", "-m", "test: adversarial tracked path");
-    const attackHead = git(repository, "rev-parse", "HEAD");
+    await rm(badPath);
+    const attackHead = createControlPathCommit(repository, transitionMainCommit);
     const tracked = runScopeWithoutOperation(repository, transitionMainCommit, attackHead, branch);
     expect(tracked.status).toBe(1);
     expect(tracked.stderr).toContain("NON_CANONICAL_GIT_PATH");
@@ -630,6 +682,7 @@ describe("Issue #29 executable transition enforcement", () => {
       changedPaths: [],
       violations: [],
     });
+    git(repository, "update-ref", "HEAD", attackHead);
     const m0 = run(
       "python",
       [

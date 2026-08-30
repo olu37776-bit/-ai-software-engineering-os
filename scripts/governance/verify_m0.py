@@ -46,6 +46,18 @@ def write_json(path: pathlib.Path, value: Any) -> None:
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
+def authority_text_sha256(path: pathlib.Path) -> str:
+    try:
+        contents = path.read_bytes().decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise AssertionError(f"Authority file is not valid UTF-8: {path.relative_to(ROOT).as_posix()}") from error
+    without_crlf = contents.replace("\r\n", "")
+    if "\r" in without_crlf:
+        raise AssertionError(f"Authority file contains a lone carriage return: {path.relative_to(ROOT).as_posix()}")
+    if "\r\n" in contents and "\n" in without_crlf:
+        raise AssertionError(f"Authority file contains mixed LF and CRLF line endings: {path.relative_to(ROOT).as_posix()}")
+    return sha256(contents.replace("\r\n", "\n").encode("utf-8"))
+
 def canonical_json(value: Any) -> bytes:
     def reject_float(v: Any) -> None:
         if isinstance(v, float):
@@ -276,7 +288,7 @@ def verify_registry(ids: dict[str, pathlib.Path], documents: dict[pathlib.Path, 
             raise AssertionError(f"Registry missing path: {rel}")
         if sid not in ids or ids[sid] != file_path:
             raise AssertionError(f"Registry ID/path mismatch: {sid} -> {rel}")
-        if entry["sha256"] != sha256(file_path.read_bytes()):
+        if entry["sha256"] != authority_text_sha256(file_path):
             raise AssertionError(f"Registry hash mismatch: {rel}")
         by_id[sid] = entry
         by_path[rel] = entry
@@ -315,7 +327,7 @@ def verify_inventories(ids: dict[str, pathlib.Path], documents: dict[pathlib.Pat
             raise AssertionError(f"Active authority path missing: {rel}")
         if sid not in ids or ids[sid] != path:
             raise AssertionError(f"Active schema ID/path mismatch: {sid} -> {rel}")
-        if entry["sha256"] != sha256(path.read_bytes()):
+        if entry["sha256"] != authority_text_sha256(path):
             raise AssertionError(f"Active hash mismatch: {rel}")
         active_ids.add(cid)
         active_paths.add(rel)
@@ -345,7 +357,7 @@ def verify_semantic_hashes(instance: Any, ids: dict[str, pathlib.Path], document
             if sid not in ids:
                 raise AssertionError(f"Unknown payload SchemaRef: {sid}")
             schema_path = ids[sid]
-            if ref.get("schemaHash") != sha256(schema_path.read_bytes()):
+            if ref.get("schemaHash") != authority_text_sha256(schema_path):
                 raise AssertionError(f"SchemaRef hash mismatch: {sid}")
             if item["payloadHash"] != sha256(canonical_json(item["payload"])):
                 raise AssertionError(f"payloadHash mismatch: {sid}")
@@ -357,7 +369,7 @@ def verify_semantic_hashes(instance: Any, ids: dict[str, pathlib.Path], document
         if {"schemaId", "schemaVersion", "schemaHash"}.issubset(item) and "payloadSchema" not in item:
             sid = item["schemaId"]
             if sid in ids:
-                if item["schemaHash"] != sha256(ids[sid].read_bytes()):
+                if item["schemaHash"] != authority_text_sha256(ids[sid]):
                     raise AssertionError(f"Standalone SchemaRef hash mismatch: {sid}")
                 counts["schema"] += 1
         if {"artifactId", "sha256", "mediaType", "sizeBytes", "sensitivity"}.issubset(item):
@@ -485,7 +497,7 @@ def verify_governance(documents: dict[pathlib.Path, Any], ids: dict[str, pathlib
         sid = ref["schemaId"]
         if sid not in ids:
             raise AssertionError(f"VerificationPlan unknown contractRef: {sid}")
-        if ref["schemaHash"] != sha256(ids[sid].read_bytes()):
+        if ref["schemaHash"] != authority_text_sha256(ids[sid]):
             raise AssertionError(f"VerificationPlan contract hash mismatch: {sid}")
     gate_refs = {step for item in operation["suboperations"] for step in item["gateStepIds"]}
     if gate_refs != expected_steps:
@@ -579,7 +591,7 @@ def verify_authority_lock(documents: dict[pathlib.Path, Any], registry: Registry
         path = ROOT / rel
         if not path.is_file():
             raise AssertionError(f"Authority lock missing path: {rel}")
-        if entry["sha256"] != sha256(path.read_bytes()):
+        if entry["sha256"] != authority_text_sha256(path):
             raise AssertionError(f"Authority lock hash mismatch: {rel}")
         allowed_ops = set(entry["allowedOperationIds"])
         covering_ops = {
