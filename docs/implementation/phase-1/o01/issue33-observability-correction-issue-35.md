@@ -21,6 +21,7 @@ The dispatch implementation remains unchanged and available as a fail-closed fal
 - Corrected Issue #33 paths: execution record, Evidence and implementation note only.
 - Qualified correction commit: `d2445bfea0172b6d136aee61b99117b31e488d3b`.
 - Qualified correction tree: `365937eedc8a0a0d8dcb9c4ae827f921e4a46fcd`.
-- `ISSUE35-CI-01`: remediated by canonical formatting only; no value changed.\n- Write preflight: `OPERATION_EXECUTION / P1-O01 / DENY_BY_DEFAULT / 25 immutable / 0 violations`.
+- `ISSUE35-CI-01`: remediated by canonical formatting only; no value changed.
+- Write preflight: `OPERATION_EXECUTION / P1-O01 / DENY_BY_DEFAULT / 25 immutable / 0 violations`.
 
 No VERIFIED claim is made for this correction. Immutable-head qualification, independent read-only verification, exact merge and protected-main post-merge PASS remain required.
