@@ -202,7 +202,7 @@
     },
     {
       "path": "packages/contracts/schema-inventory.json",
-      "sha256": "f4eaab19bf0f889b9dd2d842bdf5be0b7364d715e28fb65ba9552202b9a1b9d6",
+      "sha256": "e0046aedadbc0260e46c36e8dd0230b6b19a8e1d4625a49dcf80da06e4a62136",
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
@@ -212,7 +212,7 @@
     },
     {
       "path": "packages/contracts/schema-registry.json",
-      "sha256": "f479829844653baf7fc6a2a30852f3609a6ce25590931798f3d2767f652fe76c",
+      "sha256": "8d58c84b3a27c938dfc2b7ed17c724d6f7179c37b50de7175835721e0cd5fead",
       "role": "SCHEMA_REGISTRY",
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [

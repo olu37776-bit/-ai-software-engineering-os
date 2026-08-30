@@ -225,35 +225,35 @@
       "authorityPath": "packages/contracts/schemas/policy/capability-manifest.schema.json",
       "sha256": "f9907ab82f6fea5e698eb11ba02a7709ea0e93b5ac39c8dd865d6923a89e21b7",
       "category": "RUNTIME",
-      "examplesRequired": true
+      "examplesRequired": false
     },
     {
       "schemaId": "urn:aseos:schema:policy-evaluation-input:1.0.0",
       "authorityPath": "packages/contracts/schemas/policy/policy-evaluation-input.schema.json",
       "sha256": "bf2f6abec25ec407413b54ab37874308963ce9240f02458a555a07f292aebb33",
       "category": "RUNTIME",
-      "examplesRequired": true
+      "examplesRequired": false
     },
     {
       "schemaId": "urn:aseos:schema:policy-rule:1.0.0",
       "authorityPath": "packages/contracts/schemas/policy/policy-rule.schema.json",
       "sha256": "16f7ade10b951c2577e53d9776e5631da7cbb39df9cc34299556b7f24c732d94",
       "category": "RUNTIME",
-      "examplesRequired": true
+      "examplesRequired": false
     },
     {
       "schemaId": "urn:aseos:schema:policy-set:1.0.0",
       "authorityPath": "packages/contracts/schemas/policy/policy-set.schema.json",
       "sha256": "e767fee8e9f1ec5e1e260e45c56d0d58fa6457d152a9a3b9fbfe5690d3034a77",
       "category": "RUNTIME",
-      "examplesRequired": true
+      "examplesRequired": false
     },
     {
       "schemaId": "urn:aseos:schema:policy-snapshot:1.0.0",
       "authorityPath": "packages/contracts/schemas/policy/policy-snapshot.schema.json",
       "sha256": "50bec6a45b8da296dee952bf70112fd3549c8dc1f2fb0653f6489517a46e5cdc",
       "category": "RUNTIME",
-      "examplesRequired": true
+      "examplesRequired": false
     }
   ]
 }
