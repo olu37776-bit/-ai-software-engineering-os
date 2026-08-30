@@ -20,12 +20,61 @@ const ALWAYS_FORBIDDEN_AMENDMENT_PATH_PATTERNS = [
   /^docs\/decisions(?:\/|$)/,
   GOVERNANCE_AMENDMENT_GATE_PATH_PATTERN,
 ];
+const AUTHORITY_OWNERSHIP_DELTA_KEYS = [
+  "afterAllowedOperationIds",
+  "beforeAllowedOperationIds",
+  "path",
+];
 
 export const GOVERNANCE_AMENDMENT_EXECUTION_TYPE = "PHASE_1_GOVERNANCE_AMENDMENT";
 export const GOVERNANCE_AMENDMENT_EVIDENCE_TYPE = "Phase1GovernanceAmendmentAuthorization";
+export const AUTHORITY_LOCK_PATH = "operations/phase-1/authority-lock.json";
+export const P1_O04_PRELIMINARY_SCOPE_AMENDMENT_MAIN_COMMIT =
+  "69804341c21c220863389571d9b5be8796eb0382";
+export const P1_O04_FINAL_AMENDMENT_EXECUTION_PATH =
+  "operations/phase-1/executions/p1-o01-p1-o04-final-scope-authority-amendment.json";
+export const P1_O04_FINAL_AMENDMENT_EVIDENCE_PATH =
+  "operations/phase-1/evidence/o01/p1-o04-final-scope-authority-amendment.json";
+export const P1_O04_REQUIRED_SCOPE_PATHS = [
+  "package.json",
+  "packages/contracts/README.md",
+  "packages/contracts/planned-contracts.json",
+  "packages/contracts/schema-inventory.json",
+  "packages/contracts/schema-registry.json",
+  "packages/contracts/src/types.generated.ts",
+  "packages/contracts/type-bindings.json",
+  "pnpm-lock.yaml",
+  "pnpm-workspace.yaml",
+  "tests/contract/inventory-integrity.test.mjs",
+  "tests/contract/registry-integrity.test.mjs",
+  "tests/contract/runtime-validator.test.mjs",
+  "tests/contract/schema-type-consistency.test.mjs",
+  "tsconfig.build.json",
+  "vitest.config.mjs",
+];
+export const P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_PATHS = [
+  "packages/contracts/planned-contracts.json",
+  "packages/contracts/schema-inventory.json",
+  "packages/contracts/schema-registry.json",
+];
+export const P1_O04_FINAL_AMENDMENT_CHANGED_PATHS = [
+  "docs/roadmap/phase-1-write-scope.md",
+  AUTHORITY_LOCK_PATH,
+  P1_O04_FINAL_AMENDMENT_EVIDENCE_PATH,
+  P1_O04_FINAL_AMENDMENT_EXECUTION_PATH,
+  "operations/phase-1/write-scope.json",
+];
+export const P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS =
+  P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_PATHS.map((path) => ({
+    afterAllowedOperationIds: ["P1-O02", "P1-O04"],
+    beforeAllowedOperationIds: ["P1-O02"],
+    path,
+  }));
 
 export const P1_O02_START_GATE_PATH =
   "operations/phase-1/evidence/o01/p1-transition-scope-independent-gate.json";
+export const P1_O04_START_GATE_PATH =
+  "operations/phase-1/evidence/o01/p1-o04-resume-after-issue-29-independent-gate.json";
 
 export function globToRegex(pattern) {
   const segments = pattern.split("**").map((segment) =>
@@ -118,19 +167,128 @@ export function validateP1O02StartGate(gate) {
   return gate.subject.remediationImplementationCommit;
 }
 
-function isSafeRepositoryPath(path) {
+export function isSafeRepositoryPath(path) {
+  const segments = typeof path === "string" ? path.split("/") : [];
+  const hasInvalidControl =
+    typeof path === "string" &&
+    [...path].some((character) => {
+      const codePoint = character.codePointAt(0);
+      return codePoint < 32 || (codePoint >= 127 && codePoint <= 159) || codePoint === 0xfffd;
+    });
   return (
     typeof path === "string" &&
     path.length > 0 &&
     !path.startsWith("/") &&
+    !/^[A-Za-z]:/.test(path) &&
     !path.includes("\\") &&
-    !path.split("/").includes("..") &&
+    !hasInvalidControl &&
+    path.normalize("NFC") === path &&
+    segments.every((segment) => segment !== "" && segment !== "." && segment !== "..") &&
     !/[?*[\]]/.test(path)
   );
 }
 
 function sameJson(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function isCanonicalUniqueStrings(values) {
+  return (
+    Array.isArray(values) &&
+    values.every((value) => typeof value === "string") &&
+    new Set(values).size === values.length &&
+    sameJson([...values].sort(), values)
+  );
+}
+
+function validateCanonicalOperationIds(values, label) {
+  if (
+    !isCanonicalUniqueStrings(values) ||
+    !values.every((value) => OPERATION_ID_PATTERN.test(value))
+  ) {
+    throw new Error(`NON_CANONICAL_${label}`);
+  }
+}
+
+function validateCanonicalAmendmentPaths(paths, label) {
+  if (!isCanonicalUniqueStrings(paths) || paths.length === 0) {
+    throw new Error(`NON_CANONICAL_${label}`);
+  }
+  for (const path of paths) {
+    if (!isSafeRepositoryPath(path)) {
+      throw new Error(`INVALID_GOVERNANCE_AMENDMENT_ALLOWED_PATH: ${path}`);
+    }
+    if (ALWAYS_FORBIDDEN_AMENDMENT_PATH_PATTERNS.some((pattern) => pattern.test(path))) {
+      throw new Error(`FORBIDDEN_GOVERNANCE_AMENDMENT_ALLOWED_PATH: ${path}`);
+    }
+    if (!GOVERNANCE_AMENDMENT_PATH_PATTERNS.some((pattern) => pattern.test(path))) {
+      throw new Error(`NON_GOVERNANCE_AMENDMENT_ALLOWED_PATH: ${path}`);
+    }
+  }
+}
+
+function validateAuthorityOwnershipDeltas(deltas) {
+  if (!Array.isArray(deltas)) {
+    throw new Error("MALFORMED_AUTHORITY_OWNERSHIP_DELTAS");
+  }
+  const paths = deltas.map((delta) => delta?.path);
+  if (!isCanonicalUniqueStrings(paths)) {
+    throw new Error("NON_CANONICAL_AUTHORITY_OWNERSHIP_DELTAS");
+  }
+  for (const delta of deltas) {
+    if (
+      delta === null ||
+      typeof delta !== "object" ||
+      !sameJson(Object.keys(delta).sort(), AUTHORITY_OWNERSHIP_DELTA_KEYS)
+    ) {
+      throw new Error("MALFORMED_AUTHORITY_OWNERSHIP_DELTA");
+    }
+    if (!isSafeRepositoryPath(delta.path) || delta.path === AUTHORITY_LOCK_PATH) {
+      throw new Error(`INVALID_AUTHORITY_OWNERSHIP_DELTA_PATH: ${delta.path}`);
+    }
+    validateCanonicalOperationIds(
+      delta.beforeAllowedOperationIds,
+      "AUTHORITY_OWNERSHIP_DELTA_BEFORE_OPERATION_IDS",
+    );
+    validateCanonicalOperationIds(
+      delta.afterAllowedOperationIds,
+      "AUTHORITY_OWNERSHIP_DELTA_AFTER_OPERATION_IDS",
+    );
+    if (sameJson(delta.beforeAllowedOperationIds, delta.afterAllowedOperationIds)) {
+      throw new Error(`EMPTY_AUTHORITY_OWNERSHIP_DELTA: ${delta.path}`);
+    }
+  }
+}
+
+function collectAuthorityEntries(lock, side, violations) {
+  if (!Array.isArray(lock?.authorityFiles)) {
+    violations.push(`AUTHORITY_LOCK_MALFORMED_${side}`);
+    return new Map();
+  }
+  const entries = new Map();
+  const paths = [];
+  for (const entry of lock.authorityFiles) {
+    const path = entry?.path;
+    if (!isSafeRepositoryPath(path)) {
+      violations.push(`AUTHORITY_LOCK_UNSAFE_PATH: ${String(path)}`);
+      continue;
+    }
+    paths.push(path);
+    if (entries.has(path)) {
+      violations.push(`AUTHORITY_LOCK_DUPLICATE_PATH: ${path}`);
+      continue;
+    }
+    entries.set(path, entry);
+    if (!isCanonicalUniqueStrings(entry.allowedOperationIds)) {
+      violations.push(`AUTHORITY_LOCK_NON_CANONICAL_ALLOWED_OPERATION_IDS: ${path}`);
+    } else if (!entry.allowedOperationIds.every((value) => OPERATION_ID_PATTERN.test(value))) {
+      violations.push(`AUTHORITY_LOCK_INVALID_ALLOWED_OPERATION_ID: ${path}`);
+    }
+  }
+  if (!sameJson([...paths].sort(), paths)) {
+    violations.push(`AUTHORITY_LOCK_NON_CANONICAL_PATH_ORDER: ${side}`);
+  }
+  return entries;
 }
 
 export function validateGovernanceAmendmentExecution(execution) {
@@ -185,6 +343,8 @@ export function validateGovernanceAmendmentAuthorizationGate(
   { request, repository, baseCommit, baseParentCommit },
 ) {
   const allowedChangedPaths = gate?.authorization?.allowedChangedPaths;
+  const exactAmendmentPaths = gate?.authorization?.exactAmendmentPaths;
+  const authorityOwnershipDeltas = gate?.authorization?.authorityOwnershipDeltas;
   if (
     gate?.schemaVersion !== "1.0.0" ||
     gate?.evidenceType !== GOVERNANCE_AMENDMENT_EVIDENCE_TYPE ||
@@ -210,30 +370,39 @@ export function validateGovernanceAmendmentAuthorizationGate(
     throw new Error("MALFORMED_OR_MISMATCHED_GOVERNANCE_AMENDMENT_GATE");
   }
 
-  const uniquePaths = [...new Set(allowedChangedPaths)];
-  if (uniquePaths.length !== allowedChangedPaths.length) {
-    throw new Error("DUPLICATE_GOVERNANCE_AMENDMENT_ALLOWED_PATH");
-  }
-  if (!sameJson([...allowedChangedPaths].sort(), allowedChangedPaths)) {
-    throw new Error("NON_CANONICAL_GOVERNANCE_AMENDMENT_ALLOWED_PATHS");
-  }
-  for (const path of allowedChangedPaths) {
-    if (!isSafeRepositoryPath(path)) {
-      throw new Error(`INVALID_GOVERNANCE_AMENDMENT_ALLOWED_PATH: ${path}`);
-    }
-    if (ALWAYS_FORBIDDEN_AMENDMENT_PATH_PATTERNS.some((pattern) => pattern.test(path))) {
-      throw new Error(`FORBIDDEN_GOVERNANCE_AMENDMENT_ALLOWED_PATH: ${path}`);
-    }
-    if (!GOVERNANCE_AMENDMENT_PATH_PATTERNS.some((pattern) => pattern.test(path))) {
-      throw new Error(`NON_GOVERNANCE_AMENDMENT_ALLOWED_PATH: ${path}`);
+  validateCanonicalAmendmentPaths(allowedChangedPaths, "GOVERNANCE_AMENDMENT_ALLOWED_PATHS");
+  if (exactAmendmentPaths !== undefined) {
+    validateCanonicalAmendmentPaths(exactAmendmentPaths, "GOVERNANCE_AMENDMENT_EXACT_PATHS");
+    if (exactAmendmentPaths.some((path) => !allowedChangedPaths.includes(path))) {
+      throw new Error("GOVERNANCE_AMENDMENT_EXACT_PATH_OUTSIDE_ALLOWLIST");
     }
   }
-  return { allowedChangedPaths };
+  if (authorityOwnershipDeltas !== undefined) {
+    validateAuthorityOwnershipDeltas(authorityOwnershipDeltas);
+    if (exactAmendmentPaths === undefined || !exactAmendmentPaths.includes(AUTHORITY_LOCK_PATH)) {
+      throw new Error("AUTHORITY_OWNERSHIP_DELTA_REQUIRES_EXACT_AUTHORITY_LOCK_AMENDMENT");
+    }
+  }
+  const authorization = { allowedChangedPaths };
+  if (exactAmendmentPaths !== undefined) {
+    authorization.exactAmendmentPaths = exactAmendmentPaths;
+  }
+  if (authorityOwnershipDeltas !== undefined) {
+    authorization.authorityOwnershipDeltas = authorityOwnershipDeltas;
+  }
+  return authorization;
 }
 
-export function validateGovernanceAmendmentChangedPaths(changedPaths, allowedChangedPaths) {
+export function validateGovernanceAmendmentChangedPaths(
+  changedPaths,
+  allowedChangedPaths,
+  exactAmendmentPaths,
+) {
   const allowed = new Set(allowedChangedPaths);
   const violations = [];
+  if (!isCanonicalUniqueStrings(changedPaths)) {
+    violations.push("NON_CANONICAL_GOVERNANCE_AMENDMENT_CHANGED_PATHS");
+  }
   for (const path of changedPaths) {
     if (!isSafeRepositoryPath(path)) {
       violations.push(`INVALID_PATH: ${path}`);
@@ -241,10 +410,29 @@ export function validateGovernanceAmendmentChangedPaths(changedPaths, allowedCha
       violations.push(`GOVERNANCE_AMENDMENT_EXTRA_PATH: ${path}`);
     }
   }
+  if (exactAmendmentPaths !== undefined) {
+    const changed = new Set(changedPaths);
+    const exact = new Set(exactAmendmentPaths);
+    for (const path of exactAmendmentPaths) {
+      if (!changed.has(path)) {
+        violations.push(`GOVERNANCE_AMENDMENT_MISSING_EXACT_PATH: ${path}`);
+      }
+    }
+    for (const path of changedPaths) {
+      if (!exact.has(path)) {
+        violations.push(`GOVERNANCE_AMENDMENT_NON_EXACT_PATH: ${path}`);
+      }
+    }
+  }
   return violations;
 }
 
-export function validateAuthorityLockTransition(baseLock, headLock, allowedChangedPaths) {
+export function validateAuthorityLockTransition(
+  baseLock,
+  headLock,
+  allowedChangedPaths,
+  authorityOwnershipDeltas = [],
+) {
   const violations = [];
   const baseTop = { ...baseLock, authorityFiles: undefined };
   const headTop = { ...headLock, authorityFiles: undefined };
@@ -252,14 +440,8 @@ export function validateAuthorityLockTransition(baseLock, headLock, allowedChang
     violations.push("AUTHORITY_LOCK_TOP_LEVEL_MUTATION");
   }
 
-  const baseEntries = new Map(baseLock.authorityFiles.map((entry) => [entry.path, entry]));
-  const headEntries = new Map(headLock.authorityFiles.map((entry) => [entry.path, entry]));
-  if (
-    baseEntries.size !== baseLock.authorityFiles.length ||
-    headEntries.size !== headLock.authorityFiles.length
-  ) {
-    violations.push("AUTHORITY_LOCK_DUPLICATE_PATH");
-  }
+  const baseEntries = collectAuthorityEntries(baseLock, "BASE", violations);
+  const headEntries = collectAuthorityEntries(headLock, "HEAD", violations);
   const basePaths = [...baseEntries.keys()].sort();
   const headPaths = [...headEntries.keys()].sort();
   if (!sameJson(basePaths, headPaths)) {
@@ -268,6 +450,73 @@ export function validateAuthorityLockTransition(baseLock, headLock, allowedChang
   }
 
   const allowed = new Set(allowedChangedPaths);
+  const authorizedDeltas = new Map(authorityOwnershipDeltas.map((delta) => [delta.path, delta]));
+  const observedDeltas = new Set();
+  for (const path of basePaths) {
+    const baseEntry = baseEntries.get(path);
+    const headEntry = headEntries.get(path);
+    const baseFixed = { ...baseEntry, sha256: undefined, allowedOperationIds: undefined };
+    const headFixed = { ...headEntry, sha256: undefined, allowedOperationIds: undefined };
+    if (!sameJson(baseFixed, headFixed)) {
+      violations.push(`AUTHORITY_LOCK_OWNERSHIP_MUTATION: ${path}`);
+      continue;
+    }
+
+    if (!sameJson(baseEntry.allowedOperationIds, headEntry.allowedOperationIds)) {
+      const delta = authorizedDeltas.get(path);
+      if (!delta) {
+        violations.push(`UNAUTHORIZED_AUTHORITY_OWNERSHIP_DELTA: ${path}`);
+      } else if (
+        baseEntry.mutationPolicy !== "OPERATION_SCOPED" ||
+        !sameJson(delta.beforeAllowedOperationIds, baseEntry.allowedOperationIds) ||
+        !sameJson(delta.afterAllowedOperationIds, headEntry.allowedOperationIds)
+      ) {
+        violations.push(`MISMATCHED_AUTHORITY_OWNERSHIP_DELTA: ${path}`);
+      } else {
+        observedDeltas.add(path);
+      }
+    }
+
+    if (!allowed.has(path) && baseEntry.sha256 !== headEntry.sha256) {
+      violations.push(`UNRELATED_AUTHORITY_LOCK_MUTATION: ${path}`);
+    }
+  }
+  for (const path of authorizedDeltas.keys()) {
+    if (!baseEntries.has(path) || !observedDeltas.has(path)) {
+      violations.push(`EXTRA_AUTHORIZED_AUTHORITY_OWNERSHIP_DELTA: ${path}`);
+    }
+  }
+  return violations;
+}
+
+export function validateOperationAuthorityLockTransition(
+  baseLock,
+  headLock,
+  operationId,
+  changedPaths,
+  actualHashes,
+) {
+  const violations = [];
+  const baseTop = { ...baseLock, authorityFiles: undefined };
+  const headTop = { ...headLock, authorityFiles: undefined };
+  if (!sameJson(baseTop, headTop)) {
+    violations.push("AUTHORITY_LOCK_TOP_LEVEL_MUTATION");
+  }
+  const baseEntries = collectAuthorityEntries(baseLock, "BASE", violations);
+  const headEntries = collectAuthorityEntries(headLock, "HEAD", violations);
+  const basePaths = [...baseEntries.keys()].sort();
+  const headPaths = [...headEntries.keys()].sort();
+  if (!sameJson(basePaths, headPaths)) {
+    violations.push("AUTHORITY_LOCK_PATH_SET_MUTATION");
+    return violations;
+  }
+  if (headEntries.has(headLock.excludedSelfPath)) {
+    violations.push("AUTHORITY_LOCK_SELF_HASHED");
+  }
+
+  const changed = new Set(changedPaths);
+  const lockChanged = changed.has(AUTHORITY_LOCK_PATH);
+  const refreshedPaths = [];
   for (const path of basePaths) {
     const baseEntry = baseEntries.get(path);
     const headEntry = headEntries.get(path);
@@ -275,9 +524,44 @@ export function validateAuthorityLockTransition(baseLock, headLock, allowedChang
     const headOwnership = { ...headEntry, sha256: undefined };
     if (!sameJson(baseOwnership, headOwnership)) {
       violations.push(`AUTHORITY_LOCK_OWNERSHIP_MUTATION: ${path}`);
-    } else if (!allowed.has(path) && !sameJson(baseEntry, headEntry)) {
-      violations.push(`UNRELATED_AUTHORITY_LOCK_MUTATION: ${path}`);
+      continue;
     }
+
+    const hashChanged = baseEntry.sha256 !== headEntry.sha256;
+    if (hashChanged) {
+      refreshedPaths.push(path);
+      if (!lockChanged || !changed.has(path)) {
+        violations.push(`UNRELATED_AUTHORITY_HASH_REFRESH: ${path}`);
+      }
+      if (
+        baseEntry.mutationPolicy !== "OPERATION_SCOPED" ||
+        !baseEntry.allowedOperationIds.includes(operationId)
+      ) {
+        violations.push(`UNAUTHORIZED_AUTHORITY_HASH_REFRESH: ${path}`);
+      }
+    }
+
+    if (changed.has(path)) {
+      if (
+        baseEntry.mutationPolicy !== "OPERATION_SCOPED" ||
+        !baseEntry.allowedOperationIds.includes(operationId)
+      ) {
+        violations.push(`UNAUTHORIZED_LOCKED_ASSET_CHANGE: ${path}`);
+      }
+      if (!lockChanged) {
+        violations.push(`AUTHORITY_LOCK_REFRESH_MISSING: ${path}`);
+      }
+      const actualHash = actualHashes.get(path);
+      if (!actualHash || headEntry.sha256 !== actualHash) {
+        violations.push(`AUTHORITY_LOCK_REFRESH_HASH_MISMATCH: ${path}`);
+      }
+      if (actualHash && actualHash !== baseEntry.sha256 && !hashChanged) {
+        violations.push(`AUTHORITY_LOCK_REFRESH_MISSING: ${path}`);
+      }
+    }
+  }
+  if (lockChanged && refreshedPaths.length === 0) {
+    violations.push("AUTHORITY_LOCK_EMPTY_REFRESH");
   }
   return violations;
 }
@@ -302,6 +586,75 @@ export function validateAuthorityLockHashes(authorityLock, actualHashes) {
     failures.push("AUTHORITY_LOCK_SELF_HASHED");
   }
   return failures;
+}
+
+export function validateP1O04StartGate(gate) {
+  const commits = {
+    preliminaryScopeAmendmentMainCommit: gate?.subject?.preliminaryScopeAmendmentMainCommit,
+    transitionEnforcementImplementationCommit:
+      gate?.subject?.transitionEnforcementImplementationCommit,
+    transitionEnforcementReviewedHeadCommit: gate?.subject?.transitionEnforcementReviewedHeadCommit,
+    transitionEnforcementMainCommit: gate?.subject?.transitionEnforcementMainCommit,
+    finalAmendmentAuthorizationGateReviewedHeadCommit:
+      gate?.subject?.finalAmendmentAuthorizationGateReviewedHeadCommit,
+    finalAmendmentAuthorizationGateMainCommit:
+      gate?.subject?.finalAmendmentAuthorizationGateMainCommit,
+    finalAmendmentImplementationCommit: gate?.subject?.finalAmendmentImplementationCommit,
+    finalAmendmentReviewedHeadCommit: gate?.subject?.finalAmendmentReviewedHeadCommit,
+    finalAmendmentMainCommit: gate?.subject?.finalAmendmentMainCommit,
+  };
+  const trees = {
+    transitionEnforcementImplementationTree: gate?.subject?.transitionEnforcementImplementationTree,
+    finalAmendmentImplementationTree: gate?.subject?.finalAmendmentImplementationTree,
+  };
+  const verification = gate?.verification;
+  if (
+    gate?.schemaVersion !== "1.0.0" ||
+    gate?.evidenceType !== "IndependentPhase1TransitionGate" ||
+    gate?.trackingIssue !== 29 ||
+    gate?.decision !== "PASS" ||
+    gate?.subject?.repository !== "olu37776-bit/-ai-software-engineering-os" ||
+    !Object.values(commits).every((commit) => /^[0-9a-f]{40}$/.test(commit ?? "")) ||
+    !Object.values(trees).every((tree) => /^[0-9a-f]{40}$/.test(tree ?? "")) ||
+    commits.preliminaryScopeAmendmentMainCommit !==
+      P1_O04_PRELIMINARY_SCOPE_AMENDMENT_MAIN_COMMIT ||
+    !Number.isSafeInteger(gate?.subject?.finalAmendmentTrackingIssue) ||
+    gate.subject.finalAmendmentTrackingIssue < 1 ||
+    gate?.subject?.finalAmendmentExecutionPath !== P1_O04_FINAL_AMENDMENT_EXECUTION_PATH ||
+    gate?.subject?.finalAmendmentEvidencePath !== P1_O04_FINAL_AMENDMENT_EVIDENCE_PATH ||
+    gate?.verifier?.role !== "INDEPENDENT_VERIFIER" ||
+    gate?.verifier?.independent !== true ||
+    gate?.verifier?.readOnlySubjectVerification !== true ||
+    gate?.verifier?.remediationPerformed !== false ||
+    gate?.authorization?.p1O04Start !== "RELEASED" ||
+    gate?.authorization?.authorizedBasePolicy !==
+      "PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE_AFTER_POST_MERGE_PASS" ||
+    !sameJson(
+      gate?.authorization?.finalAmendmentChangedPaths,
+      P1_O04_FINAL_AMENDMENT_CHANGED_PATHS,
+    ) ||
+    !sameJson(
+      gate?.authorization?.finalAuthorityOwnershipDeltas,
+      P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS,
+    ) ||
+    verification?.transitionEnforcementIndependentVerdict !== "PASS" ||
+    verification?.transitionEnforcementExactHeadChecks !== "PASS" ||
+    verification?.transitionEnforcementPostMergeChecks !== "PASS" ||
+    verification?.finalAmendmentIndependentVerdict !== "PASS" ||
+    verification?.finalAmendmentExactHeadChecks !== "PASS" ||
+    verification?.finalAmendmentPostMergeChecks !== "PASS" ||
+    gate?.claimBoundary?.acceptedAdrChanged !== false ||
+    gate?.claimBoundary?.requiredCheckIdentityChanged !== false
+  ) {
+    throw new Error("P1_O04_START_BLOCKED: Issue #29 independent PASS Gate is missing or invalid");
+  }
+  return {
+    ...commits,
+    ...trees,
+    finalAmendmentTrackingIssue: gate.subject.finalAmendmentTrackingIssue,
+    finalAmendmentExecutionPath: gate.subject.finalAmendmentExecutionPath,
+    finalAmendmentEvidencePath: gate.subject.finalAmendmentEvidencePath,
+  };
 }
 
 export function selectEvidenceOperation(changedPaths) {
@@ -335,7 +688,7 @@ export function validateOperationChangedPaths(
   const authorityByPath = new Map(authorityLock.authorityFiles.map((entry) => [entry.path, entry]));
   const violations = [];
   for (const path of changedPaths) {
-    if (path.startsWith("/") || path.split("/").includes("..")) {
+    if (!isSafeRepositoryPath(path)) {
       violations.push(`INVALID_PATH: ${path}`);
       continue;
     }

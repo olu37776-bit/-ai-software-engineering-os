@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - remediation/m0-preimplementation-governance
   pull_request:
     branches:
       - main
@@ -32,6 +31,26 @@ jobs:
           cd repo
           git checkout --detach "${TARGET_SHA}"
 
+      - name: Install exact Node.js for scope authority
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.19.0
+          check-latest: false
+
+      - name: Resolve exact event scope bindings
+        working-directory: repo
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+          PUSH_HEAD_SHA: ${{ github.sha }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          node scripts/toolchain/resolve-scope-event.mjs >> "${GITHUB_ENV}"
+
       - name: Install pinned independent verifier
         working-directory: repo
         run: |
@@ -47,8 +66,18 @@ jobs:
         run: |
           set -euo pipefail
           BEFORE="$(git status --porcelain)"
+          SCOPE_REPORT="/tmp/phase1-operation-scope-report.json"
+          node scripts/toolchain/verify-scope.mjs > "${SCOPE_REPORT}"
+          node -e '
+            const fs = require("node:fs");
+            const report = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+            if (report.result !== "PASS") process.exit(1);
+          ' "${SCOPE_REPORT}"
           python scripts/governance/verify_m0.py \
-            --base e287b7f8cdf6ab7d2df6a5a171a395cc2b60bf45 \
+            --base "${PHASE1_SCOPE_BASE}" \
+            --head "${PHASE1_SCOPE_HEAD}" \
+            --branch "${PHASE1_SCOPE_BRANCH}" \
+            --scope-report "${SCOPE_REPORT}" \
             --subject "${TARGET_SHA}" \
             | tee /tmp/m0-independent-report.json
           AFTER="$(git status --porcelain)"
@@ -60,5 +89,6 @@ jobs:
             echo "- Result: **PASS**"
             echo "- Remediation performed: **false**"
             echo "- M0 final Gate created: **false**"
-            echo "- Phase 1 started: **false**"
+            echo "- Scope base: \`${PHASE1_SCOPE_BASE}\`"
+            echo "- Scope branch: \`${PHASE1_SCOPE_BRANCH}\`"
           } >> "${GITHUB_STEP_SUMMARY}"

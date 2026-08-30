@@ -11,6 +11,7 @@ import pathlib
 import re
 import subprocess
 import sys
+import unicodedata
 from collections import defaultdict, deque
 from typing import Any, Iterable
 
@@ -19,6 +20,21 @@ from referencing import Registry, Resource
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 FORMAT = FormatChecker()
+SCOPE_REPORT_CHECK = "PHASE1_OPERATION_AWARE_WRITE_SCOPE"
+OPERATION_ID_PATTERN = re.compile(r"^P1-O0[1-9]$")
+OPERATION_SCOPE_MODES = {"OPERATION_EXECUTION", "OPERATION_MERGE"}
+RECOGNIZED_SCOPE_MODES = OPERATION_SCOPE_MODES | {
+    "GOVERNANCE_AMENDMENT",
+    "INDEPENDENT_EVIDENCE",
+    "NON_OPERATION_GOVERNANCE",
+}
+PRODUCTION_PREFIXES = (
+    "apps/", "packages/kernel/", "packages/policy/", "packages/persistence/",
+    "packages/platform/", "packages/observability/", "packages/adapters/",
+    "packages/workflow/", "packages/node-runtime/", "packages/context/",
+    "packages/skills/", "packages/verification/", "packages/evidence/",
+    "packages/learning/",
+)
 
 def load_json(path: pathlib.Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -92,6 +108,39 @@ def run_git(*args: str) -> str:
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
     return result.stdout.strip()
+
+def canonical_repository_path(path: str) -> str:
+    if (
+        not path
+        or path.startswith("/")
+        or re.match(r"^[A-Za-z]:", path)
+        or "\\" in path
+        or any(ord(char) < 32 or 127 <= ord(char) <= 159 or char == "\ufffd" for char in path)
+        or unicodedata.normalize("NFC", path) != path
+        or any(segment in {"", ".", ".."} for segment in path.split("/"))
+        or any(char in path for char in "?*[]")
+    ):
+        raise AssertionError(f"Non-canonical repository path: {path!r}")
+    return path
+
+def run_git_paths(*args: str) -> list[str]:
+    result = subprocess.run(
+        ["git", *args], cwd=ROOT, check=True,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+    )
+    raw = result.stdout
+    if not raw:
+        return []
+    if not raw.endswith(b"\0"):
+        raise AssertionError("Unterminated NUL-delimited Git path output")
+    parts = raw[:-1].split(b"\0")
+    try:
+        paths = [canonical_repository_path(part.decode("utf-8", errors="strict")) for part in parts]
+    except UnicodeDecodeError as error:
+        raise AssertionError("Non-UTF-8 Git path") from error
+    if len(paths) != len(set(paths)):
+        raise AssertionError("Duplicate Git path")
+    return sorted(paths, key=lambda path: path.encode("utf-8"))
 
 def check_dag(ids: set[str], deps: dict[str, list[str]], label: str) -> None:
     unknown = sorted({dep for values in deps.values() for dep in values if dep not in ids})
@@ -665,24 +714,107 @@ def verify_accepted_adrs(lock: dict[str, Any]) -> int:
         raise AssertionError("Accepted ADR is not immutable")
     return len(adr_entries)
 
-def verify_no_production_runtime_diff(base: str | None) -> dict[str, Any]:
+def load_scope_report(path_value: str) -> dict[str, Any]:
+    path = pathlib.Path(path_value)
+    if not path.is_absolute():
+        path = ROOT / path
+    value = load_json(path)
+    if not isinstance(value, dict):
+        raise AssertionError("Operation scope report is not a JSON object")
+    return value
+
+def verify_operation_aware_transition(
+    base: str | None,
+    head: str | None,
+    branch: str | None,
+    scope_report_path: str | None,
+) -> dict[str, Any]:
     if not base:
-        return {"status": "NOT_CHECKED", "reason": "no --base supplied"}
-    changed = set(filter(None, run_git("diff", "--name-only", f"{base}...HEAD").splitlines()))
-    prohibited_prefixes = (
-        "apps/", "packages/kernel/", "packages/policy/", "packages/persistence/",
-        "packages/platform/", "packages/observability/", "packages/adapters/",
-        "packages/workflow/", "packages/node-runtime/", "packages/context/",
-        "packages/skills/", "packages/verification/", "packages/evidence/",
-        "packages/learning/",
+        if head or branch or scope_report_path:
+            raise AssertionError(
+                "Exact --base, --head, --branch and --scope-report must be supplied together"
+            )
+        return {"status": "BASELINE_ONLY", "scopeReportRequired": False}
+
+    if not head or not branch or not scope_report_path:
+        raise AssertionError(
+            "Exact --base, --head, --branch and --scope-report must be supplied together"
+        )
+    effective_head = head
+    if not re.fullmatch(r"[0-9a-f]{40}", base):
+        raise AssertionError(f"Invalid exact base commit: {base}")
+    if not re.fullmatch(r"[0-9a-f]{40}", effective_head):
+        raise AssertionError(f"Invalid exact head commit: {effective_head}")
+    run_git("cat-file", "-e", f"{base}^{{commit}}")
+    run_git("cat-file", "-e", f"{effective_head}^{{commit}}")
+    checkout_head = run_git("rev-parse", "HEAD")
+    if checkout_head != effective_head:
+        raise AssertionError(
+            f"Checked-out HEAD does not match exact --head: checkout={checkout_head} head={effective_head}"
+        )
+    run_git("merge-base", "--is-ancestor", base, effective_head)
+    run_git("check-ref-format", "--branch", branch)
+    changed_paths = run_git_paths(
+        "diff", "--no-renames", "--name-only", "-z", base, effective_head
     )
-    production = sorted(path for path in changed if path.startswith(prohibited_prefixes))
-    if production:
-        raise AssertionError(f"Production runtime paths changed during M0 remediation: {production}")
-    adr_changes = sorted(path for path in changed if path.startswith("docs/decisions/"))
+    production = sorted(path for path in changed_paths if path.startswith(PRODUCTION_PREFIXES))
+    adr_changes = sorted(path for path in changed_paths if path.startswith("docs/decisions/"))
     if adr_changes:
-        raise AssertionError(f"Accepted ADRs changed during M0 remediation: {adr_changes}")
-    return {"changedPaths": len(changed), "productionRuntimePaths": 0, "adrPaths": 0}
+        raise AssertionError(f"Accepted ADRs changed: {adr_changes}")
+
+    report = load_scope_report(scope_report_path)
+    mode = report.get("mode")
+    operation_id = report.get("operationId")
+    if (
+        report.get("schemaVersion") != "1.0.0"
+        or report.get("check") != SCOPE_REPORT_CHECK
+        or report.get("result") != "PASS"
+        or report.get("enforcementMode") != "DENY_BY_DEFAULT"
+        or report.get("baseCommit") != base
+        or report.get("headCommit") != effective_head
+        or report.get("branch") != branch
+        or report.get("violations") != []
+        or mode not in RECOGNIZED_SCOPE_MODES
+    ):
+        raise AssertionError("Malformed or mismatched operation scope report")
+    report_paths = report.get("changedPaths")
+    if (
+        not isinstance(report_paths, list)
+        or any(not isinstance(path, str) for path in report_paths)
+    ):
+        raise AssertionError("Operation scope report changedPaths do not match the exact Git diff")
+    try:
+        canonical_report_paths = [canonical_repository_path(path) for path in report_paths]
+    except AssertionError as error:
+        raise AssertionError(
+            "Operation scope report contains a non-canonical changed path"
+        ) from error
+    if (
+        canonical_report_paths != sorted(set(canonical_report_paths), key=lambda path: path.encode("utf-8"))
+        or canonical_report_paths != changed_paths
+    ):
+        raise AssertionError("Operation scope report changedPaths do not match the exact Git diff")
+    if mode == "NON_OPERATION_GOVERNANCE":
+        if operation_id is not None:
+            raise AssertionError("Non-operation scope report unexpectedly names an operation")
+    elif not isinstance(operation_id, str) or not OPERATION_ID_PATTERN.fullmatch(operation_id):
+        raise AssertionError("Operation scope report has an unrecognized operation")
+    if mode == "GOVERNANCE_AMENDMENT" and operation_id != "P1-O01":
+        raise AssertionError("Governance amendment scope report is not owned by P1-O01")
+    if production and mode not in OPERATION_SCOPE_MODES:
+        raise AssertionError(f"Production paths are not authorized by scope mode {mode}")
+    return {
+        "changedPaths": len(changed_paths),
+        "productionPaths": len(production),
+        "acceptedAdrPaths": 0,
+        "scopeReportRequired": True,
+        "scopeReportResult": "PASS",
+        "scopeMode": mode,
+        "operationId": operation_id,
+        "baseCommit": base,
+        "headCommit": effective_head,
+        "branch": branch,
+    }
 
 def verify_branch_prerequisite() -> dict[str, Any]:
     operation = load_json(ROOT / "operations/phase-1/operation.json")
@@ -700,7 +832,10 @@ def verify_branch_prerequisite() -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base", help="Base commit for M0 remediation scope check")
+    parser.add_argument("--base", help="Exact event base commit for transition scope enforcement")
+    parser.add_argument("--head", help="Exact event head commit (defaults to HEAD)")
+    parser.add_argument("--branch", help="Exact event branch bound by the operation scope report")
+    parser.add_argument("--scope-report", help="Operation-aware Node scope PASS report")
     parser.add_argument("--subject", default="working-tree")
     parser.add_argument("--write-report")
     args = parser.parse_args()
@@ -724,7 +859,12 @@ def main() -> int:
     lock = documents[ROOT / "operations/phase-1/authority-lock.json"]
     audit.check("M0-V11-ACCEPTED-ADR-IMMUTABILITY", lambda: verify_accepted_adrs(lock))
     audit.check("M0-V12-RECEIPT-ANTI-FALSE-IMPLEMENTED", lambda: verify_receipt_guards(documents, registry))
-    audit.check("M0-V13-NO-PRODUCTION-OR-ADR-CHANGE", lambda: verify_no_production_runtime_diff(args.base))
+    audit.check(
+        "M0-V13-OPERATION-AWARE-TRANSITION",
+        lambda: verify_operation_aware_transition(
+            args.base, args.head, args.branch, args.scope_report
+        ),
+    )
     audit.check("M0-V14-BRANCH-PROTECTION-PREREQUISITE", verify_branch_prerequisite)
 
     decision = "PASS" if all(item["result"] == "PASS" for item in audit.checks) else "FAIL"
@@ -742,8 +882,6 @@ def main() -> int:
         },
         "claimBoundary": {
             "m0FinalGate": "NOT_CREATED_BY_THIS_SCRIPT",
-            "phase1": "NOT_STARTED",
-            "runtimeCapability": "NOT_IMPLEMENTED",
             "remediationPerformed": False,
         },
     }

@@ -1,11 +1,22 @@
 import { readdir, readFile } from "node:fs/promises";
 import { relative, resolve } from "node:path";
+import { TextDecoder } from "node:util";
 
 import {
+  AUTHORITY_LOCK_PATH,
   GOVERNANCE_AMENDMENT_EVIDENCE_TYPE,
+  isSafeRepositoryPath,
   isPhase1GovernedPath,
   operationIdFromExecutionPath,
   P1_O02_START_GATE_PATH,
+  P1_O04_FINAL_AMENDMENT_EVIDENCE_PATH,
+  P1_O04_FINAL_AMENDMENT_EXECUTION_PATH,
+  P1_O04_FINAL_AMENDMENT_CHANGED_PATHS,
+  P1_O04_PRELIMINARY_SCOPE_AMENDMENT_MAIN_COMMIT,
+  P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS,
+  P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_PATHS,
+  P1_O04_REQUIRED_SCOPE_PATHS,
+  P1_O04_START_GATE_PATH,
   resolveOperationDefinition,
   selectEvidenceOperation,
   selectGovernanceAmendmentAuthorizationGate,
@@ -15,8 +26,10 @@ import {
   validateGovernanceAmendmentAuthorizationGate,
   validateGovernanceAmendmentChangedPaths,
   validateGovernanceAmendmentExecution,
+  validateOperationAuthorityLockTransition,
   validateOperationChangedPaths,
   validateP1O02StartGate,
+  validateP1O04StartGate,
 } from "./scope-policy.mjs";
 import {
   readJson,
@@ -67,15 +80,61 @@ function assertAncestor(baseCommit, headCommit) {
   run("git", ["merge-base", "--is-ancestor", baseCommit, headCommit]);
 }
 
+function compareCanonicalPaths(left, right) {
+  return Buffer.compare(Buffer.from(left, "utf8"), Buffer.from(right, "utf8"));
+}
+
+function gitPaths(args, label) {
+  const raw = runRaw("git", ["-c", "core.quotepath=false", ...args], { encoding: null });
+  if (!Buffer.isBuffer(raw)) {
+    throw new Error(`INVALID_GIT_PATH_OUTPUT: ${label}`);
+  }
+  if (raw.length === 0) {
+    return [];
+  }
+  if (raw.at(-1) !== 0) {
+    throw new Error(`UNTERMINATED_GIT_PATH_OUTPUT: ${label}`);
+  }
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  const paths = [];
+  let start = 0;
+  for (let index = 0; index < raw.length; index += 1) {
+    if (raw[index] !== 0) {
+      continue;
+    }
+    const bytes = raw.subarray(start, index);
+    start = index + 1;
+    let path;
+    try {
+      path = decoder.decode(bytes);
+    } catch {
+      throw new Error(`NON_UTF8_GIT_PATH: ${label}`);
+    }
+    if (!isSafeRepositoryPath(path)) {
+      throw new Error(`NON_CANONICAL_GIT_PATH: ${JSON.stringify(path)}`);
+    }
+    paths.push(path);
+  }
+  if (new Set(paths).size !== paths.length) {
+    throw new Error(`DUPLICATE_GIT_PATH: ${label}`);
+  }
+  return paths;
+}
+
 function changedPathsFrom(baseCommit, headCommit) {
-  const tracked = gitOutput(["diff", "--name-only", baseCommit, headCommit])
-    .split(/\r?\n/)
-    .filter(Boolean);
-  const worktree = gitOutput(["diff", "--name-only", headCommit]).split(/\r?\n/).filter(Boolean);
-  const untracked = gitOutput(["ls-files", "--others", "--exclude-standard"])
-    .split(/\r?\n/)
-    .filter(Boolean);
-  return [...new Set([...tracked, ...worktree, ...untracked])].sort();
+  const tracked = gitPaths(
+    ["diff", "--no-renames", "--name-only", "-z", baseCommit, headCommit],
+    "COMMITTED_DIFF",
+  );
+  const worktree = gitPaths(
+    ["diff", "--no-renames", "--name-only", "-z", headCommit],
+    "WORKTREE_DIFF",
+  );
+  const untracked = gitPaths(
+    ["ls-files", "--others", "--exclude-standard", "-z"],
+    "UNTRACKED_FILES",
+  );
+  return [...new Set([...tracked, ...worktree, ...untracked])].sort(compareCanonicalPaths);
 }
 
 async function loadExecutionRecords(operationManifest, writeScope) {
@@ -215,27 +274,283 @@ function validateEventBase(event, branch, eventBase, executionBase, headCommit) 
   }
 }
 
+function loadStartGate(baseCommit, path, blockedCode) {
+  try {
+    return JSON.parse(gitOutput(["show", `${baseCommit}:${path}`]));
+  } catch {
+    throw new Error(`${blockedCode}: ${path} is absent from authorized base ${baseCommit}`);
+  }
+}
+
+function assertExactTree(commit, expectedTree, label) {
+  const actualTree = gitOutput(["rev-parse", `${commit}^{tree}`]);
+  if (actualTree !== expectedTree) {
+    throw new Error(`MISMATCHED_${label}_TREE: expected=${expectedTree} actual=${actualTree}`);
+  }
+}
+
+function assertExactMergeParents(commit, firstParent, secondParent, label) {
+  const fields = gitOutput(["rev-list", "--parents", "-n", "1", commit]).split(" ");
+  if (
+    fields.length !== 3 ||
+    fields[0] !== commit ||
+    fields[1] !== firstParent ||
+    fields[2] !== secondParent
+  ) {
+    throw new Error(`MISMATCHED_${label}_MERGE_PARENTS`);
+  }
+}
+
+function verifyP1O04FinalAmendmentOutcome(commits, gate, baseCommit) {
+  const finalMain = commits.finalAmendmentMainCommit;
+  let execution;
+  let evidence;
+  let finalScope;
+  let finalLock;
+  try {
+    execution = readJsonAtCommit(finalMain, P1_O04_FINAL_AMENDMENT_EXECUTION_PATH);
+    evidence = readJsonAtCommit(finalMain, P1_O04_FINAL_AMENDMENT_EVIDENCE_PATH);
+    finalScope = readJsonAtCommit(finalMain, "operations/phase-1/write-scope.json");
+    finalLock = readJsonAtCommit(finalMain, AUTHORITY_LOCK_PATH);
+  } catch {
+    throw new Error("P1_O04_FINAL_AMENDMENT_EVIDENCE_MISSING_OR_MALFORMED");
+  }
+
+  const finalBranch =
+    `governance/p1-o04-final-scope-authority-amendment-issue-` +
+    commits.finalAmendmentTrackingIssue;
+  const authorizationGatePath =
+    `operations/phase-1/evidence/o01/` +
+    `p1-governance-amendment-authorization-issue-${commits.finalAmendmentTrackingIssue}.json`;
+  let authorizationGate;
+  try {
+    authorizationGate = readJsonAtCommit(
+      commits.finalAmendmentAuthorizationGateMainCommit,
+      authorizationGatePath,
+    );
+  } catch {
+    throw new Error("P1_O04_FINAL_AMENDMENT_AUTHORIZATION_GATE_MISSING_OR_MALFORMED");
+  }
+  const authorizationRequest = {
+    trackingIssue: commits.finalAmendmentTrackingIssue,
+    implementationBranch: finalBranch,
+    baseCommit: commits.finalAmendmentAuthorizationGateMainCommit,
+    gatePath: authorizationGatePath,
+  };
+  const authorization = validateGovernanceAmendmentAuthorizationGate(authorizationGate, {
+    request: authorizationRequest,
+    repository: REPOSITORY,
+    baseCommit: commits.finalAmendmentAuthorizationGateMainCommit,
+    baseParentCommit: commits.transitionEnforcementMainCommit,
+  });
+  if (
+    JSON.stringify(authorization.allowedChangedPaths) !==
+      JSON.stringify(P1_O04_FINAL_AMENDMENT_CHANGED_PATHS) ||
+    JSON.stringify(authorization.exactAmendmentPaths) !==
+      JSON.stringify(P1_O04_FINAL_AMENDMENT_CHANGED_PATHS) ||
+    JSON.stringify(authorization.authorityOwnershipDeltas) !==
+      JSON.stringify(P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS)
+  ) {
+    throw new Error("P1_O04_FINAL_AMENDMENT_AUTHORIZATION_GATE_MISMATCH");
+  }
+  const finalAmendmentChangedPaths = gitPaths(
+    [
+      "diff",
+      "--no-renames",
+      "--name-only",
+      "-z",
+      commits.finalAmendmentAuthorizationGateMainCommit,
+      commits.finalAmendmentReviewedHeadCommit,
+    ],
+    "P1_O04_FINAL_AMENDMENT_DIFF",
+  );
+  if (
+    JSON.stringify(finalAmendmentChangedPaths) !==
+    JSON.stringify(P1_O04_FINAL_AMENDMENT_CHANGED_PATHS)
+  ) {
+    throw new Error("P1_O04_FINAL_AMENDMENT_CHANGED_PATHS_MISMATCH");
+  }
+  if (
+    execution?.schemaVersion !== "1.0.0" ||
+    execution?.executionType !== "PHASE_1_GOVERNANCE_AMENDMENT" ||
+    execution?.operationId !== "P1-O01" ||
+    execution?.writeScopeOperationId !== "P1-O01" ||
+    execution?.status !== "IMPLEMENTED" ||
+    execution?.trackingIssue !== commits.finalAmendmentTrackingIssue ||
+    execution?.implementationBranch !== finalBranch ||
+    execution?.baseCommit !== commits.finalAmendmentAuthorizationGateMainCommit ||
+    execution?.implementationCommit !== commits.finalAmendmentImplementationCommit ||
+    execution?.implementationTree !== commits.finalAmendmentImplementationTree ||
+    execution?.priorAuthorizationGateRef !== authorizationGatePath ||
+    evidence?.schemaVersion !== "1.0.0" ||
+    evidence?.evidenceType !== "P1O04FinalScopeAuthorityAmendmentEvidence" ||
+    evidence?.decision !== "IMPLEMENTED" ||
+    evidence?.operationId !== "P1-O01" ||
+    evidence?.trackingIssue !== commits.finalAmendmentTrackingIssue ||
+    evidence?.subject?.implementationCommit !== commits.finalAmendmentImplementationCommit ||
+    evidence?.subject?.implementationTree !== commits.finalAmendmentImplementationTree ||
+    JSON.stringify(evidence?.governanceOutcome?.requiredScopePaths) !==
+      JSON.stringify(P1_O04_REQUIRED_SCOPE_PATHS) ||
+    JSON.stringify(evidence?.governanceOutcome?.authorityOwnershipPaths) !==
+      JSON.stringify(P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_PATHS) ||
+    JSON.stringify(evidence?.governanceOutcome?.exactChangedPaths) !==
+      JSON.stringify(P1_O04_FINAL_AMENDMENT_CHANGED_PATHS) ||
+    JSON.stringify(evidence?.governanceOutcome?.authorityOwnershipDeltas) !==
+      JSON.stringify(P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS) ||
+    evidence?.claimBoundary?.p1O04Implemented !== false ||
+    evidence?.claimBoundary?.acceptedAdrChanged !== false
+  ) {
+    throw new Error("P1_O04_FINAL_AMENDMENT_EVIDENCE_MISMATCH");
+  }
+
+  const operationScope = finalScope?.operations?.find(
+    ({ operationId }) => operationId === "P1-O04",
+  );
+  if (
+    finalScope?.enforcementMode !== "DENY_BY_DEFAULT" ||
+    !operationScope ||
+    P1_O04_REQUIRED_SCOPE_PATHS.some((path) => !operationScope.allowedPathGlobs.includes(path))
+  ) {
+    throw new Error("P1_O04_FINAL_SCOPE_OUTCOME_MISMATCH");
+  }
+  const authorityByPath = new Map(
+    (finalLock?.authorityFiles ?? []).map((entry) => [entry.path, entry]),
+  );
+  for (const path of P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_PATHS) {
+    const entry = authorityByPath.get(path);
+    if (
+      entry?.mutationPolicy !== "OPERATION_SCOPED" ||
+      JSON.stringify(entry.allowedOperationIds) !== JSON.stringify(["P1-O02", "P1-O04"])
+    ) {
+      throw new Error(`P1_O04_FINAL_AUTHORITY_OWNERSHIP_MISMATCH: ${path}`);
+    }
+  }
+  assertAncestor(finalMain, baseCommit);
+  return {
+    finalAmendmentExecutionPath: P1_O04_FINAL_AMENDMENT_EXECUTION_PATH,
+    finalAmendmentEvidencePath: P1_O04_FINAL_AMENDMENT_EVIDENCE_PATH,
+    requiredScopePathsVerified: P1_O04_REQUIRED_SCOPE_PATHS.length,
+    authorityOwnershipPathsVerified: P1_O04_REQUIRED_AUTHORITY_OWNERSHIP_PATHS.length,
+    postMergeChecks: gate.verification.finalAmendmentPostMergeChecks,
+  };
+}
+
 function verifyOperationStartGate(operationId, baseCommit) {
-  if (operationId !== "P1-O02") {
+  if (operationId !== "P1-O02" && operationId !== "P1-O04") {
     return { required: false };
   }
-  let gate;
-  try {
-    gate = JSON.parse(gitOutput(["show", `${baseCommit}:${P1_O02_START_GATE_PATH}`]));
-  } catch {
-    throw new Error(
-      `P1_O02_START_BLOCKED: ${P1_O02_START_GATE_PATH} is absent from authorized base ${baseCommit}`,
-    );
+  if (operationId === "P1-O02") {
+    const gate = loadStartGate(baseCommit, P1_O02_START_GATE_PATH, "P1_O02_START_BLOCKED");
+    const remediationImplementationCommit = validateP1O02StartGate(gate);
+    assertCommit(remediationImplementationCommit, "REMEDIATION_IMPLEMENTATION_COMMIT");
+    assertAncestor(remediationImplementationCommit, baseCommit);
+    return {
+      required: true,
+      path: P1_O02_START_GATE_PATH,
+      decision: gate.decision,
+      p1O02Start: gate.authorization.p1O02Start,
+      remediationImplementationCommit,
+    };
   }
-  const remediationImplementationCommit = validateP1O02StartGate(gate);
-  assertCommit(remediationImplementationCommit, "REMEDIATION_IMPLEMENTATION_COMMIT");
-  assertAncestor(remediationImplementationCommit, baseCommit);
+
+  const gate = loadStartGate(baseCommit, P1_O04_START_GATE_PATH, "P1_O04_START_BLOCKED");
+  const commits = validateP1O04StartGate(gate);
+  const commitEntries = Object.entries(commits).filter(([label]) => label.endsWith("Commit"));
+  for (const [label, commit] of commitEntries) {
+    assertCommit(commit, label.replaceAll(/(?<!^)[A-Z]/g, (letter) => `_${letter}`).toUpperCase());
+  }
+  if (
+    commits.preliminaryScopeAmendmentMainCommit !== P1_O04_PRELIMINARY_SCOPE_AMENDMENT_MAIN_COMMIT
+  ) {
+    throw new Error("P1_O04_PRELIMINARY_SCOPE_AMENDMENT_IDENTITY_MISMATCH");
+  }
+  assertExactTree(
+    commits.transitionEnforcementImplementationCommit,
+    commits.transitionEnforcementImplementationTree,
+    "TRANSITION_ENFORCEMENT_IMPLEMENTATION",
+  );
+  assertAncestor(
+    commits.transitionEnforcementImplementationCommit,
+    commits.transitionEnforcementReviewedHeadCommit,
+  );
+  assertExactMergeParents(
+    commits.transitionEnforcementMainCommit,
+    commits.preliminaryScopeAmendmentMainCommit,
+    commits.transitionEnforcementReviewedHeadCommit,
+    "TRANSITION_ENFORCEMENT",
+  );
+  assertExactMergeParents(
+    commits.finalAmendmentAuthorizationGateMainCommit,
+    commits.transitionEnforcementMainCommit,
+    commits.finalAmendmentAuthorizationGateReviewedHeadCommit,
+    "FINAL_AMENDMENT_AUTHORIZATION_GATE",
+  );
+  assertExactTree(
+    commits.finalAmendmentImplementationCommit,
+    commits.finalAmendmentImplementationTree,
+    "FINAL_AMENDMENT_IMPLEMENTATION",
+  );
+  assertAncestor(
+    commits.finalAmendmentAuthorizationGateMainCommit,
+    commits.finalAmendmentImplementationCommit,
+  );
+  assertAncestor(
+    commits.finalAmendmentImplementationCommit,
+    commits.finalAmendmentReviewedHeadCommit,
+  );
+  assertExactMergeParents(
+    commits.finalAmendmentMainCommit,
+    commits.finalAmendmentAuthorizationGateMainCommit,
+    commits.finalAmendmentReviewedHeadCommit,
+    "FINAL_AMENDMENT",
+  );
+  const finalAmendmentOutcome = verifyP1O04FinalAmendmentOutcome(commits, gate, baseCommit);
   return {
     required: true,
-    path: P1_O02_START_GATE_PATH,
+    path: P1_O04_START_GATE_PATH,
     decision: gate.decision,
-    p1O02Start: gate.authorization.p1O02Start,
-    remediationImplementationCommit,
+    p1O04Start: gate.authorization.p1O04Start,
+    ...commits,
+    finalAmendmentOutcome,
+  };
+}
+
+async function verifyOperationAuthorityTransition(
+  baseCommit,
+  authorityLock,
+  operationId,
+  changedPaths,
+) {
+  let baseLock;
+  try {
+    baseLock = readJsonAtCommit(baseCommit, AUTHORITY_LOCK_PATH);
+  } catch {
+    throw new Error("MALFORMED_BASE_AUTHORITY_LOCK");
+  }
+  const actualHashes = new Map();
+  for (const entry of baseLock.authorityFiles ?? []) {
+    if (!changedPaths.includes(entry.path)) {
+      continue;
+    }
+    try {
+      actualHashes.set(entry.path, await sha256Utf8LfFile(entry.path));
+    } catch {
+      // The transition validator reports the missing changed asset.
+    }
+  }
+  const violations = validateOperationAuthorityLockTransition(
+    baseLock,
+    authorityLock,
+    operationId,
+    changedPaths,
+    actualHashes,
+  );
+  if (violations.length > 0) {
+    throw new Error(violations.join("\n"));
+  }
+  return {
+    lockChanged: changedPaths.includes(AUTHORITY_LOCK_PATH),
+    changedLockedPaths: [...actualHashes.keys()].sort(),
   };
 }
 
@@ -272,12 +587,13 @@ async function verifyGovernanceAmendment({
   }
   const candidates = loadGovernanceAmendmentGatesFromBase(baseCommit);
   const gate = selectGovernanceAmendmentAuthorizationGate(candidates, request);
-  const { allowedChangedPaths } = validateGovernanceAmendmentAuthorizationGate(gate, {
-    request,
-    repository: REPOSITORY,
-    baseCommit,
-    baseParentCommit,
-  });
+  const { allowedChangedPaths, exactAmendmentPaths, authorityOwnershipDeltas } =
+    validateGovernanceAmendmentAuthorizationGate(gate, {
+      request,
+      repository: REPOSITORY,
+      baseCommit,
+      baseParentCommit,
+    });
 
   try {
     gitOutput(["cat-file", "-e", `${baseParentCommit}:${request.gatePath}`]);
@@ -289,7 +605,11 @@ async function verifyGovernanceAmendment({
   }
 
   const changedPaths = changedPathsFrom(baseCommit, headCommit);
-  const violations = validateGovernanceAmendmentChangedPaths(changedPaths, allowedChangedPaths);
+  const violations = validateGovernanceAmendmentChangedPaths(
+    changedPaths,
+    allowedChangedPaths,
+    exactAmendmentPaths,
+  );
   if (violations.length > 0) {
     throw new Error(violations.join("\n"));
   }
@@ -304,6 +624,7 @@ async function verifyGovernanceAmendment({
     baseLock,
     authorityLock,
     allowedChangedPaths,
+    authorityOwnershipDeltas,
   );
   if (transitionViolations.length > 0) {
     throw new Error(transitionViolations.join("\n"));
@@ -333,6 +654,8 @@ async function verifyGovernanceAmendment({
     authorityFilesVerified,
     unrelatedAuthorityFilesVerified,
     allowedChangedPaths,
+    exactAmendmentPaths: exactAmendmentPaths ?? null,
+    authorityOwnershipDeltas,
     changedPaths,
     violations: [],
   });
@@ -409,8 +732,14 @@ async function main() {
     validateEventBase(event, branch, eventBase, baseCommit, headCommit);
     const operationStartGate = verifyOperationStartGate(operationId, baseCommit);
     const changedPaths = changedPathsFrom(baseCommit, headCommit);
-    const violations = validateOperationChangedPaths(
+    const authorityLockRefresh = await verifyOperationAuthorityTransition(
+      baseCommit,
+      authorityLock,
+      operationId,
       changedPaths,
+    );
+    const violations = validateOperationChangedPaths(
+      changedPaths.filter((path) => path !== AUTHORITY_LOCK_PATH),
       operationId,
       writeScope,
       authorityLock,
@@ -430,6 +759,7 @@ async function main() {
       branch,
       enforcementMode: writeScope.enforcementMode,
       operationStartGate,
+      authorityLockRefresh,
       immutableAuthorityFilesVerified,
       changedPaths,
       violations,
@@ -476,8 +806,14 @@ async function main() {
       );
     }
     const operationStartGate = verifyOperationStartGate(operationId, eventBase);
-    const violations = validateOperationChangedPaths(
+    const authorityLockRefresh = await verifyOperationAuthorityTransition(
+      eventBase,
+      authorityLock,
+      operationId,
       changedPaths,
+    );
+    const violations = validateOperationChangedPaths(
+      changedPaths.filter((path) => path !== AUTHORITY_LOCK_PATH),
       operationId,
       writeScope,
       authorityLock,
@@ -497,6 +833,7 @@ async function main() {
       branch,
       enforcementMode: writeScope.enforcementMode,
       operationStartGate,
+      authorityLockRefresh,
       immutableAuthorityFilesVerified,
       changedPaths,
       violations,
