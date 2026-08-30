@@ -111,9 +111,24 @@ async function makeRepository() {
 }
 
 async function createFinalAmendment(repository, transitionMainCommit) {
+  const recoveryBranch = "phase-1/test-transition-recovery";
+  git(repository, "checkout", "--quiet", "-B", recoveryBranch, transitionMainCommit);
+  git(repository, "commit", "--quiet", "--allow-empty", "-m", "test: recovery remediation");
+  git(repository, "checkout", "--quiet", "simulated-main");
+  git(
+    repository,
+    "merge",
+    "--quiet",
+    "--no-ff",
+    recoveryBranch,
+    "-m",
+    "test: merge recovery remediation",
+  );
+  const authorizationBaseCommit = git(repository, "rev-parse", "HEAD");
+
   const trackingIssue = 30;
   const authorizationBranch = "gate/final-amendment-authorization";
-  git(repository, "checkout", "--quiet", "-B", authorizationBranch, transitionMainCommit);
+  git(repository, "checkout", "--quiet", "-B", authorizationBranch, authorizationBaseCommit);
   const authorizationPath =
     "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-30.json";
   await writeJson(join(repository, authorizationPath), {
@@ -123,7 +138,7 @@ async function createFinalAmendment(repository, transitionMainCommit) {
     decision: "AUTHORIZED",
     subject: {
       repository: "olu37776-bit/-ai-software-engineering-os",
-      authorizationBase: transitionMainCommit,
+      authorizationBase: authorizationBaseCommit,
       authorizedBasePolicy: "DIRECT_PROTECTED_MAIN_CHILD_CONTAINING_THIS_GATE",
       implementationBranch: `governance/p1-o04-final-scope-authority-amendment-issue-${trackingIssue}`,
     },

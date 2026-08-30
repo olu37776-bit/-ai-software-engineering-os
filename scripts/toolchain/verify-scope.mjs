@@ -290,16 +290,27 @@ function assertExactTree(commit, expectedTree, label) {
   }
 }
 
-function assertExactMergeParents(commit, firstParent, secondParent, label) {
+function exactMergeParents(commit, label) {
   const fields = gitOutput(["rev-list", "--parents", "-n", "1", commit]).split(" ");
-  if (
-    fields.length !== 3 ||
-    fields[0] !== commit ||
-    fields[1] !== firstParent ||
-    fields[2] !== secondParent
-  ) {
+  if (fields.length !== 3 || fields[0] !== commit) {
     throw new Error(`MISMATCHED_${label}_MERGE_PARENTS`);
   }
+  return { firstParent: fields[1], secondParent: fields[2] };
+}
+
+function assertExactMergeParents(commit, firstParent, secondParent, label) {
+  const actual = exactMergeParents(commit, label);
+  if (actual.firstParent !== firstParent || actual.secondParent !== secondParent) {
+    throw new Error(`MISMATCHED_${label}_MERGE_PARENTS`);
+  }
+}
+
+function assertMergeSecondParent(commit, secondParent, label) {
+  const actual = exactMergeParents(commit, label);
+  if (actual.secondParent !== secondParent) {
+    throw new Error(`MISMATCHED_${label}_MERGE_PARENTS`);
+  }
+  return actual.firstParent;
 }
 
 function verifyP1O04FinalAmendmentOutcome(commits, gate, baseCommit) {
@@ -332,6 +343,15 @@ function verifyP1O04FinalAmendmentOutcome(commits, gate, baseCommit) {
   } catch {
     throw new Error("P1_O04_FINAL_AMENDMENT_AUTHORIZATION_GATE_MISSING_OR_MALFORMED");
   }
+  const finalAmendmentAuthorizationGateBaseCommit = assertMergeSecondParent(
+    commits.finalAmendmentAuthorizationGateMainCommit,
+    commits.finalAmendmentAuthorizationGateReviewedHeadCommit,
+    "FINAL_AMENDMENT_AUTHORIZATION_GATE",
+  );
+  assertAncestor(
+    commits.transitionEnforcementMainCommit,
+    finalAmendmentAuthorizationGateBaseCommit,
+  );
   const authorizationRequest = {
     trackingIssue: commits.finalAmendmentTrackingIssue,
     implementationBranch: finalBranch,
@@ -342,7 +362,7 @@ function verifyP1O04FinalAmendmentOutcome(commits, gate, baseCommit) {
     request: authorizationRequest,
     repository: REPOSITORY,
     baseCommit: commits.finalAmendmentAuthorizationGateMainCommit,
-    baseParentCommit: commits.transitionEnforcementMainCommit,
+    baseParentCommit: finalAmendmentAuthorizationGateBaseCommit,
   });
   if (
     JSON.stringify(authorization.allowedChangedPaths) !==
@@ -480,11 +500,14 @@ function verifyOperationStartGate(operationId, baseCommit) {
     commits.transitionEnforcementReviewedHeadCommit,
     "TRANSITION_ENFORCEMENT",
   );
-  assertExactMergeParents(
+  const finalAmendmentAuthorizationGateBaseCommit = assertMergeSecondParent(
     commits.finalAmendmentAuthorizationGateMainCommit,
-    commits.transitionEnforcementMainCommit,
     commits.finalAmendmentAuthorizationGateReviewedHeadCommit,
     "FINAL_AMENDMENT_AUTHORIZATION_GATE",
+  );
+  assertAncestor(
+    commits.transitionEnforcementMainCommit,
+    finalAmendmentAuthorizationGateBaseCommit,
   );
   assertExactTree(
     commits.finalAmendmentImplementationCommit,

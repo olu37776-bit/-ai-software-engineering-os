@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O01-ISSUE29-FINAL-GATE-RECOVERY-ISSUE-39-2026-08-30-01",
+  "evidenceType": "P1O01Issue29FinalGateRecoveryEvidence",
+  "trackingIssue": 39,
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-08-30T19:20:00Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "branch": "phase-1/p1-o01-issue29-final-gate-recovery-issue-39",
+    "pullRequest": 40,
+    "authorizedBase": "0fe24ef8b2cb4aaaecfb330bf41ebbfe0f202057",
+    "qualifiedImplementationCommit": "be4ee4255bcf696ff338761694e880db4f9bed23",
+    "qualifiedImplementationTree": "02668446f8ed4e40422ad77bb97c341fa5f586c2"
+  },
+  "authorizationPreflight": {
+    "result": "PASS",
+    "mode": "OPERATION_EXECUTION",
+    "operationId": "P1-O01",
+    "writeScopeEnforcementMode": "DENY_BY_DEFAULT",
+    "immutableAuthorityFilesVerified": 25,
+    "scopeViolations": 0,
+    "m0Run": 33330309620,
+    "m0Job": 99307594644,
+    "linuxScopeJob": 99307594709
+  },
+  "finding": {
+    "findingId": "P1-O01-ISSUE29-FINAL-GATE-SEQUENCE-01",
+    "classification": "STALE_TRANSITION_CONSTRAINT",
+    "preliminaryGatePathReuseRejected": true,
+    "staleDirectParentConstraintRejected": true
+  },
+  "implementation": {
+    "files": [
+      "scripts/toolchain/verify-scope.mjs",
+      "tests/qualification/toolchain/transition-enforcement-integration.test.mjs"
+    ],
+    "exactGateMergeSecondParent": true,
+    "exactGateAuthorizationBaseFirstParent": true,
+    "transitionEnforcementRequiredAsAncestor": true,
+    "recoveryCommitsAllowedOnlyOnThatAncestry": true,
+    "newTrackingIssueProducesUnusedCanonicalGatePath": true,
+    "issueSuffixedFinalAmendmentBranchUnchanged": true,
+    "enforcementMode": "DENY_BY_DEFAULT"
+  },
+  "githubQualification": {
+    "codeSubjectCommit": "be4ee4255bcf696ff338761694e880db4f9bed23",
+    "m0": {
+      "runId": 33330414982,
+      "checkName": "verify",
+      "result": "PASS"
+    },
+    "quality": {
+      "runId": 33330414830,
+      "result": "PASS",
+      "linuxX64": {
+        "jobId": 99307899836,
+        "result": "PASS"
+      },
+      "windowsX64": {
+        "jobId": 99307899711,
+        "result": "PASS"
+      },
+      "aggregator": {
+        "jobId": 99308280646,
+        "checkName": "p1-o01-toolchain-qualify",
+        "result": "PASS"
+      }
+    },
+    "rootTestFilesPassed": 19,
+    "rootTestsPassed": 125,
+    "architectureTestsPassed": 9,
+    "cleanBuildTest": "PASS"
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "postMergeVerified": false,
+    "issue35PostMergeRecovered": false,
+    "finalP1O04AmendmentGatePublished": false,
+    "p1O04Started": false,
+    "p1O04Implemented": false,
+    "acceptedAdrChanged": false,
+    "phase1ScopeChanged": false,
+    "authorityLockChanged": false,
+    "requiredCheckIdentityChanged": false
+  },
+  "evidenceRefs": [
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/39",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/40",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33330414982",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/33330414830"
+  ]
+}
