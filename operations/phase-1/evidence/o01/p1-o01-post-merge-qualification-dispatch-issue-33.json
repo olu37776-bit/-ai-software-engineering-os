@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "evidenceId": "P1-O01-POST-MERGE-QUALIFICATION-DISPATCH-ISSUE-33-2026-08-30-01",
   "evidenceType": "P1O01PostMergeQualificationDispatchEvidence",
-  "decision": "IMPLEMENTED",
+  "decision": "VERIFIED",
   "operationId": "P1-O01",
   "trackingIssue": 33,
   "subject": {
@@ -14,11 +14,13 @@
   },
   "finding": {
     "findingId": "ISSUE33-POSTMERGE-01",
-    "classification": "PLATFORM_QUALIFICATION_RECOVERY",
+    "classification": "CONNECTOR_OBSERVABILITY_MISCLASSIFICATION",
     "protectedMainMerge": "2336fa3faa9123512f85091f61c4465d64e18233",
-    "observedWorkflowRuns": 0,
-    "observedCommitStatuses": 0,
-    "verifiedClaimPermittedBeforeRecovery": false
+    "originalObservationSource": "github_fetch_commit_workflow_runs",
+    "originalObservationScope": "PULL_REQUEST_TRIGGERED_RUNS_ONLY",
+    "completeActionsCollectionRuns": 2,
+    "completeActionsCollectionResult": "PASS",
+    "verifiedClaimPermittedBeforeCompleteCollectionReview": false
   },
   "scope": {
     "result": "PASS",
@@ -67,21 +69,69 @@
   "recoveryTargetsAfterMerge": [
     {
       "purpose": "QUALIFY_THIS_REMEDIATION_PROTECTED_MAIN_MERGE",
-      "sha": "TO_BE_BOUND_AFTER_EXACT_MERGE"
+      "sha": "d98c92ed2d54b25e1e2d22031e73261846dd14a4",
+      "channel": "AUTOMATIC_PUSH",
+      "result": "PASS"
     },
     {
       "purpose": "CLOSE_ISSUE_29_TRANSITION_ENFORCEMENT_POST_MERGE",
-      "sha": "2336fa3faa9123512f85091f61c4465d64e18233"
+      "sha": "2336fa3faa9123512f85091f61c4465d64e18233",
+      "channel": "AUTOMATIC_PUSH",
+      "result": "PASS"
     }
   ],
   "claimBoundary": {
-    "maximumImplementationClaim": "IMPLEMENTED",
-    "verified": false,
+    "maximumImplementationClaim": "VERIFIED",
+    "verified": true,
     "p1O04Started": false,
     "p1O04Implemented": false,
     "acceptedAdrChanged": false,
     "requiredCheckIdentityChanged": false,
-    "independentVerificationRequired": true,
-    "postMergeDispatchRequired": true
+    "independentVerificationRequired": false,
+    "postMergeDispatchRequired": false,
+    "observabilityCorrectedByIssue": 35
+  },
+  "independentVerification": {
+    "result": "PASS",
+    "reviewedHead": "a8c6e0aa33d947de744987047e85555794684f75",
+    "reviewedTree": "4ac573bc5a2313c20fbb1d0c8ccc82b4561539e9",
+    "reviewId": 5061534201
+  },
+  "protectedMainQualification": {
+    "remediationMerge": "d98c92ed2d54b25e1e2d22031e73261846dd14a4",
+    "m0": {
+      "runId": 33327152584,
+      "result": "PASS"
+    },
+    "quality": {
+      "runId": 33327152622,
+      "linuxJob": 99299209296,
+      "windowsJob": 99299209173,
+      "aggregatorJob": 99299635705,
+      "result": "PASS"
+    }
+  },
+  "historicalTransitionQualification": {
+    "target": "2336fa3faa9123512f85091f61c4465d64e18233",
+    "base": "69804341c21c220863389571d9b5be8796eb0382",
+    "scopeMode": "OPERATION_MERGE",
+    "operationId": "P1-O01",
+    "m0": {
+      "runId": 33325868577,
+      "jobId": 99295763471,
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    "quality": {
+      "runId": 33325868598,
+      "linuxJob": 99295763876,
+      "windowsJob": 99295763749,
+      "aggregatorJob": 99296178483,
+      "result": "PASS",
+      "rootTestFilesPassed": 18,
+      "rootTestsPassed": 112,
+      "architectureTestsPassed": 9
+    }
   }
 }
