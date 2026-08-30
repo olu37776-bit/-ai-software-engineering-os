@@ -332,11 +332,12 @@ function requiredString(
   path: string,
   pattern?: RegExp,
   maxLength?: number,
+  minLength = 1,
 ): string {
   const value = object[key];
   if (
     typeof value !== "string" ||
-    value.length === 0 ||
+    value.length < minLength ||
     (maxLength !== undefined && value.length > maxLength) ||
     (pattern !== undefined && !pattern.test(value))
   ) {
@@ -568,7 +569,7 @@ function compileRule(value: unknown, index: number): CompiledPolicyRule {
     when: compileCondition(value["when"], path + "/when", 4),
     ruleEffect: effect,
     requirements: compileRequirements(value["requirements"], path + "/requirements"),
-    reasonCode: requiredString(value, "reasonCode", path, stableCode),
+    reasonCode: requiredString(value, "reasonCode", path, stableCode, 128, 3),
     metadata: Object.freeze({
       ...(metadata as Readonly<Record<string, PolicyJson>>),
     }),
@@ -941,7 +942,7 @@ export function createPolicySnapshot(
   if (
     !uuidV7.test(metadata.snapshotId) ||
     !semver.test(metadata.compilerVersion) ||
-    !Number.isFinite(Date.parse(metadata.createdAt))
+    !isRfc3339DateTime(metadata.createdAt)
   ) {
     throw new PolicyFailure("INVALID_POLICY_SET", "$/snapshot", "Invalid snapshot metadata");
   }
@@ -1286,9 +1287,7 @@ function createDecision(
     reasonCodes: Object.freeze([...new Set(reasonCodes)].sort()),
     residualRiskRefs: Object.freeze([]),
     evaluatedAt:
-      typeof input.capturedAt === "string" && Number.isFinite(Date.parse(input.capturedAt))
-        ? input.capturedAt
-        : fallbackTime,
+      isRfc3339DateTime(input.capturedAt) ? input.capturedAt : fallbackTime,
     evaluatorVersion: POLICY_EVALUATOR_VERSION,
   };
 }

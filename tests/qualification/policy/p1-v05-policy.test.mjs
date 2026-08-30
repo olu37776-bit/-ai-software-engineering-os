@@ -110,13 +110,29 @@ describe("P1-V05 deterministic Policy qualification", () => {
       { ...input(), unexpected: true },
       { ...input(), domain: "" },
       { ...input(), permissionScopes: ["workspace:read", "workspace:read"] },
-      { ...input(), capturedAt: "2026-08-30 21:30:00Z" },
     ]) {
       expect(evaluatePolicy(validSnapshot, invalidInput)).toMatchObject({
         outcome: "INDETERMINATE",
         reasonCodes: ["INVALID_EVALUATION_INPUT"],
       });
     }
+    expect(
+      evaluatePolicy(validSnapshot, input({ capturedAt: "2026-08-30 21:30:00Z" })),
+    ).toMatchObject({
+      outcome: "INDETERMINATE",
+      evaluatedAt: "1970-01-01T00:00:00.000Z",
+      reasonCodes: ["INVALID_EVALUATION_INPUT"],
+    });
+    const compiledPolicy = compilePolicySet(policy());
+    expect(compiledPolicy.ok).toBe(true);
+    if (!compiledPolicy.ok) throw new Error("fixture failed to compile");
+    expect(() =>
+      createPolicySnapshot(compiledPolicy.value, {
+        snapshotId,
+        compilerVersion: "0.1.0",
+        createdAt: "2026-08-30 21:29:00Z",
+      }),
+    ).toThrow();
     for (const invalidSnapshot of [
       { ...validSnapshot, unexpected: true },
       { ...validSnapshot, compilerVersion: "invalid" },
@@ -138,6 +154,9 @@ describe("P1-V05 deterministic Policy qualification", () => {
         ]),
       ),
     ).toMatchObject({ ok: false });
+    for (const reasonCode of ["A", "A".repeat(129)]) {
+      expect(compilePolicySet(policy([rule({ reasonCode })]))).toMatchObject({ ok: false });
+    }
   });
 
   test("uses code-unit ordering and rejects lone-surrogate property names", () => {
