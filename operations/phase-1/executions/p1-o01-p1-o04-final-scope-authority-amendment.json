@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-P1-O04-FINAL-SCOPE-AUTHORITY-AMENDMENT-ISSUE-41-2026-08-30-01",
+  "executionType": "PHASE_1_GOVERNANCE_AMENDMENT",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Issue #41 final P1-O04 scope and Authority amendment",
+  "riskClass": "R3",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-08-30T19:50:15Z",
+  "completedAt": "2026-08-30T19:55:00Z",
+  "implementationBranch": "governance/p1-o04-final-scope-authority-amendment-issue-41",
+  "baseCommit": "9196de777663d4753fbb1b7001b9d150aedc08b4",
+  "implementationCommit": "e9e2ec25cca56294ad7878074060eff651096872",
+  "implementationTree": "25d6c87bc2835ec03eb868d16508631a22462390",
+  "trackingIssue": 41,
+  "priorAuthorizationGateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-41.json",
+  "authorityRefs": [
+    "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-41.json",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/authority-lock.json",
+    "docs/roadmap/phase-1-write-scope.md",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/29",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/41"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "p1O04Implemented": false,
+    "p1O04Started": false,
+    "productionRuntimeChanged": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false
+  },
+  "authorizationBinding": {
+    "gateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-41.json",
+    "gateMainCommit": "9196de777663d4753fbb1b7001b9d150aedc08b4",
+    "authorizationBase": "7c03eb52c17b521fc77c1c06ac272c8cd98b25e3",
+    "exactChangedPaths": [
+      "docs/roadmap/phase-1-write-scope.md",
+      "operations/phase-1/authority-lock.json",
+      "operations/phase-1/evidence/o01/p1-o04-final-scope-authority-amendment.json",
+      "operations/phase-1/executions/p1-o01-p1-o04-final-scope-authority-amendment.json",
+      "operations/phase-1/write-scope.json"
+    ],
+    "authorityOwnershipDeltas": [
+      {
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04"],
+        "beforeAllowedOperationIds": ["P1-O02"],
+        "path": "packages/contracts/planned-contracts.json"
+      },
+      {
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04"],
+        "beforeAllowedOperationIds": ["P1-O02"],
+        "path": "packages/contracts/schema-inventory.json"
+      },
+      {
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04"],
+        "beforeAllowedOperationIds": ["P1-O02"],
+        "path": "packages/contracts/schema-registry.json"
+      }
+    ],
+    "enforcementMode": "DENY_BY_DEFAULT"
+  },
+  "amendmentOutcome": {
+    "p1O04RequiredScopePaths": [
+      "package.json",
+      "packages/contracts/README.md",
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json",
+      "packages/contracts/src/types.generated.ts",
+      "packages/contracts/type-bindings.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tests/contract/inventory-integrity.test.mjs",
+      "tests/contract/registry-integrity.test.mjs",
+      "tests/contract/runtime-validator.test.mjs",
+      "tests/contract/schema-type-consistency.test.mjs",
+      "tsconfig.build.json",
+      "vitest.config.mjs"
+    ],
+    "authorityOwnershipPaths": [
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json"
+    ],
+    "writeScopeSha256": "a00a741714ee6984175a55034d7811a4c577e2cdc43472308c8f0243d840c33e",
+    "writeScopeRoadmapSha256": "b0ea0dc2d63f6a9c367fdd86ec167a073c3c4f8bb5b99baee845818800225f9e",
+    "authorityLockPathSetChanged": false,
+    "authorityRolesChanged": false,
+    "authorityMutationPoliciesChanged": false,
+    "unrelatedOwnershipChanged": false,
+    "acceptedAdrChanged": false,
+    "p1O04Started": false
+  },
+  "remainingGaps": [
+    "Immutable-head GitHub qualification and independent verification remain required.",
+    "The amendment must merge to protected main and pass post-merge qualification.",
+    "A separate independent Resume Gate must merge and pass before P1-O04 can start."
+  ]
+}
