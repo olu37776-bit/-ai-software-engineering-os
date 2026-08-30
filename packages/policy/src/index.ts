@@ -1286,8 +1286,7 @@ function createDecision(
     requirements,
     reasonCodes: Object.freeze([...new Set(reasonCodes)].sort()),
     residualRiskRefs: Object.freeze([]),
-    evaluatedAt:
-      isRfc3339DateTime(input.capturedAt) ? input.capturedAt : fallbackTime,
+    evaluatedAt: isRfc3339DateTime(input.capturedAt) ? input.capturedAt : fallbackTime,
     evaluatorVersion: POLICY_EVALUATOR_VERSION,
   };
 }
