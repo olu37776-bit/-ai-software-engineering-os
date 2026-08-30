@@ -7,11 +7,11 @@
   "riskClass": "R3",
   "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T13:54:16Z",
-  "completedAt": "2026-08-30T14:05:24Z",
+  "completedAt": "2026-08-30T14:26:47Z",
   "implementationBranch": "phase-1/p1-o03-architecture-enforcement",
   "baseCommit": "bd0efb007728aae65d46f4f776b090150e06193f",
-  "implementationCommit": "42f97ba2b529cf9bd533fdb089a493dcfc6bca1e",
-  "implementationTree": "654a40e4e6d4e8793b5c307a3c5594341a2da5db",
+  "implementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
+  "implementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -32,6 +32,23 @@
     "p1O04Started": false,
     "productionRuntimeChanged": false
   },
+  "remediations": [
+    {
+      "findingId": "P1-O03-CI-01",
+      "reviewedImmutableHead": "52451049c5069a4f5e932f98ed648c2dd9aa6cc3",
+      "findingEvidence": {
+        "qualityWorkflowRunId": 33316238004,
+        "windowsAttemptJobs": [99270102262, 99270461712],
+        "linuxAttemptJobs": [99270102368, 99270462607],
+        "m0WorkflowRunId": 33316237994
+      },
+      "diagnosis": "Two Windows clean authority rebuild attempts passed the quality baseline and then timed out in different existing Contract fixture tests during the second root test run; assertions, Linux, M0 and P1-V04 all passed.",
+      "change": "Run the root Vitest suite with maxWorkers=1 so high-I/O fixture tests are scheduled deterministically without changing the 10 second timeout, assertions, coverage or the separate architecture suite.",
+      "qualifiedImplementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
+      "qualifiedImplementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c",
+      "result": "IMPLEMENTED"
+    }
+  ],
   "verification": [
     {
       "check": "operation-aware WRITE_SCOPE preflight and final scope",
@@ -68,7 +85,10 @@
       "result": "PASS",
       "testFilesPassed": 16,
       "testsPassed": 89,
-      "testsFailed": 0
+      "testsFailed": 0,
+      "rootVitestMaxWorkers": 1,
+      "testTimeoutChanged": false,
+      "testsSkipped": 0
     },
     {
       "check": "clean frozen-lockfile offline install",
@@ -89,7 +109,7 @@
   ],
   "evidenceRefs": ["operations/phase-1/evidence/o03/p1-v04-architecture.json"],
   "remainingGaps": [
-    "The orchestrator must publish the final immutable head and record Linux, Windows and M0 workflow PASS.",
+    "The orchestrator must publish the remediated immutable head and record Linux, Windows and M0 workflow PASS.",
     "P1-O03 requires independent verification and protected-main post-merge verification before any VERIFIED declaration."
   ]
 }

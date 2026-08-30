@@ -4,13 +4,13 @@
   "evidenceType": "P1V04ArchitectureImplementationEvidence",
   "gateStepId": "P1-V04-ARCHITECTURE",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-30T14:05:24Z",
+  "recordedAt": "2026-08-30T14:26:47Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "branch": "phase-1/p1-o03-architecture-enforcement",
     "authorizedBase": "bd0efb007728aae65d46f4f776b090150e06193f",
-    "qualifiedImplementationCommit": "42f97ba2b529cf9bd533fdb089a493dcfc6bca1e",
-    "qualifiedImplementationTree": "654a40e4e6d4e8793b5c307a3c5594341a2da5db"
+    "qualifiedImplementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
+    "qualifiedImplementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -96,6 +96,10 @@
     "rootTestFilesPassed": 16,
     "rootTestsPassed": 89,
     "rootTestsFailed": 0,
+    "rootVitestMaxWorkers": 1,
+    "focusedRepeatedRootRuns": 2,
+    "testTimeoutChanged": false,
+    "testsSkipped": 0,
     "p1V03Regression": "PASS",
     "p1V04": "PASS",
     "frozenOfflineInstall": "PASS",
@@ -105,6 +109,29 @@
       "passed": 14,
       "failed": 0
     }
+  },
+  "ciRemediation": {
+    "findingId": "P1-O03-CI-01",
+    "result": "IMPLEMENTED",
+    "reviewedImmutableHead": "52451049c5069a4f5e932f98ed648c2dd9aa6cc3",
+    "evidence": {
+      "qualityWorkflowRunId": 33316238004,
+      "windowsAttemptJobs": [99270102262, 99270461712],
+      "linuxAttemptJobs": [99270102368, 99270462607],
+      "m0WorkflowRunId": 33316237994
+    },
+    "observedBoundary": "Both Windows attempts passed quality and failed only in the second clean-build root test run, on different unchanged high-I/O Contract fixtures at the existing 10 second boundary; no assertion failed.",
+    "deterministicScheduling": {
+      "rootVitestMaxWorkers": 1,
+      "architectureSuiteStillExecuted": true,
+      "cleanBuildTestStillExecuted": true,
+      "timeoutThresholdChanged": false,
+      "assertionsChanged": false,
+      "testFilesRemoved": 0,
+      "testsSkipped": 0
+    },
+    "qualifiedImplementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
+    "qualifiedImplementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c"
   },
   "authority": {
     "result": "PASS",
@@ -137,7 +164,7 @@
     "productionRuntimeImplemented": false
   },
   "remainingGaps": [
-    "The orchestrator must publish the final immutable head and record Linux, Windows and M0 workflow PASS.",
+    "The orchestrator must publish the remediated immutable head and record Linux, Windows and M0 workflow PASS.",
     "An independent verifier must review the immutable final subject before P1-O03 can become VERIFIED.",
     "Protected-main merge and post-merge verification remain pending."
   ]
