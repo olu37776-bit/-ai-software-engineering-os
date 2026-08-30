@@ -40,9 +40,7 @@
   "targetAmendment": {
     "finding": "ISSUE29-GATE-01",
     "targetOperationId": "P1-O01",
-    "globalAllowedPathGlobsToAdd": [
-      ".github/workflows/m0-independent-verify.yml"
-    ],
+    "globalAllowedPathGlobsToAdd": [".github/workflows/m0-independent-verify.yml"],
     "p1O01AllowedPathGlobsToAdd": [
       ".github/workflows/m0-independent-verify.yml",
       "scripts/governance/verify_m0.py"
