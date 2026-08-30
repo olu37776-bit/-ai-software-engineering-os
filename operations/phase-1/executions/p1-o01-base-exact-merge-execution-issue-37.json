@@ -6,11 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Issue #37 base-exact protected-main merge execution selection",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T18:46:08Z",
+  "completedAt": "2026-08-30T18:53:00Z",
   "implementationBranch": "phase-1/p1-o01-base-exact-merge-execution-issue-37",
   "baseCommit": "de5dfba3e1231f74ef1cc17fa8133bcb0c571771",
   "trackingIssue": 37,
+  "implementationCommit": "5be297241f1e51543a5a82ca391c14460a5a5696",
+  "implementationTree": "7352f2dbaa069b7777088d172ebd5828e73a899b",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -19,10 +22,72 @@
     "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/37"
   ],
   "claimBoundary": {
-    "maximumImplementationClaim": "IN_PROGRESS",
+    "maximumImplementationClaim": "IMPLEMENTED",
     "issue37Verified": false,
+    "issue35PostMergeRecovered": false,
     "p1O04Implemented": false,
     "acceptedAdrChanged": false,
-    "requiredCheckIdentityChanged": false
-  }
+    "requiredCheckIdentityChanged": false,
+    "independentVerificationRequired": true
+  },
+  "remediationFindings": [
+    {
+      "findingId": "ISSUE35-PM-01",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "summary": "Select the unique changed execution record whose declared baseCommit equals the exact merge event base while retaining fail-closed zero, duplicate and single-mismatch behavior."
+    }
+  ],
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight",
+      "result": "PASS",
+      "executionHead": "f47790790534ad732d5476dcf5779137db469857",
+      "workflowRun": 33329040823,
+      "jobId": 99304176497,
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O01",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "immutableAuthorityFilesVerified": 25,
+      "scopeViolations": 0
+    },
+    {
+      "check": "base-exact merge execution selector",
+      "result": "PASS",
+      "focusedTestsPassed": 28,
+      "zeroMatchRejected": true,
+      "multipleMatchesRejected": true,
+      "singleMismatchPreserved": true,
+      "crossOperationPathRejected": true
+    },
+    {
+      "check": "immutable code-head qualification",
+      "result": "PASS",
+      "m0Run": 33329183948,
+      "qualityRun": 33329183950,
+      "linuxJob": 99304581334,
+      "windowsJob": 99304581285,
+      "aggregatorJob": 99305034216,
+      "rootTestFilesPassed": 19,
+      "rootTestsPassed": 125,
+      "architectureTestsPassed": 9,
+      "cleanBuildTest": "PASS"
+    },
+    {
+      "check": "required verify authority uniqueness",
+      "result": "PASS",
+      "verifyProducers": 1,
+      "producer": ".github/workflows/m0-independent-verify.yml#verify"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o01-base-exact-merge-execution-issue-37.json",
+    "docs/implementation/phase-1/o01/base-exact-merge-execution-issue-37.md",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/37"
+  ],
+  "remainingGaps": [
+    "Immutable Evidence-head GitHub qualification remains pending.",
+    "Independent verification is required before this remediation can be VERIFIED.",
+    "Issue #35 post-merge must be re-qualified after exact merge.",
+    "P1-O04 final amendment and Resume Gate remain blocked."
+  ]
 }
