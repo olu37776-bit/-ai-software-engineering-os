@@ -662,11 +662,26 @@ describe("Issue #29 executable transition enforcement", () => {
     expect(untracked.status).toBe(1);
     expect(untracked.stderr).toContain("NON_CANONICAL_GIT_PATH");
 
-    await rm(badPath);
-    const attackHead = createControlPathCommit(repository, transitionMainCommit);
+    git(repository, "add", "-A");
+    git(repository, "commit", "--quiet", "-m", "test: adversarial non-NFC path");
+    const attackHead = git(repository, "rev-parse", "HEAD");
     const tracked = runScopeWithoutOperation(repository, transitionMainCommit, attackHead, branch);
     expect(tracked.status).toBe(1);
     expect(tracked.stderr).toContain("NON_CANONICAL_GIT_PATH");
+
+    let m0AttackHead = attackHead;
+    if (process.platform !== "win32") {
+      const controlPathHead = createControlPathCommit(repository, transitionMainCommit);
+      const controlPath = runScopeWithoutOperation(
+        repository,
+        transitionMainCommit,
+        controlPathHead,
+        branch,
+      );
+      expect(controlPath.status).toBe(1);
+      expect(controlPath.stderr).toContain("NON_CANONICAL_GIT_PATH");
+      m0AttackHead = controlPathHead;
+    }
 
     const reportPath = join(repository, "attack-scope-report.json");
     await writeJson(reportPath, {
@@ -676,13 +691,13 @@ describe("Issue #29 executable transition enforcement", () => {
       mode: "NON_OPERATION_GOVERNANCE",
       operationId: null,
       baseCommit: transitionMainCommit,
-      headCommit: attackHead,
+      headCommit: m0AttackHead,
       branch,
       enforcementMode: "DENY_BY_DEFAULT",
       changedPaths: [],
       violations: [],
     });
-    git(repository, "update-ref", "HEAD", attackHead);
+    git(repository, "update-ref", "HEAD", m0AttackHead);
     const m0 = run(
       "python",
       [
@@ -690,7 +705,7 @@ describe("Issue #29 executable transition enforcement", () => {
         "--base",
         transitionMainCommit,
         "--head",
-        attackHead,
+        m0AttackHead,
         "--branch",
         branch,
         "--scope-report",
