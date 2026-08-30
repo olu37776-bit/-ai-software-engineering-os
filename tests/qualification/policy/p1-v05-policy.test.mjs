@@ -104,6 +104,63 @@ describe("P1-V05 deterministic Policy qualification", () => {
     });
   });
 
+  test("fails closed for schema-invalid input and snapshot metadata", () => {
+    const validSnapshot = snapshot(policy());
+    for (const invalidInput of [
+      { ...input(), unexpected: true },
+      { ...input(), domain: "" },
+      { ...input(), permissionScopes: ["workspace:read", "workspace:read"] },
+      { ...input(), capturedAt: "2026-08-30 21:30:00Z" },
+    ]) {
+      expect(evaluatePolicy(validSnapshot, invalidInput)).toMatchObject({
+        outcome: "INDETERMINATE",
+        reasonCodes: ["INVALID_EVALUATION_INPUT"],
+      });
+    }
+    for (const invalidSnapshot of [
+      { ...validSnapshot, unexpected: true },
+      { ...validSnapshot, compilerVersion: "invalid" },
+      { ...validSnapshot, createdAt: "2026-08-30 21:29:00Z" },
+      { ...validSnapshot, policySetId: evaluationId },
+      { ...validSnapshot, policyVersion: "2.0.0" },
+    ]) {
+      expect(evaluatePolicy(invalidSnapshot, input())).toMatchObject({
+        outcome: "INDETERMINATE",
+        reasonCodes: ["INVALID_POLICY_SNAPSHOT"],
+      });
+    }
+    expect(
+      compilePolicySet(
+        policy([
+          rule({
+            subjectSelector: { subjectTypes: ["NODE", "NODE"] },
+          }),
+        ]),
+      ),
+    ).toMatchObject({ ok: false });
+  });
+
+  test("uses code-unit ordering and rejects lone-surrogate property names", () => {
+    const originalLocaleCompare = String.prototype.localeCompare;
+    String.prototype.localeCompare = function localeCompareOverride(other) {
+      return originalLocaleCompare.call(other, this);
+    };
+    try {
+      const compiled = compilePolicySet(
+        policy([rule({ ruleId: "aaab" }), rule({ ruleId: "aaaa" })]),
+      );
+      expect(compiled.ok).toBe(true);
+      if (!compiled.ok) throw new Error("fixture failed to compile");
+      expect(compiled.value.rules.map((candidate) => candidate.ruleId)).toEqual([
+        "aaaa",
+        "aaab",
+      ]);
+    } finally {
+      String.prototype.localeCompare = originalLocaleCompare;
+    }
+    expect(() => hashPolicyValue({ ["\ud800"]: 1 })).toThrow();
+  });
+
   test("applies deny-overrides independent of rule order", () => {
     const allow = rule({ ruleId: "allow-read" });
     const deny = rule({

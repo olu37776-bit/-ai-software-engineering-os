@@ -194,6 +194,79 @@ function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
   return prototype === Object.prototype || prototype === null;
 }
 
+function compareCodeUnits(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
+function assertWellFormedUnicodeString(value: string, path: string): void {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    const next = value.charCodeAt(index + 1);
+    const previous = value.charCodeAt(index - 1);
+    if (
+      (code >= 0xd800 && code <= 0xdbff && !(next >= 0xdc00 && next <= 0xdfff)) ||
+      (code >= 0xdc00 && code <= 0xdfff && !(previous >= 0xd800 && previous <= 0xdbff))
+    ) {
+      throw new PolicyFailure("INVALID_POLICY_VALUE", path, "Lone Unicode surrogate");
+    }
+  }
+}
+
+function hasExactKeys(
+  object: Readonly<Record<string, unknown>>,
+  allowed: readonly string[],
+): boolean {
+  const keys = Reflect.ownKeys(object);
+  const allowedSet = new Set(allowed);
+  return (
+    keys.length === allowed.length &&
+    keys.every((key) => typeof key === "string" && allowedSet.has(key))
+  );
+}
+
+function isBoundedString(value: unknown, minLength: number, maxLength: number): value is string {
+  return typeof value === "string" && value.length >= minLength && value.length <= maxLength;
+}
+
+function isRfc3339DateTime(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  const match =
+    /^(\d{4})-(\d{2})-(\d{2})[Tt](\d{2}):(\d{2}):(\d{2})(?:\.[0-9]+)?(?:[Zz]|([+-])(\d{2}):(\d{2}))$/u.exec(
+      value,
+    );
+  if (match === null) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  const offsetHour = match[8] === undefined ? 0 : Number(match[8]);
+  const offsetMinute = match[9] === undefined ? 0 : Number(match[9]);
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysByMonth = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const days = daysByMonth[month - 1] ?? 0;
+  return (
+    month >= 1 &&
+    month <= 12 &&
+    day >= 1 &&
+    day <= days &&
+    hour <= 23 &&
+    minute <= 59 &&
+    second <= 60 &&
+    offsetHour <= 23 &&
+    offsetMinute <= 59
+  );
+}
+
+function isUniqueBoundedStringArray(value: unknown, maxLength: number): value is readonly string[] {
+  return (
+    Array.isArray(value) &&
+    value.every((item) => isBoundedString(item, 1, maxLength)) &&
+    new Set(value).size === value.length
+  );
+}
+
 function assertPolicyJson(
   value: unknown,
   path: string,
@@ -207,17 +280,7 @@ function assertPolicyJson(
     return;
   }
   if (typeof value === "string") {
-    for (let index = 0; index < value.length; index += 1) {
-      const code = value.charCodeAt(index);
-      const next = value.charCodeAt(index + 1);
-      const previous = value.charCodeAt(index - 1);
-      if (
-        (code >= 0xd800 && code <= 0xdbff && !(next >= 0xdc00 && next <= 0xdfff)) ||
-        (code >= 0xdc00 && code <= 0xdfff && !(previous >= 0xd800 && previous <= 0xdbff))
-      ) {
-        throw new PolicyFailure("INVALID_POLICY_VALUE", path, "Lone Unicode surrogate");
-      }
-    }
+    assertWellFormedUnicodeString(value, path);
     return;
   }
   if (typeof value !== "object") {
@@ -239,9 +302,14 @@ function assertPolicyJson(
     if (typeof key !== "string" || protectedKeys.has(key)) {
       throw new PolicyFailure("INVALID_POLICY_VALUE", path, "Unsafe object key");
     }
+    assertWellFormedUnicodeString(key, path + "/<key>");
     const descriptor = Object.getOwnPropertyDescriptor(value, key);
-    if (!descriptor || !Object.hasOwn(descriptor, "value")) {
-      throw new PolicyFailure("INVALID_POLICY_VALUE", path + "/" + key, "Accessors are forbidden");
+    if (!descriptor || !Object.hasOwn(descriptor, "value") || !descriptor.enumerable) {
+      throw new PolicyFailure(
+        "INVALID_POLICY_VALUE",
+        path + "/" + key,
+        "Accessors and non-enumerable properties are forbidden",
+      );
     }
     assertPolicyJson(descriptor.value, path + "/" + key, seen);
   }
@@ -263,11 +331,13 @@ function requiredString(
   key: string,
   path: string,
   pattern?: RegExp,
+  maxLength?: number,
 ): string {
   const value = object[key];
   if (
     typeof value !== "string" ||
     value.length === 0 ||
+    (maxLength !== undefined && value.length > maxLength) ||
     (pattern !== undefined && !pattern.test(value))
   ) {
     throw new PolicyFailure("INVALID_POLICY_SET", path + "/" + key, "Expected canonical string");
@@ -289,13 +359,10 @@ function exactKeys(
 }
 
 function sortedUniqueStrings(value: unknown, path: string): readonly string[] {
-  if (
-    !Array.isArray(value) ||
-    value.some((item) => typeof item !== "string" || item.length === 0)
-  ) {
-    throw new PolicyFailure("INVALID_POLICY_SET", path, "Expected non-empty string array");
+  if (!isUniqueBoundedStringArray(value, 256)) {
+    throw new PolicyFailure("INVALID_POLICY_SET", path, "Expected unique bounded string array");
   }
-  return Object.freeze([...new Set<string>(value as string[])].sort());
+  return Object.freeze([...value].sort(compareCodeUnits));
 }
 
 function compileRequirements(value: unknown, path: string): PolicyRequirements {
@@ -483,15 +550,15 @@ function compileRule(value: unknown, index: number): CompiledPolicyRule {
   }
   return Object.freeze({
     schemaVersion: "1.0.0",
-    ruleId: requiredString(value, "ruleId", path, ruleIdPattern),
-    domain: requiredString(value, "domain", path),
+    ruleId: requiredString(value, "ruleId", path, ruleIdPattern, 128),
+    domain: requiredString(value, "domain", path, undefined, 64),
     subjectSelector: Object.freeze({
       subjectTypes: sortedUniqueStrings(
         subject["subjectTypes"],
         path + "/subjectSelector/subjectTypes",
       ),
     }),
-    action: requiredString(value, "action", path),
+    action: requiredString(value, "action", path, undefined, 128),
     resourceSelector: Object.freeze({
       resourceTypes: sortedUniqueStrings(
         resource["resourceTypes"],
@@ -555,7 +622,7 @@ export function compilePolicySet(value: unknown): CompilePolicyResult {
     }
     const sortedConstants = Object.fromEntries(
       Object.entries(constants as Readonly<Record<string, PolicyJson>>).sort(([left], [right]) =>
-        left.localeCompare(right),
+        compareCodeUnits(left, right),
       ),
     );
     for (const key of Object.keys(sortedConstants)) {
@@ -571,15 +638,15 @@ export function compilePolicySet(value: unknown): CompilePolicyResult {
       schemaVersion: "1.0.0",
       policySetId: requiredString(value, "policySetId", "$", uuidV7),
       version: requiredString(value, "version", "$", semver),
-      description: requiredString(value, "description", "$"),
+      description: requiredString(value, "description", "$", undefined, 2048),
       source: Object.freeze({
         kind,
-        ref: requiredString(source, "ref", "$/source"),
+        ref: requiredString(source, "ref", "$/source", undefined, 512),
       }),
       defaultOutcome: "DENY",
       constants: Object.freeze(sortedConstants),
       rules: Object.freeze(
-        [...compiledRules].sort((left, right) => left.ruleId.localeCompare(right.ruleId)),
+        [...compiledRules].sort((left, right) => compareCodeUnits(left.ruleId, right.ruleId)),
       ),
     });
     return {
@@ -1025,19 +1092,39 @@ function evaluateCondition(
 }
 
 function validateInput(value: unknown): value is PolicyEvaluationInput {
-  if (!isRecord(value)) return false;
+  if (
+    !isRecord(value) ||
+    !hasExactKeys(value, [
+      "schemaVersion",
+      "evaluationId",
+      "capturedAt",
+      "policySnapshotId",
+      "domain",
+      "subjectType",
+      "action",
+      "resourceType",
+      "riskClass",
+      "dataClassification",
+      "direction",
+      "authorityMutation",
+      "controlVerified",
+      "permissionScopes",
+      "capabilityIds",
+    ])
+  ) {
+    return false;
+  }
   return (
     value["schemaVersion"] === "1.0.0" &&
     typeof value["evaluationId"] === "string" &&
     uuidV7.test(value["evaluationId"]) &&
-    typeof value["capturedAt"] === "string" &&
-    Number.isFinite(Date.parse(value["capturedAt"])) &&
+    isRfc3339DateTime(value["capturedAt"]) &&
     typeof value["policySnapshotId"] === "string" &&
     uuidV7.test(value["policySnapshotId"]) &&
-    typeof value["domain"] === "string" &&
-    typeof value["subjectType"] === "string" &&
-    typeof value["action"] === "string" &&
-    typeof value["resourceType"] === "string" &&
+    isBoundedString(value["domain"], 1, 64) &&
+    isBoundedString(value["subjectType"], 1, 128) &&
+    isBoundedString(value["action"], 1, 128) &&
+    isBoundedString(value["resourceType"], 1, 128) &&
     (value["riskClass"] === "R0" ||
       value["riskClass"] === "R1" ||
       value["riskClass"] === "R2" ||
@@ -1052,10 +1139,49 @@ function validateInput(value: unknown): value is PolicyEvaluationInput {
       value["direction"] === "OUTBOUND") &&
     typeof value["authorityMutation"] === "boolean" &&
     typeof value["controlVerified"] === "boolean" &&
-    Array.isArray(value["permissionScopes"]) &&
-    value["permissionScopes"].every((item) => typeof item === "string") &&
-    Array.isArray(value["capabilityIds"]) &&
-    value["capabilityIds"].every((item) => typeof item === "string")
+    isUniqueBoundedStringArray(value["permissionScopes"], 256) &&
+    isUniqueBoundedStringArray(value["capabilityIds"], 256)
+  );
+}
+
+function validateSnapshot(
+  value: unknown,
+  input: PolicyEvaluationInput,
+  compiledPolicySet: CompiledPolicySet,
+  compiledHash: string,
+): value is PolicySnapshot {
+  if (
+    !isRecord(value) ||
+    !hasExactKeys(value, [
+      "schemaVersion",
+      "snapshotId",
+      "policySetId",
+      "policyVersion",
+      "policyHash",
+      "compiledPolicySet",
+      "compilerVersion",
+      "createdAt",
+    ])
+  ) {
+    return false;
+  }
+  return (
+    value["schemaVersion"] === "1.0.0" &&
+    typeof value["snapshotId"] === "string" &&
+    uuidV7.test(value["snapshotId"]) &&
+    value["snapshotId"] === input.policySnapshotId &&
+    typeof value["policySetId"] === "string" &&
+    uuidV7.test(value["policySetId"]) &&
+    value["policySetId"] === compiledPolicySet.policySetId &&
+    typeof value["policyVersion"] === "string" &&
+    semver.test(value["policyVersion"]) &&
+    value["policyVersion"] === compiledPolicySet.version &&
+    typeof value["policyHash"] === "string" &&
+    /^[0-9a-f]{64}$/u.test(value["policyHash"]) &&
+    value["policyHash"] === compiledHash &&
+    typeof value["compilerVersion"] === "string" &&
+    semver.test(value["compilerVersion"]) &&
+    isRfc3339DateTime(value["createdAt"])
   );
 }
 
@@ -1208,9 +1334,7 @@ export function evaluatePolicy(snapshotValue: unknown, inputValue: unknown): Pol
   const compiled = compilePolicySet(snapshotValue["compiledPolicySet"]);
   if (
     !compiled.ok ||
-    snapshotValue["schemaVersion"] !== "1.0.0" ||
-    snapshotValue["snapshotId"] !== inputValue.policySnapshotId ||
-    snapshotValue["policyHash"] !== compiled.sha256
+    !validateSnapshot(snapshotValue, inputValue, compiled.value, compiled.sha256)
   ) {
     return createDecision(
       snapshot,
