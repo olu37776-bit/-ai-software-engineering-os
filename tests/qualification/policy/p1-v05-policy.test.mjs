@@ -151,10 +151,7 @@ describe("P1-V05 deterministic Policy qualification", () => {
       );
       expect(compiled.ok).toBe(true);
       if (!compiled.ok) throw new Error("fixture failed to compile");
-      expect(compiled.value.rules.map((candidate) => candidate.ruleId)).toEqual([
-        "aaaa",
-        "aaab",
-      ]);
+      expect(compiled.value.rules.map((candidate) => candidate.ruleId)).toEqual(["aaaa", "aaab"]);
     } finally {
       String.prototype.localeCompare = originalLocaleCompare;
     }
