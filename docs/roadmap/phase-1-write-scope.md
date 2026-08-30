@@ -1,6 +1,6 @@
 # Phase 1 WRITE_SCOPE
 
-状态：`AMENDED — ISSUE #29 PRELIMINARY P1-O04 TRANSITION ENFORCEMENT SCOPE CLOSURE`
+状态：`AMENDED — ISSUE #48 FINAL P1-O04 SCOPE/AUTHORITY CLOSURE`
 机器权威：`operations/phase-1/write-scope.json`  
 执行模式：`DENY_BY_DEFAULT`
 
@@ -67,6 +67,30 @@ Issue #29 grants P1-O01 the exact paths required to keep the M0 transition enfor
 - `scripts/governance/verify_m0.py` is added to P1-O01 scope and remains globally covered by `scripts/**`.
 
 P1-O02 through P1-O09 receive neither added path. This preliminary amendment does not modify the workflow or M0 verifier, start P1-O04, change production semantics, change accepted ADRs, or change the Authority Lock path set, roles, mutation policies or operation ownership. `DENY_BY_DEFAULT` remains unchanged.
+
+## P1-O04 final scope and Authority amendment
+
+Issue #48 closes the previously authorized P1-O04 integration boundary without starting P1-O04. P1-O04 receives only these exact root and Contract integration paths:
+
+- `package.json`;
+- `packages/contracts/README.md`;
+- `packages/contracts/planned-contracts.json`;
+- `packages/contracts/schema-inventory.json`;
+- `packages/contracts/schema-registry.json`;
+- `packages/contracts/src/types.generated.ts`;
+- `packages/contracts/type-bindings.json`;
+- `pnpm-lock.yaml`;
+- `pnpm-workspace.yaml`;
+- `tests/contract/inventory-integrity.test.mjs`;
+- `tests/contract/registry-integrity.test.mjs`;
+- `tests/contract/runtime-validator.test.mjs`;
+- `tests/contract/schema-type-consistency.test.mjs`;
+- `tsconfig.build.json`;
+- `vitest.config.mjs`.
+
+The Authority Lock ownership of `packages/contracts/planned-contracts.json`, `packages/contracts/schema-inventory.json` and `packages/contracts/schema-registry.json` changes only from `[P1-O02]` to `[P1-O02, P1-O04]`. All other authority paths, roles, mutation policies, hashes and operation ownership remain unchanged except the transactional hashes for this WRITE_SCOPE file and its roadmap mirror.
+
+This amendment does not modify any package, Contract asset, root integration file, workflow, verifier, accepted ADR or Runtime behavior. The paths above remain future P1-O04 implementation scope. P1-O04 stays blocked until a separate independent Resume Gate is merged and passes protected-main post-merge qualification.
 
 ## Expansion
 
