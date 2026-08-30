@@ -8,8 +8,8 @@
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "baseCommit": "d98c92ed2d54b25e1e2d22031e73261846dd14a4",
-    "implementationCommit": "927b5c74228b317a0db2da7ef2540d40e88d4639",
-    "implementationTree": "f9c787bd2920e3e636e865dd754c7b6423d13c06",
+    "implementationCommit": "d2445bfea0172b6d136aee61b99117b31e488d3b",
+    "implementationTree": "365937eedc8a0a0d8dcb9c4ae827f921e4a46fcd",
     "branch": "phase-1/p1-o01-issue33-evidence-correction-issue-35"
   },
   "scope": {
@@ -69,6 +69,7 @@
     "operations/phase-1/evidence/o01/p1-o01-post-merge-qualification-dispatch-issue-33.json",
     "docs/implementation/phase-1/o01/post-merge-qualification-dispatch-issue-33.md"
   ],
+  "closedFindingsPendingIndependentReverification": ["ISSUE35-CI-01"],
   "claimBoundary": {
     "maximumImplementationClaim": "IMPLEMENTED",
     "verified": false,
