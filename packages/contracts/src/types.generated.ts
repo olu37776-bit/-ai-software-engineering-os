@@ -31,10 +31,7 @@ export type CapabilityManifest = Readonly<{
   readonly capabilityId: string;
   readonly capabilityVersion: string;
   readonly isolationLevels: readonly (
-    | "PROCESS_RESTRICTED"
-    | "OS_SANDBOXED"
-    | "CONTAINER_ISOLATED"
-    | "REMOTE_ISOLATED"
+    "PROCESS_RESTRICTED" | "OS_SANDBOXED" | "CONTAINER_ISOLATED" | "REMOTE_ISOLATED"
   )[];
   readonly operations: readonly string[];
   readonly permissionScopes: readonly string[];
@@ -186,10 +183,7 @@ export type PolicyRule = Readonly<{
   readonly requirements: Readonly<{
     readonly maxConcurrency?: number;
     readonly minimumIsolationLevel?:
-      | "PROCESS_RESTRICTED"
-      | "OS_SANDBOXED"
-      | "CONTAINER_ISOLATED"
-      | "REMOTE_ISOLATED";
+      "PROCESS_RESTRICTED" | "OS_SANDBOXED" | "CONTAINER_ISOLATED" | "REMOTE_ISOLATED";
     readonly permissionScopes?: readonly string[];
     readonly postVerificationRequired?: boolean;
     readonly timeoutMs?: number;

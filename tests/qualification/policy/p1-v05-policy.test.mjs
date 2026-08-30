@@ -160,18 +160,13 @@ describe("P1-V05 deterministic Policy qualification", () => {
   });
 
   test("runs built-in hard invariants before explicit allow", () => {
-    expect(
-      evaluatePolicy(snapshot(policy()), input({ authorityMutation: true })),
-    ).toMatchObject({
+    expect(evaluatePolicy(snapshot(policy()), input({ authorityMutation: true }))).toMatchObject({
       outcome: "DENY",
       hardInvariantIds: ["NO_DIRECT_AUTHORITY_WRITE"],
       reasonCodes: ["HARD_INVARIANT_VIOLATION"],
     });
     expect(
-      evaluatePolicy(
-        snapshot(policy()),
-        input({ riskClass: "R4", controlVerified: false }),
-      ),
+      evaluatePolicy(snapshot(policy()), input({ riskClass: "R4", controlVerified: false })),
     ).toMatchObject({
       outcome: "DENY",
       hardInvariantIds: ["R4_REQUIRES_VERIFIED_CONTROL"],

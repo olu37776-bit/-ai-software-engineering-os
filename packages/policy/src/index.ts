@@ -1,8 +1,4 @@
-import {
-  canonicalJson,
-  canonicalJsonSha256,
-  type PolicyDecision,
-} from "@aseos/contracts";
+import { canonicalJson, canonicalJsonSha256, type PolicyDecision } from "@aseos/contracts";
 
 export type PolicyJson =
   | null
@@ -29,10 +25,7 @@ export type PolicyDiagnostic = Readonly<{
 export type PolicyRequirements = Readonly<{
   permissionScopes?: readonly string[];
   minimumIsolationLevel?:
-    | "PROCESS_RESTRICTED"
-    | "OS_SANDBOXED"
-    | "CONTAINER_ISOLATED"
-    | "REMOTE_ISOLATED";
+    "PROCESS_RESTRICTED" | "OS_SANDBOXED" | "CONTAINER_ISOLATED" | "REMOTE_ISOLATED";
   timeoutMs?: number;
   maxConcurrency?: number;
   postVerificationRequired?: boolean;
@@ -139,8 +132,7 @@ type ParseResult = Readonly<{ value: PolicyJson; next: number }>;
 type ConditionResult = Readonly<{ ok: boolean; matched: boolean }>;
 type LeafCondition = Extract<PolicyCondition, { reference: string }>;
 
-const uuidV7 =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
+const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 const semver =
   /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/u;
 const stableCode = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/u;
@@ -160,8 +152,18 @@ const allowedInputReferences = new Set([
   "input.capabilityIds",
 ]);
 const leafOperators = new Set([
-  "eq", "notEq", "in", "contains", "lt", "lte", "gt", "gte",
-  "exists", "startsWith", "setSubset", "setIntersects",
+  "eq",
+  "notEq",
+  "in",
+  "contains",
+  "lt",
+  "lte",
+  "gt",
+  "gte",
+  "exists",
+  "startsWith",
+  "setSubset",
+  "setIntersects",
 ]);
 const protectedKeys = new Set(["__proto__", "prototype", "constructor"]);
 const fallbackId = "00000000-0000-7000-8000-000000000000";
@@ -208,12 +210,8 @@ function assertPolicyJson(
       const next = value.charCodeAt(index + 1);
       const previous = value.charCodeAt(index - 1);
       if (
-        (code >= 0xd800 &&
-          code <= 0xdbff &&
-          !(next >= 0xdc00 && next <= 0xdfff)) ||
-        (code >= 0xdc00 &&
-          code <= 0xdfff &&
-          !(previous >= 0xd800 && previous <= 0xdbff))
+        (code >= 0xd800 && code <= 0xdbff && !(next >= 0xdc00 && next <= 0xdfff)) ||
+        (code >= 0xdc00 && code <= 0xdfff && !(previous >= 0xd800 && previous <= 0xdbff))
       ) {
         throw new PolicyFailure("INVALID_POLICY_VALUE", path, "Lone Unicode surrogate");
       }
@@ -226,9 +224,7 @@ function assertPolicyJson(
   if (seen.has(value)) throw new PolicyFailure("INVALID_POLICY_VALUE", path, "Cyclic value");
   seen.add(value);
   if (Array.isArray(value)) {
-    value.forEach((child, index) =>
-      assertPolicyJson(child, path + "/" + String(index), seen),
-    );
+    value.forEach((child, index) => assertPolicyJson(child, path + "/" + String(index), seen));
     seen.delete(value);
     return;
   }
@@ -316,10 +312,7 @@ function compileRequirements(value: unknown, path: string): PolicyRequirements {
   const result: {
     permissionScopes?: readonly string[];
     minimumIsolationLevel?:
-      | "PROCESS_RESTRICTED"
-      | "OS_SANDBOXED"
-      | "CONTAINER_ISOLATED"
-      | "REMOTE_ISOLATED";
+      "PROCESS_RESTRICTED" | "OS_SANDBOXED" | "CONTAINER_ISOLATED" | "REMOTE_ISOLATED";
     timeoutMs?: number;
     maxConcurrency?: number;
     postVerificationRequired?: boolean;
@@ -348,11 +341,12 @@ function compileRequirements(value: unknown, path: string): PolicyRequirements {
   }
   const timeoutMs = value["timeoutMs"];
   const maxConcurrency = value["maxConcurrency"];
-  if (
-    timeoutMs !== undefined &&
-    (!Number.isSafeInteger(timeoutMs) || (timeoutMs as number) < 1)
-  ) {
-    throw new PolicyFailure("INVALID_REQUIREMENTS", path + "/timeoutMs", "Expected positive integer");
+  if (timeoutMs !== undefined && (!Number.isSafeInteger(timeoutMs) || (timeoutMs as number) < 1)) {
+    throw new PolicyFailure(
+      "INVALID_REQUIREMENTS",
+      path + "/timeoutMs",
+      "Expected positive integer",
+    );
   }
   if (
     maxConcurrency !== undefined &&
@@ -379,11 +373,7 @@ function compileRequirements(value: unknown, path: string): PolicyRequirements {
   return Object.freeze(result);
 }
 
-function compileCondition(
-  value: unknown,
-  path: string,
-  remainingDepth: number,
-): PolicyCondition {
+function compileCondition(value: unknown, path: string, remainingDepth: number): PolicyCondition {
   if (!isRecord(value) || remainingDepth < 0) {
     throw new PolicyFailure("INVALID_CONDITION", path, "Condition depth exceeds four");
   }
@@ -402,11 +392,7 @@ function compileCondition(
       operator,
       conditions: Object.freeze(
         conditions.map((child, index) =>
-          compileCondition(
-            child,
-            path + "/conditions/" + String(index),
-            remainingDepth - 1,
-          ),
+          compileCondition(child, path + "/conditions/" + String(index), remainingDepth - 1),
         ),
       ),
     });
@@ -415,19 +401,11 @@ function compileCondition(
     exactKeys(value, ["operator", "condition"], path);
     return Object.freeze({
       operator,
-      condition: compileCondition(
-        value["condition"],
-        path + "/condition",
-        remainingDepth - 1,
-      ),
+      condition: compileCondition(value["condition"], path + "/condition", remainingDepth - 1),
     });
   }
   if (typeof operator !== "string" || !leafOperators.has(operator)) {
-    throw new PolicyFailure(
-      "INVALID_CONDITION",
-      path + "/operator",
-      "Unknown condition operator",
-    );
+    throw new PolicyFailure("INVALID_CONDITION", path + "/operator", "Unknown condition operator");
   }
   exactKeys(value, ["operator", "reference", "operand"], path);
   const reference = requiredString(value, "reference", path);
@@ -439,11 +417,7 @@ function compileCondition(
     );
   }
   if (operator !== "exists" && value["operand"] === undefined) {
-    throw new PolicyFailure(
-      "INVALID_CONDITION",
-      path + "/operand",
-      "Operator requires an operand",
-    );
+    throw new PolicyFailure("INVALID_CONDITION", path + "/operand", "Operator requires an operand");
   }
   if (operator === "exists" && value["operand"] !== undefined) {
     throw new PolicyFailure(
@@ -455,9 +429,7 @@ function compileCondition(
   return Object.freeze({
     operator: operator as LeafCondition["operator"],
     reference,
-    ...(value["operand"] === undefined
-      ? {}
-      : { operand: value["operand"] as PolicyJson }),
+    ...(value["operand"] === undefined ? {} : { operand: value["operand"] as PolicyJson }),
   });
 }
 
@@ -469,17 +441,22 @@ function compileRule(value: unknown, index: number): CompiledPolicyRule {
   exactKeys(
     value,
     [
-      "schemaVersion", "ruleId", "domain", "subjectSelector", "action",
-      "resourceSelector", "when", "ruleEffect", "requirements", "reasonCode", "metadata",
+      "schemaVersion",
+      "ruleId",
+      "domain",
+      "subjectSelector",
+      "action",
+      "resourceSelector",
+      "when",
+      "ruleEffect",
+      "requirements",
+      "reasonCode",
+      "metadata",
     ],
     path,
   );
   if (value["schemaVersion"] !== "1.0.0") {
-    throw new PolicyFailure(
-      "INVALID_POLICY_RULE",
-      path + "/schemaVersion",
-      "Unsupported version",
-    );
+    throw new PolicyFailure("INVALID_POLICY_RULE", path + "/schemaVersion", "Unsupported version");
   }
   const subject = value["subjectSelector"];
   const resource = value["resourceSelector"];
@@ -490,11 +467,7 @@ function compileRule(value: unknown, index: number): CompiledPolicyRule {
   exactKeys(resource, ["resourceTypes"], path + "/resourceSelector");
   const effect = value["ruleEffect"];
   if (effect !== "ALLOW" && effect !== "DENY") {
-    throw new PolicyFailure(
-      "INVALID_POLICY_RULE",
-      path + "/ruleEffect",
-      "Unknown rule effect",
-    );
+    throw new PolicyFailure("INVALID_POLICY_RULE", path + "/ruleEffect", "Unknown rule effect");
   }
   const metadata = value["metadata"];
   if (!isRecord(metadata)) {
@@ -519,10 +492,7 @@ function compileRule(value: unknown, index: number): CompiledPolicyRule {
     ),
     when: compileCondition(value["when"], path + "/when", 4),
     ruleEffect: effect,
-    requirements: compileRequirements(
-      value["requirements"],
-      path + "/requirements",
-    ),
+    requirements: compileRequirements(value["requirements"], path + "/requirements"),
     reasonCode: requiredString(value, "reasonCode", path, stableCode),
     metadata: Object.freeze({
       ...(metadata as Readonly<Record<string, PolicyJson>>),
@@ -539,32 +509,25 @@ export function compilePolicySet(value: unknown): CompilePolicyResult {
     exactKeys(
       value,
       [
-        "schemaVersion", "policySetId", "version", "description", "source",
-        "defaultOutcome", "constants", "rules",
+        "schemaVersion",
+        "policySetId",
+        "version",
+        "description",
+        "source",
+        "defaultOutcome",
+        "constants",
+        "rules",
       ],
       "$",
     );
     if (value["schemaVersion"] !== "1.0.0" || value["defaultOutcome"] !== "DENY") {
-      throw new PolicyFailure(
-        "INVALID_POLICY_SET",
-        "$",
-        "Unsupported version or non-deny default",
-      );
+      throw new PolicyFailure("INVALID_POLICY_SET", "$", "Unsupported version or non-deny default");
     }
     const source = value["source"];
     const constants = value["constants"];
     const rules = value["rules"];
-    if (
-      !isRecord(source) ||
-      !isRecord(constants) ||
-      !Array.isArray(rules) ||
-      rules.length > 4096
-    ) {
-      throw new PolicyFailure(
-        "INVALID_POLICY_SET",
-        "$",
-        "Invalid source, constants, or rules",
-      );
+    if (!isRecord(source) || !isRecord(constants) || !Array.isArray(rules) || rules.length > 4096) {
+      throw new PolicyFailure("INVALID_POLICY_SET", "$", "Invalid source, constants, or rules");
     }
     exactKeys(source, ["kind", "ref"], "$/source");
     const kind = source["kind"];
@@ -576,20 +539,16 @@ export function compilePolicySet(value: unknown): CompilePolicyResult {
       kind !== "NODE" &&
       kind !== "WORKFLOW"
     ) {
-      throw new PolicyFailure(
-        "INVALID_POLICY_SET",
-        "$/source/kind",
-        "Unknown source kind",
-      );
+      throw new PolicyFailure("INVALID_POLICY_SET", "$/source/kind", "Unknown source kind");
     }
     const compiledRules = rules.map((rule, index) => compileRule(rule, index));
     if (new Set(compiledRules.map((rule) => rule.ruleId)).size !== compiledRules.length) {
       throw new PolicyFailure("INVALID_POLICY_SET", "$/rules", "Duplicate ruleId");
     }
     const sortedConstants = Object.fromEntries(
-      Object.entries(
-        constants as Readonly<Record<string, PolicyJson>>,
-      ).sort(([left], [right]) => left.localeCompare(right)),
+      Object.entries(constants as Readonly<Record<string, PolicyJson>>).sort(([left], [right]) =>
+        left.localeCompare(right),
+      ),
     );
     for (const key of Object.keys(sortedConstants)) {
       if (!/^[A-Z][A-Z0-9_]*$/u.test(key)) {
@@ -612,9 +571,7 @@ export function compilePolicySet(value: unknown): CompilePolicyResult {
       defaultOutcome: "DENY",
       constants: Object.freeze(sortedConstants),
       rules: Object.freeze(
-        [...compiledRules].sort((left, right) =>
-          left.ruleId.localeCompare(right.ruleId),
-        ),
+        [...compiledRules].sort((left, right) => left.ruleId.localeCompare(right.ruleId)),
       ),
     });
     return {
@@ -647,19 +604,11 @@ export function compilePolicySet(value: unknown): CompilePolicyResult {
 
 type YamlLine = Readonly<{ indent: number; content: string; line: number }>;
 
-function yamlFailure(
-  code: PolicyDiagnostic["code"],
-  line: number,
-  message: string,
-): never {
+function yamlFailure(code: PolicyDiagnostic["code"], line: number, message: string): never {
   throw new PolicyFailure(code, "$/line/" + String(line), message);
 }
 
-function parseScalar(
-  source: string,
-  line: number,
-  maxScalarLength: number,
-): PolicyJson {
+function parseScalar(source: string, line: number, maxScalarLength: number): PolicyJson {
   if (source.length > maxScalarLength) {
     yamlFailure("YAML_LIMIT_EXCEEDED", line, "Scalar too long");
   }
@@ -685,17 +634,10 @@ function parseScalar(
     }
     return value;
   }
-  yamlFailure(
-    "INVALID_YAML",
-    line,
-    "Only JSON double-quoted strings and JSON scalars are allowed",
-  );
+  yamlFailure("INVALID_YAML", line, "Only JSON double-quoted strings and JSON scalars are allowed");
 }
 
-function splitMapping(
-  content: string,
-  line: number,
-): readonly [string, string] {
+function splitMapping(content: string, line: number): readonly [string, string] {
   const index = content.indexOf(":");
   if (index <= 0) yamlFailure("INVALID_YAML", line, "Expected mapping entry");
   const key = content.slice(0, index);
@@ -704,11 +646,7 @@ function splitMapping(
   }
   const rest = content.slice(index + 1);
   if (rest.length > 0 && !rest.startsWith(" ")) {
-    yamlFailure(
-      "INVALID_YAML",
-      line,
-      "Mapping values require one separating space",
-    );
+    yamlFailure("INVALID_YAML", line, "Mapping values require one separating space");
   }
   return [key, rest.trimStart()];
 }
@@ -722,11 +660,7 @@ function parseYamlNode(
   nodeCounter: { value: number },
 ): ParseResult {
   if (depth > limits.maxDepth) {
-    yamlFailure(
-      "YAML_LIMIT_EXCEEDED",
-      lines[start]?.line ?? 1,
-      "Depth limit",
-    );
+    yamlFailure("YAML_LIMIT_EXCEEDED", lines[start]?.line ?? 1, "Depth limit");
   }
   const first = lines[start];
   if (!first || first.indent !== indent) {
@@ -742,11 +676,7 @@ function parseYamlNode(
     ) {
       const line = lines[index] as YamlLine;
       if (line.content !== "-" && !line.content.startsWith("- ")) {
-        yamlFailure(
-          "INVALID_YAML",
-          line.line,
-          "Sequence marker requires a space",
-        );
+        yamlFailure("INVALID_YAML", line.line, "Sequence marker requires a space");
       }
       nodeCounter.value += 1;
       if (nodeCounter.value > limits.maxNodes) {
@@ -758,41 +688,22 @@ function parseYamlNode(
         if (!next || next.indent !== indent + 2) {
           yamlFailure("INVALID_YAML", line.line, "Missing sequence child");
         }
-        const parsed = parseYamlNode(
-          lines,
-          index + 1,
-          indent + 2,
-          limits,
-          depth + 1,
-          nodeCounter,
-        );
+        const parsed = parseYamlNode(lines, index + 1, indent + 2, limits, depth + 1, nodeCounter);
         values.push(parsed.value);
         index = parsed.next;
       } else if (/^[A-Za-z][A-Za-z0-9_-]*:/u.test(rest)) {
         const [key, scalar] = splitMapping(rest, line.line);
-        const object: MutableJsonObject =
-          Object.create(null) as MutableJsonObject;
+        const object: MutableJsonObject = Object.create(null) as MutableJsonObject;
         if (scalar === "") {
           const next = lines[index + 1];
           if (!next || next.indent !== indent + 4) {
             yamlFailure("INVALID_YAML", line.line, "Missing mapping child");
           }
-          const child = parseYamlNode(
-            lines,
-            index + 1,
-            indent + 4,
-            limits,
-            depth + 2,
-            nodeCounter,
-          );
+          const child = parseYamlNode(lines, index + 1, indent + 4, limits, depth + 2, nodeCounter);
           object[key] = child.value;
           index = child.next;
         } else {
-          object[key] = parseScalar(
-            scalar,
-            line.line,
-            limits.maxScalarLength,
-          );
+          object[key] = parseScalar(scalar, line.line, limits.maxScalarLength);
           index += 1;
         }
         if (
@@ -800,14 +711,7 @@ function parseYamlNode(
           lines[index]?.indent === indent + 2 &&
           !lines[index]?.content.startsWith("-")
         ) {
-          const tail = parseYamlNode(
-            lines,
-            index,
-            indent + 2,
-            limits,
-            depth + 1,
-            nodeCounter,
-          );
+          const tail = parseYamlNode(lines, index, indent + 2, limits, depth + 1, nodeCounter);
           if (!isRecord(tail.value)) {
             yamlFailure("INVALID_YAML", line.line, "Invalid sequence mapping");
           }
@@ -821,17 +725,14 @@ function parseYamlNode(
         }
         values.push(Object.freeze(object));
       } else {
-        values.push(
-          parseScalar(rest, line.line, limits.maxScalarLength),
-        );
+        values.push(parseScalar(rest, line.line, limits.maxScalarLength));
         index += 1;
       }
     }
     return { value: Object.freeze(values), next: index };
   }
 
-  const object: MutableJsonObject =
-    Object.create(null) as MutableJsonObject;
+  const object: MutableJsonObject = Object.create(null) as MutableJsonObject;
   let index = start;
   while (
     index < lines.length &&
@@ -852,22 +753,11 @@ function parseYamlNode(
       if (!next || next.indent !== indent + 2) {
         yamlFailure("INVALID_YAML", line.line, "Missing mapping child");
       }
-      const child = parseYamlNode(
-        lines,
-        index + 1,
-        indent + 2,
-        limits,
-        depth + 1,
-        nodeCounter,
-      );
+      const child = parseYamlNode(lines, index + 1, indent + 2, limits, depth + 1, nodeCounter);
       object[key] = child.value;
       index = child.next;
     } else {
-      object[key] = parseScalar(
-        scalar,
-        line.line,
-        limits.maxScalarLength,
-      );
+      object[key] = parseScalar(scalar, line.line, limits.maxScalarLength);
       index += 1;
     }
   }
@@ -889,10 +779,7 @@ export function parseRestrictedPolicyYaml(
     yamlFailure("YAML_LIMIT_EXCEEDED", 1, "Byte limit");
   }
   const withoutCrLf = source.replaceAll("\r\n", "");
-  if (
-    withoutCrLf.includes("\r") ||
-    (source.includes("\r\n") && withoutCrLf.includes("\n"))
-  ) {
+  if (withoutCrLf.includes("\r") || (source.includes("\r\n") && withoutCrLf.includes("\n"))) {
     yamlFailure("INVALID_YAML", 1, "Mixed or lone carriage return");
   }
   const normalized = source.replaceAll("\r\n", "\n");
@@ -909,11 +796,7 @@ export function parseRestrictedPolicyYaml(
     }
     const indent = raw.length - raw.trimStart().length;
     if (indent % 2 !== 0) {
-      yamlFailure(
-        "INVALID_YAML",
-        index + 1,
-        "Indentation must use two spaces",
-      );
+      yamlFailure("INVALID_YAML", index + 1, "Indentation must use two spaces");
     }
     const content = raw.slice(indent);
     if (
@@ -932,20 +815,9 @@ export function parseRestrictedPolicyYaml(
   if (lines.length === 0 || lines[0]?.indent !== 0) {
     yamlFailure("INVALID_YAML", 1, "Empty or indented root");
   }
-  const parsed = parseYamlNode(
-    lines,
-    0,
-    0,
-    limits,
-    0,
-    { value: 0 },
-  );
+  const parsed = parseYamlNode(lines, 0, 0, limits, 0, { value: 0 });
   if (parsed.next !== lines.length) {
-    yamlFailure(
-      "INVALID_YAML",
-      lines[parsed.next]?.line ?? 1,
-      "Trailing or inconsistent content",
-    );
+    yamlFailure("INVALID_YAML", lines[parsed.next]?.line ?? 1, "Trailing or inconsistent content");
   }
   assertPolicyJson(parsed.value, "$", new WeakSet<object>());
   return parsed.value;
@@ -988,11 +860,7 @@ export function createPolicySnapshot(
     !semver.test(metadata.compilerVersion) ||
     !Number.isFinite(Date.parse(metadata.createdAt))
   ) {
-    throw new PolicyFailure(
-      "INVALID_POLICY_SET",
-      "$/snapshot",
-      "Invalid snapshot metadata",
-    );
+    throw new PolicyFailure("INVALID_POLICY_SET", "$/snapshot", "Invalid snapshot metadata");
   }
   return Object.freeze({
     schemaVersion: "1.0.0",
@@ -1006,10 +874,7 @@ export function createPolicySnapshot(
   });
 }
 
-function referencedValue(
-  input: PolicyEvaluationInput,
-  reference: string,
-): PolicyJson | undefined {
+function referencedValue(input: PolicyEvaluationInput, reference: string): PolicyJson | undefined {
   switch (reference) {
     case "input.action":
       return input.action;
@@ -1038,15 +903,8 @@ function referencedValue(
   }
 }
 
-function equalJson(
-  left: PolicyJson | undefined,
-  right: PolicyJson | undefined,
-): boolean {
-  return (
-    left !== undefined &&
-    right !== undefined &&
-    canonicalJson(left) === canonicalJson(right)
-  );
+function equalJson(left: PolicyJson | undefined, right: PolicyJson | undefined): boolean {
+  return left !== undefined && right !== undefined && canonicalJson(left) === canonicalJson(right);
 }
 
 function evaluateCondition(
@@ -1055,9 +913,7 @@ function evaluateCondition(
   constants: Readonly<Record<string, PolicyJson>>,
 ): ConditionResult {
   if (condition.operator === "all" || condition.operator === "any") {
-    const results = condition.conditions.map((child) =>
-      evaluateCondition(child, input, constants),
-    );
+    const results = condition.conditions.map((child) => evaluateCondition(child, input, constants));
     if (results.some((result) => !result.ok)) {
       return { ok: false, matched: false };
     }
@@ -1070,11 +926,7 @@ function evaluateCondition(
     };
   }
   if (condition.operator === "not") {
-    const result = evaluateCondition(
-      condition.condition,
-      input,
-      constants,
-    );
+    const result = evaluateCondition(condition.condition, input, constants);
     return { ok: result.ok, matched: result.ok && !result.matched };
   }
   const actual = condition.reference.startsWith("constant.")
@@ -1092,34 +944,24 @@ function evaluateCondition(
       return Array.isArray(expected)
         ? {
             ok: true,
-            matched: expected.some((item) =>
-              equalJson(actual, item),
-            ),
+            matched: expected.some((item) => equalJson(actual, item)),
           }
         : { ok: false, matched: false };
     case "contains":
-      if (
-        typeof actual === "string" &&
-        typeof expected === "string"
-      ) {
+      if (typeof actual === "string" && typeof expected === "string") {
         return { ok: true, matched: actual.includes(expected) };
       }
       return Array.isArray(actual)
         ? {
             ok: true,
-            matched: actual.some((item) =>
-              equalJson(item, expected),
-            ),
+            matched: actual.some((item) => equalJson(item, expected)),
           }
         : { ok: false, matched: false };
     case "lt":
     case "lte":
     case "gt":
     case "gte":
-      if (
-        typeof actual !== "number" ||
-        typeof expected !== "number"
-      ) {
+      if (typeof actual !== "number" || typeof expected !== "number") {
         return { ok: false, matched: false };
       }
       return {
@@ -1134,8 +976,7 @@ function evaluateCondition(
                 : actual >= expected,
       };
     case "startsWith":
-      return typeof actual === "string" &&
-        typeof expected === "string"
+      return typeof actual === "string" && typeof expected === "string"
         ? { ok: true, matched: actual.startsWith(expected) }
         : { ok: false, matched: false };
     case "setSubset":
@@ -1143,9 +984,7 @@ function evaluateCondition(
         ? {
             ok: true,
             matched: actual.every((item) =>
-              expected.some((candidate) =>
-                equalJson(item, candidate),
-              ),
+              expected.some((candidate) => equalJson(item, candidate)),
             ),
           }
         : { ok: false, matched: false };
@@ -1154,9 +993,7 @@ function evaluateCondition(
         ? {
             ok: true,
             matched: actual.some((item) =>
-              expected.some((candidate) =>
-                equalJson(item, candidate),
-              ),
+              expected.some((candidate) => equalJson(item, candidate)),
             ),
           }
         : { ok: false, matched: false };
@@ -1192,19 +1029,13 @@ function validateInput(value: unknown): value is PolicyEvaluationInput {
     typeof value["authorityMutation"] === "boolean" &&
     typeof value["controlVerified"] === "boolean" &&
     Array.isArray(value["permissionScopes"]) &&
-    value["permissionScopes"].every(
-      (item) => typeof item === "string",
-    ) &&
+    value["permissionScopes"].every((item) => typeof item === "string") &&
     Array.isArray(value["capabilityIds"]) &&
-    value["capabilityIds"].every(
-      (item) => typeof item === "string",
-    )
+    value["capabilityIds"].every((item) => typeof item === "string")
   );
 }
 
-function hardInvariantViolations(
-  input: PolicyEvaluationInput,
-): readonly string[] {
+function hardInvariantViolations(input: PolicyEvaluationInput): readonly string[] {
   const violations: string[] = [];
   if (input.authorityMutation) {
     violations.push("NO_DIRECT_AUTHORITY_WRITE");
@@ -1212,10 +1043,7 @@ function hardInvariantViolations(
   if (input.riskClass === "R4" && !input.controlVerified) {
     violations.push("R4_REQUIRES_VERIFIED_CONTROL");
   }
-  if (
-    input.dataClassification === "SECRET" &&
-    input.direction === "OUTBOUND"
-  ) {
+  if (input.dataClassification === "SECRET" && input.direction === "OUTBOUND") {
     violations.push("NO_SECRET_OUTBOUND");
   }
   return Object.freeze(violations.sort());
@@ -1223,10 +1051,7 @@ function hardInvariantViolations(
 
 function mergeRequirements(
   requirements: readonly PolicyRequirements[],
-): Readonly<
-  | { ok: true; value: PolicyRequirements }
-  | { ok: false }
-> {
+): Readonly<{ ok: true; value: PolicyRequirements } | { ok: false }> {
   const permissionScopes = new Set<string>();
   let isolation: PolicyRequirements["minimumIsolationLevel"];
   let timeoutMs: number | undefined;
@@ -1238,15 +1063,9 @@ function mergeRequirements(
     }
     const candidate = requirement.minimumIsolationLevel;
     if (candidate !== undefined) {
-      if (
-        isolation === undefined ||
-        isolation === "PROCESS_RESTRICTED"
-      ) {
+      if (isolation === undefined || isolation === "PROCESS_RESTRICTED") {
         isolation = candidate;
-      } else if (
-        candidate !== "PROCESS_RESTRICTED" &&
-        candidate !== isolation
-      ) {
+      } else if (candidate !== "PROCESS_RESTRICTED" && candidate !== isolation) {
         return { ok: false };
       }
     }
@@ -1262,8 +1081,7 @@ function mergeRequirements(
           ? requirement.maxConcurrency
           : Math.min(maxConcurrency, requirement.maxConcurrency);
     }
-    postVerificationRequired ||=
-      requirement.postVerificationRequired === true;
+    postVerificationRequired ||= requirement.postVerificationRequired === true;
   }
   const merged: {
     permissionScopes?: readonly string[];
@@ -1273,9 +1091,7 @@ function mergeRequirements(
     postVerificationRequired?: boolean;
   } = {};
   if (permissionScopes.size > 0) {
-    merged.permissionScopes = Object.freeze(
-      [...permissionScopes].sort(),
-    );
+    merged.permissionScopes = Object.freeze([...permissionScopes].sort());
   }
   if (isolation !== undefined) merged.minimumIsolationLevel = isolation;
   if (timeoutMs !== undefined) merged.timeoutMs = timeoutMs;
@@ -1301,19 +1117,16 @@ function createDecision(
   return {
     schemaVersion: "1.0.0",
     decisionId:
-      typeof input.evaluationId === "string" &&
-      uuidV7.test(input.evaluationId)
+      typeof input.evaluationId === "string" && uuidV7.test(input.evaluationId)
         ? input.evaluationId
         : fallbackId,
     outcome,
     policySnapshotId:
-      typeof snapshot.snapshotId === "string" &&
-      uuidV7.test(snapshot.snapshotId)
+      typeof snapshot.snapshotId === "string" && uuidV7.test(snapshot.snapshotId)
         ? snapshot.snapshotId
         : fallbackId,
     policySnapshotHash:
-      typeof snapshot.policyHash === "string" &&
-      /^[0-9a-f]{64}$/u.test(snapshot.policyHash)
+      typeof snapshot.policyHash === "string" && /^[0-9a-f]{64}$/u.test(snapshot.policyHash)
         ? snapshot.policyHash
         : "0".repeat(64),
     inputHash,
@@ -1323,32 +1136,20 @@ function createDecision(
     reasonCodes: Object.freeze([...new Set(reasonCodes)].sort()),
     residualRiskRefs: Object.freeze([]),
     evaluatedAt:
-      typeof input.capturedAt === "string" &&
-      Number.isFinite(Date.parse(input.capturedAt))
+      typeof input.capturedAt === "string" && Number.isFinite(Date.parse(input.capturedAt))
         ? input.capturedAt
         : fallbackTime,
     evaluatorVersion: POLICY_EVALUATOR_VERSION,
   };
 }
 
-export function evaluatePolicy(
-  snapshotValue: unknown,
-  inputValue: unknown,
-): PolicyDecision {
+export function evaluatePolicy(snapshotValue: unknown, inputValue: unknown): PolicyDecision {
   let inputHash = canonicalJsonSha256({ invalidInput: true });
   let snapshot: Partial<PolicySnapshot> = {};
   let input: Partial<PolicyEvaluationInput> = {};
   try {
-    assertPolicyJson(
-      snapshotValue,
-      "$/snapshot",
-      new WeakSet<object>(),
-    );
-    assertPolicyJson(
-      inputValue,
-      "$/input",
-      new WeakSet<object>(),
-    );
+    assertPolicyJson(snapshotValue, "$/snapshot", new WeakSet<object>());
+    assertPolicyJson(inputValue, "$/input", new WeakSet<object>());
     if (isRecord(snapshotValue)) {
       snapshot = snapshotValue as Partial<PolicySnapshot>;
     }
@@ -1380,9 +1181,7 @@ export function evaluatePolicy(
       inputHash,
     );
   }
-  const compiled = compilePolicySet(
-    snapshotValue["compiledPolicySet"],
-  );
+  const compiled = compilePolicySet(snapshotValue["compiledPolicySet"]);
   if (
     !compiled.ok ||
     snapshotValue["schemaVersion"] !== "1.0.0" ||
@@ -1433,11 +1232,7 @@ export function evaluatePolicy(
     ) {
       continue;
     }
-    const result = evaluateCondition(
-      rule.when,
-      inputValue,
-      compiled.value.constants,
-    );
+    const result = evaluateCondition(rule.when, inputValue, compiled.value.constants);
     if (!result.ok) {
       return createDecision(
         typedSnapshot,
@@ -1452,9 +1247,7 @@ export function evaluatePolicy(
     }
     if (result.matched) matched.push(rule);
   }
-  const denied = matched.filter(
-    (rule) => rule.ruleEffect === "DENY",
-  );
+  const denied = matched.filter((rule) => rule.ruleEffect === "DENY");
   if (denied.length > 0) {
     return createDecision(
       typedSnapshot,
@@ -1467,9 +1260,7 @@ export function evaluatePolicy(
       inputHash,
     );
   }
-  const allowed = matched.filter(
-    (rule) => rule.ruleEffect === "ALLOW",
-  );
+  const allowed = matched.filter((rule) => rule.ruleEffect === "ALLOW");
   if (allowed.length === 0) {
     return createDecision(
       typedSnapshot,
@@ -1482,9 +1273,7 @@ export function evaluatePolicy(
       inputHash,
     );
   }
-  const merged = mergeRequirements(
-    allowed.map((rule) => rule.requirements),
-  );
+  const merged = mergeRequirements(allowed.map((rule) => rule.requirements));
   if (!merged.ok) {
     return createDecision(
       typedSnapshot,
@@ -1500,9 +1289,7 @@ export function evaluatePolicy(
   return createDecision(
     typedSnapshot,
     inputValue,
-    Object.keys(merged.value).length > 0
-      ? "ALLOW_WITH_REQUIREMENTS"
-      : "ALLOW",
+    Object.keys(merged.value).length > 0 ? "ALLOW_WITH_REQUIREMENTS" : "ALLOW",
     allowed.map((rule) => rule.ruleId),
     [],
     merged.value,

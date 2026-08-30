@@ -8,9 +8,7 @@ export default defineConfig({
       "@aseos/contracts": fileURLToPath(
         new URL("./packages/contracts/dist/index.js", import.meta.url),
       ),
-      "@aseos/policy": fileURLToPath(
-        new URL("./packages/policy/dist/index.js", import.meta.url),
-      ),
+      "@aseos/policy": fileURLToPath(new URL("./packages/policy/dist/index.js", import.meta.url)),
     },
   },
   test: {

@@ -6,11 +6,23 @@ import { describe, expect, test } from "vitest";
 import { defaultRepositoryRoot, loadContractRegistry } from "@aseos/contracts";
 
 const contracts = [
-  ["urn:aseos:schema:capability-manifest:1.0.0", "capability-manifest.json", "capability-manifest-unknown-field.json"],
-  ["urn:aseos:schema:policy-evaluation-input:1.0.0", "policy-evaluation-input.json", "policy-evaluation-input-missing-clock.json"],
+  [
+    "urn:aseos:schema:capability-manifest:1.0.0",
+    "capability-manifest.json",
+    "capability-manifest-unknown-field.json",
+  ],
+  [
+    "urn:aseos:schema:policy-evaluation-input:1.0.0",
+    "policy-evaluation-input.json",
+    "policy-evaluation-input-missing-clock.json",
+  ],
   ["urn:aseos:schema:policy-rule:1.0.0", "policy-rule.json", "policy-rule-unknown-operator.json"],
   ["urn:aseos:schema:policy-set:1.0.0", "policy-set.json", "policy-set-default-allow.json"],
-  ["urn:aseos:schema:policy-snapshot:1.0.0", "policy-snapshot.json", "policy-snapshot-unknown-field.json"],
+  [
+    "urn:aseos:schema:policy-snapshot:1.0.0",
+    "policy-snapshot.json",
+    "policy-snapshot-unknown-field.json",
+  ],
 ];
 
 async function readExample(kind, name) {
