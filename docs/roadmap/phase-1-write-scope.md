@@ -1,6 +1,6 @@
 # Phase 1 WRITE_SCOPE
 
-状态：`AMENDED — ISSUE #14 P1-O02 ROOT INTEGRATION SCOPE CLOSURE`
+状态：`AMENDED — ISSUE #29 PRELIMINARY P1-O04 TRANSITION ENFORCEMENT SCOPE CLOSURE`
 机器权威：`operations/phase-1/write-scope.json`  
 执行模式：`DENY_BY_DEFAULT`
 
@@ -20,6 +20,7 @@ Path globs and semantic prohibitions are separate machine fields. A prose rule i
 
 Global scope explicitly includes:
 
+- `.github/workflows/m0-independent-verify.yml`;
 - `tests/fault-injection/**`;
 - `tests/security/**`;
 - operation-specific Evidence paths;
@@ -57,6 +58,15 @@ Issue #14 grants only P1-O02 the minimum exact root paths required to integrate 
 - `vitest.config.mjs`.
 
 This grant does not modify the files above. They remain future P1-O02 implementation paths until this governance amendment is independently verified. P1-O01 and P1-O03 through P1-O09 receive no authority expansion. `DENY_BY_DEFAULT`, global denial, semantic constraints and Authority Lock ownership remain unchanged.
+
+## P1-O04 transition-enforcement preliminary amendment
+
+Issue #29 grants P1-O01 the exact paths required to keep the M0 transition enforcement machine-closed:
+
+- `.github/workflows/m0-independent-verify.yml` is added to global scope and P1-O01 scope;
+- `scripts/governance/verify_m0.py` is added to P1-O01 scope and remains globally covered by `scripts/**`.
+
+P1-O02 through P1-O09 receive neither added path. This preliminary amendment does not modify the workflow or M0 verifier, start P1-O04, change production semantics, change accepted ADRs, or change the Authority Lock path set, roles, mutation policies or operation ownership. `DENY_BY_DEFAULT` remains unchanged.
 
 ## Expansion
 

@@ -99,7 +99,7 @@
     },
     {
       "path": "docs/roadmap/phase-1-write-scope.md",
-      "sha256": "d2beaec5242e30c6facffedc9855ab246a11995ea861452c5ba3ce6f16c7d516",
+      "sha256": "b65d20f06d1dcb61effa72d630a7695c60ea25edb8e4a8feaf46d1504e919289",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
@@ -169,7 +169,7 @@
     },
     {
       "path": "operations/phase-1/write-scope.json",
-      "sha256": "64814e9e1d6894f67162083f25bd07df2f6d919fbd391cdff5fd6a65e4b015a6",
+      "sha256": "6cee1a5a0c419e920336172cf8e89a9561a4a6bdcc3f4d7b9e5d5a108909c908",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []

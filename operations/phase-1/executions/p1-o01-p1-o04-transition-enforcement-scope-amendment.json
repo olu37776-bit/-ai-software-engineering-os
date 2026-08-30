@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-P1-O04-TRANSITION-ENFORCEMENT-SCOPE-AMENDMENT-2026-08-30-01",
+  "executionType": "PHASE_1_GOVERNANCE_AMENDMENT",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Issue #29 P1-O04 transition-enforcement WRITE_SCOPE amendment",
+  "riskClass": "R3",
+  "status": "IN_PROGRESS",
+  "startedAt": "2026-08-30T15:58:23Z",
+  "implementationBranch": "governance/p1-o04-transition-enforcement-scope-amendment",
+  "baseCommit": "18e1a3aef6f4ee6c1b359f3dbc9be102d9e67f67",
+  "trackingIssue": 29,
+  "priorAuthorizationGateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
+  "authorityRefs": [
+    "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/authority-lock.json",
+    "docs/roadmap/phase-1-write-scope.md"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "issue29Verified": false,
+    "p1O04Implemented": false,
+    "p1O04Started": false,
+    "productionRuntimeChanged": false
+  }
+}
