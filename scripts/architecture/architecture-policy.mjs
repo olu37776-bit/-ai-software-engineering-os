@@ -131,22 +131,30 @@ function cyclePaths(edges) {
 }
 
 export function evaluatePackageGraph(packageRecords, policy) {
-  const records = new Map(packageRecords.map((record) => [record.manifest.name, record]));
+  const recordsByName = new Map(packageRecords.map((record) => [record.manifest.name, record]));
+  const recordsByRoot = new Map(packageRecords.map((record) => [record.root, record]));
   const policyByName = new Map(policy.packages.map((item) => [item.name, item]));
   const violations = [];
   const edges = [];
   let publicEntriesChecked = 0;
-  if (records.size !== packageRecords.length) {
+  if (recordsByName.size !== packageRecords.length) {
     violations.push({ code: "DUPLICATE_PACKAGE_NAME", subject: "package manifests" });
   }
   for (const packagePolicy of policy.packages) {
-    const record = records.get(packagePolicy.name);
+    const record = recordsByRoot.get(packagePolicy.root);
     if (!record && packagePolicy.required) {
       violations.push({ code: "MISSING_GOVERNED_PACKAGE", subject: packagePolicy.name });
       continue;
     }
     if (!record) continue;
-    if (record.root !== packagePolicy.root || record.manifest.type !== "module") {
+    if (record.manifest.name !== packagePolicy.name) {
+      violations.push({
+        code: "PACKAGE_NAME_MISMATCH",
+        subject: packagePolicy.root,
+        details: { expected: packagePolicy.name, actual: record.manifest.name },
+      });
+    }
+    if (record.manifest.type !== "module") {
       violations.push({ code: "PACKAGE_METADATA_MISMATCH", subject: packagePolicy.name });
     }
     if (
@@ -269,6 +277,9 @@ export function inspectCruiseResult(cruiseResult, policy, { enforceRequiredEdges
       const resolvedTarget = dependency.resolved
         ? packageForPath(dependency.resolved, policy)
         : undefined;
+      if (specifier.startsWith(".") && resolvedTarget && resolvedTarget !== fromPackage) {
+        violations.push({ code: "DEEP_IMPORT", subject: `${module.source} -> ${specifier}` });
+      }
       const targetPackage =
         specifierTarget ||
         (specifier.startsWith(".") && resolvedTarget !== fromPackage ? resolvedTarget : undefined);
