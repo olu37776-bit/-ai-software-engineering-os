@@ -58,9 +58,9 @@ export type CompiledPolicyRule = Readonly<{
   schemaVersion: "1.0.0";
   ruleId: string;
   domain: string;
-  subjectTypes: readonly string[];
+  subjectSelector: Readonly<{ subjectTypes: readonly string[] }>;
   action: string;
-  resourceTypes: readonly string[];
+  resourceSelector: Readonly<{ resourceTypes: readonly string[] }>;
   when: PolicyCondition;
   ruleEffect: "ALLOW" | "DENY";
   requirements: PolicyRequirements;
@@ -485,15 +485,19 @@ function compileRule(value: unknown, index: number): CompiledPolicyRule {
     schemaVersion: "1.0.0",
     ruleId: requiredString(value, "ruleId", path, ruleIdPattern),
     domain: requiredString(value, "domain", path),
-    subjectTypes: sortedUniqueStrings(
-      subject["subjectTypes"],
-      path + "/subjectSelector/subjectTypes",
-    ),
+    subjectSelector: Object.freeze({
+      subjectTypes: sortedUniqueStrings(
+        subject["subjectTypes"],
+        path + "/subjectSelector/subjectTypes",
+      ),
+    }),
     action: requiredString(value, "action", path),
-    resourceTypes: sortedUniqueStrings(
-      resource["resourceTypes"],
-      path + "/resourceSelector/resourceTypes",
-    ),
+    resourceSelector: Object.freeze({
+      resourceTypes: sortedUniqueStrings(
+        resource["resourceTypes"],
+        path + "/resourceSelector/resourceTypes",
+      ),
+    }),
     when: compileCondition(value["when"], path + "/when", 4),
     ruleEffect: effect,
     requirements: compileRequirements(value["requirements"], path + "/requirements"),
@@ -1247,8 +1251,8 @@ export function evaluatePolicy(snapshotValue: unknown, inputValue: unknown): Pol
     if (
       rule.domain !== inputValue.domain ||
       rule.action !== inputValue.action ||
-      !rule.subjectTypes.includes(inputValue.subjectType) ||
-      !rule.resourceTypes.includes(inputValue.resourceType)
+      !rule.subjectSelector.subjectTypes.includes(inputValue.subjectType) ||
+      !rule.resourceSelector.resourceTypes.includes(inputValue.resourceType)
     ) {
       continue;
     }
