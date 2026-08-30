@@ -6,10 +6,13 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Remove snapshot-coupled toolchain qualification before P1-O02",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T11:43:24Z",
+  "completedAt": "2026-08-30T11:51:11Z",
   "implementationBranch": "phase-1/p1-o01-toolchain-transition-remediation-issue-24",
   "baseCommit": "a8cff3ea9589798fd65ee981061508a3026657d8",
+  "implementationCommit": "380785f5d94406dddf9740b03cabee174c92eb2f",
+  "implementationTree": "d892e35a8700a80e55f6f6654df71dab37cc03af",
   "trackingIssue": 24,
   "authorityRefs": [
     "operations/phase-1/operation.json",
@@ -32,10 +35,55 @@
     "contractImplementationChanged": false,
     "productionRuntimeChanged": false
   },
-  "verification": [],
-  "evidenceRefs": [],
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight",
+      "result": "PASS",
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O01",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "immutableAuthorityFilesVerified": 25,
+      "scopeViolations": 0
+    },
+    {
+      "check": "lockfile snapshot authority removal",
+      "result": "PASS",
+      "liveLockfileSha256": "13af515bb4f8ba46236183876a97f4e3817d6aca724da4a5f1ce987311eae998",
+      "lfCrLfNormalizedHashEqual": true,
+      "frozenOfflineInstall": "PASS",
+      "lockfileUnchanged": true
+    },
+    {
+      "check": "synthetic and live topology qualification",
+      "result": "PASS",
+      "positiveFixtures": 3,
+      "negativeFixtureCategories": 14
+    },
+    {
+      "check": "local quality and clean build",
+      "result": "PASS",
+      "testFilesPassed": 5,
+      "testsPassed": 46,
+      "testsFailed": 0
+    },
+    {
+      "check": "P1-V00 / M0 regression",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "check": "Linux and Windows GitHub qualification",
+      "result": "PENDING_IMMUTABLE_HEAD_PUBLICATION"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-toolchain-transition-remediation-issue-24.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/24"
+  ],
   "remainingGaps": [
     "Issue #24 requires independent verification before any VERIFIED declaration.",
+    "The orchestrator must publish the immutable head and record Linux and Windows workflow PASS.",
     "P1-O02 remains blocked until the remediation and a new resume Gate are independently VERIFIED and merged."
   ]
 }
