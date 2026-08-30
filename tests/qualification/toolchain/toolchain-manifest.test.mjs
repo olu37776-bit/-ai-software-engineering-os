@@ -23,6 +23,16 @@ describe("exact toolchain manifest", () => {
     const validate = ajv.compile(schema);
 
     expect(validate(manifest), JSON.stringify(validate.errors)).toBe(true);
+    expect(manifest.packageManager).not.toHaveProperty("lockfileSha256");
+    expect(
+      validate({
+        ...manifest,
+        packageManager: {
+          ...manifest.packageManager,
+          lockfileSha256: "0".repeat(64),
+        },
+      }),
+    ).toBe(false);
     expect(packageManifest.devDependencies).toEqual(manifest.tools);
     expect(packageManifest.packageManager).toBe("pnpm@11.24.0");
     expect(manifest.authority).toMatchObject({
@@ -36,15 +46,14 @@ describe("exact toolchain manifest", () => {
     });
   });
 
-  test("uses one canonical lockfile hash for LF and CRLF checkouts", async () => {
+  test("computes one deterministic live lockfile hash for LF and CRLF checkouts", async () => {
     const [manifest, lockfile] = await Promise.all([
       readJson("toolchain/toolchain.json"),
       readFile(resolve(root, "pnpm-lock.yaml"), "utf8"),
     ]);
     expect(manifest.packageManager.lockfileHashPolicy).toBe("SHA256_UTF8_LF_NORMALIZED");
-    expect(sha256Utf8Lf(lockfile)).toBe(manifest.packageManager.lockfileSha256);
-    expect(sha256Utf8Lf(normalizeUtf8Lf(lockfile).replace(/\n/g, "\r\n"))).toBe(
-      manifest.packageManager.lockfileSha256,
-    );
+    const liveLockfileSha256 = sha256Utf8Lf(lockfile);
+    expect(liveLockfileSha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(sha256Utf8Lf(normalizeUtf8Lf(lockfile).replace(/\n/g, "\r\n"))).toBe(liveLockfileSha256);
   });
 });

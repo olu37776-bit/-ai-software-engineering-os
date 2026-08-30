@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
-import { reportAndExit, repositoryRoot, run } from "./lib.mjs";
+import { reportAndExit, repositoryRoot, run, sha256Utf8Lf } from "./lib.mjs";
 
 // pnpm uses drive-local stores on Windows. Keep the isolated checkout on the
 // repository volume so --offline proves reuse of the store populated by the
@@ -18,12 +18,15 @@ try {
   const copiedLockfile = await readFile(join(temporaryRoot, "pnpm-lock.yaml"), "utf8");
   const authorityLockfile = await readFile(join(repositoryRoot, "pnpm-lock.yaml"), "utf8");
   assert.equal(copiedLockfile, authorityLockfile);
+  const lockfileSha256 = sha256Utf8Lf(authorityLockfile);
+  assert.equal(sha256Utf8Lf(copiedLockfile), lockfileSha256);
   reportAndExit({
     schemaVersion: "1.0.0",
     check: "CLEAN_FROZEN_LOCKFILE_OFFLINE_INSTALL",
     result: "PASS",
     temporaryCheckout: true,
     lockfileUnchanged: true,
+    lockfileSha256,
     output: output.split(/\r?\n/).at(-1) ?? "",
   });
 } finally {

@@ -1,5 +1,4 @@
 import { spawnSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import { describe, expect, test } from "vitest";
@@ -42,13 +41,14 @@ describe("repository toolchain consistency", () => {
     });
   }
 
-  test("accepts the current empty-workspace topology", async () => {
-    const [workspace, buildConfig] = await Promise.all([
-      readFile(resolve(root, "pnpm-workspace.yaml"), "utf8"),
-      readFile(resolve(root, "tsconfig.build.json"), "utf8").then(JSON.parse),
-    ]);
+  test("accepts the historical synthetic empty-workspace topology", () => {
     expect(
-      validateFixture(workspace, buildConfig.references, [toolchainProject], []),
+      validateFixture(
+        "packages: []\n",
+        [{ path: "./tests/qualification/toolchain" }],
+        [toolchainProject],
+        [],
+      ),
     ).toMatchObject({
       workspacePackages: [],
       packageProjectReferences: [],

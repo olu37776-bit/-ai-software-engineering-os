@@ -14,7 +14,6 @@
   },
   "packageManager": {
     "lockfileVersion": "9.0",
-    "lockfileSha256": "13af515bb4f8ba46236183876a97f4e3817d6aca724da4a5f1ce987311eae998",
     "lockfileHashPolicy": "SHA256_UTF8_LF_NORMALIZED",
     "frozenInstallCommand": "pnpm install --frozen-lockfile",
     "dependencyBuildPolicy": "DENY_UNLESS_ALLOW_BUILDS",

@@ -31,7 +31,8 @@ for (const [name, version] of Object.entries(packageManifest.devDependencies)) {
 }
 
 const lockfileSha256 = await sha256Utf8LfFile("pnpm-lock.yaml");
-assert.equal(lockfileSha256, toolchain.packageManager.lockfileSha256);
+assert.equal("lockfileSha256" in toolchain.packageManager, false);
+assert.match(lockfileSha256, /^[0-9a-f]{64}$/);
 
 reportAndExit({
   schemaVersion: "1.0.0",

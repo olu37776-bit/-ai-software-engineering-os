@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-TOOLCHAIN-TRANSITION-REMEDIATION-ISSUE-24-2026-08-30-01",
+  "executionType": "P1-O01_TOOLCHAIN_TRANSITION_REMEDIATION",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Remove snapshot-coupled toolchain qualification before P1-O02",
+  "riskClass": "R3",
+  "status": "IN_PROGRESS",
+  "startedAt": "2026-08-30T11:43:24Z",
+  "implementationBranch": "phase-1/p1-o01-toolchain-transition-remediation-issue-24",
+  "baseCommit": "a8cff3ea9589798fd65ee981061508a3026657d8",
+  "trackingIssue": 24,
+  "authorityRefs": [
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/verification-plan.json",
+    "docs/decisions/ADR-0007-typescript-toolchain-baseline.md"
+  ],
+  "purpose": [
+    "Remove the historical lockfile content snapshot from toolchain-version authority while retaining deterministic live lockfile integrity Evidence.",
+    "Make the historical empty-workspace topology fixture synthetic and independent from live repository topology.",
+    "Preserve frozen install, generic topology and fail-closed toolchain qualification behavior."
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "issue24Verified": false,
+    "writeScopeAmended": false,
+    "acceptedAdrChanged": false,
+    "p1O02Resumed": false,
+    "contractImplementationChanged": false,
+    "productionRuntimeChanged": false
+  },
+  "verification": [],
+  "evidenceRefs": [],
+  "remainingGaps": [
+    "Issue #24 requires independent verification before any VERIFIED declaration.",
+    "P1-O02 remains blocked until the remediation and a new resume Gate are independently VERIFIED and merged."
+  ]
+}
