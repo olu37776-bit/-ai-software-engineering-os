@@ -945,6 +945,9 @@ function evaluateCondition(
     const result = evaluateCondition(condition.condition, input, constants);
     return { ok: result.ok, matched: result.ok && !result.matched };
   }
+  if (!("reference" in condition)) {
+    return { ok: false, matched: false };
+  }
   const leaf: LeafCondition = condition;
   const actual = leaf.reference.startsWith("constant.")
     ? constants[leaf.reference.slice("constant.".length)]
@@ -1102,7 +1105,7 @@ function mergeRequirements(
   }
   const merged: {
     permissionScopes?: readonly string[];
-    minimumIsolationLevel?: PolicyRequirements["minimumIsolationLevel"];
+    minimumIsolationLevel?: NonNullable<PolicyRequirements["minimumIsolationLevel"]>;
     timeoutMs?: number;
     maxConcurrency?: number;
     postVerificationRequired?: boolean;
