@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyId": "P1-PACKAGE-ARCHITECTURE-1",
+  "dependencyCruiserVersion": "18.2.0",
+  "sourceRoots": ["packages", "scripts/architecture"],
+  "excludedPaths": ["(^|/)dist/", "(^|/)node_modules/", "tests/architecture/fixtures/"],
+  "packages": [
+    {
+      "name": "@aseos/contracts",
+      "root": "packages/contracts",
+      "required": true,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": []
+    },
+    {
+      "name": "@aseos/kernel",
+      "root": "packages/kernel",
+      "required": false,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/contracts"]
+    },
+    {
+      "name": "@aseos/policy",
+      "root": "packages/policy",
+      "required": false,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/contracts"]
+    },
+    {
+      "name": "@aseos/persistence",
+      "root": "packages/persistence",
+      "required": false,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/contracts", "@aseos/kernel"]
+    },
+    {
+      "name": "@aseos/platform",
+      "root": "packages/platform",
+      "required": false,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": [
+        "@aseos/contracts",
+        "@aseos/kernel",
+        "@aseos/observability",
+        "@aseos/persistence",
+        "@aseos/policy"
+      ]
+    },
+    {
+      "name": "@aseos/observability",
+      "root": "packages/observability",
+      "required": false,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/contracts", "@aseos/kernel"]
+    },
+    {
+      "name": "@aseos/windows-process-restricted",
+      "root": "packages/adapters/tool/windows-process-restricted",
+      "required": false,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/contracts", "@aseos/kernel", "@aseos/policy"]
+    },
+    {
+      "name": "@aseos/repository",
+      "root": ".",
+      "required": true,
+      "publicEntryRequired": false,
+      "allowedWorkspaceDependencies": [
+        "@aseos/contracts",
+        "@aseos/kernel",
+        "@aseos/observability",
+        "@aseos/persistence",
+        "@aseos/platform",
+        "@aseos/policy",
+        "@aseos/windows-process-restricted"
+      ]
+    }
+  ],
+  "requiredEdges": [{ "from": "@aseos/repository", "to": "@aseos/contracts" }],
+  "semanticOwnerAuthority": {
+    "registryLoader": "@aseos/contracts#loadContractRegistry",
+    "inventoryValidator": "@aseos/contracts#validateContractInventory"
+  }
+}

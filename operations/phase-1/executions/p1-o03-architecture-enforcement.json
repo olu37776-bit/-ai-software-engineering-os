@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O03-ARCHITECTURE-ENFORCEMENT-2026-08-30-01",
+  "operationId": "P1-O03",
+  "writeScopeOperationId": "P1-O03",
+  "title": "Architecture dependency and semantic-owner enforcement",
+  "riskClass": "R3",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-08-30T13:54:16Z",
+  "completedAt": "2026-08-30T14:48:29Z",
+  "implementationBranch": "phase-1/p1-o03-architecture-enforcement",
+  "baseCommit": "bd0efb007728aae65d46f4f776b090150e06193f",
+  "implementationCommit": "60e832aae4426a0fc076109821029addf197d106",
+  "implementationTree": "43d1ab3bc2cac1b651d3746f2d86dd652fff711f",
+  "authorityRefs": [
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/verification-plan.json",
+    "docs/engineering/repository-blueprint.md",
+    "docs/engineering/engineering-standard.md",
+    "docs/engineering/quality-gates.md"
+  ],
+  "purpose": [
+    "Enforce the live package dependency DAG, public entries and dependency direction.",
+    "Fail closed on cycles, deep imports, dependency inversions and duplicate semantic owners.",
+    "Produce P1-V04-ARCHITECTURE implementation Evidence without adding future packages or production runtime semantics."
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "p1O04Started": false,
+    "productionRuntimeChanged": false
+  },
+  "remediations": [
+    {
+      "findingId": "P1-O03-CI-01",
+      "reviewedImmutableHead": "52451049c5069a4f5e932f98ed648c2dd9aa6cc3",
+      "findingEvidence": {
+        "qualityWorkflowRunId": 33316238004,
+        "windowsAttemptJobs": [99270102262, 99270461712],
+        "linuxAttemptJobs": [99270102368, 99270462607],
+        "m0WorkflowRunId": 33316237994
+      },
+      "diagnosis": "Two Windows clean authority rebuild attempts passed the quality baseline and then timed out in different existing Contract fixture tests during the second root test run; assertions, Linux, M0 and P1-V04 all passed.",
+      "change": "Run the root Vitest suite with maxWorkers=1 so high-I/O fixture tests are scheduled deterministically without changing the 10 second timeout, assertions, coverage or the separate architecture suite.",
+      "qualifiedImplementationCommit": "6200fc4cef958b0bf35f89825e0eb75ae1b8e93a",
+      "qualifiedImplementationTree": "9075b22842436201ace3a3958276b61e8dbb2e7c",
+      "result": "IMPLEMENTED"
+    },
+    {
+      "findingId": "P1-O03-IV-01",
+      "reviewedImmutableHead": "52885e39084fba34c08aa270e04b93554c2e3114",
+      "diagnosis": "Relative imports resolved across governed package roots were recorded as workspace edges but were not classified as deep imports, allowing a package to reach another package's internal source path.",
+      "change": "Classify every resolved relative import that crosses governed package roots as DEEP_IMPORT while preserving public package-entry imports, direction, cycle and unresolved-import checks.",
+      "executableRegression": "Real dependency-cruiser rejects packages/policy/src/probe.mjs importing ../../contracts/src/internal.mjs.",
+      "qualifiedImplementationCommit": "60e832aae4426a0fc076109821029addf197d106",
+      "qualifiedImplementationTree": "43d1ab3bc2cac1b651d3746f2d86dd652fff711f",
+      "result": "IMPLEMENTED"
+    },
+    {
+      "findingId": "P1-O03-IV-02",
+      "reviewedImmutableHead": "52885e39084fba34c08aa270e04b93554c2e3114",
+      "diagnosis": "Package records were selected by manifest name, so a manifest at an existing governed root with an unexpected name could bypass that root's public-entry and workspace-dependency checks.",
+      "change": "Select existing governed manifests by canonical root, reject a non-canonical manifest name, and continue evaluating public entries and workspace dependencies under the expected package policy.",
+      "executableRegression": "Package-graph evaluation reports the name mismatch together with missing public entry, dependency inversion and non-canonical workspace range.",
+      "qualifiedImplementationCommit": "60e832aae4426a0fc076109821029addf197d106",
+      "qualifiedImplementationTree": "43d1ab3bc2cac1b651d3746f2d86dd652fff711f",
+      "result": "IMPLEMENTED"
+    }
+  ],
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight and final scope",
+      "result": "PASS",
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O03",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "operationStartGateRequired": false,
+      "immutableAuthorityFilesVerified": 25,
+      "scopeViolations": 0
+    },
+    {
+      "check": "P1-V04-ARCHITECTURE",
+      "result": "PASS",
+      "governedPackages": 2,
+      "packageEdges": 1,
+      "modules": 18,
+      "moduleDependencies": 40,
+      "semanticOwners": 73,
+      "architectureTestsPassed": 9
+    },
+    {
+      "check": "executable fail-closed architecture fixtures",
+      "result": "PASS",
+      "deepImportRejected": true,
+      "relativeCrossPackageDeepImportRejected": true,
+      "governedRootPackageNameMismatchRejected": true,
+      "mismatchedNamePublicEntryAndDependencyChecksEnforced": true,
+      "moduleCycleRejected": true,
+      "packageCycleRejected": true,
+      "dependencyInversionRejected": true,
+      "duplicateSemanticOwnerRejected": true,
+      "futurePolicyDirectionEnforced": true
+    },
+    {
+      "check": "quality and clean build/test",
+      "result": "PASS",
+      "testFilesPassed": 16,
+      "testsPassed": 91,
+      "testsFailed": 0,
+      "rootVitestMaxWorkers": 1,
+      "testTimeoutChanged": false,
+      "testsSkipped": 0
+    },
+    {
+      "check": "clean frozen-lockfile offline install",
+      "result": "PASS",
+      "lockfileUnchanged": true,
+      "lockfileSha256": "b6a1b9d44f3ef4af01543e3355c5ee0fab5c98d0d065b63ed7092b4bbbeec3c2"
+    },
+    {
+      "check": "P1-V00 / M0 regression",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "check": "Linux and Windows GitHub qualification",
+      "result": "PENDING_NEW_IMMUTABLE_HEAD_PUBLICATION"
+    }
+  ],
+  "evidenceRefs": ["operations/phase-1/evidence/o03/p1-v04-architecture.json"],
+  "remainingGaps": [
+    "The orchestrator must publish the remediated immutable head and record Linux, Windows and M0 workflow PASS.",
+    "P1-O03 requires independent verification and protected-main post-merge verification before any VERIFIED declaration."
+  ]
+}

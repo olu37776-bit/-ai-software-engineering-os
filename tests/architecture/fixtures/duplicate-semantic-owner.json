@@ -1,0 +1,18 @@
+{
+  "active": [
+    {
+      "contractId": "aseos.fixture.same-semantic",
+      "canonicalName": "SameSemantic",
+      "canonicalOwner": "packages/contracts",
+      "authorityPath": "fixtures/one.schema.json"
+    }
+  ],
+  "planned": [
+    {
+      "contractId": "aseos.fixture.same-semantic",
+      "canonicalName": "SameSemanticElsewhere",
+      "canonicalOwner": "packages/platform",
+      "authorityPath": "fixtures/two.schema.json"
+    }
+  ]
+}
