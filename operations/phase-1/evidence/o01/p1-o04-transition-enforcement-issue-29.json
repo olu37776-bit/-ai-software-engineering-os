@@ -8,8 +8,8 @@
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "baseCommit": "69804341c21c220863389571d9b5be8796eb0382",
-    "implementationCommit": "1ab4c97963bd888db223c194f149c24bf8b0302f",
-    "implementationTree": "8479632cb8ba859064dcca46a932c1e10d9c4c79",
+    "implementationCommit": "1bf4de360f18c1daa08b421243bc62790689bc21",
+    "implementationTree": "199b30db51da5a70a713c98b0a1e2c97e6e2ccf6",
     "branch": "phase-1/p1-o01-p1-o04-transition-enforcement-issue-29"
   },
   "scope": {
@@ -54,12 +54,15 @@
     "ISSUE29-PRE-IV-02",
     "ISSUE29-PRE-IV-03",
     "ISSUE29-PRE-IV-04",
-    "ISSUE29-CI-01"
+    "ISSUE29-CI-01",
+    "ISSUE29-CI-02"
   ],
   "enforcedOutcome": {
     "rawGitPaths": "NUL_DELIMITED_STRICT_UTF8_CANONICAL",
     "m0EventBinding": "EXACT_BASE_HEAD_BRANCH_SCOPE_REPORT",
     "requiredCheckProducer": ".github/workflows/m0-independent-verify.yml#verify",
+    "authorityTextHash": "STRICT_UTF8_CANONICAL_LF_WITH_MIXED_AND_LONE_CR_DENIAL",
+    "artifactHash": "RAW_BYTES",
     "p1O04ReleaseSequence": [
       "PRELIMINARY_SCOPE_AMENDMENT_MAIN",
       "TRANSITION_ENFORCEMENT_IMPLEMENTATION_AND_REVIEWED_HEAD",

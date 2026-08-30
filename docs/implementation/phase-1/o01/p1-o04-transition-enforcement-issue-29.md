@@ -29,7 +29,8 @@ Each changes from `["P1-O02"]` to `["P1-O02", "P1-O04"]`. The amendment cannot s
 - Architecture suite: 9 tests passed.
 - Quality, clean build/test, frozen offline install, M0 14/14, scope 0 violations: PASS.
 - `ISSUE29-CI-01` is remediated by installing the same pinned M0 Python dependencies on both quality platforms before the integration suite; a regression assertion locks the versions and step ordering.
-- Implementation commit: `1ab4c97963bd888db223c194f149c24bf8b0302f`.
-- Implementation tree: `8479632cb8ba859064dcca46a932c1e10d9c4c79`.
+- `ISSUE29-CI-02` is remediated by canonical LF hashing for UTF-8 text authorities while preserving raw artifact hashing, plus Git-object construction of control-character attack paths on every platform. CRLF passes; mixed/lone CR and non-canonical paths remain denied.
+- Implementation commit: `1bf4de360f18c1daa08b421243bc62790689bc21`.
+- Implementation tree: `199b30db51da5a70a713c98b0a1e2c97e6e2ccf6`.
 
 No VERIFIED claim is made here. Immutable-head GitHub qualification and independent read-only verification remain required.

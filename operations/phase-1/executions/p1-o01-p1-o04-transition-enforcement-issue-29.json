@@ -12,8 +12,8 @@
   "implementationBranch": "phase-1/p1-o01-p1-o04-transition-enforcement-issue-29",
   "baseCommit": "69804341c21c220863389571d9b5be8796eb0382",
   "trackingIssue": 29,
-  "implementationCommit": "1ab4c97963bd888db223c194f149c24bf8b0302f",
-  "implementationTree": "8479632cb8ba859064dcca46a932c1e10d9c4c79",
+  "implementationCommit": "1bf4de360f18c1daa08b421243bc62790689bc21",
+  "implementationTree": "199b30db51da5a70a713c98b0a1e2c97e6e2ccf6",
   "authorityRefs": [
     "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
     "operations/phase-1/operation.json",
@@ -54,6 +54,11 @@
       "findingId": "ISSUE29-CI-01",
       "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
       "summary": "Install the same pinned jsonschema and referencing dependencies before the cross-platform quality integration suite."
+    },
+    {
+      "findingId": "ISSUE29-CI-02",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "summary": "Canonicalize UTF-8 text authority hashes across LF/CRLF and construct control-character attack paths through Git objects instead of the host filesystem."
     }
   ],
   "verification": [
