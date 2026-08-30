@@ -255,7 +255,22 @@
         "tests/qualification/policy/**",
         "docs/implementation/phase-1/o04/**",
         "operations/phase-1/evidence/o04/**",
-        "operations/phase-1/executions/p1-o04-*.json"
+        "operations/phase-1/executions/p1-o04-*.json",
+        "package.json",
+        "packages/contracts/README.md",
+        "packages/contracts/planned-contracts.json",
+        "packages/contracts/schema-inventory.json",
+        "packages/contracts/schema-registry.json",
+        "packages/contracts/src/types.generated.ts",
+        "packages/contracts/type-bindings.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "tests/contract/inventory-integrity.test.mjs",
+        "tests/contract/registry-integrity.test.mjs",
+        "tests/contract/runtime-validator.test.mjs",
+        "tests/contract/schema-type-consistency.test.mjs",
+        "tsconfig.build.json",
+        "vitest.config.mjs"
       ],
       "deniedPathGlobs": [],
       "semanticConstraints": [
