@@ -1348,14 +1348,8 @@ export function evaluatePolicy(snapshotValue: unknown, inputValue: unknown): Pol
     );
   }
   const typedSnapshot: PolicySnapshot = {
-    schemaVersion: "1.0.0",
-    snapshotId: snapshotValue["snapshotId"],
-    policySetId: snapshotValue["policySetId"] as string,
-    policyVersion: snapshotValue["policyVersion"] as string,
-    policyHash: snapshotValue["policyHash"],
+    ...snapshotValue,
     compiledPolicySet: compiled.value,
-    compilerVersion: snapshotValue["compilerVersion"] as string,
-    createdAt: snapshotValue["createdAt"] as string,
   };
   const invariantIds = hardInvariantViolations(inputValue);
   if (invariantIds.length > 0) {
