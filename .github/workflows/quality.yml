@@ -7,6 +7,11 @@ on:
       - "phase-1/**"
   pull_request:
   workflow_dispatch:
+    inputs:
+      target_sha:
+        description: Exact protected-main merge commit to qualify
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -29,10 +34,26 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
     steps:
-      - name: Checkout exact commit
+      - name: Checkout exact automated-event commit
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
+
+      - name: Checkout exact protected-main qualification target
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ inputs.target_sha }}
+          fetch-depth: 0
+
+      - name: Checkout protected-main dispatch controller
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: .post-merge-controller
+          fetch-depth: 1
 
       - name: Install exact Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -42,6 +63,16 @@ jobs:
 
       - name: Install pinned independent verifier dependencies
         run: python -m pip install --disable-pip-version-check --no-input "jsonschema==4.25.1" "referencing==0.36.2"
+
+      - name: Resolve exact protected-main qualification target
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          POST_MERGE_TARGET_SHA: ${{ inputs.target_sha }}
+          POST_MERGE_CURRENT_MAIN_SHA: ${{ github.sha }}
+          POST_MERGE_REF_NAME: ${{ github.ref_name }}
+        run: |
+          node .post-merge-controller/scripts/toolchain/resolve-post-merge-target.mjs > .post-merge-scope.env
+          node -e 'const fs = require("node:fs"); fs.appendFileSync(process.env.GITHUB_ENV, fs.readFileSync(".post-merge-scope.env")); fs.rmSync(".post-merge-scope.env"); fs.rmSync(".post-merge-controller", { recursive: true, force: true });'
 
       - name: Activate exact pnpm
         run: |
@@ -55,11 +86,16 @@ jobs:
         run: pnpm run verify:versions
 
       - name: Verify operation-aware Phase 1 scope
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         env:
           PHASE1_SCOPE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
           PHASE1_SCOPE_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
           PHASE1_SCOPE_EVENT: ${{ github.event_name }}
           PHASE1_SCOPE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: pnpm run verify:scope
+
+      - name: Verify exact protected-main Phase 1 scope
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: pnpm run verify:scope
 
       - name: Quality baseline
