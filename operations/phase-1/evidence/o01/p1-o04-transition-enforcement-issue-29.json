@@ -8,8 +8,8 @@
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "baseCommit": "69804341c21c220863389571d9b5be8796eb0382",
-    "implementationCommit": "1bf4de360f18c1daa08b421243bc62790689bc21",
-    "implementationTree": "199b30db51da5a70a713c98b0a1e2c97e6e2ccf6",
+    "implementationCommit": "f411a8df2eea570f5e95b39f742ea8c6a02b20b6",
+    "implementationTree": "cdf32b7f971a6313c20286cbd3ec32ca30b58f13",
     "branch": "phase-1/p1-o01-p1-o04-transition-enforcement-issue-29"
   },
   "scope": {
@@ -55,7 +55,8 @@
     "ISSUE29-PRE-IV-03",
     "ISSUE29-PRE-IV-04",
     "ISSUE29-CI-01",
-    "ISSUE29-CI-02"
+    "ISSUE29-CI-02",
+    "ISSUE29-CI-03"
   ],
   "enforcedOutcome": {
     "rawGitPaths": "NUL_DELIMITED_STRICT_UTF8_CANONICAL",

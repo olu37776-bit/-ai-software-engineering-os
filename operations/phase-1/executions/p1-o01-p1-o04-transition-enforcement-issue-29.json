@@ -12,8 +12,8 @@
   "implementationBranch": "phase-1/p1-o01-p1-o04-transition-enforcement-issue-29",
   "baseCommit": "69804341c21c220863389571d9b5be8796eb0382",
   "trackingIssue": 29,
-  "implementationCommit": "1bf4de360f18c1daa08b421243bc62790689bc21",
-  "implementationTree": "199b30db51da5a70a713c98b0a1e2c97e6e2ccf6",
+  "implementationCommit": "f411a8df2eea570f5e95b39f742ea8c6a02b20b6",
+  "implementationTree": "cdf32b7f971a6313c20286cbd3ec32ca30b58f13",
   "authorityRefs": [
     "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
     "operations/phase-1/operation.json",
@@ -59,6 +59,11 @@
       "findingId": "ISSUE29-CI-02",
       "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
       "summary": "Canonicalize UTF-8 text authority hashes across LF/CRLF and construct control-character attack paths through Git objects instead of the host filesystem."
+    },
+    {
+      "findingId": "ISSUE29-CI-03",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "summary": "Use non-NFC path attacks across platforms and retain direct control-character Git-object injection where the host Git permits it."
     }
   ],
   "verification": [
