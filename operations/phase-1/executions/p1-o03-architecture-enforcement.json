@@ -5,10 +5,13 @@
   "writeScopeOperationId": "P1-O03",
   "title": "Architecture dependency and semantic-owner enforcement",
   "riskClass": "R3",
-  "status": "IMPLEMENTING",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T13:54:16Z",
+  "completedAt": "2026-08-30T14:05:24Z",
   "implementationBranch": "phase-1/p1-o03-architecture-enforcement",
   "baseCommit": "bd0efb007728aae65d46f4f776b090150e06193f",
+  "implementationCommit": "42f97ba2b529cf9bd533fdb089a493dcfc6bca1e",
+  "implementationTree": "654a40e4e6d4e8793b5c307a3c5594341a2da5db",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -29,9 +32,64 @@
     "p1O04Started": false,
     "productionRuntimeChanged": false
   },
-  "verification": [],
-  "evidenceRefs": [],
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight and final scope",
+      "result": "PASS",
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O03",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "operationStartGateRequired": false,
+      "immutableAuthorityFilesVerified": 25,
+      "scopeViolations": 0
+    },
+    {
+      "check": "P1-V04-ARCHITECTURE",
+      "result": "PASS",
+      "governedPackages": 2,
+      "packageEdges": 1,
+      "modules": 18,
+      "moduleDependencies": 40,
+      "semanticOwners": 73,
+      "architectureTestsPassed": 7
+    },
+    {
+      "check": "executable fail-closed architecture fixtures",
+      "result": "PASS",
+      "deepImportRejected": true,
+      "moduleCycleRejected": true,
+      "packageCycleRejected": true,
+      "dependencyInversionRejected": true,
+      "duplicateSemanticOwnerRejected": true,
+      "futurePolicyDirectionEnforced": true
+    },
+    {
+      "check": "quality and clean build/test",
+      "result": "PASS",
+      "testFilesPassed": 16,
+      "testsPassed": 89,
+      "testsFailed": 0
+    },
+    {
+      "check": "clean frozen-lockfile offline install",
+      "result": "PASS",
+      "lockfileUnchanged": true,
+      "lockfileSha256": "b6a1b9d44f3ef4af01543e3355c5ee0fab5c98d0d065b63ed7092b4bbbeec3c2"
+    },
+    {
+      "check": "P1-V00 / M0 regression",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "check": "Linux and Windows GitHub qualification",
+      "result": "PENDING_NEW_IMMUTABLE_HEAD_PUBLICATION"
+    }
+  ],
+  "evidenceRefs": ["operations/phase-1/evidence/o03/p1-v04-architecture.json"],
   "remainingGaps": [
-    "P1-O03 implementation, cross-platform qualification and independent verification remain pending."
+    "The orchestrator must publish the final immutable head and record Linux, Windows and M0 workflow PASS.",
+    "P1-O03 requires independent verification and protected-main post-merge verification before any VERIFIED declaration."
   ]
 }
