@@ -6,11 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Issue #44 Authority owner qualification remediation",
   "riskClass": "R3",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T20:05:00Z",
+  "completedAt": "2026-08-30T20:12:00Z",
   "implementationBranch": "phase-1/p1-o01-authority-owner-test-remediation-issue-44",
   "baseCommit": "9196de777663d4753fbb1b7001b9d150aedc08b4",
   "trackingIssue": 44,
+  "implementationCommit": "bd11415ad0894d83f483d4334778df9a6591ef42",
+  "implementationTree": "b369111109352cf81e5dad1b24d09a8b93a7cd32",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -19,12 +22,77 @@
     "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/44"
   ],
   "claimBoundary": {
-    "maximumImplementationClaim": "IN_PROGRESS",
+    "maximumImplementationClaim": "IMPLEMENTED",
     "p1O04Started": false,
     "p1O04Implemented": false,
     "acceptedAdrChanged": false,
     "phase1ScopeChanged": false,
     "authorityLockChanged": false,
-    "requiredCheckIdentityChanged": false
-  }
+    "requiredCheckIdentityChanged": false,
+    "independentVerificationRequired": true
+  },
+  "remediationFindings": [
+    {
+      "findingId": "P1-O04-GOV-IV-01",
+      "status": "REMEDIATED_PENDING_INDEPENDENT_REVERIFICATION",
+      "summary": "Replace the stale hard-coded single-owner expectation with Authority-declared owner acceptance and unrelated-operation denial."
+    },
+    {
+      "findingId": "P1-O01-44-CI-01",
+      "status": "REMEDIATED",
+      "summary": "Use the canonical authorityFiles collection when deriving the governed path owner set."
+    }
+  ],
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight",
+      "result": "PASS",
+      "executionHead": "ea3a1ef484a6443f0842e893c6bb696d857929c7",
+      "m0Run": 33332668584,
+      "m0Job": 99313949120,
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O01",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "scopeViolations": 0
+    },
+    {
+      "check": "Authority owner qualification logic",
+      "result": "PASS",
+      "allDeclaredOwnersRequired": true,
+      "unrelatedOperationDenied": true,
+      "currentAndAuthorizedFutureOwnershipSupported": true
+    },
+    {
+      "check": "immutable code-head qualification",
+      "result": "PASS",
+      "m0Run": 33332827539,
+      "m0Job": 99314380683,
+      "qualityRun": 33332827506,
+      "linuxJob": 99314401587,
+      "windowsJob": 99314401744,
+      "aggregatorJob": 99314832657,
+      "rootTestFilesPassed": 19,
+      "rootTestsPassed": 125,
+      "architectureTestsPassed": 9,
+      "cleanBuildTest": "PASS"
+    },
+    {
+      "check": "required verify authority uniqueness",
+      "result": "PASS",
+      "verifyProducers": 1,
+      "producer": ".github/workflows/m0-independent-verify.yml#verify"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o01-authority-owner-test-remediation-issue-44.json",
+    "docs/implementation/phase-1/o01/authority-owner-test-remediation-issue-44.md",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/44",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/45"
+  ],
+  "remainingGaps": [
+    "Immutable Evidence-head GitHub qualification remains pending.",
+    "Independent verification is required before this remediation can be VERIFIED.",
+    "A new exact-five-path final-amendment Gate remains required.",
+    "P1-O04 has not started."
+  ]
 }
