@@ -34,39 +34,18 @@
     ],
     "authorityOwnershipDeltas": [
       {
-        "afterAllowedOperationIds": [
-          "P1-O02",
-          "P1-O04",
-          "P1-O05"
-        ],
-        "beforeAllowedOperationIds": [
-          "P1-O02",
-          "P1-O04"
-        ],
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05"],
+        "beforeAllowedOperationIds": ["P1-O02", "P1-O04"],
         "path": "packages/contracts/planned-contracts.json"
       },
       {
-        "afterAllowedOperationIds": [
-          "P1-O02",
-          "P1-O04",
-          "P1-O05"
-        ],
-        "beforeAllowedOperationIds": [
-          "P1-O02",
-          "P1-O04"
-        ],
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05"],
+        "beforeAllowedOperationIds": ["P1-O02", "P1-O04"],
         "path": "packages/contracts/schema-inventory.json"
       },
       {
-        "afterAllowedOperationIds": [
-          "P1-O02",
-          "P1-O04",
-          "P1-O05"
-        ],
-        "beforeAllowedOperationIds": [
-          "P1-O02",
-          "P1-O04"
-        ],
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05"],
+        "beforeAllowedOperationIds": ["P1-O02", "P1-O04"],
         "path": "packages/contracts/schema-registry.json"
       }
     ],
