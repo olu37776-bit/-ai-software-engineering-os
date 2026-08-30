@@ -1,0 +1,223 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O04-P1-V05-POLICY-2026-08-30-01",
+  "evidenceType": "P1V05PolicyImplementationEvidence",
+  "gateStepId": "P1-V05-POLICY",
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-08-30T22:07:00Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "pullRequest": 52,
+    "branch": "phase-1/p1-o04-deterministic-policy",
+    "authorizedBase": "7ceff40760f4c8477ea9d74dfc10b591f2e9d25c",
+    "qualifiedImplementationCommit": "a1bd6b3374b9a1b8e51ab6431b2b36892e05aef9",
+    "qualifiedImplementationTree": "0c84e148ebf6a17ea366ef9fb3cd7172343d6031"
+  },
+  "authorizationPreflight": {
+    "result": "PASS",
+    "mode": "OPERATION_EXECUTION",
+    "operationId": "P1-O04",
+    "writeScopeOperationId": "P1-O04",
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "operationStartGateRequired": true,
+    "operationStartGateDecision": "PASS",
+    "operationStartGateMainCommit": "7ceff40760f4c8477ea9d74dfc10b591f2e9d25c",
+    "immutableAuthorityFilesVerified": 25,
+    "scopeViolations": 0
+  },
+  "contracts": {
+    "result": "PASS",
+    "registryEntries": 36,
+    "activeInventoryContracts": 20,
+    "plannedInventoryContracts": 53,
+    "typeBindings": 24,
+    "activated": [
+      "CapabilityManifest",
+      "PolicyEvaluationInput",
+      "PolicyRule",
+      "PolicySet",
+      "PolicySnapshot"
+    ],
+    "existingDecisionAuthority": "PolicyDecision",
+    "draft": "JSON Schema 2020-12",
+    "positiveExamples": 5,
+    "negativeExamples": 5,
+    "firstSliceSuiteMutated": false
+  },
+  "canonicalizationDeterminism": {
+    "evidenceType": "CanonicalizationDeterminismResult",
+    "result": "PASS",
+    "canonicalDomain": "I-JSON-compatible Policy values",
+    "serialization": "@aseos/contracts canonicalJson",
+    "hash": "SHA-256 over canonical UTF-8 JSON",
+    "keyOrderIndependent": true,
+    "negativeZeroCanonicalized": true,
+    "unicodeNormalizationApplied": false,
+    "nonFiniteRejected": true,
+    "loneSurrogateRejected": true,
+    "cyclesAndAccessorsRejected": true,
+    "snapshotSelfHashing": false,
+    "capturedClockRequired": true,
+    "replayByteStable": true
+  },
+  "failClosedProperties": {
+    "evidenceType": "FailClosedPropertyResult",
+    "result": "PASS",
+    "defaultDeny": true,
+    "denyOverrides": true,
+    "ruleOrderInvariantRuns": 20,
+    "hardInvariantsBeforePolicy": true,
+    "invalidSchemaOrSemanticInput": "INDETERMINATE",
+    "conditionTypeMismatch": "INDETERMINATE",
+    "requirementConflict": "INDETERMINATE",
+    "requirementsUnionCanonical": true,
+    "noEvaluationIo": true,
+    "noSystemClock": true,
+    "dynamicCodeForbidden": true
+  },
+  "mutationQualification": {
+    "evidenceType": "PolicyMutationResult",
+    "result": "PASS",
+    "engine": "SCOPED_SEMANTIC_MUTATION_MATRIX",
+    "mutationCases": 8,
+    "killedMutations": 8,
+    "survivingMutations": 0,
+    "cases": [
+      "default-allow",
+      "deny-override-removal",
+      "rule-order-dependence",
+      "hard-invariant-bypass",
+      "requirement-conflict-coercion",
+      "unknown-reference-acceptance",
+      "unknown-operator-acceptance",
+      "evaluation-time-clock"
+    ],
+    "executableTest": "tests/qualification/policy/p1-v05-policy.test.mjs"
+  },
+  "restrictedYaml": {
+    "result": "PASS",
+    "authorityBytes": false,
+    "indentation": "2-space block-only",
+    "crlfNormalization": "WHOLE_FILE_ONLY",
+    "duplicateKeysRejected": true,
+    "anchorsAliasesTagsMergeRejected": true,
+    "flowCollectionsRejected": true,
+    "singleQuotesAndBlockScalarsRejected": true,
+    "includeEnvironmentTemplateRejected": true,
+    "prototypeKeysRejected": true,
+    "boundedBytesLinesDepthNodesAndScalars": true
+  },
+  "evaluator": {
+    "result": "PASS",
+    "package": "@aseos/policy",
+    "canonicalOwner": "packages/policy",
+    "publicEntryOnly": true,
+    "dependencies": [
+      "@aseos/contracts"
+    ],
+    "outcomes": [
+      "ALLOW",
+      "ALLOW_WITH_REQUIREMENTS",
+      "DENY",
+      "INDETERMINATE"
+    ],
+    "registeredOperators": 15,
+    "maximumConditionDepth": 4,
+    "hardInvariantCount": 3,
+    "productionKernelIntegration": false,
+    "workflowRuntimeSemantics": false
+  },
+  "qualification": {
+    "result": "PASS",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "frozenLockfileInstall": "PASS",
+    "format": "PASS",
+    "lint": "PASS",
+    "generatedTypes": "PASS",
+    "typecheck": "PASS",
+    "rootTestFilesPassed": 21,
+    "rootTestsPassed": 139,
+    "rootTestsFailed": 0,
+    "policyTestsPassed": 8,
+    "architectureTestsPassed": 9,
+    "schemaMetaValidation": "PASS",
+    "schemaRegistryValidation": "PASS",
+    "cleanAuthorityRebuild": "PASS",
+    "linuxX64": "PASS",
+    "windowsX64": "PASS",
+    "m0Independent": "PASS",
+    "qualityWorkflowRunId": 33338138070,
+    "linuxJobId": 99328705525,
+    "windowsJobId": 99328705650,
+    "aggregatorJobId": 99329137490,
+    "m0WorkflowRunId": 33338138075,
+    "verifyJobId": 99328681485
+  },
+  "remediationHistory": [
+    {
+      "findingId": "P1-O04-CI-01",
+      "class": "EXAMPLE_SUITE_OWNERSHIP_AND_FORMATTING",
+      "result": "CLOSED",
+      "resolution": "Policy examples remain under the P1-O04-owned directory and are executed by dedicated Contract tests without claiming P1-O02 first-slice coverage; placeholder bytes and frozen formatting drift were removed."
+    },
+    {
+      "findingId": "P1-O04-CI-02",
+      "class": "STRICT_TYPE_NARROWING",
+      "result": "CLOSED",
+      "resolution": "Condition leaves, YAML line access, Policy arrays, and exact optional properties use explicit fail-closed narrowing under the frozen strict TypeScript/ESLint baseline."
+    },
+    {
+      "findingId": "P1-O04-CI-03",
+      "class": "GENERATED_TYPE_DRIFT",
+      "result": "CLOSED",
+      "resolution": "Public declarations are the exact output of the frozen Contract type generator for all 24 bindings."
+    },
+    {
+      "findingId": "P1-O04-CI-04",
+      "class": "COMPILED_POLICY_SHAPE_DRIFT",
+      "result": "CLOSED",
+      "resolution": "The compiled payload preserves canonical PolicySet selector structure, so snapshots remain schema-valid and replayable."
+    }
+  ],
+  "authority": {
+    "result": "PASS",
+    "authorityLock": "PASS",
+    "authorityHashRefreshPaths": [
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json"
+    ],
+    "acceptedAdrMutations": 0,
+    "frozenGovernanceSemanticMutations": 0,
+    "architectureAuthorityMutations": 0,
+    "workflowFilesChanged": 0,
+    "externalPolicyAuthorityIntroduced": false
+  },
+  "requiredCheckAuthority": {
+    "result": "PASS",
+    "verifyProducerCount": 1,
+    "verifyOwner": ".github/workflows/m0-independent-verify.yml",
+    "qualityAggregator": "p1-o01-toolchain-qualify",
+    "collision": false
+  },
+  "independentVerification": {
+    "required": true,
+    "performed": false,
+    "immutableReviewHead": "PENDING_EVIDENCE_PUBLICATION"
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "phase1Verified": false,
+    "productionPolicyRuntimeImplemented": false,
+    "kernelIntegrationImplemented": false,
+    "externalPolicyEngineIntroduced": false
+  },
+  "remainingGaps": [
+    "Publish the Evidence commit and requalify its immutable head on Linux, Windows and the unique M0 verify authority.",
+    "Obtain an independent read-only PASS verdict bound to the exact base and head.",
+    "Merge the exact reviewed head and complete protected-main post-merge verification."
+  ]
+}

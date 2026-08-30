@@ -6,7 +6,7 @@
   "writeScopeOperationId": "P1-O04",
   "title": "Deterministic Policy compiler and evaluator qualification",
   "riskClass": "R4",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-30T21:20:00Z",
   "implementationBranch": "phase-1/p1-o04-deterministic-policy",
   "baseCommit": "7ceff40760f4c8477ea9d74dfc10b591f2e9d25c",
@@ -19,11 +19,25 @@
     "operations/phase-1/evidence/o01/p1-o04-resume-after-issue-29-independent-gate.json"
   ],
   "claimBoundary": {
-    "maximumImplementationClaim": "IN_PROGRESS",
+    "maximumImplementationClaim": "IMPLEMENTED",
     "productionWorkflowRuntimeImplemented": false,
     "kernelIntegrationImplemented": false,
     "externalPolicyAuthorityIntroduced": false,
     "acceptedAdrChanged": false,
     "independentVerificationRequired": true
+  },
+  "completedAt": "2026-08-30T22:07:00Z",
+  "qualifiedImplementationCommit": "a1bd6b3374b9a1b8e51ab6431b2b36892e05aef9",
+  "qualifiedImplementationTree": "0c84e148ebf6a17ea366ef9fb3cd7172343d6031",
+  "evidenceRef": "operations/phase-1/evidence/o04/p1-v05-policy.json",
+  "results": {
+    "writeScope": "PASS",
+    "authorityLock": "PASS",
+    "p1V05": "PASS",
+    "m0Independent": "PASS",
+    "linuxX64": "PASS",
+    "windowsX64": "PASS",
+    "rootTests": "139/139",
+    "architectureTests": "9/9"
   }
 }
