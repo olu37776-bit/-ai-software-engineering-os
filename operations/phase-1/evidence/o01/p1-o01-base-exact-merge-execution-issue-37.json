@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O01-BASE-EXACT-MERGE-EXECUTION-ISSUE-37-2026-08-30-01",
+  "evidenceType": "P1O01BaseExactMergeExecutionEvidence",
+  "decision": "IMPLEMENTED",
+  "operationId": "P1-O01",
+  "trackingIssue": 37,
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "baseCommit": "de5dfba3e1231f74ef1cc17fa8133bcb0c571771",
+    "implementationCommit": "5be297241f1e51543a5a82ca391c14460a5a5696",
+    "implementationTree": "7352f2dbaa069b7777088d172ebd5828e73a899b",
+    "branch": "phase-1/p1-o01-base-exact-merge-execution-issue-37"
+  },
+  "sourceFinding": {
+    "findingId": "ISSUE35-PM-01",
+    "failedMerge": "de5dfba3e1231f74ef1cc17fa8133bcb0c571771",
+    "failedM0Run": 33328909587,
+    "failedM0Job": 99303835545,
+    "failure": "AMBIGUOUS_CHANGED_EXECUTION_RECORD",
+    "currentExecutionBase": "d98c92ed2d54b25e1e2d22031e73261846dd14a4",
+    "historicalExecutionBase": "2336fa3faa9123512f85091f61c4465d64e18233"
+  },
+  "scope": {
+    "result": "PASS",
+    "mode": "OPERATION_EXECUTION",
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "immutableAuthorityFilesVerified": 25,
+    "violations": []
+  },
+  "enforcedOutcome": {
+    "mergeSelection": "UNIQUE_CHANGED_EXECUTION_WITH_BASE_EQUAL_TO_EVENT_BASE",
+    "additionalHistoricalRecords": "VALIDATED_BY_SELECTED_OPERATION_SCOPE_AND_AUTHORITY",
+    "zeroBaseMatchesWithMultipleChangedRecords": "FAIL_CLOSED",
+    "multipleBaseMatches": "FAIL_CLOSED",
+    "singleWrongBaseRecord": "PRESERVED_FOR_MISMATCH_REJECTION",
+    "crossOperationExecutionPath": "NOT_ALLOWED",
+    "requiredCheckProducer": ".github/workflows/m0-independent-verify.yml#verify"
+  },
+  "qualification": {
+    "focusedSelectorTests": {
+      "result": "PASS",
+      "passed": 3,
+      "failed": 0,
+      "totalScopePolicyTests": 28
+    },
+    "quality": {
+      "result": "PASS",
+      "rootTestFilesPassed": 19,
+      "rootTestsPassed": 125,
+      "architectureTestsPassed": 9
+    },
+    "cleanBuildTest": "PASS",
+    "frozenInstall": "PASS",
+    "m0": {
+      "result": "PASS",
+      "runId": 33329183948
+    },
+    "linux": {
+      "result": "PASS",
+      "jobId": 99304581334
+    },
+    "windows": {
+      "result": "PASS",
+      "jobId": 99304581285
+    },
+    "aggregator": {
+      "result": "PASS",
+      "jobId": 99305034216
+    }
+  },
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "verified": false,
+    "issue35PostMergeRecovered": false,
+    "p1O04Started": false,
+    "p1O04Implemented": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false,
+    "independentVerificationRequired": true
+  }
+}

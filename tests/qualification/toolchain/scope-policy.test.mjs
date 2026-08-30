@@ -10,6 +10,7 @@ import {
   resolveOperationDefinition,
   selectEvidenceOperation,
   selectGovernanceAmendmentAuthorizationGate,
+  selectMergeExecutionRecord,
   validateAuthorityLockHashes,
   validateAuthorityLockTransition,
   validateExecutionRecord,
@@ -107,6 +108,57 @@ describe("operation-aware Phase 1 scope policy", () => {
     expect(() => resolveOperationDefinition("P1-O02", operationManifest, ambiguousScope)).toThrow(
       "AMBIGUOUS_OPERATION",
     );
+  });
+
+  test("selects the unique event-base execution when historical records also changed", () => {
+    const eventBase = "a".repeat(40);
+    const currentRecord = {
+      path: "operations/phase-1/executions/p1-o01-base-exact-merge-execution-issue-37.json",
+      execution: { baseCommit: eventBase },
+    };
+    const historicalRecord = {
+      path: "operations/phase-1/executions/p1-o01-post-merge-qualification-dispatch-issue-33.json",
+      execution: { baseCommit: "b".repeat(40) },
+    };
+
+    expect(selectMergeExecutionRecord([historicalRecord, currentRecord], eventBase)).toBe(
+      currentRecord,
+    );
+    expect(
+      validateOperationChangedPaths(
+        ["operations/phase-1/executions/p1-o02-contract-foundation.json"],
+        "P1-O01",
+        writeScope,
+        authorityLock,
+      ),
+    ).toContain("NOT_ALLOWED: operations/phase-1/executions/p1-o02-contract-foundation.json");
+  });
+
+  test("fails closed for zero or multiple event-base execution matches", () => {
+    const eventBase = "a".repeat(40);
+    const historicalRecords = [
+      { path: "historical-one.json", execution: { baseCommit: "b".repeat(40) } },
+      { path: "historical-two.json", execution: { baseCommit: "c".repeat(40) } },
+    ];
+    expect(() => selectMergeExecutionRecord(historicalRecords, eventBase)).toThrow(
+      "MISSING_BASE_MATCHING_CHANGED_EXECUTION_RECORD",
+    );
+
+    const duplicateCurrentRecords = [
+      { path: "current-one.json", execution: { baseCommit: eventBase } },
+      { path: "current-two.json", execution: { baseCommit: eventBase } },
+    ];
+    expect(() => selectMergeExecutionRecord(duplicateCurrentRecords, eventBase)).toThrow(
+      "AMBIGUOUS_BASE_MATCHING_CHANGED_EXECUTION_RECORD",
+    );
+  });
+
+  test("preserves the single-record base mismatch for caller rejection", () => {
+    const record = {
+      path: "single.json",
+      execution: { baseCommit: "b".repeat(40) },
+    };
+    expect(selectMergeExecutionRecord([record], "a".repeat(40))).toBe(record);
   });
 
   test("accepts an O02 Contract fixture under O02 and rejects it under O01", () => {

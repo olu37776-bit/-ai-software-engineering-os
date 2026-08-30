@@ -19,6 +19,7 @@ import {
   P1_O04_START_GATE_PATH,
   resolveOperationDefinition,
   selectEvidenceOperation,
+  selectMergeExecutionRecord,
   selectGovernanceAmendmentAuthorizationGate,
   validateAuthorityLockHashes,
   validateAuthorityLockTransition,
@@ -774,13 +775,8 @@ async function main() {
   assertAncestor(eventBase, headCommit);
   const changedPaths = changedPathsFrom(eventBase, headCommit);
   const changedExecutionRecords = records.filter(({ path }) => changedPaths.includes(path));
-  if (changedExecutionRecords.length > 1) {
-    throw new Error(
-      `AMBIGUOUS_CHANGED_EXECUTION_RECORD: ${changedExecutionRecords.map(({ path }) => path).join(",")}`,
-    );
-  }
-  if (changedExecutionRecords.length === 1) {
-    const [record] = changedExecutionRecords;
+  const record = selectMergeExecutionRecord(changedExecutionRecords, eventBase);
+  if (record) {
     if (validateGovernanceAmendmentExecution(record.execution)) {
       await verifyGovernanceAmendment({
         record,
