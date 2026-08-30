@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-P1-O04-TRANSITION-ENFORCEMENT-SCOPE-AMENDMENT-2026-08-30-01",
+  "executionType": "PHASE_1_GOVERNANCE_AMENDMENT",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Issue #29 P1-O04 transition-enforcement WRITE_SCOPE amendment",
+  "riskClass": "R3",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-08-30T15:58:23Z",
+  "completedAt": "2026-08-30T16:03:46Z",
+  "implementationBranch": "governance/p1-o04-transition-enforcement-scope-amendment",
+  "baseCommit": "18e1a3aef6f4ee6c1b359f3dbc9be102d9e67f67",
+  "implementationCommit": "635075119a197f2f40bebaf9a73c10a623b5f41c",
+  "implementationTree": "af87c89703dcd597585cc88150cf77b9c24e1198",
+  "trackingIssue": 29,
+  "priorAuthorizationGateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
+  "authorityRefs": [
+    "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/authority-lock.json",
+    "docs/roadmap/phase-1-write-scope.md"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "issue29Verified": false,
+    "p1O04Implemented": false,
+    "p1O04Started": false,
+    "productionRuntimeChanged": false
+  },
+  "authorizationBinding": {
+    "finding": "ISSUE29-GATE-01",
+    "gateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
+    "gateCommit": "18e1a3aef6f4ee6c1b359f3dbc9be102d9e67f67",
+    "authorizationBase": "37cdb4d47f446b6b0968c290257b8a86c4e70709",
+    "implementationCommit": "635075119a197f2f40bebaf9a73c10a623b5f41c",
+    "implementationTree": "af87c89703dcd597585cc88150cf77b9c24e1198"
+  },
+  "verification": [
+    {
+      "check": "GOVERNANCE_AMENDMENT preflight",
+      "result": "PASS",
+      "mode": "GOVERNANCE_AMENDMENT",
+      "authorizationBase": "37cdb4d47f446b6b0968c290257b8a86c4e70709",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "violations": 0
+    },
+    {
+      "check": "P1-O01 exact M0 transition-enforcement scope",
+      "result": "PASS",
+      "globalAllowedPathGlobsAdded": [".github/workflows/m0-independent-verify.yml"],
+      "p1O01AllowedPathGlobsAdded": [
+        ".github/workflows/m0-independent-verify.yml",
+        "scripts/governance/verify_m0.py"
+      ],
+      "p1O02ThroughP1O09RejectBoth": true,
+      "unrelatedWorkflowRejected": true
+    },
+    {
+      "check": "Authority Lock",
+      "result": "PASS",
+      "authorityFilesVerified": 32,
+      "unrelatedAuthorityFilesVerified": 30,
+      "pathSetChanged": false,
+      "topLevelFieldsChanged": false,
+      "ownershipChanged": false,
+      "unrelatedHashesChanged": false
+    },
+    {
+      "check": "P1-V00 / M0 regression",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "check": "local quality and clean build",
+      "result": "PASS",
+      "testsPassed": 91,
+      "testsFailed": 0,
+      "frozenOfflineInstall": "PASS"
+    },
+    {
+      "check": "required verify authority uniqueness",
+      "result": "PASS",
+      "verifyProducers": 1,
+      "producer": ".github/workflows/m0-independent-verify.yml#verify"
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o04-transition-enforcement-scope-amendment.json",
+    "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-29.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/29",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/29#issuecomment-5469591574"
+  ],
+  "remainingGaps": [
+    "Issue #29 requires independent verification before any VERIFIED declaration.",
+    "P1-O04 remains blocked until this amendment is independently verified, merged to protected main, and separately released to start.",
+    "No P1-O04 implementation or mutation of the newly authorized workflow and verifier paths occurred."
+  ]
+}
