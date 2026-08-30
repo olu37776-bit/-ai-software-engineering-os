@@ -28,7 +28,8 @@ Each changes from `["P1-O02"]` to `["P1-O02", "P1-O04"]`. The amendment cannot s
 - Root suite: 18 files / 112 tests passed.
 - Architecture suite: 9 tests passed.
 - Quality, clean build/test, frozen offline install, M0 14/14, scope 0 violations: PASS.
-- Implementation commit: `7852733fb31e16350b5a907defffaa0556bd1538`.
-- Implementation tree: `deed7eb3e94e20e6260d90cf1785e086b0e04995`.
+- `ISSUE29-CI-01` is remediated by installing the same pinned M0 Python dependencies on both quality platforms before the integration suite; a regression assertion locks the versions and step ordering.
+- Implementation commit: `1ab4c97963bd888db223c194f149c24bf8b0302f`.
+- Implementation tree: `8479632cb8ba859064dcca46a932c1e10d9c4c79`.
 
 No VERIFIED claim is made here. Immutable-head GitHub qualification and independent read-only verification remain required.
