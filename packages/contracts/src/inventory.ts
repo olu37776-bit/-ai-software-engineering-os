@@ -163,6 +163,17 @@ export async function validateContractInventory(
         { contractId: contract.contractId, schemaId: contract.schemaId },
       );
     }
+    if (
+      (contract.publicBoundary === true || contract.persisted === true) &&
+      entry.examplesRequired &&
+      entry.schema["additionalProperties"] !== false
+    ) {
+      throw new ContractFoundationError(
+        "SCHEMA_METADATA_MISMATCH",
+        `Public/persisted payload schema does not reject unknown root fields: ${contract.contractId}`,
+        { contractId: contract.contractId, schemaId: contract.schemaId },
+      );
+    }
     const actualHash = await sha256AuthorityFile(repositoryRoot, contract.authorityPath);
     if (actualHash !== contract.sha256) {
       throw new ContractFoundationError(
