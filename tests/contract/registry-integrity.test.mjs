@@ -1,3 +1,6 @@
+import { readFile, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+
 import { describe, expect, test } from "vitest";
 
 import { ContractFoundationError, loadContractRegistry } from "@aseos/contracts";
@@ -25,6 +28,43 @@ describe("machine-executable schema registry", () => {
       metaValidatedSchemas: 31,
       compiledSchemas: 31,
       unresolvedReferences: 0,
+    });
+  });
+
+  test("accepts a consistent CRLF authority checkout and rejects content drift", async () => {
+    await withContractRepository(async (root) => {
+      const authorityPath = "operations/phase-1/authority-lock.schema.json";
+      const schemaPath = resolve(root, authorityPath);
+      const checkoutSource = await readFile(schemaPath, "utf8");
+      const lfSource = checkoutSource.replaceAll("\r\n", "\n");
+      expect(lfSource).not.toContain("\r");
+      const crlfSource = lfSource.replaceAll("\n", "\r\n");
+
+      await writeFile(schemaPath, crlfSource, "utf8");
+      await expect(loadContractRegistry(root)).resolves.toBeInstanceOf(Object);
+
+      const driftedSource = crlfSource.replace(
+        '"title": "ASEOS Phase 1 Authority Lock"',
+        '"title": "Drifted Phase 1 Authority Lock"',
+      );
+      expect(driftedSource).not.toBe(crlfSource);
+      await writeFile(schemaPath, driftedSource, "utf8");
+      await expectCode(() => loadContractRegistry(root), "SCHEMA_HASH_MISMATCH");
+    });
+  });
+
+  test.each([
+    ["mixed LF and CRLF", (source) => source.replace("\n", "\r\n")],
+    ["lone CR", (source) => source.replace("\n", "\r")],
+  ])("rejects malformed %s authority line endings", async (_label, mutate) => {
+    await withContractRepository(async (root) => {
+      const authorityPath = "operations/phase-1/authority-lock.schema.json";
+      const schemaPath = resolve(root, authorityPath);
+      const checkoutSource = await readFile(schemaPath, "utf8");
+      const lfSource = checkoutSource.replaceAll("\r\n", "\n");
+      expect(lfSource).not.toContain("\r");
+      await writeFile(schemaPath, mutate(lfSource), "utf8");
+      await expectCode(() => loadContractRegistry(root), "SCHEMA_HASH_MISMATCH");
     });
   });
 

@@ -95,9 +95,35 @@ export async function sha256AuthorityFile(
   authorityPath: string,
 ): Promise<string> {
   const path = await resolveAuthorityPath(repositoryRoot, authorityPath);
-  return createHash("sha256")
-    .update(await readFile(path))
-    .digest("hex");
+  const bytes = await readFile(path);
+  let contents: string;
+  try {
+    contents = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes);
+  } catch (error: unknown) {
+    throw new ContractFoundationError(
+      "SCHEMA_HASH_MISMATCH",
+      `Authority file is not valid UTF-8: ${authorityPath}`,
+      { authorityPath, cause: error instanceof Error ? error.message : String(error) },
+    );
+  }
+
+  const withoutCrLf = contents.replaceAll("\r\n", "");
+  if (withoutCrLf.includes("\r")) {
+    throw new ContractFoundationError(
+      "SCHEMA_HASH_MISMATCH",
+      `Authority file contains a lone carriage return: ${authorityPath}`,
+      { authorityPath },
+    );
+  }
+  if (contents.includes("\r\n") && withoutCrLf.includes("\n")) {
+    throw new ContractFoundationError(
+      "SCHEMA_HASH_MISMATCH",
+      `Authority file contains mixed LF and CRLF line endings: ${authorityPath}`,
+      { authorityPath },
+    );
+  }
+
+  return createHash("sha256").update(contents.replaceAll("\r\n", "\n"), "utf8").digest("hex");
 }
 
 export async function sha256Artifact(
