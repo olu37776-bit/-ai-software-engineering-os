@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:control-endpoint-descriptor:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "ControlEndpointDescriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "instanceId",
+    "pid",
+    "startedAt",
+    "host",
+    "port",
+    "apiVersions",
+    "frameworkVersion",
+    "releaseId",
+    "tokenFileRef"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "instanceId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "pid": { "type": "integer", "minimum": 1, "maximum": 2147483647 },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "host": { "const": "127.0.0.1" },
+    "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+    "apiVersions": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "frameworkVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "releaseId": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "tokenFileRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+    }
+  }
+}

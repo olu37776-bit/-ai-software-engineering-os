@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0.0",
+  "findingId": "018f47a0-0000-7000-8000-000000000040",
+  "code": "STALE_ENDPOINT_DESCRIPTOR",
+  "severity": "SEVERE",
+  "subjectRef": { "subjectType": "Runtime", "subjectId": "local" },
+  "evidenceRefs": [],
+  "remediation": "Remove the stale descriptor after verifying that its process identity is absent.",
+  "detectedAt": "2026-08-31T00:00:02Z"
+}

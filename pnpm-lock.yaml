@@ -10,12 +10,15 @@ importers:
       "@aseos/contracts":
         specifier: workspace:*
         version: link:packages/contracts
-      "@aseos/policy":
-        specifier: workspace:*
-        version: link:packages/policy
       "@aseos/persistence":
         specifier: workspace:*
         version: link:packages/persistence
+      "@aseos/platform":
+        specifier: workspace:*
+        version: link:packages/platform
+      "@aseos/policy":
+        specifier: workspace:*
+        version: link:packages/policy
     devDependencies:
       "@eslint/js":
         specifier: 10.0.1
@@ -60,19 +63,37 @@ importers:
         specifier: 4.1.11
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(yaml@2.9.0))
 
+  apps/cli:
+    dependencies:
+      "@aseos/platform":
+        specifier: workspace:*
+        version: link:../../packages/platform
+
+  apps/runtime:
+    dependencies:
+      "@aseos/platform":
+        specifier: workspace:*
+        version: link:../../packages/platform
+
   packages/contracts:
     dependencies:
       ajv:
         specifier: 8.20.0
         version: 8.20.0
 
-  packages/policy:
+  packages/persistence:
     dependencies:
       "@aseos/contracts":
         specifier: workspace:*
         version: link:../contracts
 
-  packages/persistence:
+  packages/platform:
+    dependencies:
+      "@aseos/contracts":
+        specifier: workspace:*
+        version: link:../contracts
+
+  packages/policy:
     dependencies:
       "@aseos/contracts":
         specifier: workspace:*

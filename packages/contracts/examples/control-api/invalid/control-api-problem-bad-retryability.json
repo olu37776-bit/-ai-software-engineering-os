@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0.0",
+  "type": "urn:aseos:problem:authentication-required",
+  "title": "Authentication required",
+  "status": 401,
+  "detail": "A valid bearer credential is required.",
+  "code": "AUTHENTICATION_REQUIRED",
+  "category": "AUTHENTICATION",
+  "retryability": "MAYBE",
+  "requestId": "018f47a0-0000-7000-8000-000000000001",
+  "correlationId": "018f47a0-0000-7000-8000-000000000002",
+  "subjectRef": { "subjectType": "Runtime", "subjectId": "local" },
+  "remediation": "Read the current token from the protected token file and retry."
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "instanceId": "018f47a0-0000-7000-8000-000000000010",
+  "pid": 4242,
+  "startedAt": "2026-08-31T00:00:00Z",
+  "host": "127.0.0.1",
+  "port": 49152,
+  "apiVersions": ["v1"],
+  "frameworkVersion": "0.1.0",
+  "releaseId": "phase-1-local",
+  "tokenFileRef": "secrets/runtime/control-api.token"
+}

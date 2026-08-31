@@ -65,10 +65,76 @@ export type CommandEnvelope = Readonly<{
   readonly requestId?: string;
   readonly schemaVersion: "1.0.0";
 }>;
+export type ControlApiProblem = Readonly<{
+  readonly category:
+    | "VALIDATION"
+    | "CONFLICT"
+    | "POLICY"
+    | "AUTHENTICATION"
+    | "AUTHORIZATION"
+    | "UNAVAILABLE"
+    | "TIMEOUT"
+    | "CANCELLED"
+    | "INFRASTRUCTURE"
+    | "INVARIANT"
+    | "SECURITY"
+    | "RECONCILIATION";
+  readonly code: string;
+  readonly correlationId: string;
+  readonly detail: string;
+  readonly remediation: string;
+  readonly requestId: string;
+  readonly retryability: "RETRYABLE" | "NON_RETRYABLE" | "CONDITIONAL" | "UNKNOWN";
+  readonly schemaVersion: "1.0.0";
+  readonly status: number;
+  readonly subjectRef: SubjectRef;
+  readonly title: string;
+  readonly type: string;
+}>;
+export type ControlEndpointDescriptor = Readonly<{
+  readonly apiVersions: readonly string[];
+  readonly frameworkVersion: string;
+  readonly host: "127.0.0.1";
+  readonly instanceId: string;
+  readonly pid: number;
+  readonly port: number;
+  readonly releaseId: string;
+  readonly schemaVersion: "1.0.0";
+  readonly startedAt: string;
+  readonly tokenFileRef: string;
+}>;
+export type ControlEventNotification = Readonly<{
+  readonly kind: "RUNTIME_STATUS" | "OPERATION_METADATA" | "EVIDENCE_METADATA";
+  readonly notificationId: string;
+  readonly occurredAt: string;
+  readonly projectionVersion: number;
+  readonly resourceUri: string;
+  readonly schemaVersion: "1.0.0";
+  readonly subjectRef: SubjectRef;
+}>;
+export type ControlOperationRef = Readonly<{
+  readonly evidenceRefs: readonly SubjectRef[];
+  readonly operationId: string;
+  readonly resourceUri: string;
+  readonly resultUri?: string;
+  readonly schemaVersion: "1.0.0";
+  readonly status: string;
+  readonly type: string;
+}>;
 export type CreateWorkflowRunPayload = Readonly<{
   readonly inputArtifactRef: ArtifactRef;
   readonly workflowDefinitionId: string;
   readonly workflowDefinitionVersion: string;
+}>;
+export type DiagnosticFinding = Readonly<{
+  readonly code: string;
+  readonly detectedAt: string;
+  readonly evidenceRefs: readonly SubjectRef[];
+  readonly findingId: string;
+  readonly remediation: string;
+  readonly schemaVersion: "1.0.0";
+  readonly severity: "INFO" | "WARNING" | "ERROR" | "CRITICAL";
+  readonly subjectRef: SubjectRef;
 }>;
 export type DomainEventEnvelope = Readonly<{
   readonly actor: ActorRef;
@@ -289,6 +355,16 @@ export type ProjectionCheckpoint = Readonly<{
   readonly schemaVersion: "1.0.0";
   readonly sourceSequence: number;
   readonly updatedAt: string;
+}>;
+export type RuntimeHealth = Readonly<{
+  readonly checkedAt: string;
+  readonly findings: readonly DiagnosticFinding[];
+  readonly instanceId: string;
+  readonly readiness: "READY" | "DEGRADED" | "NOT_READY";
+  readonly releaseId: string;
+  readonly runtimeVersion: string;
+  readonly schemaVersion: "1.0.0";
+  readonly stateVersion: number;
 }>;
 export type SchemaRef = Readonly<{
   readonly schemaHash: string;

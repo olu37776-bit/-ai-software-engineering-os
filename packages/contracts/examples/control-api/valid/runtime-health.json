@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0.0",
+  "instanceId": "018f47a0-0000-7000-8000-000000000010",
+  "readiness": "READY",
+  "runtimeVersion": "0.1.0",
+  "releaseId": "phase-1-local",
+  "stateVersion": 3,
+  "checkedAt": "2026-08-31T00:00:03Z",
+  "findings": []
+}

@@ -62,58 +62,6 @@
       "adrRefs": []
     },
     {
-      "contractId": "aseos.control-api.control-api-problem",
-      "canonicalName": "ControlApiProblem",
-      "domain": "control-api",
-      "canonicalOwner": "packages/contracts",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/control-api/control-api-problem.schema.json",
-      "adrRefs": [
-        "ADR-0009"
-      ]
-    },
-    {
-      "contractId": "aseos.control-api.control-endpoint-descriptor",
-      "canonicalName": "ControlEndpointDescriptor",
-      "domain": "control-api",
-      "canonicalOwner": "packages/platform",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/control-api/control-endpoint-descriptor.schema.json",
-      "adrRefs": [
-        "ADR-0009"
-      ]
-    },
-    {
-      "contractId": "aseos.control-api.control-event-notification",
-      "canonicalName": "ControlEventNotification",
-      "domain": "control-api",
-      "canonicalOwner": "packages/platform",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/control-api/control-event-notification.schema.json",
-      "adrRefs": [
-        "ADR-0009"
-      ]
-    },
-    {
-      "contractId": "aseos.control-api.control-operation-ref",
-      "canonicalName": "ControlOperationRef",
-      "domain": "control-api",
-      "canonicalOwner": "packages/platform",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/control-api/control-operation-ref.schema.json",
-      "adrRefs": [
-        "ADR-0009"
-      ]
-    },
-    {
       "contractId": "aseos.evidence.evidence-edge",
       "canonicalName": "EvidenceEdge",
       "domain": "evidence",
@@ -315,30 +263,6 @@
       "adrRefs": [
         "ADR-0003",
         "ADR-0008"
-      ]
-    },
-    {
-      "contractId": "aseos.platform.diagnostic-finding",
-      "canonicalName": "DiagnosticFinding",
-      "domain": "platform",
-      "canonicalOwner": "packages/platform",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/platform/diagnostic-finding.schema.json",
-      "adrRefs": []
-    },
-    {
-      "contractId": "aseos.platform.runtime-health",
-      "canonicalName": "RuntimeHealth",
-      "domain": "platform",
-      "canonicalOwner": "packages/platform",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/platform/runtime-health.schema.json",
-      "adrRefs": [
-        "ADR-0009"
       ]
     },
     {

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:control-operation-ref:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "ControlOperationRef",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "operationId",
+    "type",
+    "status",
+    "resourceUri",
+    "evidenceRefs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "operationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "type": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/canonicalTypeName"
+    },
+    "status": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+    },
+    "resourceUri": { "type": "string", "pattern": "^/v1/operations/", "maxLength": 1024 },
+    "resultUri": { "type": "string", "pattern": "^/v1/", "maxLength": 1024 },
+    "evidenceRefs": {
+      "type": "array",
+      "items": { "$ref": "urn:aseos:schema:subject-ref:1.0.0" },
+      "uniqueItems": true
+    }
+  }
+}

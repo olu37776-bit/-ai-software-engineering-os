@@ -1,0 +1,144 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "ASEOS Local Control API",
+    "version": "1.0.0",
+    "description": "Authenticated HTTP/JSON control boundary bound exclusively to 127.0.0.1."
+  },
+  "servers": [{ "url": "http://127.0.0.1:{port}/v1", "variables": { "port": { "default": "0" } } }],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/version": {
+      "get": {
+        "operationId": "getControlApiVersion",
+        "responses": {
+          "200": { "description": "Authenticated framework, release, API and instance identity." },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "getRuntimeHealth",
+        "responses": {
+          "200": {
+            "description": "Authenticated runtime health.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../platform/runtime-health.schema.json" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/endpoint": {
+      "get": {
+        "operationId": "getControlEndpointDescriptor",
+        "responses": {
+          "200": {
+            "description": "Authenticated endpoint identity without token material.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "./control-endpoint-descriptor.schema.json" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "getRuntimeStatus",
+        "responses": {
+          "200": { "description": "Authenticated bounded runtime status projection." },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/doctor": {
+      "get": {
+        "operationId": "runRuntimeDoctor",
+        "responses": {
+          "200": { "description": "Authenticated runtime diagnostic result." },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/runtime/stop": {
+      "post": {
+        "operationId": "stopRuntime",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "../common/identifiers.schema.json#/$defs/idempotencyKey"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "../common/identifiers.schema.json#/$defs/nonEmptyString"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Stop operation accepted.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "./control-operation-ref.schema.json" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "operationId": "readControlEventNotifications",
+        "responses": {
+          "200": {
+            "description": "Read-only SSE projection notifications; not an authoritative journal.",
+            "content": {
+              "text/event-stream": {
+                "schema": { "$ref": "./control-event-notification.schema.json" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "opaque" }
+    },
+    "responses": {
+      "Problem": {
+        "description": "RFC 9457 problem response.",
+        "content": {
+          "application/problem+json": {
+            "schema": { "$ref": "./control-api-problem.schema.json" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ControlApiProblem": { "$ref": "./control-api-problem.schema.json" },
+      "ControlEndpointDescriptor": { "$ref": "./control-endpoint-descriptor.schema.json" },
+      "ControlEventNotification": { "$ref": "./control-event-notification.schema.json" },
+      "ControlOperationRef": { "$ref": "./control-operation-ref.schema.json" },
+      "DiagnosticFinding": { "$ref": "../platform/diagnostic-finding.schema.json" },
+      "RuntimeHealth": { "$ref": "../platform/runtime-health.schema.json" }
+    }
+  }
+}

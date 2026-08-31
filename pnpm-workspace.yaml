@@ -2,6 +2,9 @@ packages:
   - packages/contracts
   - packages/policy
   - packages/persistence
+  - packages/platform
+  - apps/runtime
+  - apps/cli
 
 allowBuilds:
   protobufjs: true
