@@ -7,3 +7,5 @@ The operation-aware scope verifier now requires P1-O05 to load one fixed indepen
 The Gate must bind the exact authorization Gate, scope/Authority amendment implementation tree, reviewed head and protected-main merge, plus this transition-enforcement implementation tree, reviewed head and protected-main merge. The verifier replays merge parents, ancestry, the exact five-file amendment diff, the 11 P1-O05 scope additions, the three Authority ownership deltas and the amendment Evidence.
 
 This change does not start P1-O05, implement persistence, change an ADR, authorize another SQLite driver, or create a second required `verify` producer. P1-O05 remains blocked until an independent Gate is merged and its protected-main post-merge checks pass.
+
+`ISSUE53-IV-01` closed a review-detected routing regression: the production operation-aware verifier again imports and invokes the P1-O05 Gate policy, and an executable temporary-repository test proves that both an absent Gate and a malformed Gate fail closed before persistence mutation.
