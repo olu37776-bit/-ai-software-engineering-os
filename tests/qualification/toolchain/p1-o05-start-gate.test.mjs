@@ -85,18 +85,78 @@ describe("P1-O05 Issue #53 start Gate policy", () => {
   });
 
   test.each([
-    ["decision", (gate) => { gate.decision = "FAIL"; }],
-    ["tracking issue", (gate) => { gate.trackingIssue = 29; }],
-    ["repository", (gate) => { gate.subject.repository = "other/repository"; }],
-    ["amendment main", (gate) => { gate.subject.scopeAuthorityAmendmentMainCommit = "9".repeat(40); }],
-    ["independence", (gate) => { gate.verifier.independent = false; }],
-    ["read-only role", (gate) => { gate.verifier.readOnlySubjectVerification = false; }],
-    ["release", (gate) => { gate.authorization.p1O05Start = "BLOCKED"; }],
-    ["changed paths", (gate) => { gate.authorization.scopeAuthorityAmendmentChangedPaths = []; }],
-    ["owner delta", (gate) => { gate.authorization.authorityOwnershipDeltas = []; }],
-    ["post-merge verification", (gate) => { gate.verification.transitionEnforcementPostMergeChecks = "FAIL"; }],
-    ["runtime claim", (gate) => { gate.claimBoundary.p1O05Implemented = true; }],
-    ["fallback claim", (gate) => { gate.claimBoundary.alternatePersistenceDriverAuthorized = true; }],
+    [
+      "decision",
+      (gate) => {
+        gate.decision = "FAIL";
+      },
+    ],
+    [
+      "tracking issue",
+      (gate) => {
+        gate.trackingIssue = 29;
+      },
+    ],
+    [
+      "repository",
+      (gate) => {
+        gate.subject.repository = "other/repository";
+      },
+    ],
+    [
+      "amendment main",
+      (gate) => {
+        gate.subject.scopeAuthorityAmendmentMainCommit = "9".repeat(40);
+      },
+    ],
+    [
+      "independence",
+      (gate) => {
+        gate.verifier.independent = false;
+      },
+    ],
+    [
+      "read-only role",
+      (gate) => {
+        gate.verifier.readOnlySubjectVerification = false;
+      },
+    ],
+    [
+      "release",
+      (gate) => {
+        gate.authorization.p1O05Start = "BLOCKED";
+      },
+    ],
+    [
+      "changed paths",
+      (gate) => {
+        gate.authorization.scopeAuthorityAmendmentChangedPaths = [];
+      },
+    ],
+    [
+      "owner delta",
+      (gate) => {
+        gate.authorization.authorityOwnershipDeltas = [];
+      },
+    ],
+    [
+      "post-merge verification",
+      (gate) => {
+        gate.verification.transitionEnforcementPostMergeChecks = "FAIL";
+      },
+    ],
+    [
+      "runtime claim",
+      (gate) => {
+        gate.claimBoundary.p1O05Implemented = true;
+      },
+    ],
+    [
+      "fallback claim",
+      (gate) => {
+        gate.claimBoundary.alternatePersistenceDriverAuthorized = true;
+      },
+    ],
   ])("rejects malformed %s binding", (_label, mutate) => {
     const gate = makeGate();
     mutate(gate);

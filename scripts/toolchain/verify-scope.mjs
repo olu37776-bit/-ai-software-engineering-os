@@ -606,8 +606,7 @@ function verifyP1O05ScopeAuthorityAmendmentOutcome(commits, gate, baseCommit) {
   assertAncestor(commits.scopeAuthorityAmendmentMainCommit, baseCommit);
   return {
     requiredScopePathsVerified: P1_O05_REQUIRED_SCOPE_PATHS.length,
-    authorityOwnershipPathsVerified:
-      P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_PATHS.length,
+    authorityOwnershipPathsVerified: P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_PATHS.length,
     postMergeChecks: gate.verification.scopeAuthorityAmendmentPostMergeChecks,
   };
 }

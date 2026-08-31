@@ -710,15 +710,13 @@ export function validateP1O05StartGate(gate) {
     scopeAuthorityAmendmentMainCommit: gate?.subject?.scopeAuthorityAmendmentMainCommit,
     transitionEnforcementImplementationCommit:
       gate?.subject?.transitionEnforcementImplementationCommit,
-    transitionEnforcementReviewedHeadCommit:
-      gate?.subject?.transitionEnforcementReviewedHeadCommit,
+    transitionEnforcementReviewedHeadCommit: gate?.subject?.transitionEnforcementReviewedHeadCommit,
     transitionEnforcementMainCommit: gate?.subject?.transitionEnforcementMainCommit,
   };
   const trees = {
     scopeAuthorityAmendmentImplementationTree:
       gate?.subject?.scopeAuthorityAmendmentImplementationTree,
-    transitionEnforcementImplementationTree:
-      gate?.subject?.transitionEnforcementImplementationTree,
+    transitionEnforcementImplementationTree: gate?.subject?.transitionEnforcementImplementationTree,
   };
   const verification = gate?.verification;
   if (
@@ -767,10 +765,8 @@ export function validateP1O05StartGate(gate) {
   return {
     ...commits,
     ...trees,
-    scopeAuthorityAmendmentExecutionPath:
-      gate.subject.scopeAuthorityAmendmentExecutionPath,
-    scopeAuthorityAmendmentEvidencePath:
-      gate.subject.scopeAuthorityAmendmentEvidencePath,
+    scopeAuthorityAmendmentExecutionPath: gate.subject.scopeAuthorityAmendmentExecutionPath,
+    scopeAuthorityAmendmentEvidencePath: gate.subject.scopeAuthorityAmendmentEvidencePath,
   };
 }
 
