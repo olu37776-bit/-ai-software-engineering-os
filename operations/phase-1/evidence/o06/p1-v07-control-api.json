@@ -4,14 +4,14 @@
   "evidenceType": "P1V07ControlApiImplementationEvidence",
   "gateStepId": "P1-V07-CONTROL-API",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-31T07:50:00Z",
+  "recordedAt": "2026-08-31T09:05:00Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "pullRequest": 70,
     "branch": "phase-1/p1-o06-authenticated-loopback-control-api-issue-64",
     "authorizedBase": "7a8d2374fdb1ef39e4efcbd1c3b968d903647d09",
-    "qualifiedImplementationCommit": "c55b5d069a9e019bc3e5e031cbb2cbc6ddad65c4",
-    "qualifiedImplementationTree": "5927384540ecfcb80937211dcce02682110e11fe"
+    "qualifiedImplementationCommit": "af39be6ba755e9dede3513b9dceaf4ae65945fc7",
+    "qualifiedImplementationTree": "1755c9c6dfae769fffb108a400bc9f4e91922a7d"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -24,7 +24,7 @@
     "operationStartGateRelease": "RELEASED",
     "operationStartGatePath": "operations/phase-1/evidence/o01/p1-o06-start-after-issue-64-independent-gate.json",
     "immutableAuthorityFilesVerified": 25,
-    "changedPathsVerified": 58,
+    "changedPathsVerified": 59,
     "scopeViolations": 0
   },
   "openApiValidation": {
@@ -60,7 +60,8 @@
     "result": "PASS",
     "tokenBits": 256,
     "rotation": "PER_RUNTIME_START",
-    "windowsAcl": "CURRENT_USER_ONLY_ENFORCED_AND_VERIFIED_FAIL_CLOSED",
+    "windowsAcl": "CURRENT_USER_PLUS_TRUSTED_OS_SESSION_PRINCIPALS_NO_INHERITANCE",
+    "secretWriteSequence": "EMPTY_TEMP_THEN_STRICT_ACL_THEN_SECRET_WRITE_FSYNC_RENAME_FINAL_VERIFY",
     "posixMode": "0600",
     "descriptorContainsToken": false,
     "publicErrorRedacted": true,
@@ -79,6 +80,7 @@
     "result": "PASS",
     "requestAndResponseLimits": true,
     "authenticationRateLimit": true,
+    "authenticationSecurityFindingBounded": true,
     "boundedIdempotencyRegistry": true,
     "stopIdempotencyKey": true,
     "stopIfMatch": true,
@@ -86,7 +88,8 @@
     "mismatchedIfMatchStatus": 412,
     "boundedSseConnections": true,
     "boundedSseRetention": true,
-    "sseBackpressure": true,
+    "sseBackpressureAllFrames": true,
+    "sseExcludedFromOrdinaryRequestTimeoutAfterHandshake": true,
     "retentionGapExplicit": true
   },
   "contractQualification": {
@@ -112,10 +115,10 @@
     "generatedTypes": "PASS",
     "typecheck": "PASS",
     "rootTestFilesPassed": 32,
-    "rootTestsPassed": 214,
+    "rootTestsPassed": 223,
     "rootTestsFailed": 0,
     "architectureTestsPassed": 9,
-    "focusedControlApiTestsPassed": 22,
+    "focusedControlApiTestsPassed": 31,
     "platformTestsPassed": 3,
     "p1V03Contracts": "PASS",
     "p1V04Architecture": "PASS",
@@ -141,6 +144,30 @@
       "result": "CLOSED",
       "failedRequiredVerifyJobId": 99419558397,
       "resolution": "The six P1-O06 schemas keep executable valid and invalid examples under the operation-owned control-api example directory and 12 dedicated Contract tests. Their registry flags no longer claim enrollment in the separately locked legacy first-slice example suite, whose authority is P1-O02-only. The exact M0 verifier now passes all 14 checks without changing the verifier, the locked suite, or its ownership."
+    },
+    {
+      "findingId": "P1-O06-INDEPENDENT-REVIEW-01",
+      "class": "PUBLIC_CONTRACT_AND_HTTP_BINDING_GAPS",
+      "result": "CLOSED",
+      "resolution": "Discovery and client validation now fail closed against exact object keys, UUIDv7, SemVer, RFC 3339 calendar validity, deep uniqueItems semantics, response status and exact media type bindings. OpenAPI now binds version, status, doctor, stop preconditions and SSE retention-gap payloads to their response Contracts. Descriptor API versions validate the full canonical array Contract and unsupported v1 negotiation is reported separately."
+    },
+    {
+      "findingId": "P1-O06-INDEPENDENT-REVIEW-02",
+      "class": "TOKEN_ACL_AND_PUBLIC_ERROR_BOUNDARY",
+      "result": "CLOSED",
+      "resolution": "Windows startup protects and verifies the inheritable token parent directory, creates an empty temporary file, removes inherited access, verifies the strict ACL, writes and fsyncs the token, atomically renames it, and verifies the final file before readiness. Qualification performs the same read-only ACL verification. Public errors discard raw causes and redact secrets and absolute paths."
+    },
+    {
+      "findingId": "P1-O06-INDEPENDENT-REVIEW-03",
+      "class": "BOUNDED_SSE_AUTH_AND_RUNTIME_LIFECYCLE",
+      "result": "CLOSED",
+      "resolution": "Notification, replay, retention-gap and heartbeat frames share one bounded writer; established SSE streams are excluded from the ordinary request timeout; response overflow emits no oversized non-canonical fallback; authentication limit events produce one bounded expiring DiagnosticFinding; and removal of discovery invokes the unified runtime stop path that closes the listener and removes the token."
+    },
+    {
+      "findingId": "P1-O06-INDEPENDENT-REVIEW-04",
+      "class": "QUALIFICATION_COMPOSITION_GAP",
+      "result": "CLOSED",
+      "resolution": "The root quality authority now executes the package-owned platform tests from their own package context in addition to 223 root tests, 9 architecture tests, P1-V03, P1-V04, P1-V07, persistence qualification and frozen offline installation."
     }
   ],
   "independentVerification": {

@@ -30,9 +30,9 @@
     "requiredCheckIdentityChanged": false,
     "independentVerificationRequired": true
   },
-  "completedAt": "2026-08-31T07:50:00Z",
-  "qualifiedImplementationCommit": "c55b5d069a9e019bc3e5e031cbb2cbc6ddad65c4",
-  "qualifiedImplementationTree": "5927384540ecfcb80937211dcce02682110e11fe",
+  "completedAt": "2026-08-31T09:05:00Z",
+  "qualifiedImplementationCommit": "af39be6ba755e9dede3513b9dceaf4ae65945fc7",
+  "qualifiedImplementationTree": "1755c9c6dfae769fffb108a400bc9f4e91922a7d",
   "evidenceRef": "operations/phase-1/evidence/o06/p1-v07-control-api.json",
   "results": {
     "writeScope": "PASS",
@@ -42,9 +42,9 @@
     "p1V07": "PASS",
     "m0Independent": "PASS",
     "localWindows": "PASS",
-    "rootTests": "214/214",
+    "rootTests": "223/223",
     "architectureTests": "9/9",
-    "focusedControlApiTests": "22/22",
+    "focusedControlApiTests": "31/31",
     "platformTests": "3/3"
   }
 }
