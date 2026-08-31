@@ -1,6 +1,6 @@
 # P1-O07 Windows PROCESS_RESTRICTED
 
-Status: implementation and qualification in progress.
+Status: implemented; immutable independent verification pending.
 
 ## Authority and boundary
 
@@ -33,4 +33,4 @@ An available report may claim process-tree lifecycle and resource-budget enforce
 
 P1-V08 uses a pinned, runtime-compiled standalone `.exe` test fixture rather than opening a shell capability. Windows tests cover suspended-create-before-assignment behavior, child and grandchild cleanup, timeout and cancellation, CPU/memory/process-count/output budgets, environment secret exclusion, staged Unicode/space paths, traversal and executable-hash rejection, canonical evidence validation, and no downward fallback. Non-Windows tests require an unavailable result and prove that no host fallback executes.
 
-The exact qualification results and immutable implementation commit/tree bindings are recorded in `operations/phase-1/evidence/o07/p1-v08-isolation.json` after the implementation head passes the full repository quality gate.
+The exact qualification results and immutable implementation commit/tree bindings are recorded in `operations/phase-1/evidence/o07/p1-v08-isolation.json`. This implementation claim remains `IMPLEMENTED`; only a separate read-only Gate bound to the published Evidence head may declare it independently verified.
