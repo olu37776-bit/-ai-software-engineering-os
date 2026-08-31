@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:control-api-problem:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "ControlApiProblem",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "type",
+    "title",
+    "status",
+    "detail",
+    "code",
+    "category",
+    "retryability",
+    "requestId",
+    "correlationId",
+    "subjectRef",
+    "remediation"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "type": { "type": "string", "format": "uri", "maxLength": 512 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "status": { "type": "integer", "minimum": 400, "maximum": 599 },
+    "detail": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "code": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+    },
+    "category": {
+      "enum": [
+        "VALIDATION",
+        "CONFLICT",
+        "POLICY",
+        "AUTHENTICATION",
+        "AUTHORIZATION",
+        "UNAVAILABLE",
+        "TIMEOUT",
+        "CANCELLED",
+        "INFRASTRUCTURE",
+        "INVARIANT",
+        "SECURITY",
+        "RECONCILIATION"
+      ]
+    },
+    "retryability": {
+      "enum": ["RETRYABLE", "NON_RETRYABLE", "CONDITIONAL", "UNKNOWN"]
+    },
+    "requestId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "correlationId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "subjectRef": { "$ref": "urn:aseos:schema:subject-ref:1.0.0" },
+    "remediation": { "type": "string", "minLength": 1, "maxLength": 2048 }
+  }
+}

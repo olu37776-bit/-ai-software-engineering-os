@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O06-P1-V07-CONTROL-API-2026-08-31-01",
+  "evidenceType": "P1V07ControlApiImplementationEvidence",
+  "gateStepId": "P1-V07-CONTROL-API",
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-08-31T09:05:00Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "pullRequest": 70,
+    "branch": "phase-1/p1-o06-authenticated-loopback-control-api-issue-64",
+    "authorizedBase": "7a8d2374fdb1ef39e4efcbd1c3b968d903647d09",
+    "qualifiedImplementationCommit": "571bed2ed1f0ae9e76a497a0d65532f5747ef2eb",
+    "qualifiedImplementationTree": "4ab4c70546fbea571ba822374e416a24d3311dd1"
+  },
+  "authorizationPreflight": {
+    "result": "PASS",
+    "mode": "OPERATION_EXECUTION",
+    "operationId": "P1-O06",
+    "writeScopeOperationId": "P1-O06",
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "operationStartGateRequired": true,
+    "operationStartGateDecision": "PASS",
+    "operationStartGateRelease": "RELEASED",
+    "operationStartGatePath": "operations/phase-1/evidence/o01/p1-o06-start-after-issue-64-independent-gate.json",
+    "immutableAuthorityFilesVerified": 25,
+    "changedPathsVerified": 59,
+    "scopeViolations": 0
+  },
+  "openApiValidation": {
+    "evidenceType": "OpenApiValidationResult",
+    "result": "PASS",
+    "version": "3.1.1",
+    "authenticatedPaths": [
+      "/version",
+      "/health",
+      "/endpoint",
+      "/status",
+      "/doctor",
+      "/events",
+      "/runtime/stop"
+    ],
+    "canonicalSchemasValidated": 6,
+    "validExamplesAccepted": 6,
+    "invalidExamplesRejected": 6
+  },
+  "loopbackExposure": {
+    "evidenceType": "LoopbackExposureResult",
+    "result": "PASS",
+    "transport": "HTTP/1.1",
+    "host": "127.0.0.1",
+    "portClass": "OS_ASSIGNED_EPHEMERAL",
+    "ipv6Bound": false,
+    "remoteBindingAuthorized": false,
+    "exactHostRequired": true,
+    "originAllowlistExact": true
+  },
+  "tokenAclRedaction": {
+    "evidenceType": "TokenAclRedactionResult",
+    "result": "PASS",
+    "tokenBits": 256,
+    "rotation": "PER_RUNTIME_START",
+    "windowsAcl": "CURRENT_USER_ONLY_NO_INHERITANCE",
+    "secretWriteSequence": "EMPTY_TEMP_THEN_STRICT_ACL_THEN_SECRET_WRITE_FSYNC_RENAME_FINAL_VERIFY",
+    "posixMode": "0600",
+    "descriptorContainsToken": false,
+    "publicErrorRedacted": true,
+    "constantTimeVerification": true
+  },
+  "cliPublicApiAcceptance": {
+    "evidenceType": "CliPublicApiAcceptanceResult",
+    "result": "PASS",
+    "commands": ["start", "version", "doctor", "status", "stop"],
+    "clientBoundary": "@aseos/platform public Control API client",
+    "kernelOrPersistenceDependency": false,
+    "realRuntimeProcess": true,
+    "windowsUnicodeAndSpaceDataRoot": "PASS"
+  },
+  "boundedControls": {
+    "result": "PASS",
+    "requestAndResponseLimits": true,
+    "authenticationRateLimit": true,
+    "authenticationSecurityFindingBounded": true,
+    "boundedIdempotencyRegistry": true,
+    "stopIdempotencyKey": true,
+    "stopIfMatch": true,
+    "missingIfMatchStatus": 428,
+    "mismatchedIfMatchStatus": 412,
+    "boundedSseConnections": true,
+    "boundedSseRetention": true,
+    "sseBackpressureAllFrames": true,
+    "sseExcludedFromOrdinaryRequestTimeoutAfterHandshake": true,
+    "retentionGapExplicit": true
+  },
+  "contractQualification": {
+    "result": "PASS",
+    "registryEntries": 49,
+    "activeInventoryContracts": 33,
+    "plannedInventoryContracts": 40,
+    "typeBindings": 37,
+    "schemaDraft": "JSON Schema 2020-12",
+    "controlApiExamples": "VALIDATED_BY_P1_O06_CONTRACT_TESTS",
+    "legacyFirstSliceSuiteEnrollment": false,
+    "unknownPublicFields": "FAIL_CLOSED"
+  },
+  "qualification": {
+    "result": "PASS",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "lockfileSha256": "c1c2f4a73d5a2c0f9991d1a1d6f7ee67378a5c1fb532d4609df9b5534ca290f0",
+    "frozenOfflineInstall": "PASS",
+    "format": "PASS",
+    "lint": "PASS",
+    "generatedTypes": "PASS",
+    "typecheck": "PASS",
+    "rootTestFilesPassed": 32,
+    "rootTestsPassed": 223,
+    "rootTestsFailed": 0,
+    "architectureTestsPassed": 9,
+    "focusedControlApiTestsPassed": 31,
+    "platformTestsPassed": 3,
+    "p1V03Contracts": "PASS",
+    "p1V04Architecture": "PASS",
+    "p1V07ControlApi": "PASS",
+    "localWindowsX64": "PASS"
+  },
+  "authority": {
+    "result": "PASS",
+    "authorityLock": "PASS",
+    "authorityHashRefreshPaths": [
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json"
+    ],
+    "acceptedAdrMutations": 0,
+    "frozenGovernanceSemanticMutations": 0,
+    "workflowFilesChanged": 0
+  },
+  "remediationHistory": [
+    {
+      "findingId": "P1-O06-CI-01",
+      "class": "EXAMPLE_SUITE_AUTHORITY_MISMATCH",
+      "result": "CLOSED",
+      "failedRequiredVerifyJobId": 99419558397,
+      "resolution": "The six P1-O06 schemas keep executable valid and invalid examples under the operation-owned control-api example directory and 12 dedicated Contract tests. Their registry flags no longer claim enrollment in the separately locked legacy first-slice example suite, whose authority is P1-O02-only. The exact M0 verifier now passes all 14 checks without changing the verifier, the locked suite, or its ownership."
+    },
+    {
+      "findingId": "P1-O06-CI-02",
+      "class": "WINDOWS_RUNNER_ACL_MODULE_AUTOLOAD_VARIANCE",
+      "result": "CLOSED",
+      "failedRequiredVerifyJobIds": [99438671411, 99438685002],
+      "resolution": "The Windows token writer no longer depends on PowerShell's Set-Acl cmdlet or security-module auto-loading under the exact constrained toolchain PATH. It constructs a protected current-user-only DACL and applies it through the .NET DirectoryInfo/FileInfo access-control API, then independently verifies FullControl, child inheritance on the protected parent, no inheritance on token files, and the absence of every other principal before writing any secret bytes. The exact Windows qualification, 31 focused Control API tests, 3 package-owned platform tests, and the 223-test root baseline pass locally."
+    },
+    {
+      "findingId": "P1-O06-INDEPENDENT-REVIEW-01",
+      "class": "PUBLIC_CONTRACT_AND_HTTP_BINDING_GAPS",
+      "result": "CLOSED",
+      "resolution": "Discovery and client validation now fail closed against exact object keys, UUIDv7, SemVer, RFC 3339 calendar validity, deep uniqueItems semantics, response status and exact media type bindings. OpenAPI now binds version, status, doctor, stop preconditions and SSE retention-gap payloads to their response Contracts. Descriptor API versions validate the full canonical array Contract and unsupported v1 negotiation is reported separately."
+    },
+    {
+      "findingId": "P1-O06-INDEPENDENT-REVIEW-02",
+      "class": "TOKEN_ACL_AND_PUBLIC_ERROR_BOUNDARY",
+      "result": "CLOSED",
+      "resolution": "Windows startup protects and verifies the inheritable token parent directory, creates an empty temporary file, removes inherited access, verifies the strict ACL, writes and fsyncs the token, atomically renames it, and verifies the final file before readiness. Qualification performs the same read-only ACL verification. Public errors discard raw causes and redact secrets and absolute paths."
+    },
+    {
+      "findingId": "P1-O06-INDEPENDENT-REVIEW-03",
+      "class": "BOUNDED_SSE_AUTH_AND_RUNTIME_LIFECYCLE",
+      "result": "CLOSED",
+      "resolution": "Notification, replay, retention-gap and heartbeat frames share one bounded writer; established SSE streams are excluded from the ordinary request timeout; response overflow emits no oversized non-canonical fallback; authentication limit events produce one bounded expiring DiagnosticFinding; and removal of discovery invokes the unified runtime stop path that closes the listener and removes the token."
+    },
+    {
+      "findingId": "P1-O06-INDEPENDENT-REVIEW-04",
+      "class": "QUALIFICATION_COMPOSITION_GAP",
+      "result": "CLOSED",
+      "resolution": "The root quality authority now executes the package-owned platform tests from their own package context in addition to 223 root tests, 9 architecture tests, P1-V03, P1-V04, P1-V07, persistence qualification and frozen offline installation."
+    }
+  ],
+  "independentVerification": {
+    "required": true,
+    "performed": false,
+    "immutableReviewHead": "PENDING_EVIDENCE_PUBLICATION"
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "phase1Verified": false,
+    "productionWorkflowRuntimeImplemented": false,
+    "durableOperationSemanticsImplemented": false,
+    "authoritativeEventJournalImplemented": false,
+    "remoteBindingAuthorized": false
+  },
+  "remainingGaps": [
+    "Publish and qualify the immutable Evidence head on Linux and Windows under the unique required verify authority.",
+    "Obtain an independent read-only PASS verdict bound to the exact base and Evidence head.",
+    "Merge the exact reviewed head and complete protected-main post-merge verification."
+  ]
+}

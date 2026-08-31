@@ -12,6 +12,15 @@
     },
     {
       "path": "./packages/persistence"
+    },
+    {
+      "path": "./packages/platform"
+    },
+    {
+      "path": "./apps/runtime"
+    },
+    {
+      "path": "./apps/cli"
     }
   ]
 }

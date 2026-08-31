@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:diagnostic-finding:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "DiagnosticFinding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "findingId",
+    "code",
+    "severity",
+    "subjectRef",
+    "evidenceRefs",
+    "remediation",
+    "detectedAt"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "findingId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "code": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+    },
+    "severity": { "enum": ["INFO", "WARNING", "ERROR", "CRITICAL"] },
+    "subjectRef": { "$ref": "urn:aseos:schema:subject-ref:1.0.0" },
+    "evidenceRefs": {
+      "type": "array",
+      "items": { "$ref": "urn:aseos:schema:subject-ref:1.0.0" },
+      "uniqueItems": true
+    },
+    "remediation": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "detectedAt": { "type": "string", "format": "date-time" }
+  }
+}

@@ -250,6 +250,182 @@
       "exampleRequired": true
     },
     {
+      "contractId": "aseos.control-api.control-api-problem",
+      "canonicalName": "ControlApiProblem",
+      "domain": "control-api",
+      "canonicalOwner": "packages/contracts",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/control-api/control-api-problem.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "platform-control-api"
+      ],
+      "consumers": [
+        "apps-cli",
+        "packaged-ui",
+        "diagnostic-client"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref"
+      ],
+      "adrRefs": [
+        "ADR-0009"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/control-api/valid/control-api-problem.json",
+        "packages/contracts/examples/control-api/invalid/control-api-problem-bad-retryability.json"
+      ],
+      "verificationObligations": [
+        "rfc-9457-problem-shape",
+        "stable-machine-code",
+        "retryability-explicit",
+        "secret-redaction",
+        "no-unknown-fields"
+      ],
+      "schemaId": "urn:aseos:schema:control-api-problem:1.0.0",
+      "sha256": "3698b92cfeccfd94faa8dd41194a19793df76d91db395bcc2122a9012a42d26b",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
+    },
+    {
+      "contractId": "aseos.control-api.control-endpoint-descriptor",
+      "canonicalName": "ControlEndpointDescriptor",
+      "domain": "control-api",
+      "canonicalOwner": "packages/platform",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/control-api/control-endpoint-descriptor.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "platform-runtime-lifecycle"
+      ],
+      "consumers": [
+        "apps-cli",
+        "runtime-launcher"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0009"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/control-api/valid/control-endpoint-descriptor.json",
+        "packages/contracts/examples/control-api/invalid/control-endpoint-descriptor-exposed-host.json"
+      ],
+      "verificationObligations": [
+        "ipv4-loopback-only",
+        "ephemeral-port-identity",
+        "token-value-excluded",
+        "relative-token-file-reference",
+        "no-unknown-fields"
+      ],
+      "schemaId": "urn:aseos:schema:control-endpoint-descriptor:1.0.0",
+      "sha256": "f921533474bbfd6e645f6b2a355341bbe57b7940f2bc682a7e2a80724ffad6d2",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
+    },
+    {
+      "contractId": "aseos.control-api.control-event-notification",
+      "canonicalName": "ControlEventNotification",
+      "domain": "control-api",
+      "canonicalOwner": "packages/platform",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/control-api/control-event-notification.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "platform-control-api"
+      ],
+      "consumers": [
+        "apps-cli",
+        "packaged-ui"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref"
+      ],
+      "adrRefs": [
+        "ADR-0009"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/control-api/valid/control-event-notification.json",
+        "packages/contracts/examples/control-api/invalid/control-event-notification-missing-resource.json"
+      ],
+      "verificationObligations": [
+        "sortable-notification-identity",
+        "projection-version-explicit",
+        "resource-requery-link",
+        "notification-not-authority",
+        "no-unknown-fields"
+      ],
+      "schemaId": "urn:aseos:schema:control-event-notification:1.0.0",
+      "sha256": "cb64a0775c55667629efa87b9c8b8c55c62bf30051416f3421c2e633fcb4eca5",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
+    },
+    {
+      "contractId": "aseos.control-api.control-operation-ref",
+      "canonicalName": "ControlOperationRef",
+      "domain": "control-api",
+      "canonicalOwner": "packages/platform",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/control-api/control-operation-ref.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "platform-control-api"
+      ],
+      "consumers": [
+        "apps-cli",
+        "packaged-ui"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref"
+      ],
+      "adrRefs": [
+        "ADR-0009"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/control-api/valid/control-operation-ref.json",
+        "packages/contracts/examples/control-api/invalid/control-operation-ref-bad-status.json"
+      ],
+      "verificationObligations": [
+        "durable-operation-identity",
+        "status-is-projection-not-terminal-authority",
+        "resource-link-versioned",
+        "evidence-linkage",
+        "no-unknown-fields"
+      ],
+      "schemaId": "urn:aseos:schema:control-operation-ref:1.0.0",
+      "sha256": "fb07ad43b0e064035acaed0e62067d1a5ebf61306099e638d438f17c9180b216",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
+    },
+    {
       "contractId": "aseos.evidence.evidence-metadata",
       "canonicalName": "EvidenceMetadata",
       "domain": "evidence",
@@ -793,6 +969,92 @@
       "sha256": "bfe54c80a84c01e7606bd8f7ed503024d1484d4fc9080df8ee6a36381a8e5045",
       "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
       "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.platform.diagnostic-finding",
+      "canonicalName": "DiagnosticFinding",
+      "domain": "platform",
+      "canonicalOwner": "packages/platform",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/platform/diagnostic-finding.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "platform-diagnostics"
+      ],
+      "consumers": [
+        "platform-control-api",
+        "apps-cli"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref"
+      ],
+      "adrRefs": [],
+      "examplePaths": [
+        "packages/contracts/examples/control-api/valid/diagnostic-finding.json",
+        "packages/contracts/examples/control-api/invalid/diagnostic-finding-bad-severity.json"
+      ],
+      "verificationObligations": [
+        "stable-finding-code",
+        "bounded-severity",
+        "evidence-linkage",
+        "actionable-remediation",
+        "no-unknown-fields"
+      ],
+      "schemaId": "urn:aseos:schema:diagnostic-finding:1.0.0",
+      "sha256": "a006a251982693b44f19609cd48e4115437819199fe74edd945a8e443fc42dc2",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
+    },
+    {
+      "contractId": "aseos.platform.runtime-health",
+      "canonicalName": "RuntimeHealth",
+      "domain": "platform",
+      "canonicalOwner": "packages/platform",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/platform/runtime-health.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "platform-runtime-lifecycle"
+      ],
+      "consumers": [
+        "platform-control-api",
+        "apps-cli",
+        "runtime-launcher"
+      ],
+      "dependsOn": [
+        "aseos.platform.diagnostic-finding"
+      ],
+      "adrRefs": [
+        "ADR-0009"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/control-api/valid/runtime-health.json",
+        "packages/contracts/examples/control-api/invalid/runtime-health-ready-with-findings.json"
+      ],
+      "verificationObligations": [
+        "authenticated-readiness",
+        "blocking-findings-explicit",
+        "ready-has-no-findings",
+        "state-version-explicit",
+        "no-unknown-fields"
+      ],
+      "schemaId": "urn:aseos:schema:runtime-health:1.0.0",
+      "sha256": "2b7ab369b9ddc11a4c8d11f1d0470bd24e7e0c8009fc2ed769be33a2e1db2ada",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     },
     {
       "contractId": "aseos.policy.capability-manifest",

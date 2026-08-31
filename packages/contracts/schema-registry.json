@@ -109,11 +109,46 @@
       "examplesRequired": false
     },
     {
+      "schemaId": "urn:aseos:schema:control-api-problem:1.0.0",
+      "authorityPath": "packages/contracts/schemas/control-api/control-api-problem.schema.json",
+      "sha256": "3698b92cfeccfd94faa8dd41194a19793df76d91db395bcc2122a9012a42d26b",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:control-endpoint-descriptor:1.0.0",
+      "authorityPath": "packages/contracts/schemas/control-api/control-endpoint-descriptor.schema.json",
+      "sha256": "f921533474bbfd6e645f6b2a355341bbe57b7940f2bc682a7e2a80724ffad6d2",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:control-event-notification:1.0.0",
+      "authorityPath": "packages/contracts/schemas/control-api/control-event-notification.schema.json",
+      "sha256": "cb64a0775c55667629efa87b9c8b8c55c62bf30051416f3421c2e633fcb4eca5",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:control-operation-ref:1.0.0",
+      "authorityPath": "packages/contracts/schemas/control-api/control-operation-ref.schema.json",
+      "sha256": "fb07ad43b0e064035acaed0e62067d1a5ebf61306099e638d438f17c9180b216",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
       "schemaId": "urn:aseos:schema:create-workflow-run-payload:1.0.0",
       "authorityPath": "packages/contracts/schemas/fixtures/create-workflow-run-payload.schema.json",
       "sha256": "fa9cc5548a857548e1a7706b216c554951bc52023d28ea03dd8c740a16d92a66",
       "category": "FIXTURE",
       "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:diagnostic-finding:1.0.0",
+      "authorityPath": "packages/contracts/schemas/platform/diagnostic-finding.schema.json",
+      "sha256": "a006a251982693b44f19609cd48e4115437819199fe74edd945a8e443fc42dc2",
+      "category": "RUNTIME",
+      "examplesRequired": false
     },
     {
       "schemaId": "urn:aseos:schema:domain-event-envelope:1.0.0",
@@ -231,6 +266,13 @@
       "schemaId": "urn:aseos:schema:projection-checkpoint:1.0.0",
       "authorityPath": "packages/contracts/schemas/persistence/projection-checkpoint.schema.json",
       "sha256": "042cb2d65c6c1375fd17612aa6b8301103c7f1c450566fdda7de488d4fd6596c",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:runtime-health:1.0.0",
+      "authorityPath": "packages/contracts/schemas/platform/runtime-health.schema.json",
+      "sha256": "2b7ab369b9ddc11a4c8d11f1d0470bd24e7e0c8009fc2ed769be33a2e1db2ada",
       "category": "RUNTIME",
       "examplesRequired": false
     },

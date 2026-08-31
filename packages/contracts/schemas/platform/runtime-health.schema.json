@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:runtime-health:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "RuntimeHealth",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "instanceId",
+    "readiness",
+    "runtimeVersion",
+    "releaseId",
+    "stateVersion",
+    "checkedAt",
+    "findings"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "instanceId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "readiness": { "enum": ["READY", "DEGRADED", "NOT_READY"] },
+    "runtimeVersion": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/semanticVersion"
+    },
+    "releaseId": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "checkedAt": { "type": "string", "format": "date-time" },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "urn:aseos:schema:diagnostic-finding:1.0.0" },
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "readiness": { "const": "READY" } }, "required": ["readiness"] },
+      "then": { "properties": { "findings": { "maxItems": 0 } } }
+    },
+    {
+      "if": {
+        "properties": { "readiness": { "enum": ["DEGRADED", "NOT_READY"] } },
+        "required": ["readiness"]
+      },
+      "then": { "properties": { "findings": { "minItems": 1 } } }
+    }
+  ]
+}

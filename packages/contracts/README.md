@@ -12,7 +12,7 @@
 - First-slice examples：[`examples/first-slice/example-suite.json`](examples/first-slice/example-suite.json)
 - Human catalog：[`../../docs/contracts/core-contract-catalog.md`](../../docs/contracts/core-contract-catalog.md)
 
-两份 inventory 合计 73 个 Contract 条目：27 个已经落盘的 `BASELINE_DRAFT` Contract 和 46 个 `PLANNED` Contract。`PLANNED` 条目只冻结 ID、owner、phase、authority path 和 ADR 关系；字段、依赖和兼容性在对应 Operation 中冻结。
+两份 inventory 合计 73 个 Contract 条目：33 个已经落盘的 `BASELINE_DRAFT` Contract 和 40 个 `PLANNED` Contract。`PLANNED` 条目只冻结 ID、owner、phase、authority path 和 ADR 关系；字段、依赖和兼容性在对应 Operation 中冻结。
 
 当前实际落盘的核心 Contract：
 
@@ -69,3 +69,14 @@ P1-O05 activates seven Draft 2020-12 persistence authorities: `CommandDedupRecor
 `ProjectionCheckpoint`, and `StateSchemaManifest`. `LeaseRecord` remains planned
 for Phase 2. SQL rows, table names, and `node:sqlite` driver types are deliberately
 excluded from the public Contract boundary.
+
+## Phase 1 Local Control API authority
+
+P1-O06 activates six Draft 2020-12 authorities: `ControlApiProblem`,
+`ControlEndpointDescriptor`, `ControlEventNotification`, `ControlOperationRef`,
+`DiagnosticFinding`, and `RuntimeHealth`. The OpenAPI 3.1.1 baseline is
+[`schemas/control-api/control-api.openapi.json`](schemas/control-api/control-api.openapi.json) and
+references those canonical schemas instead of duplicating payload shapes. The descriptor fixes the
+transport host to `127.0.0.1`, carries only a relative token-file reference, and never contains bearer
+token material. Operation status is a projection string and does not introduce canonical terminal
+transition semantics.

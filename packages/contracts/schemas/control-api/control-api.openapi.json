@@ -1,0 +1,289 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "ASEOS Local Control API",
+    "version": "1.0.0",
+    "description": "Authenticated HTTP/JSON control boundary bound exclusively to 127.0.0.1."
+  },
+  "servers": [{ "url": "http://127.0.0.1:{port}/v1", "variables": { "port": { "default": "0" } } }],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/version": {
+      "get": {
+        "operationId": "getControlApiVersion",
+        "responses": {
+          "200": {
+            "description": "Authenticated framework, release, API and instance identity.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/VersionResponse" } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "getRuntimeHealth",
+        "responses": {
+          "200": {
+            "description": "Authenticated runtime health.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../platform/runtime-health.schema.json" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/endpoint": {
+      "get": {
+        "operationId": "getControlEndpointDescriptor",
+        "responses": {
+          "200": {
+            "description": "Authenticated endpoint identity without token material.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "./control-endpoint-descriptor.schema.json" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "getRuntimeStatus",
+        "responses": {
+          "200": {
+            "description": "Authenticated bounded runtime status projection.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/StatusResponse" } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/doctor": {
+      "get": {
+        "operationId": "runRuntimeDoctor",
+        "responses": {
+          "200": {
+            "description": "Authenticated runtime diagnostic result.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/DoctorResponse" } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/runtime/stop": {
+      "post": {
+        "operationId": "stopRuntime",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "$ref": "../common/identifiers.schema.json#/$defs/idempotencyKey"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\"$"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Stop operation accepted.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "./control-operation-ref.schema.json" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "operationId": "readControlEventNotifications",
+        "responses": {
+          "200": {
+            "description": "Read-only SSE projection notifications; not an authoritative journal.",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "oneOf": [
+                    { "$ref": "./control-event-notification.schema.json" },
+                    { "$ref": "#/components/schemas/RetentionGap" }
+                  ]
+                }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "opaque" }
+    },
+    "responses": {
+      "Problem": {
+        "description": "RFC 9457 problem response.",
+        "content": {
+          "application/problem+json": {
+            "schema": { "$ref": "./control-api-problem.schema.json" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ControlApiProblem": { "$ref": "./control-api-problem.schema.json" },
+      "ControlEndpointDescriptor": { "$ref": "./control-endpoint-descriptor.schema.json" },
+      "ControlEventNotification": { "$ref": "./control-event-notification.schema.json" },
+      "ControlOperationRef": { "$ref": "./control-operation-ref.schema.json" },
+      "DiagnosticFinding": { "$ref": "../platform/diagnostic-finding.schema.json" },
+      "RuntimeHealth": { "$ref": "../platform/runtime-health.schema.json" },
+      "VersionResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "apiVersion",
+          "frameworkVersion",
+          "releaseId",
+          "instanceId",
+          "requestId",
+          "correlationId"
+        ],
+        "properties": {
+          "schemaVersion": { "const": "1.0.0" },
+          "apiVersion": { "const": "v1" },
+          "frameworkVersion": {
+            "$ref": "../common/identifiers.schema.json#/$defs/semanticVersion"
+          },
+          "releaseId": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "instanceId": { "$ref": "../common/identifiers.schema.json#/$defs/uuidV7" },
+          "requestId": { "$ref": "../common/identifiers.schema.json#/$defs/uuidV7" },
+          "correlationId": { "$ref": "../common/identifiers.schema.json#/$defs/uuidV7" }
+        }
+      },
+      "StatusResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "status",
+          "instanceId",
+          "uptimeMs",
+          "limits",
+          "requestId",
+          "correlationId"
+        ],
+        "properties": {
+          "schemaVersion": { "const": "1.0.0" },
+          "status": { "const": "READY" },
+          "instanceId": { "$ref": "../common/identifiers.schema.json#/$defs/uuidV7" },
+          "uptimeMs": { "type": "integer", "minimum": 0 },
+          "requestId": { "$ref": "../common/identifiers.schema.json#/$defs/uuidV7" },
+          "correlationId": { "$ref": "../common/identifiers.schema.json#/$defs/uuidV7" },
+          "limits": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["authenticationRateLimit", "idempotency", "sse"],
+            "properties": {
+              "authenticationRateLimit": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["capacity", "windowMs"],
+                "properties": {
+                  "capacity": { "type": "integer", "minimum": 1 },
+                  "windowMs": { "type": "integer", "minimum": 1 }
+                }
+              },
+              "idempotency": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["capacity", "ttlMs", "entries"],
+                "properties": {
+                  "capacity": { "type": "integer", "minimum": 1 },
+                  "ttlMs": { "type": "integer", "minimum": 1 },
+                  "entries": { "type": "integer", "minimum": 0 }
+                }
+              },
+              "sse": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "connectionCapacity",
+                  "activeConnections",
+                  "retentionCapacity",
+                  "retainedNotifications",
+                  "heartbeatMs"
+                ],
+                "properties": {
+                  "connectionCapacity": { "type": "integer", "minimum": 1 },
+                  "activeConnections": { "type": "integer", "minimum": 0 },
+                  "retentionCapacity": { "type": "integer", "minimum": 1 },
+                  "retainedNotifications": { "type": "integer", "minimum": 0 },
+                  "heartbeatMs": { "type": "integer", "minimum": 1 }
+                }
+              }
+            }
+          }
+        }
+      },
+      "DoctorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["schemaVersion", "status", "findings", "requestId", "correlationId"],
+        "properties": {
+          "schemaVersion": { "const": "1.0.0" },
+          "status": { "enum": ["PASS", "FINDINGS"] },
+          "findings": {
+            "type": "array",
+            "items": { "$ref": "../platform/diagnostic-finding.schema.json" },
+            "uniqueItems": true
+          },
+          "requestId": { "$ref": "../common/identifiers.schema.json#/$defs/uuidV7" },
+          "correlationId": { "$ref": "../common/identifiers.schema.json#/$defs/uuidV7" }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "status": { "const": "PASS" } }, "required": ["status"] },
+            "then": { "properties": { "findings": { "maxItems": 0 } } }
+          },
+          {
+            "if": {
+              "properties": { "status": { "const": "FINDINGS" } },
+              "required": ["status"]
+            },
+            "then": { "properties": { "findings": { "minItems": 1 } } }
+          }
+        ]
+      },
+      "RetentionGap": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code"],
+        "properties": { "code": { "const": "CONTROL_SSE_RETENTION_GAP" } }
+      }
+    }
+  }
+}

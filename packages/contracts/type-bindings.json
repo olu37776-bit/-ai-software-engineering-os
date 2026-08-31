@@ -30,8 +30,28 @@
       "exportName": "CommandEnvelope"
     },
     {
+      "schemaId": "urn:aseos:schema:control-api-problem:1.0.0",
+      "exportName": "ControlApiProblem"
+    },
+    {
+      "schemaId": "urn:aseos:schema:control-endpoint-descriptor:1.0.0",
+      "exportName": "ControlEndpointDescriptor"
+    },
+    {
+      "schemaId": "urn:aseos:schema:control-event-notification:1.0.0",
+      "exportName": "ControlEventNotification"
+    },
+    {
+      "schemaId": "urn:aseos:schema:control-operation-ref:1.0.0",
+      "exportName": "ControlOperationRef"
+    },
+    {
       "schemaId": "urn:aseos:schema:create-workflow-run-payload:1.0.0",
       "exportName": "CreateWorkflowRunPayload"
+    },
+    {
+      "schemaId": "urn:aseos:schema:diagnostic-finding:1.0.0",
+      "exportName": "DiagnosticFinding"
     },
     {
       "schemaId": "urn:aseos:schema:domain-event-envelope:1.0.0",
@@ -92,6 +112,10 @@
     {
       "schemaId": "urn:aseos:schema:projection-checkpoint:1.0.0",
       "exportName": "ProjectionCheckpoint"
+    },
+    {
+      "schemaId": "urn:aseos:schema:runtime-health:1.0.0",
+      "exportName": "RuntimeHealth"
     },
     {
       "schemaId": "urn:aseos:schema:schema-ref:1.0.0",

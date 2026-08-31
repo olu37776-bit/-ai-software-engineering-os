@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "notificationId": "018f47a0-0000-7000-8000-000000000020",
+  "subjectRef": { "subjectType": "Runtime", "subjectId": "local", "subjectVersion": "3" },
+  "projectionVersion": 3,
+  "kind": "RUNTIME_STATUS",
+  "occurredAt": "2026-08-31T00:00:01Z",
+  "resourceUri": "/v1/health"
+}
