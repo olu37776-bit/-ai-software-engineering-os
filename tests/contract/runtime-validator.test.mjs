@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, test } from "vitest";
 
 import { loadContractRegistry } from "@aseos/contracts";
 
-import { repositoryRoot } from "./helpers.mjs";
+import { readJson, repositoryRoot } from "./helpers.mjs";
 
 describe("canonical runtime Contract validator", () => {
   let registry;
@@ -54,11 +54,15 @@ describe("canonical runtime Contract validator", () => {
     });
   });
 
-  test("reuses compiled validators without changing authority", () => {
+  test("reuses compiled validators without changing authority", async () => {
     const first = registry.validate(identity, { actorType: "SYSTEM", actorId: "one" });
     const second = registry.validate(identity, { actorType: "SYSTEM", actorId: "two" });
     expect(first.ok).toBe(true);
     expect(second.ok).toBe(true);
-    expect(registry.list()).toHaveLength(36);
+    const registryDocument = await readJson(
+      repositoryRoot,
+      "packages/contracts/schema-registry.json",
+    );
+    expect(registry.list()).toHaveLength(registryDocument.schemas.length);
   });
 });
