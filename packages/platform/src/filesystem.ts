@@ -1,7 +1,6 @@
 import { execFile } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
-import { userInfo } from "node:os";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 
@@ -10,6 +9,36 @@ import type { ControlEndpointDescriptor } from "./types.js";
 
 const execFileAsync = promisify(execFile);
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/u;
+const UUID_V7_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
+const SEMANTIC_VERSION_PATTERN =
+  /^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/u;
+const TOKEN_REF_PATTERN = /^(?!\/)(?![A-Za-z]:)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]+$/u;
+
+function isRfc3339DateTime(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  const match =
+    /^(\d{4})-(\d{2})-(\d{2})[Tt](\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:[Zz]|([+-])(\d{2}):(\d{2}))$/u.exec(
+      value,
+    );
+  if (match === null) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+  return (
+    month >= 1 &&
+    month <= 12 &&
+    day >= 1 &&
+    daysInMonth !== undefined &&
+    day <= daysInMonth &&
+    Number(match[4]) <= 23 &&
+    Number(match[5]) <= 59 &&
+    Number(match[6]) <= 60 &&
+    (match[8] === undefined || Number(match[8]) <= 23) &&
+    (match[9] === undefined || Number(match[9]) <= 59)
+  );
+}
 
 export function controlPaths(dataRoot: string): Readonly<{
   descriptorPath: string;
@@ -105,26 +134,77 @@ async function replaceAtomically(path: string, content: string, mode: number): P
   }
 }
 
-async function applyWindowsUserOnlyAcl(path: string): Promise<void> {
-  const identity =
-    process.env["USERDOMAIN"] === undefined
-      ? userInfo().username
-      : `${process.env["USERDOMAIN"]}\\${userInfo().username}`;
+async function currentWindowsIdentity(): Promise<string> {
+  const { stdout } = await execFileAsync("whoami.exe", [], {
+    windowsHide: true,
+    timeout: 5_000,
+    maxBuffer: 64 * 1024,
+  });
+  const identity = stdout.trim();
+  if (identity === "") throw new Error("Current Windows identity is unavailable");
+  return identity;
+}
+
+async function assertWindowsUserOnlyAcl(
+  path: string,
+  identity: string,
+  requireChildInheritance: boolean,
+): Promise<void> {
+  const { stdout } = await execFileAsync("icacls.exe", [path], {
+    windowsHide: true,
+    timeout: 5_000,
+    maxBuffer: 64 * 1024,
+  });
+  const aclLines = stdout
+    .split(/\r?\n/u)
+    .map((line, index) => (index === 0 && line.startsWith(path) ? line.slice(path.length) : line))
+    .map((line) => line.trim())
+    .filter((line) => line.includes(":("));
+  const principals = aclLines.map((line) => line.slice(0, line.indexOf(":(")).trim());
+  const normalizedIdentity = identity.toLowerCase();
+  const isExactOrFirstLineSuffix = (principal: string, expected: string): boolean => {
+    const normalized = principal.toLowerCase();
+    return normalized === expected || normalized.endsWith(` ${expected}`);
+  };
+  const allowed = (principal: string): boolean => {
+    const normalized = principal.toLowerCase();
+    return (
+      isExactOrFirstLineSuffix(principal, normalizedIdentity) ||
+      isExactOrFirstLineSuffix(principal, "nt authority\\system") ||
+      normalized.startsWith("nt authority\\logonsessionid_") ||
+      normalized.includes(" nt authority\\logonsessionid_")
+    );
+  };
+  const identityLine = aclLines.find((line) =>
+    isExactOrFirstLineSuffix(line.slice(0, line.indexOf(":(")).trim(), normalizedIdentity),
+  );
+  if (
+    identityLine === undefined ||
+    !identityLine.includes("(F)") ||
+    (requireChildInheritance &&
+      (!identityLine.includes("(OI)") || !identityLine.includes("(CI)"))) ||
+    principals.some((principal) => !allowed(principal)) ||
+    aclLines.some((line) => line.includes("(I)"))
+  ) {
+    throw new Error(
+      "ACL verification permits only the current user and trusted OS/session principals without inherited access",
+    );
+  }
+}
+
+async function applyWindowsUserOnlyAcl(
+  path: string,
+  identity: string,
+  inheritToChildren = false,
+): Promise<void> {
   try {
-    await execFileAsync("icacls.exe", [path, "/inheritance:r", "/grant:r", `${identity}:(F)`], {
+    const grant = inheritToChildren ? `${identity}:(OI)(CI)(F)` : `${identity}:(F)`;
+    await execFileAsync("icacls.exe", [path, "/inheritance:r", "/grant:r", grant], {
       windowsHide: true,
       timeout: 5_000,
       maxBuffer: 64 * 1024,
     });
-    const { stdout } = await execFileAsync("icacls.exe", [path], {
-      windowsHide: true,
-      timeout: 5_000,
-      maxBuffer: 64 * 1024,
-    });
-    const lower = stdout.toLowerCase();
-    if (!lower.includes(userInfo().username.toLowerCase()) || lower.includes("everyone:")) {
-      throw new Error("ACL verification rejected an inherited or public principal");
-    }
+    await assertWindowsUserOnlyAcl(path, identity, inheritToChildren);
   } catch (error) {
     throw new ControlApiError("CONTROL_TOKEN_ACL_UNSAFE", "Token ACL could not be made user-only", {
       cause: error,
@@ -132,8 +212,7 @@ async function applyWindowsUserOnlyAcl(path: string): Promise<void> {
   }
 }
 
-async function verifyPosixUserOnly(path: string): Promise<void> {
-  await chmod(path, 0o600);
+async function assertPosixUserOnly(path: string): Promise<void> {
   const metadata = await stat(path);
   if ((metadata.mode & 0o077) !== 0) {
     throw new ControlApiError(
@@ -143,12 +222,55 @@ async function verifyPosixUserOnly(path: string): Promise<void> {
   }
 }
 
+async function replaceWindowsTokenAtomically(path: string, content: string): Promise<void> {
+  const parent = dirname(path);
+  await mkdir(parent, { recursive: true, mode: 0o700 });
+  const identity = await currentWindowsIdentity();
+  await applyWindowsUserOnlyAcl(parent, identity, true);
+  const temporary = `${path}.${String(process.pid)}.${randomBytes(8).toString("hex")}.tmp`;
+  try {
+    await writeFile(temporary, "", { encoding: "utf8", flag: "wx", mode: 0o600 });
+    await applyWindowsUserOnlyAcl(temporary, identity);
+    const handle = await open(temporary, "r+");
+    try {
+      await handle.writeFile(content, { encoding: "utf8" });
+      await handle.sync();
+    } finally {
+      await handle.close();
+    }
+    await assertWindowsUserOnlyAcl(temporary, identity, false);
+    await rename(temporary, path);
+    await assertWindowsUserOnlyAcl(path, identity, false);
+  } finally {
+    await rm(temporary, { force: true });
+  }
+}
+
+export async function verifyControlPathUserOnly(path: string): Promise<void> {
+  try {
+    if (process.platform === "win32") {
+      await assertWindowsUserOnlyAcl(path, await currentWindowsIdentity(), false);
+    } else {
+      await assertPosixUserOnly(path);
+    }
+  } catch (error) {
+    if (error instanceof ControlApiError) throw error;
+    throw new ControlApiError("CONTROL_TOKEN_ACL_UNSAFE", "Token ACL is not user-only", {
+      cause: error,
+    });
+  }
+}
+
 export async function createSecureToken(path: string): Promise<string> {
   const token = randomBytes(32).toString("base64url");
   try {
-    await replaceAtomically(path, `${token}\n`, 0o600);
-    if (process.platform === "win32") await applyWindowsUserOnlyAcl(path);
-    else await verifyPosixUserOnly(path);
+    if (process.platform === "win32") {
+      await replaceWindowsTokenAtomically(path, `${token}\n`);
+    } else {
+      await replaceAtomically(path, `${token}\n`, 0o600);
+      await chmod(path, 0o600);
+      await assertPosixUserOnly(path);
+    }
     return token;
   } catch (error) {
     await rm(path, { force: true });
@@ -206,20 +328,30 @@ function validateDescriptor(value: unknown, dataRoot: string): ControlEndpointDe
     keys !== expected ||
     descriptor["schemaVersion"] !== "1.0.0" ||
     typeof descriptor["instanceId"] !== "string" ||
+    !UUID_V7_PATTERN.test(descriptor["instanceId"]) ||
     !Number.isSafeInteger(descriptor["pid"]) ||
     Number(descriptor["pid"]) < 1 ||
-    typeof descriptor["startedAt"] !== "string" ||
-    !Number.isFinite(Date.parse(descriptor["startedAt"])) ||
+    Number(descriptor["pid"]) > 2_147_483_647 ||
+    !isRfc3339DateTime(descriptor["startedAt"]) ||
     descriptor["host"] !== "127.0.0.1" ||
     !Number.isSafeInteger(descriptor["port"]) ||
     Number(descriptor["port"]) < 1 ||
     Number(descriptor["port"]) > 65_535 ||
     !Array.isArray(descriptor["apiVersions"]) ||
-    descriptor["apiVersions"].length !== 1 ||
-    descriptor["apiVersions"][0] !== "v1" ||
+    descriptor["apiVersions"].length < 1 ||
+    !descriptor["apiVersions"].every(
+      (version) => typeof version === "string" && /^v[1-9][0-9]*$/u.test(version),
+    ) ||
+    new Set(descriptor["apiVersions"]).size !== descriptor["apiVersions"].length ||
     typeof descriptor["frameworkVersion"] !== "string" ||
+    !SEMANTIC_VERSION_PATTERN.test(descriptor["frameworkVersion"]) ||
     typeof descriptor["releaseId"] !== "string" ||
+    descriptor["releaseId"].length < 1 ||
+    descriptor["releaseId"].length > 256 ||
     typeof tokenRef !== "string" ||
+    tokenRef.length < 1 ||
+    tokenRef.length > 512 ||
+    !TOKEN_REF_PATTERN.test(tokenRef) ||
     isAbsolute(tokenRef) ||
     !isWithin(resolve(dataRoot), tokenPath)
   ) {

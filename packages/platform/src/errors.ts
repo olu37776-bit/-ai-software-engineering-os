@@ -15,7 +15,9 @@ export class ControlApiError extends Error {
   public readonly code: string;
 
   public constructor(code: string, message: string, options?: ErrorOptions) {
-    super(redactForPublicBoundary(message), options);
+    // Public boundary errors deliberately never retain a raw filesystem/network cause.
+    super(redactForPublicBoundary(message));
+    void options;
     this.name = "ControlApiError";
     this.code = code;
   }

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { request } from "node:http";
 import { mkdtemp, readFile, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { test } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 
@@ -14,6 +14,8 @@ import {
   redactForPublicBoundary,
   startControlApi,
 } from "../dist/index.js";
+
+const repositoryRoot = resolve(import.meta.dirname, "../../..");
 
 async function rawRequest(
   runtime,
@@ -54,12 +56,12 @@ function assertContract(registry, schemaId, value) {
 
 test("loopback runtime rotates credentials, authenticates public client and stops idempotently", async () => {
   const dataRoot = await mkdtemp(join(tmpdir(), "aseos-platform-"));
+  const registry = await loadContractRegistry(repositoryRoot);
   const runtime = await startControlApi({
     dataRoot,
     frameworkVersion: "0.1.0",
     releaseId: "test-release",
   });
-  const registry = await loadContractRegistry(process.cwd());
   const firstToken = (await readFile(runtime.tokenFilePath, "utf8")).trim();
   try {
     assert.equal(runtime.descriptor.host, "127.0.0.1");
@@ -116,7 +118,7 @@ test("loopback runtime rotates credentials, authenticates public client and stop
     assert.equal(received.value.notificationId, published.notificationId);
     abortController.abort();
 
-    const accepted = await client.stop({ idempotencyKey: "stop-test-0001" });
+    const accepted = await client.stop({ idempotencyKey: "stop-test-key-0001" });
     assert.equal(accepted.status, "ACCEPTED");
     assertContract(registry, "urn:aseos:schema:control-operation-ref:1.0.0", accepted);
     await runtime.closed;

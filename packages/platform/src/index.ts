@@ -1,6 +1,6 @@
 export { createControlApiClient } from "./client.js";
 export { ControlApiError, redactForPublicBoundary } from "./errors.js";
-export { discoverControlEndpoint } from "./filesystem.js";
+export { discoverControlEndpoint, verifyControlPathUserOnly } from "./filesystem.js";
 export { BoundedIdempotencyRegistry, type IdempotencyLookup } from "./idempotency.js";
 export { createUuidV7 } from "./identity.js";
 export { startControlApi, startControlApiServer } from "./server.js";

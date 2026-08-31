@@ -46,13 +46,13 @@ export async function authenticatedFetch(runtime, path, init = {}) {
   });
 }
 
-export async function rawHttpRequest(runtime, path, headers) {
+export async function rawHttpRequest(runtime, path, headers, method = "GET") {
   const response = await new Promise((resolvePromise, reject) => {
     const outgoing = request(
       {
         host: "127.0.0.1",
         port: runtime.descriptor.port,
-        method: "GET",
+        method,
         path,
         headers,
       },

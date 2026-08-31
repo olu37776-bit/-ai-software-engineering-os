@@ -68,6 +68,8 @@ interface ServerState {
   sequence: number;
   activeRequests: number;
   stopRequested: boolean;
+  securityFinding: DiagnosticFinding | undefined;
+  securityFindingExpiresAt: number | undefined;
 }
 
 function mergeLimits(input: Partial<ControlApiLimits> | undefined): ControlApiLimits {
@@ -121,15 +123,21 @@ function exactHostHeader(request: IncomingMessage, expected: string): boolean {
   return hosts.length === 1 && hosts[0] === expected && request.headers.host === expected;
 }
 
-function validSubjectRef(value: PublishNotificationInput["subjectRef"]): boolean {
-  const keys = Object.keys(value);
+function validSubjectRef(value: unknown): value is PublishNotificationInput["subjectRef"] {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  const subject = value as Record<string, unknown>;
+  const keys = Object.keys(subject);
   return (
-    (keys.length === 2 || (keys.length === 3 && typeof value.subjectVersion === "string")) &&
-    /^[A-Z][A-Za-z0-9]{0,127}$/u.test(value.subjectType) &&
-    value.subjectId.length >= 1 &&
-    value.subjectId.length <= 256 &&
-    (value.subjectVersion === undefined ||
-      (value.subjectVersion.length >= 1 && value.subjectVersion.length <= 128))
+    (keys.length === 2 || (keys.length === 3 && typeof subject["subjectVersion"] === "string")) &&
+    typeof subject["subjectType"] === "string" &&
+    /^[A-Z][A-Za-z0-9]{1,127}$/u.test(subject["subjectType"]) &&
+    typeof subject["subjectId"] === "string" &&
+    subject["subjectId"].length >= 1 &&
+    subject["subjectId"].length <= 256 &&
+    (subject["subjectVersion"] === undefined ||
+      (typeof subject["subjectVersion"] === "string" &&
+        subject["subjectVersion"].length >= 1 &&
+        subject["subjectVersion"].length <= 128))
   );
 }
 
@@ -176,10 +184,34 @@ function applyOriginHeaders(response: ServerResponse, origin: string | undefined
   response.setHeader("access-control-allow-origin", origin);
   response.setHeader(
     "access-control-allow-headers",
-    "authorization,content-type,idempotency-key,x-request-id,x-correlation-id,last-event-id",
+    "authorization,content-type,idempotency-key,if-match,x-request-id,x-correlation-id,last-event-id",
   );
   response.setHeader("access-control-allow-methods", "GET,POST,OPTIONS");
   response.setHeader("vary", "Origin");
+}
+
+const PREFLIGHT_HEADERS = new Set([
+  "authorization",
+  "content-type",
+  "idempotency-key",
+  "if-match",
+  "last-event-id",
+  "x-correlation-id",
+  "x-request-id",
+]);
+
+function validPreflight(request: IncomingMessage, pathname: string): boolean {
+  const requestedMethod = request.headers["access-control-request-method"];
+  const expectedMethod = pathname === "/v1/runtime/stop" ? "POST" : "GET";
+  if (requestedMethod !== expectedMethod) return false;
+  const requestedHeaders = request.headers["access-control-request-headers"];
+  if (requestedHeaders === undefined) return true;
+  if (Array.isArray(requestedHeaders)) return false;
+  const names = requestedHeaders
+    .split(",")
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+  return names.length > 0 && names.every((name) => PREFLIGHT_HEADERS.has(name));
 }
 
 function sendJson(
@@ -189,17 +221,14 @@ function sendJson(
   maxBytes: number,
   contentType = "application/json",
 ): void {
-  let content = JSON.stringify(value);
+  const content = JSON.stringify(value);
   if (Buffer.byteLength(content) > maxBytes) {
-    status = 500;
-    content = JSON.stringify({
-      type: "https://aseos.local/problems/response-limit-exceeded",
-      title: "Response limit exceeded",
-      status,
-      detail: "The response exceeded its configured public boundary.",
-      code: "CONTROL_RESPONSE_LIMIT_EXCEEDED",
-    });
-    contentType = "application/problem+json";
+    response.statusCode = 500;
+    response.setHeader("cache-control", "no-store");
+    response.setHeader("connection", "close");
+    response.setHeader("content-length", 0);
+    response.end();
+    return;
   }
   response.statusCode = status;
   response.setHeader("cache-control", "no-store");
@@ -257,6 +286,18 @@ function metadata(state: ServerState): BoundedControlMetadata {
   });
 }
 
+function securityFindings(state: ServerState): readonly DiagnosticFinding[] {
+  if (
+    state.securityFinding !== undefined &&
+    state.securityFindingExpiresAt !== undefined &&
+    state.securityFindingExpiresAt <= Date.now()
+  ) {
+    state.securityFinding = undefined;
+    state.securityFindingExpiresAt = undefined;
+  }
+  return state.securityFinding === undefined ? [] : [state.securityFinding];
+}
+
 async function rejectUnexpectedBody(request: IncomingMessage, limit: number): Promise<void> {
   let bytes = 0;
   for await (const chunk of request) {
@@ -268,19 +309,26 @@ async function rejectUnexpectedBody(request: IncomingMessage, limit: number): Pr
     throw new ControlApiError("CONTROL_BODY_NOT_ALLOWED", "This endpoint does not accept a body");
 }
 
+function writeSseFrame(connection: EventConnection, data: string, maxBuffered: number): boolean {
+  const bytes = Buffer.byteLength(data);
+  if (connection.bufferedBytes + bytes > maxBuffered) return false;
+  connection.bufferedBytes += bytes;
+  const writable = connection.response.write(data, () => {
+    connection.bufferedBytes = Math.max(0, connection.bufferedBytes - bytes);
+  });
+  return writable || connection.bufferedBytes <= maxBuffered;
+}
+
 function writeSse(
   connection: EventConnection,
   notification: ControlNotification,
   maxBuffered: number,
 ): boolean {
-  const data = `id: ${notification.notificationId}\nevent: ${notification.kind}\ndata: ${JSON.stringify(notification)}\n\n`;
-  const bytes = Buffer.byteLength(data);
-  connection.bufferedBytes += bytes;
-  if (connection.bufferedBytes > maxBuffered) return false;
-  const writable = connection.response.write(data, () => {
-    connection.bufferedBytes = Math.max(0, connection.bufferedBytes - bytes);
-  });
-  return writable || connection.bufferedBytes <= maxBuffered;
+  return writeSseFrame(
+    connection,
+    `id: ${notification.notificationId}\nevent: ${notification.kind}\ndata: ${JSON.stringify(notification)}\n\n`,
+    maxBuffered,
+  );
 }
 
 function closeEventConnection(state: ServerState, connection: EventConnection): void {
@@ -319,21 +367,39 @@ function serveEvents(
   response.flushHeaders();
   const connection: EventConnection = { response, bufferedBytes: 0 };
   connection.heartbeat = setInterval(() => {
-    if (!response.write(": heartbeat\n\n")) closeEventConnection(state, connection);
+    if (!writeSseFrame(connection, ": heartbeat\n\n", state.limits.sseMaxBufferedBytes))
+      closeEventConnection(state, connection);
   }, state.limits.sseHeartbeatMs);
   connection.heartbeat.unref();
   state.eventConnections.add(connection);
   const lastId = request.headers["last-event-id"];
   if (typeof lastId === "string" && state.notifications.length > 0) {
     const index = state.notifications.findIndex((item) => item.notificationId === lastId);
-    if (index < 0) response.write('event: gap\ndata: {"code":"CONTROL_SSE_RETENTION_GAP"}\n\n');
-    else
-      for (const notification of state.notifications.slice(index + 1))
-        writeSse(connection, notification, state.limits.sseMaxBufferedBytes);
+    if (index < 0) {
+      if (
+        !writeSseFrame(
+          connection,
+          'event: gap\ndata: {"code":"CONTROL_SSE_RETENTION_GAP"}\n\n',
+          state.limits.sseMaxBufferedBytes,
+        )
+      ) {
+        closeEventConnection(state, connection);
+        return;
+      }
+    } else {
+      for (const notification of state.notifications.slice(index + 1)) {
+        if (!writeSse(connection, notification, state.limits.sseMaxBufferedBytes)) {
+          closeEventConnection(state, connection);
+          return;
+        }
+      }
+    }
   }
-  request.once("close", () => {
+  const release = (): void => {
     closeEventConnection(state, connection);
-  });
+  };
+  request.once("close", release);
+  response.once("close", release);
 }
 
 function createRequestHandler(
@@ -440,32 +506,6 @@ function createRequestHandler(
           );
           return;
         }
-        if (!tokenMatches(request.headers.authorization, state.tokenHash)) {
-          const failure = registerAuthFailure(state, request.socket.remoteAddress ?? "unknown");
-          if (failure.limited) response.setHeader("retry-after", failure.retryAfter);
-          const status = failure.limited ? 429 : 401;
-          sendJson(
-            response,
-            status,
-            problem(
-              ids,
-              status,
-              failure.limited ? "CONTROL_AUTH_RATE_LIMITED" : "CONTROL_AUTH_REQUIRED",
-              failure.limited ? "Authentication rate limited" : "Authentication required",
-              "A valid bearer token is required",
-              failure.limited ? "RETRYABLE" : "NON_RETRYABLE",
-            ),
-            state.limits.maxResponseBytes,
-            "application/problem+json",
-          );
-          return;
-        }
-        if (typeof origin === "string") applyOriginHeaders(response, origin);
-        if (request.method === "OPTIONS") {
-          response.statusCode = 204;
-          response.end();
-          return;
-        }
         const url = new URL(urlText, `http://127.0.0.1:${String(current.port)}`);
         if (url.search !== "") {
           sendJson(
@@ -483,6 +523,81 @@ function createRequestHandler(
           );
           return;
         }
+        if (request.method === "OPTIONS") {
+          if (
+            typeof origin !== "string" ||
+            !validPreflight(request, url.pathname) ||
+            ![
+              "/v1/version",
+              "/v1/health",
+              "/v1/endpoint",
+              "/v1/status",
+              "/v1/doctor",
+              "/v1/events",
+              "/v1/runtime/stop",
+            ].includes(url.pathname)
+          ) {
+            sendJson(
+              response,
+              403,
+              problem(
+                ids,
+                403,
+                "CONTROL_PREFLIGHT_REJECTED",
+                "Preflight rejected",
+                "The browser preflight is not allowed",
+              ),
+              state.limits.maxResponseBytes,
+              "application/problem+json",
+            );
+            return;
+          }
+          applyOriginHeaders(response, origin);
+          response.statusCode = 204;
+          response.end();
+          return;
+        }
+        if (!tokenMatches(request.headers.authorization, state.tokenHash)) {
+          const failure = registerAuthFailure(state, request.socket.remoteAddress ?? "unknown");
+          if (failure.limited) response.setHeader("retry-after", failure.retryAfter);
+          const status = failure.limited ? 429 : 401;
+          if (
+            failure.limited &&
+            (state.securityFinding === undefined ||
+              (state.securityFindingExpiresAt ?? 0) <= Date.now())
+          ) {
+            state.securityFinding = Object.freeze({
+              schemaVersion: "1.0.0",
+              findingId: createUuidV7(),
+              code: "CONTROL_AUTH_FAILURE_RATE_LIMITED",
+              severity: "WARNING",
+              subjectRef: Object.freeze({
+                subjectType: "Runtime",
+                subjectId: state.instanceId,
+              }),
+              evidenceRefs: [],
+              remediation: "Inspect local clients and rotate the runtime token by restarting.",
+              detectedAt: new Date().toISOString(),
+            });
+            state.securityFindingExpiresAt = Date.now() + state.limits.authFailureWindowMs;
+          }
+          sendJson(
+            response,
+            status,
+            problem(
+              ids,
+              status,
+              failure.limited ? "CONTROL_AUTH_RATE_LIMITED" : "CONTROL_AUTH_REQUIRED",
+              failure.limited ? "Authentication rate limited" : "Authentication required",
+              "A valid bearer token is required",
+              failure.limited ? "RETRYABLE" : "NON_RETRYABLE",
+            ),
+            state.limits.maxResponseBytes,
+            "application/problem+json",
+          );
+          return;
+        }
+        if (typeof origin === "string") applyOriginHeaders(response, origin);
         await rejectUnexpectedBody(request, state.limits.maxBodyBytes);
         const contentType = request.headers["content-type"];
         if (contentType !== undefined && contentType !== "application/json") {
@@ -516,18 +631,19 @@ function createRequestHandler(
             state.limits.maxResponseBytes,
           );
         } else if (request.method === "GET" && url.pathname === "/v1/health") {
+          const findings = securityFindings(state);
           sendJson(
             response,
             200,
             {
               schemaVersion: "1.0.0",
               instanceId: current.instanceId,
-              readiness: "READY",
+              readiness: findings.length === 0 ? "READY" : "DEGRADED",
               runtimeVersion: current.frameworkVersion,
               releaseId: current.releaseId,
               stateVersion: 0,
               checkedAt: new Date().toISOString(),
-              findings: [],
+              findings,
             },
             state.limits.maxResponseBytes,
           );
@@ -548,18 +664,24 @@ function createRequestHandler(
             state.limits.maxResponseBytes,
           );
         } else if (request.method === "GET" && url.pathname === "/v1/doctor") {
-          const findings: readonly DiagnosticFinding[] = [];
+          const findings = securityFindings(state);
           sendJson(
             response,
             200,
-            { schemaVersion: "1.0.0", status: "PASS", findings, ...ids },
+            {
+              schemaVersion: "1.0.0",
+              status: findings.length === 0 ? "PASS" : "FINDINGS",
+              findings,
+              ...ids,
+            },
             state.limits.maxResponseBytes,
           );
         } else if (request.method === "GET" && url.pathname === "/v1/events") {
+          clearTimeout(timer);
           serveEvents(request, response, state, ids);
         } else if (request.method === "POST" && url.pathname === "/v1/runtime/stop") {
           const key = request.headers["idempotency-key"];
-          if (typeof key !== "string" || !/^[A-Za-z0-9._:-]{8,128}$/u.test(key)) {
+          if (typeof key !== "string" || !/^[A-Za-z0-9._:/+-]{16,256}$/u.test(key)) {
             sendJson(
               response,
               400,
@@ -761,6 +883,8 @@ export async function startControlApi(options: StartControlApiOptions): Promise<
     sequence: 0,
     activeRequests: 0,
     stopRequested: false,
+    securityFinding: undefined,
+    securityFindingExpiresAt: undefined,
   };
   const stop = (): Promise<void> => {
     stopped ??= (async (): Promise<void> => {
@@ -822,12 +946,22 @@ export async function startControlApi(options: StartControlApiOptions): Promise<
   const publishNotification = (input: PublishNotificationInput): ControlNotification => {
     if (state.stopRequested)
       throw new ControlApiError("CONTROL_RUNTIME_STOPPED", "Runtime is stopped");
+    const candidate: unknown = input;
     if (
-      !Number.isSafeInteger(input.projectionVersion) ||
-      input.projectionVersion < 0 ||
-      !validSubjectRef(input.subjectRef) ||
-      !input.resourceUri.startsWith("/v1/") ||
-      input.resourceUri.length > 1_024
+      typeof candidate !== "object" ||
+      candidate === null ||
+      !("projectionVersion" in candidate) ||
+      !Number.isSafeInteger(candidate.projectionVersion) ||
+      Number(candidate.projectionVersion) < 0 ||
+      !("subjectRef" in candidate) ||
+      !validSubjectRef(candidate.subjectRef) ||
+      !("kind" in candidate) ||
+      typeof candidate.kind !== "string" ||
+      !["RUNTIME_STATUS", "OPERATION_METADATA", "EVIDENCE_METADATA"].includes(candidate.kind) ||
+      !("resourceUri" in candidate) ||
+      typeof candidate.resourceUri !== "string" ||
+      !candidate.resourceUri.startsWith("/v1/") ||
+      candidate.resourceUri.length > 1_024
     ) {
       throw new ControlApiError(
         "CONTROL_NOTIFICATION_INVALID",
@@ -838,11 +972,11 @@ export async function startControlApi(options: StartControlApiOptions): Promise<
     const notification: ControlNotification = Object.freeze({
       schemaVersion: "1.0.0",
       notificationId: createUuidV7(),
-      kind: input.kind,
-      subjectRef: input.subjectRef,
-      projectionVersion: input.projectionVersion,
+      kind: candidate.kind as ControlNotification["kind"],
+      subjectRef: Object.freeze({ ...candidate.subjectRef }),
+      projectionVersion: candidate.projectionVersion as number,
       occurredAt: new Date().toISOString(),
-      resourceUri: input.resourceUri,
+      resourceUri: candidate.resourceUri,
     });
     state.notifications.push(notification);
     while (state.notifications.length > limits.sseRetentionCapacity) state.notifications.shift();

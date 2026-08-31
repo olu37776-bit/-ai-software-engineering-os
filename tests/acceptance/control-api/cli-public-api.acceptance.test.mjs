@@ -1,4 +1,4 @@
-/* global setTimeout */
+/* global fetch, setTimeout */
 import { execFile } from "node:child_process";
 import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -6,6 +6,8 @@ import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 
 import { describe, expect, test } from "vitest";
+
+import { startRuntime } from "../../../apps/runtime/dist/index.js";
 
 const execFileAsync = promisify(execFile);
 const repositoryRoot = resolve(import.meta.dirname, "../../..");
@@ -94,5 +96,30 @@ describe("P1-V07 CLI public-client actual acceptance", () => {
     const source = `${await readFile(join(repositoryRoot, "apps", "cli", "src", "index.ts"), "utf8")}\n${await readFile(join(repositoryRoot, "apps", "cli", "src", "main.ts"), "utf8")}`;
     expect(source).not.toMatch(/@aseos\/(?:kernel|persistence)|node:sqlite|\.db\b|sqlite/iu);
     expect(source).toContain('from "@aseos/platform"');
+  });
+
+  test("removing discovery stops the listening runtime and cleans up its token", async () => {
+    const dataRoot = await mkdtemp(join(tmpdir(), "ASEOS discovery loss "));
+    const runtime = await startRuntime({
+      dataRoot,
+      frameworkVersion: "0.1.0",
+      releaseId: "p1-v07-discovery-loss",
+    });
+    const endpoint = `http://127.0.0.1:${String(runtime.controlApi.descriptor.port)}/v1/health`;
+    try {
+      await rm(runtime.controlApi.descriptorPath, { force: true });
+      await Promise.race([
+        runtime.stopped,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("RUNTIME_DID_NOT_STOP_AFTER_DISCOVERY_LOSS")), 5_000),
+        ),
+      ]);
+      await expect(access(runtime.controlApi.tokenFilePath)).rejects.toThrow();
+      await expect(fetch(endpoint)).rejects.toThrow();
+      await expect(runtime.stop()).resolves.toBeUndefined();
+    } finally {
+      await runtime.stop();
+      await rm(dataRoot, { force: true, recursive: true });
+    }
   });
 });

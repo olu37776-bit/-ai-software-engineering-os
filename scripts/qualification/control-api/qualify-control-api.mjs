@@ -1,11 +1,11 @@
 /* global fetch */
 import { execFile } from "node:child_process";
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 
-import { createControlApiClient } from "@aseos/platform";
+import { createControlApiClient, verifyControlPathUserOnly } from "@aseos/platform";
 
 const execFileAsync = promisify(execFile);
 const repositoryRoot = resolve(import.meta.dirname, "../../..");
@@ -52,7 +52,7 @@ try {
   ]);
   const tokenFilePath = resolve(dataRoot, client.descriptor.tokenFileRef);
   const token = (await readFile(tokenFilePath, "utf8")).trim();
-  const tokenMetadata = await stat(tokenFilePath);
+  await verifyControlPathUserOnly(tokenFilePath);
   const rejected = await fetch(`http://127.0.0.1:${String(client.descriptor.port)}/v1/health`, {
     headers: {
       authorization: `Bearer ${token.slice(0, -1)}x`,
@@ -81,7 +81,6 @@ try {
     openapi.openapi === "3.1.1" &&
     requiredPaths.every((path) => openapi.paths[path] !== undefined) &&
     openapi.security?.[0]?.bearerAuth !== undefined;
-  const tokenAclPass = process.platform === "win32" || (tokenMetadata.mode & 0o077) === 0;
   const results = [
     {
       evidenceType: "OpenApiValidationResult",
@@ -97,10 +96,12 @@ try {
     },
     {
       evidenceType: "TokenAclRedactionResult",
-      result:
-        token.length === 43 && tokenAclPass && !rejectedText.includes(token) ? "PASS" : "FAIL",
+      result: token.length === 43 && !rejectedText.includes(token) ? "PASS" : "FAIL",
       tokenBits: 256,
-      acl: process.platform === "win32" ? "ENFORCED_AND_VERIFIED_BY_RUNTIME" : "0600",
+      acl:
+        process.platform === "win32"
+          ? "CURRENT_USER_PLUS_TRUSTED_OS_SESSION_PRINCIPALS_NO_INHERITANCE"
+          : "0600",
       publicErrorRedacted: !rejectedText.includes(token),
     },
     {

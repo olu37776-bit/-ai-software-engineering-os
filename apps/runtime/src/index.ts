@@ -18,26 +18,33 @@ const descriptorPollIntervalMs = 50;
 
 export async function startRuntime(options: RuntimeOptions): Promise<RunningRuntime> {
   const controlApi = await startControlApi(options);
-  let stopped = false;
+  let stopPromise: Promise<void> | undefined;
   let resolveStopped: (() => void) | undefined;
-  const stoppedPromise = new Promise<void>((resolve) => {
+  let rejectStopped: ((reason: unknown) => void) | undefined;
+  const stoppedPromise = new Promise<void>((resolve, reject) => {
     resolveStopped = resolve;
+    rejectStopped = reject;
   });
 
-  const stop = async (): Promise<void> => {
-    if (stopped) return;
-    stopped = true;
-    clearInterval(descriptorMonitor);
-    await controlApi.stop();
-    resolveStopped?.();
+  const stop = (): Promise<void> => {
+    stopPromise ??= (async (): Promise<void> => {
+      clearInterval(descriptorMonitor);
+      try {
+        await controlApi.stop();
+        resolveStopped?.();
+      } catch (error) {
+        rejectStopped?.(error);
+        throw error;
+      }
+    })();
+    return stopPromise;
   };
 
   const descriptorMonitor = setInterval(() => {
     void access(controlApi.descriptorPath).catch(() => {
-      if (stopped) return;
-      stopped = true;
-      clearInterval(descriptorMonitor);
-      resolveStopped?.();
+      void stop().catch(() => {
+        // The same failure is observable through stopped and an explicit stop call.
+      });
     });
   }, descriptorPollIntervalMs);
   descriptorMonitor.unref();

@@ -98,7 +98,10 @@ describe("P1-O06 canonical Control API contracts", () => {
       scheme: "bearer",
     });
 
-    const canonicalRefs = Object.values(openapi.components.schemas).map((schema) => schema.$ref);
+    const externalSchemas = Object.values(openapi.components.schemas).filter(
+      (schema) => schema.$ref !== undefined,
+    );
+    const canonicalRefs = externalSchemas.map((schema) => schema.$ref);
     expect(canonicalRefs).toEqual([
       "./control-api-problem.schema.json",
       "./control-endpoint-descriptor.schema.json",
@@ -107,9 +110,15 @@ describe("P1-O06 canonical Control API contracts", () => {
       "../platform/diagnostic-finding.schema.json",
       "../platform/runtime-health.schema.json",
     ]);
-    expect(
-      Object.values(openapi.components.schemas).every((schema) => Object.keys(schema).length === 1),
-    ).toBe(true);
+    expect(externalSchemas.every((schema) => Object.keys(schema).length === 1)).toBe(true);
+    expect(Object.keys(openapi.components.schemas)).toEqual(
+      expect.arrayContaining([
+        "VersionResponse",
+        "StatusResponse",
+        "DoctorResponse",
+        "RetentionGap",
+      ]),
+    );
   });
 
   test("does not leak token material through descriptor examples or schemas", async () => {

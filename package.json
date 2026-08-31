@@ -24,7 +24,7 @@
     "verify:frozen-install": "node scripts/toolchain/verify-frozen-install.mjs",
     "verify:scope": "node scripts/toolchain/verify-scope.mjs",
     "verify:versions": "node scripts/toolchain/verify-versions.mjs",
-    "quality": "pnpm run format && pnpm run lint && pnpm run contracts:generate-types && pnpm run typecheck && pnpm run test && pnpm run contracts:qualify && pnpm run architecture:qualify && pnpm run persistence:qualify && pnpm run control-api:qualify && pnpm run build && pnpm run verify:config && pnpm run verify:versions && pnpm run verify:frozen-install",
+    "quality": "pnpm run format && pnpm run lint && pnpm run contracts:generate-types && pnpm run typecheck && pnpm run test && pnpm --filter @aseos/platform test && pnpm run contracts:qualify && pnpm run architecture:qualify && pnpm run persistence:qualify && pnpm run control-api:qualify && pnpm run build && pnpm run verify:config && pnpm run verify:versions && pnpm run verify:frozen-install",
     "quality:phase1": "pnpm run quality && pnpm run verify:scope",
     "persistence:qualify": "pnpm exec tsc -b packages/contracts/tsconfig.json packages/persistence/tsconfig.json --pretty false && node scripts/qualification/persistence/qualify-node-sqlite.mjs",
     "control-api:qualify": "pnpm exec tsc -b packages/contracts/tsconfig.json packages/platform/tsconfig.json apps/runtime/tsconfig.json apps/cli/tsconfig.json --pretty false && node scripts/qualification/control-api/qualify-control-api.mjs"

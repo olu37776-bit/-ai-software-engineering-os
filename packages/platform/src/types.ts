@@ -10,7 +10,7 @@ export interface ControlEndpointDescriptor {
   readonly startedAt: string;
   readonly host: "127.0.0.1";
   readonly port: number;
-  readonly apiVersions: readonly ["v1"];
+  readonly apiVersions: readonly string[];
   readonly frameworkVersion: string;
   readonly releaseId: string;
   readonly tokenFileRef: string;
@@ -43,7 +43,7 @@ export interface DiagnosticFinding {
 export interface HealthResponse {
   readonly schemaVersion: "1.0.0";
   readonly instanceId: string;
-  readonly readiness: "READY";
+  readonly readiness: "READY" | "DEGRADED" | "NOT_READY";
   readonly runtimeVersion: string;
   readonly releaseId: string;
   readonly stateVersion: number;
