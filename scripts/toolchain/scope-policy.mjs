@@ -159,6 +159,49 @@ export const P1_O06_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS =
     beforeAllowedOperationIds: ["P1-O02", "P1-O04", "P1-O05"],
     path,
   }));
+export const P1_O07_START_GATE_PATH =
+  "operations/phase-1/evidence/o01/p1-o07-start-after-issue-71-independent-gate.json";
+export const P1_O07_AUTHORIZATION_GATE_MAIN_COMMIT = "ad9ad7c5602c40aafcdbfb3d4e96c139366e7f6e";
+export const P1_O07_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT =
+  "ce7373c980141ba65e1ba9b65592fdbedc6029b8";
+export const P1_O07_TRANSITION_ENFORCEMENT_BASE_COMMIT = "ce7373c980141ba65e1ba9b65592fdbedc6029b8";
+export const P1_O07_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH =
+  "operations/phase-1/executions/p1-o01-p1-o07-scope-authority-amendment.json";
+export const P1_O07_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH =
+  "operations/phase-1/evidence/o01/p1-o07-scope-authority-amendment.json";
+export const P1_O07_REQUIRED_SCOPE_PATHS = [
+  "package.json",
+  "packages/contracts/README.md",
+  "packages/contracts/examples/isolation/**",
+  "packages/contracts/planned-contracts.json",
+  "packages/contracts/schema-inventory.json",
+  "packages/contracts/schema-registry.json",
+  "packages/contracts/src/types.generated.ts",
+  "packages/contracts/type-bindings.json",
+  "pnpm-lock.yaml",
+  "pnpm-workspace.yaml",
+  "tests/contract/isolation/**",
+  "tsconfig.build.json",
+  "vitest.config.mjs",
+];
+export const P1_O07_REQUIRED_AUTHORITY_OWNERSHIP_PATHS = [
+  "packages/contracts/planned-contracts.json",
+  "packages/contracts/schema-inventory.json",
+  "packages/contracts/schema-registry.json",
+];
+export const P1_O07_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS = [
+  "docs/roadmap/phase-1-write-scope.md",
+  AUTHORITY_LOCK_PATH,
+  P1_O07_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH,
+  P1_O07_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH,
+  "operations/phase-1/write-scope.json",
+];
+export const P1_O07_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS =
+  P1_O07_REQUIRED_AUTHORITY_OWNERSHIP_PATHS.map((path) => ({
+    afterAllowedOperationIds: ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"],
+    beforeAllowedOperationIds: ["P1-O02", "P1-O04", "P1-O05", "P1-O06"],
+    path,
+  }));
 
 export function globToRegex(pattern) {
   const segments = pattern.split("**").map((segment) =>
@@ -876,6 +919,80 @@ export function validateP1O06StartGate(gate) {
     gate?.claimBoundary?.productionRuntimeAuthorized !== false
   ) {
     throw new Error("P1_O06_START_BLOCKED: Issue #64 independent PASS Gate is missing or invalid");
+  }
+  return {
+    ...commits,
+    ...trees,
+    scopeAuthorityAmendmentExecutionPath: gate.subject.scopeAuthorityAmendmentExecutionPath,
+    scopeAuthorityAmendmentEvidencePath: gate.subject.scopeAuthorityAmendmentEvidencePath,
+  };
+}
+
+export function validateP1O07StartGate(gate) {
+  const commits = {
+    scopeAuthorizationGateReviewedHeadCommit:
+      gate?.subject?.scopeAuthorizationGateReviewedHeadCommit,
+    scopeAuthorizationGateMainCommit: gate?.subject?.scopeAuthorizationGateMainCommit,
+    scopeAuthorityAmendmentImplementationCommit:
+      gate?.subject?.scopeAuthorityAmendmentImplementationCommit,
+    scopeAuthorityAmendmentReviewedHeadCommit:
+      gate?.subject?.scopeAuthorityAmendmentReviewedHeadCommit,
+    scopeAuthorityAmendmentMainCommit: gate?.subject?.scopeAuthorityAmendmentMainCommit,
+    transitionEnforcementBaseCommit: gate?.subject?.transitionEnforcementBaseCommit,
+    transitionEnforcementImplementationCommit:
+      gate?.subject?.transitionEnforcementImplementationCommit,
+    transitionEnforcementReviewedHeadCommit: gate?.subject?.transitionEnforcementReviewedHeadCommit,
+    transitionEnforcementMainCommit: gate?.subject?.transitionEnforcementMainCommit,
+  };
+  const trees = {
+    scopeAuthorityAmendmentImplementationTree:
+      gate?.subject?.scopeAuthorityAmendmentImplementationTree,
+    transitionEnforcementImplementationTree: gate?.subject?.transitionEnforcementImplementationTree,
+  };
+  const verification = gate?.verification;
+  if (
+    gate?.schemaVersion !== "1.0.0" ||
+    gate?.evidenceType !== "IndependentPhase1TransitionGate" ||
+    gate?.trackingIssue !== 71 ||
+    gate?.decision !== "PASS" ||
+    gate?.subject?.repository !== "olu37776-bit/-ai-software-engineering-os" ||
+    !Object.values(commits).every((commit) => /^[0-9a-f]{40}$/.test(commit ?? "")) ||
+    !Object.values(trees).every((tree) => /^[0-9a-f]{40}$/.test(tree ?? "")) ||
+    commits.scopeAuthorizationGateMainCommit !== P1_O07_AUTHORIZATION_GATE_MAIN_COMMIT ||
+    commits.scopeAuthorityAmendmentMainCommit !== P1_O07_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT ||
+    commits.transitionEnforcementBaseCommit !== P1_O07_TRANSITION_ENFORCEMENT_BASE_COMMIT ||
+    gate?.subject?.scopeAuthorityAmendmentExecutionPath !==
+      P1_O07_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH ||
+    gate?.subject?.scopeAuthorityAmendmentEvidencePath !==
+      P1_O07_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH ||
+    gate?.verifier?.role !== "INDEPENDENT_VERIFIER" ||
+    gate?.verifier?.independent !== true ||
+    gate?.verifier?.readOnlySubjectVerification !== true ||
+    gate?.verifier?.remediationPerformed !== false ||
+    gate?.authorization?.p1O07Start !== "RELEASED" ||
+    gate?.authorization?.authorizedBasePolicy !==
+      "PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE_AFTER_POST_MERGE_PASS" ||
+    !sameJson(
+      gate?.authorization?.scopeAuthorityAmendmentChangedPaths,
+      P1_O07_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS,
+    ) ||
+    !sameJson(
+      gate?.authorization?.authorityOwnershipDeltas,
+      P1_O07_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS,
+    ) ||
+    verification?.scopeAuthorityAmendmentIndependentVerdict !== "PASS" ||
+    verification?.scopeAuthorityAmendmentExactHeadChecks !== "PASS" ||
+    verification?.scopeAuthorityAmendmentPostMergeChecks !== "PASS" ||
+    verification?.transitionEnforcementIndependentVerdict !== "PASS" ||
+    verification?.transitionEnforcementExactHeadChecks !== "PASS" ||
+    verification?.transitionEnforcementPostMergeChecks !== "PASS" ||
+    gate?.claimBoundary?.p1O07Implemented !== false ||
+    gate?.claimBoundary?.acceptedAdrChanged !== false ||
+    gate?.claimBoundary?.requiredCheckIdentityChanged !== false ||
+    gate?.claimBoundary?.productionRuntimeAuthorized !== false ||
+    gate?.claimBoundary?.isolationDowngradeAuthorized !== false
+  ) {
+    throw new Error("P1_O07_START_BLOCKED: Issue #71 independent PASS Gate is missing or invalid");
   }
   return {
     ...commits,
