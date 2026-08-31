@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O07-START-GATE-ENFORCEMENT-ISSUE-71-2026-09-01-01",
+  "evidenceType": "P1O07StartGateEnforcementEvidence",
+  "decision": "IMPLEMENTED",
+  "operationId": "P1-O01",
+  "trackingIssue": 71,
+  "subject": {
+    "implementationCommit": "1035e5787f904156d509c6ed66230fada8935a2e",
+    "implementationTree": "05fc600111d9364cdaea930d27fb1262d194d6ee",
+    "authorizedBase": "ce7373c980141ba65e1ba9b65592fdbedc6029b8"
+  },
+  "enforcement": {
+    "gatePath": "operations/phase-1/evidence/o01/p1-o07-start-after-issue-71-independent-gate.json",
+    "missingOperationContextFailsClosed": true,
+    "missingOrMalformedGateFailsClosed": true,
+    "authorizationExactHistoryBound": true,
+    "amendmentExactHistoryBound": true,
+    "transitionExactHistoryBound": true,
+    "requiredScopePathsVerified": 13,
+    "authorityOwnershipPathsVerified": 3,
+    "requiredVerifyProducerCount": 1,
+    "operationAwareP1O07PreflightCovered": true,
+    "backwardCompatibleGateOperations": ["P1-O02", "P1-O04", "P1-O05", "P1-O06"]
+  },
+  "qualification": {
+    "focusedTestFiles": 2,
+    "focusedTests": 33,
+    "fullTestFiles": 34,
+    "fullTests": 256,
+    "architectureTests": 9,
+    "quality": "PASS",
+    "writeScope": "PASS",
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "scopeViolations": 0
+  },
+  "claimBoundary": {
+    "p1O07Started": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false,
+    "productionRuntimeAuthorized": false,
+    "isolationDowngradeAuthorized": false
+  }
+}
