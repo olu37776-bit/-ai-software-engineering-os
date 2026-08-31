@@ -6,11 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Issue #64 P1-O06 start-Gate enforcement",
   "riskClass": "R4",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-31T05:42:00Z",
+  "completedAt": "2026-08-31T06:33:44Z",
   "trackingIssue": 64,
   "implementationBranch": "phase-1/p1-o01-p1-o06-start-gate-enforcement-issue-64",
   "baseCommit": "d05c7d85fcf281453329cc2e2f561a1031872376",
+  "implementationCommit": "90fb2d74212308063828db2b15b2f05020ce5e21",
+  "implementationTree": "1c84291657aec9b6779c1d652bdfd9911d0475f0",
   "authorityRefs": [
     "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/64",
     "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-64.json",
@@ -41,15 +44,15 @@
     },
     {
       "check": "P1-O06 start Gate policy and exact transition-chain binding",
-      "result": "PENDING_IMPLEMENTATION_QUALIFICATION"
+      "result": "PASS_PENDING_IMMUTABLE_HEAD_QUALIFICATION"
     },
     {
       "check": "P1-O06 missing and malformed Gate fail-closed routing",
-      "result": "PENDING_IMPLEMENTATION_QUALIFICATION"
+      "result": "PASS_PENDING_IMMUTABLE_HEAD_QUALIFICATION"
     },
     {
       "check": "P1-O02, P1-O04 and P1-O05 Gate backward compatibility",
-      "result": "PENDING_FULL_QUALITY"
+      "result": "PASS"
     },
     {
       "check": "required verify authority uniqueness",
@@ -59,8 +62,12 @@
     }
   ],
   "documentRefs": ["docs/implementation/phase-1/o01/p1-o06-start-gate-enforcement-issue-64.md"],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o06-start-gate-enforcement-issue-64.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/64"
+  ],
   "remainingGaps": [
-    "Implementation qualification and immutable-head independent verification remain required.",
+    "Immutable-head checks and independent verification remain required.",
     "A separate independent P1-O06 start Gate remains required."
   ]
 }
