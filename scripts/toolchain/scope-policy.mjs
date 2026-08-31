@@ -75,6 +75,46 @@ export const P1_O02_START_GATE_PATH =
   "operations/phase-1/evidence/o01/p1-transition-scope-independent-gate.json";
 export const P1_O04_START_GATE_PATH =
   "operations/phase-1/evidence/o01/p1-o04-resume-after-issue-29-independent-gate.json";
+export const P1_O05_START_GATE_PATH =
+  "operations/phase-1/evidence/o01/p1-o05-start-after-issue-53-independent-gate.json";
+export const P1_O05_AUTHORIZATION_GATE_MAIN_COMMIT = "15b42b2c9c84d06aae99def832ef4c59d195c6cb";
+export const P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT =
+  "62e2de7225503c48c66fc08c6883d397aef5518a";
+export const P1_O05_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH =
+  "operations/phase-1/executions/p1-o01-p1-o05-scope-authority-amendment.json";
+export const P1_O05_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH =
+  "operations/phase-1/evidence/o01/p1-o05-scope-authority-amendment.json";
+export const P1_O05_REQUIRED_SCOPE_PATHS = [
+  "package.json",
+  "packages/contracts/README.md",
+  "packages/contracts/planned-contracts.json",
+  "packages/contracts/schema-inventory.json",
+  "packages/contracts/schema-registry.json",
+  "packages/contracts/src/types.generated.ts",
+  "packages/contracts/type-bindings.json",
+  "pnpm-lock.yaml",
+  "pnpm-workspace.yaml",
+  "tsconfig.build.json",
+  "vitest.config.mjs",
+];
+export const P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_PATHS = [
+  "packages/contracts/planned-contracts.json",
+  "packages/contracts/schema-inventory.json",
+  "packages/contracts/schema-registry.json",
+];
+export const P1_O05_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS = [
+  "docs/roadmap/phase-1-write-scope.md",
+  AUTHORITY_LOCK_PATH,
+  P1_O05_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH,
+  P1_O05_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH,
+  "operations/phase-1/write-scope.json",
+];
+export const P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS =
+  P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_PATHS.map((path) => ({
+    afterAllowedOperationIds: ["P1-O02", "P1-O04", "P1-O05"],
+    beforeAllowedOperationIds: ["P1-O02", "P1-O04"],
+    path,
+  }));
 
 export function globToRegex(pattern) {
   const segments = pattern.split("**").map((segment) =>
@@ -654,6 +694,77 @@ export function validateP1O04StartGate(gate) {
     finalAmendmentTrackingIssue: gate.subject.finalAmendmentTrackingIssue,
     finalAmendmentExecutionPath: gate.subject.finalAmendmentExecutionPath,
     finalAmendmentEvidencePath: gate.subject.finalAmendmentEvidencePath,
+  };
+}
+
+export function validateP1O05StartGate(gate) {
+  const commits = {
+    scopeAuthorizationGateReviewedHeadCommit:
+      gate?.subject?.scopeAuthorizationGateReviewedHeadCommit,
+    scopeAuthorizationGateMainCommit: gate?.subject?.scopeAuthorizationGateMainCommit,
+    scopeAuthorityAmendmentImplementationCommit:
+      gate?.subject?.scopeAuthorityAmendmentImplementationCommit,
+    scopeAuthorityAmendmentReviewedHeadCommit:
+      gate?.subject?.scopeAuthorityAmendmentReviewedHeadCommit,
+    scopeAuthorityAmendmentMainCommit: gate?.subject?.scopeAuthorityAmendmentMainCommit,
+    transitionEnforcementImplementationCommit:
+      gate?.subject?.transitionEnforcementImplementationCommit,
+    transitionEnforcementReviewedHeadCommit: gate?.subject?.transitionEnforcementReviewedHeadCommit,
+    transitionEnforcementMainCommit: gate?.subject?.transitionEnforcementMainCommit,
+  };
+  const trees = {
+    scopeAuthorityAmendmentImplementationTree:
+      gate?.subject?.scopeAuthorityAmendmentImplementationTree,
+    transitionEnforcementImplementationTree: gate?.subject?.transitionEnforcementImplementationTree,
+  };
+  const verification = gate?.verification;
+  if (
+    gate?.schemaVersion !== "1.0.0" ||
+    gate?.evidenceType !== "IndependentPhase1TransitionGate" ||
+    gate?.trackingIssue !== 53 ||
+    gate?.decision !== "PASS" ||
+    gate?.subject?.repository !== "olu37776-bit/-ai-software-engineering-os" ||
+    !Object.values(commits).every((commit) => /^[0-9a-f]{40}$/.test(commit ?? "")) ||
+    !Object.values(trees).every((tree) => /^[0-9a-f]{40}$/.test(tree ?? "")) ||
+    commits.scopeAuthorizationGateMainCommit !== P1_O05_AUTHORIZATION_GATE_MAIN_COMMIT ||
+    commits.scopeAuthorityAmendmentMainCommit !== P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT ||
+    gate?.subject?.scopeAuthorityAmendmentExecutionPath !==
+      P1_O05_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH ||
+    gate?.subject?.scopeAuthorityAmendmentEvidencePath !==
+      P1_O05_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH ||
+    gate?.verifier?.role !== "INDEPENDENT_VERIFIER" ||
+    gate?.verifier?.independent !== true ||
+    gate?.verifier?.readOnlySubjectVerification !== true ||
+    gate?.verifier?.remediationPerformed !== false ||
+    gate?.authorization?.p1O05Start !== "RELEASED" ||
+    gate?.authorization?.authorizedBasePolicy !==
+      "PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE_AFTER_POST_MERGE_PASS" ||
+    !sameJson(
+      gate?.authorization?.scopeAuthorityAmendmentChangedPaths,
+      P1_O05_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS,
+    ) ||
+    !sameJson(
+      gate?.authorization?.authorityOwnershipDeltas,
+      P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS,
+    ) ||
+    verification?.scopeAuthorityAmendmentIndependentVerdict !== "PASS" ||
+    verification?.scopeAuthorityAmendmentExactHeadChecks !== "PASS" ||
+    verification?.scopeAuthorityAmendmentPostMergeChecks !== "PASS" ||
+    verification?.transitionEnforcementIndependentVerdict !== "PASS" ||
+    verification?.transitionEnforcementExactHeadChecks !== "PASS" ||
+    verification?.transitionEnforcementPostMergeChecks !== "PASS" ||
+    gate?.claimBoundary?.p1O05Implemented !== false ||
+    gate?.claimBoundary?.acceptedAdrChanged !== false ||
+    gate?.claimBoundary?.requiredCheckIdentityChanged !== false ||
+    gate?.claimBoundary?.alternatePersistenceDriverAuthorized !== false
+  ) {
+    throw new Error("P1_O05_START_BLOCKED: Issue #53 independent PASS Gate is missing or invalid");
+  }
+  return {
+    ...commits,
+    ...trees,
+    scopeAuthorityAmendmentExecutionPath: gate.subject.scopeAuthorityAmendmentExecutionPath,
+    scopeAuthorityAmendmentEvidencePath: gate.subject.scopeAuthorityAmendmentEvidencePath,
   };
 }
 

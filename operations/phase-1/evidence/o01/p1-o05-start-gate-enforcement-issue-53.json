@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O05-START-GATE-ENFORCEMENT-ISSUE-53-2026-08-31-01",
+  "evidenceType": "P1O05StartGateEnforcementEvidence",
+  "decision": "IMPLEMENTED",
+  "operationId": "P1-O01",
+  "trackingIssue": 53,
+  "subject": {
+    "implementationCommit": "7bcb107e6077a3667d91a876867433f7a3f0e5e1",
+    "implementationTree": "f2b7b8536d28921eee4a619cc5d9b567d4d851c6",
+    "authorizedBase": "62e2de7225503c48c66fc08c6883d397aef5518a"
+  },
+  "enforcement": {
+    "gatePath": "operations/phase-1/evidence/o01/p1-o05-start-after-issue-53-independent-gate.json",
+    "missingOrMalformedGateFailsClosed": true,
+    "amendmentExactHistoryBound": true,
+    "transitionExactHistoryBound": true,
+    "requiredVerifyProducerCount": 1,
+    "operationAwareP1O05PreflightCovered": true,
+    "missingOrMalformedGateIntegrationTested": true
+  },
+  "claimBoundary": {
+    "p1O05Implemented": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false,
+    "alternatePersistenceDriverAuthorized": false
+  }
+}
