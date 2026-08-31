@@ -350,7 +350,21 @@
         "scripts/qualification/control-api/**",
         "docs/implementation/phase-1/o06/**",
         "operations/phase-1/evidence/o06/**",
-        "operations/phase-1/executions/p1-o06-*.json"
+        "operations/phase-1/executions/p1-o06-*.json",
+        "package.json",
+        "packages/contracts/README.md",
+        "packages/contracts/examples/control-api/**",
+        "packages/contracts/planned-contracts.json",
+        "packages/contracts/schema-inventory.json",
+        "packages/contracts/schema-registry.json",
+        "packages/contracts/schemas/platform/**",
+        "packages/contracts/src/types.generated.ts",
+        "packages/contracts/type-bindings.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "tests/contract/control-api/**",
+        "tsconfig.build.json",
+        "vitest.config.mjs"
       ],
       "deniedPathGlobs": [],
       "semanticConstraints": [
