@@ -1139,10 +1139,10 @@ if (
     "tests/qualification/toolchain/p1-o05-start-gate.test.mjs",
   ];
   for (const path of paths) {
-    const source =
-      path === "scripts/toolchain/verify-scope.mjs"
-        ? runRaw("git", ["show", `HEAD^:${path}`])
-        : await readFile(resolve(repositoryRoot, path), "utf8");
+    const source = runRaw("git", [
+      "show",
+      `ee2c90a2d068f581d441f6c9457c24aa3bf4614c:${path}`,
+    ]);
     const config = await prettier.resolveConfig(resolve(repositoryRoot, path));
     const formatted = await prettier.format(source, {
       ...config,
