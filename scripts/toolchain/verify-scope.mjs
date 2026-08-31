@@ -24,6 +24,13 @@ import {
   P1_O05_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH,
   P1_O05_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH,
   P1_O05_START_GATE_PATH,
+  P1_O06_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS,
+  P1_O06_REQUIRED_AUTHORITY_OWNERSHIP_PATHS,
+  P1_O06_REQUIRED_SCOPE_PATHS,
+  P1_O06_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS,
+  P1_O06_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH,
+  P1_O06_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH,
+  P1_O06_START_GATE_PATH,
   resolveOperationDefinition,
   selectEvidenceOperation,
   selectMergeExecutionRecord,
@@ -39,6 +46,7 @@ import {
   validateP1O02StartGate,
   validateP1O04StartGate,
   validateP1O05StartGate,
+  validateP1O06StartGate,
 } from "./scope-policy.mjs";
 import {
   readJson,
@@ -601,8 +609,152 @@ function verifyP1O05ScopeAuthorityAmendmentOutcome(commits, gate, baseCommit) {
   };
 }
 
+function verifyP1O06ScopeAuthorityAmendmentOutcome(commits, gate, baseCommit) {
+  const authorizationGatePath =
+    "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-64.json";
+  let authorizationGate;
+  let execution;
+  let evidence;
+  let amendmentScope;
+  let amendmentLock;
+  try {
+    authorizationGate = readJsonAtCommit(
+      commits.scopeAuthorizationGateMainCommit,
+      authorizationGatePath,
+    );
+    execution = readJsonAtCommit(
+      commits.scopeAuthorityAmendmentMainCommit,
+      P1_O06_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH,
+    );
+    evidence = readJsonAtCommit(
+      commits.scopeAuthorityAmendmentMainCommit,
+      P1_O06_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH,
+    );
+    amendmentScope = readJsonAtCommit(
+      commits.scopeAuthorityAmendmentMainCommit,
+      "operations/phase-1/write-scope.json",
+    );
+    amendmentLock = readJsonAtCommit(
+      commits.scopeAuthorityAmendmentMainCommit,
+      AUTHORITY_LOCK_PATH,
+    );
+  } catch {
+    throw new Error("P1_O06_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_MISSING_OR_MALFORMED");
+  }
+  const authorizationBaseCommit = assertMergeSecondParent(
+    commits.scopeAuthorizationGateMainCommit,
+    commits.scopeAuthorizationGateReviewedHeadCommit,
+    "P1_O06_AUTHORIZATION_GATE",
+  );
+  const authorization = validateGovernanceAmendmentAuthorizationGate(authorizationGate, {
+    request: {
+      trackingIssue: 64,
+      implementationBranch: "governance/p1-o06-scope-authority-amendment-issue-64",
+      baseCommit: commits.scopeAuthorizationGateMainCommit,
+      gatePath: authorizationGatePath,
+    },
+    repository: REPOSITORY,
+    baseCommit: commits.scopeAuthorizationGateMainCommit,
+    baseParentCommit: authorizationBaseCommit,
+  });
+  if (
+    JSON.stringify(authorization.allowedChangedPaths) !==
+      JSON.stringify(P1_O06_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS) ||
+    JSON.stringify(authorization.exactAmendmentPaths) !==
+      JSON.stringify(P1_O06_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS) ||
+    JSON.stringify(authorization.authorityOwnershipDeltas) !==
+      JSON.stringify(P1_O06_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS)
+  ) {
+    throw new Error("P1_O06_SCOPE_AUTHORITY_AMENDMENT_AUTHORIZATION_MISMATCH");
+  }
+  const changedPaths = gitPaths(
+    [
+      "diff",
+      "--no-renames",
+      "--name-only",
+      "-z",
+      commits.scopeAuthorizationGateMainCommit,
+      commits.scopeAuthorityAmendmentReviewedHeadCommit,
+    ],
+    "P1_O06_SCOPE_AUTHORITY_AMENDMENT_DIFF",
+  );
+  if (
+    JSON.stringify(changedPaths) !== JSON.stringify(P1_O06_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS)
+  ) {
+    throw new Error("P1_O06_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS_MISMATCH");
+  }
+  if (
+    execution?.schemaVersion !== "1.0.0" ||
+    execution?.executionType !== "PHASE_1_GOVERNANCE_AMENDMENT" ||
+    execution?.operationId !== "P1-O01" ||
+    execution?.writeScopeOperationId !== "P1-O01" ||
+    execution?.status !== "IMPLEMENTED" ||
+    execution?.trackingIssue !== 64 ||
+    execution?.implementationBranch !== "governance/p1-o06-scope-authority-amendment-issue-64" ||
+    execution?.baseCommit !== commits.scopeAuthorizationGateMainCommit ||
+    execution?.implementationCommit !== commits.scopeAuthorityAmendmentImplementationCommit ||
+    execution?.implementationTree !== commits.scopeAuthorityAmendmentImplementationTree ||
+    execution?.priorAuthorizationGateRef !== authorizationGatePath ||
+    evidence?.schemaVersion !== "1.0.0" ||
+    evidence?.evidenceType !== "P1O06ScopeAuthorityAmendmentEvidence" ||
+    evidence?.decision !== "IMPLEMENTED" ||
+    evidence?.operationId !== "P1-O01" ||
+    evidence?.trackingIssue !== 64 ||
+    evidence?.subject?.implementationCommit !==
+      commits.scopeAuthorityAmendmentImplementationCommit ||
+    evidence?.subject?.implementationTree !== commits.scopeAuthorityAmendmentImplementationTree ||
+    JSON.stringify(evidence?.governanceOutcome?.requiredScopePaths) !==
+      JSON.stringify(P1_O06_REQUIRED_SCOPE_PATHS) ||
+    JSON.stringify(evidence?.governanceOutcome?.authorityOwnershipPaths) !==
+      JSON.stringify(P1_O06_REQUIRED_AUTHORITY_OWNERSHIP_PATHS) ||
+    JSON.stringify(evidence?.governanceOutcome?.exactChangedPaths) !==
+      JSON.stringify(P1_O06_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS) ||
+    JSON.stringify(evidence?.governanceOutcome?.authorityOwnershipDeltas) !==
+      JSON.stringify(P1_O06_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS) ||
+    evidence?.claimBoundary?.p1O06Implemented !== false ||
+    evidence?.claimBoundary?.acceptedAdrChanged !== false ||
+    evidence?.claimBoundary?.productionRuntimeAuthorized !== false
+  ) {
+    throw new Error("P1_O06_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_MISMATCH");
+  }
+  const operationScope = amendmentScope?.operations?.find(
+    ({ operationId }) => operationId === "P1-O06",
+  );
+  if (
+    amendmentScope?.enforcementMode !== "DENY_BY_DEFAULT" ||
+    !operationScope ||
+    P1_O06_REQUIRED_SCOPE_PATHS.some((path) => !operationScope.allowedPathGlobs.includes(path))
+  ) {
+    throw new Error("P1_O06_SCOPE_AUTHORITY_AMENDMENT_OUTCOME_MISMATCH");
+  }
+  const authorityByPath = new Map(
+    (amendmentLock?.authorityFiles ?? []).map((entry) => [entry.path, entry]),
+  );
+  for (const path of P1_O06_REQUIRED_AUTHORITY_OWNERSHIP_PATHS) {
+    const entry = authorityByPath.get(path);
+    if (
+      entry?.mutationPolicy !== "OPERATION_SCOPED" ||
+      JSON.stringify(entry.allowedOperationIds) !==
+        JSON.stringify(["P1-O02", "P1-O04", "P1-O05", "P1-O06"])
+    ) {
+      throw new Error(`P1_O06_SCOPE_AUTHORITY_OWNERSHIP_MISMATCH: ${path}`);
+    }
+  }
+  assertAncestor(commits.scopeAuthorityAmendmentMainCommit, baseCommit);
+  return {
+    requiredScopePathsVerified: P1_O06_REQUIRED_SCOPE_PATHS.length,
+    authorityOwnershipPathsVerified: P1_O06_REQUIRED_AUTHORITY_OWNERSHIP_PATHS.length,
+    postMergeChecks: gate.verification.scopeAuthorityAmendmentPostMergeChecks,
+  };
+}
+
 function verifyOperationStartGate(operationId, baseCommit) {
-  if (operationId !== "P1-O02" && operationId !== "P1-O04" && operationId !== "P1-O05") {
+  if (
+    operationId !== "P1-O02" &&
+    operationId !== "P1-O04" &&
+    operationId !== "P1-O05" &&
+    operationId !== "P1-O06"
+  ) {
     return { required: false };
   }
   if (operationId === "P1-O02") {
@@ -687,15 +839,76 @@ function verifyOperationStartGate(operationId, baseCommit) {
     };
   }
 
-  const gate = loadStartGate(baseCommit, P1_O05_START_GATE_PATH, "P1_O05_START_BLOCKED");
-  const commits = validateP1O05StartGate(gate);
+  if (operationId === "P1-O05") {
+    const gate = loadStartGate(baseCommit, P1_O05_START_GATE_PATH, "P1_O05_START_BLOCKED");
+    const commits = validateP1O05StartGate(gate);
+    for (const [label, commit] of Object.entries(commits).filter(([key]) =>
+      key.endsWith("Commit"),
+    )) {
+      assertCommit(
+        commit,
+        label.replaceAll(/(?<!^)[A-Z]/g, (letter) => `_${letter}`).toUpperCase(),
+      );
+    }
+    assertExactTree(
+      commits.scopeAuthorityAmendmentImplementationCommit,
+      commits.scopeAuthorityAmendmentImplementationTree,
+      "P1_O05_SCOPE_AUTHORITY_AMENDMENT_IMPLEMENTATION",
+    );
+    assertAncestor(
+      commits.scopeAuthorizationGateMainCommit,
+      commits.scopeAuthorityAmendmentImplementationCommit,
+    );
+    assertAncestor(
+      commits.scopeAuthorityAmendmentImplementationCommit,
+      commits.scopeAuthorityAmendmentReviewedHeadCommit,
+    );
+    assertExactMergeParents(
+      commits.scopeAuthorityAmendmentMainCommit,
+      commits.scopeAuthorizationGateMainCommit,
+      commits.scopeAuthorityAmendmentReviewedHeadCommit,
+      "P1_O05_SCOPE_AUTHORITY_AMENDMENT",
+    );
+    assertExactTree(
+      commits.transitionEnforcementImplementationCommit,
+      commits.transitionEnforcementImplementationTree,
+      "P1_O05_TRANSITION_ENFORCEMENT_IMPLEMENTATION",
+    );
+    assertAncestor(
+      commits.transitionEnforcementImplementationCommit,
+      commits.transitionEnforcementReviewedHeadCommit,
+    );
+    assertExactMergeParents(
+      commits.transitionEnforcementMainCommit,
+      commits.scopeAuthorityAmendmentMainCommit,
+      commits.transitionEnforcementReviewedHeadCommit,
+      "P1_O05_TRANSITION_ENFORCEMENT",
+    );
+    assertAncestor(commits.transitionEnforcementMainCommit, baseCommit);
+    const scopeAuthorityAmendmentOutcome = verifyP1O05ScopeAuthorityAmendmentOutcome(
+      commits,
+      gate,
+      baseCommit,
+    );
+    return {
+      required: true,
+      path: P1_O05_START_GATE_PATH,
+      decision: gate.decision,
+      p1O05Start: gate.authorization.p1O05Start,
+      ...commits,
+      scopeAuthorityAmendmentOutcome,
+    };
+  }
+
+  const gate = loadStartGate(baseCommit, P1_O06_START_GATE_PATH, "P1_O06_START_BLOCKED");
+  const commits = validateP1O06StartGate(gate);
   for (const [label, commit] of Object.entries(commits).filter(([key]) => key.endsWith("Commit"))) {
     assertCommit(commit, label.replaceAll(/(?<!^)[A-Z]/g, (letter) => `_${letter}`).toUpperCase());
   }
   assertExactTree(
     commits.scopeAuthorityAmendmentImplementationCommit,
     commits.scopeAuthorityAmendmentImplementationTree,
-    "P1_O05_SCOPE_AUTHORITY_AMENDMENT_IMPLEMENTATION",
+    "P1_O06_SCOPE_AUTHORITY_AMENDMENT_IMPLEMENTATION",
   );
   assertAncestor(
     commits.scopeAuthorizationGateMainCommit,
@@ -709,12 +922,20 @@ function verifyOperationStartGate(operationId, baseCommit) {
     commits.scopeAuthorityAmendmentMainCommit,
     commits.scopeAuthorizationGateMainCommit,
     commits.scopeAuthorityAmendmentReviewedHeadCommit,
-    "P1_O05_SCOPE_AUTHORITY_AMENDMENT",
+    "P1_O06_SCOPE_AUTHORITY_AMENDMENT",
+  );
+  assertAncestor(
+    commits.scopeAuthorityAmendmentMainCommit,
+    commits.transitionEnforcementBaseCommit,
   );
   assertExactTree(
     commits.transitionEnforcementImplementationCommit,
     commits.transitionEnforcementImplementationTree,
-    "P1_O05_TRANSITION_ENFORCEMENT_IMPLEMENTATION",
+    "P1_O06_TRANSITION_ENFORCEMENT_IMPLEMENTATION",
+  );
+  assertAncestor(
+    commits.transitionEnforcementBaseCommit,
+    commits.transitionEnforcementImplementationCommit,
   );
   assertAncestor(
     commits.transitionEnforcementImplementationCommit,
@@ -722,21 +943,21 @@ function verifyOperationStartGate(operationId, baseCommit) {
   );
   assertExactMergeParents(
     commits.transitionEnforcementMainCommit,
-    commits.scopeAuthorityAmendmentMainCommit,
+    commits.transitionEnforcementBaseCommit,
     commits.transitionEnforcementReviewedHeadCommit,
-    "P1_O05_TRANSITION_ENFORCEMENT",
+    "P1_O06_TRANSITION_ENFORCEMENT",
   );
   assertAncestor(commits.transitionEnforcementMainCommit, baseCommit);
-  const scopeAuthorityAmendmentOutcome = verifyP1O05ScopeAuthorityAmendmentOutcome(
+  const scopeAuthorityAmendmentOutcome = verifyP1O06ScopeAuthorityAmendmentOutcome(
     commits,
     gate,
     baseCommit,
   );
   return {
     required: true,
-    path: P1_O05_START_GATE_PATH,
+    path: P1_O06_START_GATE_PATH,
     decision: gate.decision,
-    p1O05Start: gate.authorization.p1O05Start,
+    p1O06Start: gate.authorization.p1O06Start,
     ...commits,
     scopeAuthorityAmendmentOutcome,
   };
@@ -936,6 +1157,10 @@ async function main() {
         throw new Error(`AMBIGUOUS_EXPLICIT_OPERATION: ${explicitOperation}`);
       }
     }
+  }
+
+  if (explicitOperation === "P1-O06" && !selectedRecord) {
+    throw new Error("MISSING_OPERATION_CONTEXT: P1-O06 requires an exact execution record");
   }
 
   if (selectedRecord) {
