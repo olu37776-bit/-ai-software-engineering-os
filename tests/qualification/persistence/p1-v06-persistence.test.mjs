@@ -116,6 +116,12 @@ describe("P1-V06 node:sqlite authority storage qualification", () => {
     try {
       await expect(worker.recordInbox(inbox)).resolves.toEqual(inbox);
       await expect(worker.recordInbox(inbox)).resolves.toMatchObject({ status: "DUPLICATE" });
+      await expect(
+        worker.recordInbox({ ...inbox, taskId: qualificationUuid(2, 4) }),
+      ).rejects.toMatchObject({ code: "PERSISTENCE_IDEMPOTENCY_CONFLICT" });
+      await expect(
+        worker.recordInbox({ ...inbox, resultId: qualificationUuid(2, 9) }),
+      ).rejects.toMatchObject({ code: "PERSISTENCE_IDEMPOTENCY_CONFLICT" });
       const checkpoint = {
         schemaVersion: "1.0.0",
         projectionName: "qualification",

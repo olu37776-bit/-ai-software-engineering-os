@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -87,6 +87,7 @@ describe("P1-O05 crash recovery and storage fault injection", () => {
     const root = await dataRoot("corrupt");
     const state = join(root, "state");
     const databasePath = join(state, "aseos.db");
+    const quarantineMarkerPath = `${databasePath}.quarantine-required.json`;
     await mkdir(state, { recursive: true });
     await writeFile(databasePath, "not-a-sqlite-database", "utf8");
 
@@ -100,6 +101,14 @@ describe("P1-O05 crash recovery and storage fault injection", () => {
     }
     expect(typeof quarantinePath).toBe("string");
     await expect(stat(quarantinePath)).resolves.toMatchObject({ size: 21 });
+    await expect(stat(databasePath)).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(readFile(quarantineMarkerPath, "utf8")).resolves.toContain(
+      '"state":"RECOVERY_REQUIRED"',
+    );
+    await expect(PersistenceWorker.open({ dataRoot: root })).rejects.toMatchObject({
+      code: "PERSISTENCE_CORRUPTION",
+      details: { quarantineMarkerPath, recoveryRequired: true },
+    });
     await expect(stat(databasePath)).rejects.toMatchObject({ code: "ENOENT" });
   });
 });

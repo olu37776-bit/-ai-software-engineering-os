@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, rename, stat } from "node:fs/promises";
+import { mkdir, readFile, rename, stat, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { backup, constants, DatabaseSync } from "node:sqlite";
 import { parentPort, workerData } from "node:worker_threads";
@@ -16,6 +16,8 @@ import {
   type ProjectionCheckpoint,
   type StateSchemaManifest,
 } from "@aseos/contracts";
+
+import { readMigrationAssets, type MigrationManifest } from "./migration-assets.js";
 
 type PersistenceErrorCode =
   | "PERSISTENCE_BUSY"
@@ -47,17 +49,6 @@ type SerializedError = Readonly<{
   details?: Readonly<Record<string, unknown>>;
 }>;
 
-type MigrationManifest = Readonly<{
-  schemaVersion: string;
-  databaseSchemaVersion: number;
-  migrations: readonly Readonly<{
-    version: number;
-    name: string;
-    path: string;
-    sha256: string;
-  }>[];
-}>;
-
 type JsonRecord = Record<string, unknown>;
 
 const port = parentPort;
@@ -65,6 +56,7 @@ if (port === null) throw new Error("Persistence worker requires a parent port");
 
 const configuration = workerData as WorkerConfiguration;
 const databasePath = resolve(configuration.dataRoot, "state", "aseos.db");
+const quarantineMarkerPath = `${databasePath}.quarantine-required.json`;
 let database: DatabaseSync | undefined;
 let manifest: MigrationManifest | undefined;
 let writeLockHeld = false;
@@ -171,10 +163,30 @@ async function fileExistsWithBytes(path: string): Promise<boolean> {
   }
 }
 
+async function fileExists(path: string): Promise<boolean> {
+  try {
+    await stat(path);
+    return true;
+  } catch (error: unknown) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return false;
+    throw error;
+  }
+}
+
 async function quarantineDatabase(): Promise<string | undefined> {
   if (!(await fileExistsWithBytes(databasePath))) return undefined;
   const suffix = new Date().toISOString().replaceAll(/[^0-9]/gu, "");
   const quarantinePath = `${databasePath}.corrupt-${suffix}`;
+  await writeFile(
+    quarantineMarkerPath,
+    canonicalJson({
+      schemaVersion: "1.0.0",
+      state: "RECOVERY_REQUIRED",
+      databasePath,
+      quarantinePath,
+    }),
+    { encoding: "utf8", flag: "wx" },
+  );
   await rename(databasePath, quarantinePath);
   for (const sidecar of ["-wal", "-shm"]) {
     const source = databasePath + sidecar;
@@ -261,28 +273,15 @@ async function loadMigrationAssets(): Promise<{
   readonly sql: string;
   readonly migration: MigrationManifest["migrations"][number];
 }> {
-  const manifestUrl = new URL("../migrations/manifest.json", import.meta.url);
-  const sqlUrl = new URL("../migrations/001-initial.sql", import.meta.url);
-  const [manifestText, sql] = await Promise.all([
-    readFile(manifestUrl, "utf8"),
-    readFile(sqlUrl, "utf8"),
-  ]);
-  const parsed = JSON.parse(manifestText) as MigrationManifest;
-  const migration = parsed.migrations[0];
-  if (
-    parsed.schemaVersion !== "1.0.0" ||
-    parsed.databaseSchemaVersion !== 1 ||
-    parsed.migrations.length !== 1 ||
-    migration?.version !== 1 ||
-    migration.path !== "migrations/001-initial.sql" ||
-    sha256(sql) !== migration.sha256
-  ) {
+  try {
+    return await readMigrationAssets();
+  } catch (error: unknown) {
     throw new InternalPersistenceError(
       "PERSISTENCE_MIGRATION_MISMATCH",
       "Migration manifest or checksum mismatch",
+      { cause: error instanceof Error ? error.message : String(error) },
     );
   }
-  return { manifest: parsed, sql, migration };
 }
 
 function applyMigration(
@@ -557,13 +556,20 @@ function recordInbox(record: InboxRecord): InboxRecord {
       .prepare(
         "SELECT result_id, task_id, payload_hash, status, received_at FROM inbox WHERE result_id = ? OR task_id = ?",
       )
-      .get(record.resultId, record.taskId);
-    if (existing !== undefined) {
-      const row = asRecord(existing, "inbox");
-      if (row["payload_hash"] !== record.payloadHash) {
+      .all(record.resultId, record.taskId) as unknown[];
+    if (existing.length > 0) {
+      const rows = existing.map((value) => asRecord(value, "inbox"));
+      const row = rows[0];
+      if (
+        rows.length !== 1 ||
+        row === undefined ||
+        requiredString(row, "result_id", "inbox") !== record.resultId ||
+        requiredString(row, "task_id", "inbox") !== record.taskId ||
+        requiredString(row, "payload_hash", "inbox") !== record.payloadHash
+      ) {
         throw new InternalPersistenceError(
           "PERSISTENCE_IDEMPOTENCY_CONFLICT",
-          "Inbox identity was reused with a different payload",
+          "Inbox result or task identity was reused by a different record",
         );
       }
       return {
@@ -991,8 +997,18 @@ async function handle(request: WorkerRequest): Promise<unknown> {
   }
 }
 
-const databaseExisted = await fileExistsWithBytes(databasePath);
+let quarantineRequired = false;
+let databaseExisted = false;
 try {
+  quarantineRequired = await fileExists(quarantineMarkerPath);
+  databaseExisted = await fileExistsWithBytes(databasePath);
+  if (quarantineRequired) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_CORRUPTION",
+      "Authority database is quarantined and requires explicit recovery",
+      { databasePath, quarantineMarkerPath, recoveryRequired: true },
+    );
+  }
   await initialize();
   port.postMessage({ kind: "ready", ok: true });
   let serial = Promise.resolve();
@@ -1021,11 +1037,12 @@ try {
   }
   database = undefined;
   const serialized = serializeError(error);
-  const quarantinePath = databaseExisted ? await quarantineDatabase() : undefined;
+  const quarantinePath =
+    !quarantineRequired && databaseExisted ? await quarantineDatabase() : undefined;
   const details =
     quarantinePath === undefined
       ? serialized.details
-      : { ...serialized.details, quarantinePath, databasePath };
+      : { ...serialized.details, quarantinePath, quarantineMarkerPath, databasePath };
   port.postMessage({
     kind: "ready",
     ok: false,
