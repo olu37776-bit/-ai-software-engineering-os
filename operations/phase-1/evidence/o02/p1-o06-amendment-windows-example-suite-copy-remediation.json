@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O02-P1-O06-AMENDMENT-WINDOWS-EXAMPLE-SUITE-COPY-REMEDIATION-2026-08-31-01",
+  "evidenceType": "ContractQualificationRemediationEvidence",
+  "decision": "IMPLEMENTED",
+  "operationId": "P1-O02",
+  "trackingIssue": 64,
+  "finding": {
+    "id": "P1-O06-AMENDMENT-WINDOWS-TIMEOUT-01",
+    "protectedMainCommit": "4d0aedd2a9b696e1ebea8b49ec60b487449583c1",
+    "qualityRunId": 33360179820,
+    "windowsJobId": 99389873596,
+    "failedTest": "tests/contract/example-suite.test.mjs > fails closed for missing, duplicate and unknown-schema fixture bindings",
+    "failure": "Test timed out in 10000ms"
+  },
+  "subject": {
+    "qualifiedImplementationCommit": "18aeab3fc6e25b659774b309f6aee0fcffb11196",
+    "qualifiedImplementationTree": "d2ed16d8539f88f0c7cae8e62d761822981cb792",
+    "changedPaths": [
+      "docs/implementation/phase-1/o02/windows-example-suite-copy-remediation-issue-64.md",
+      "tests/contract/helpers.mjs"
+    ]
+  },
+  "remediation": {
+    "temporaryRepositoryAuthorityPreserved": true,
+    "excludedGeneratedPathSegments": ["dist", "node_modules"],
+    "timeoutChanged": false,
+    "assertionsChanged": false,
+    "workflowChanged": false,
+    "requiredCheckIdentityChanged": false,
+    "contractAuthorityChanged": false,
+    "contractSemanticsChanged": false
+  },
+  "verification": {
+    "writeScope": {
+      "result": "PASS",
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O02",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "violations": 0
+    },
+    "targetedRegression": {
+      "result": "PASS",
+      "runs": 3,
+      "testsPerRun": 4,
+      "maximumObservedFileDurationMs": 1465
+    },
+    "immutableHead": "PENDING_PUBLICATION",
+    "linuxX64": "PENDING_PUBLICATION",
+    "windowsX64": "PENDING_PUBLICATION",
+    "m0Independent": "PENDING_PUBLICATION"
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "p1O06Started": false,
+    "acceptedAdrChanged": false,
+    "productionRuntimeChanged": false
+  }
+}
