@@ -398,7 +398,20 @@
         "scripts/qualification/isolation/**",
         "docs/implementation/phase-1/o07/**",
         "operations/phase-1/evidence/o07/**",
-        "operations/phase-1/executions/p1-o07-*.json"
+        "operations/phase-1/executions/p1-o07-*.json",
+        "package.json",
+        "packages/contracts/README.md",
+        "packages/contracts/examples/isolation/**",
+        "packages/contracts/planned-contracts.json",
+        "packages/contracts/schema-inventory.json",
+        "packages/contracts/schema-registry.json",
+        "packages/contracts/src/types.generated.ts",
+        "packages/contracts/type-bindings.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "tests/contract/isolation/**",
+        "tsconfig.build.json",
+        "vitest.config.mjs"
       ],
       "deniedPathGlobs": [
         "packages/adapters/tool/os-sandboxed/**",

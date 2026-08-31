@@ -99,7 +99,7 @@
     },
     {
       "path": "docs/roadmap/phase-1-write-scope.md",
-      "sha256": "a2395289ab33a4caecbcae9c44ca091bb86cd53a02dbfad71e26588ac0b02707",
+      "sha256": "f3068d6b4e081712f6a16b9d2b9b2abfed671f60680cc9441662fe837b5bf800",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
@@ -169,7 +169,7 @@
     },
     {
       "path": "operations/phase-1/write-scope.json",
-      "sha256": "8d87511ea8f906468ab5955d282778e37fe48c6758a2c3ef0391671e0f41ae2a",
+      "sha256": "2934912a0c5d9794061fd856dac761dee104a0f2fb8a080e743adbbb86e149f2",
       "role": "WRITE_SCOPE",
       "mutationPolicy": "IMMUTABLE",
       "allowedOperationIds": []
@@ -193,21 +193,21 @@
       "sha256": "5037080bddfa59f77d05a98c5a1d9952e8486ba93e2701674de5b9850ee92243",
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
-      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06"]
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
     },
     {
       "path": "packages/contracts/schema-inventory.json",
       "sha256": "d14025062ded7344ab1de6fe269874073ff49f03ef657f191513ac3c3954f78b",
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
-      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06"]
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
     },
     {
       "path": "packages/contracts/schema-registry.json",
       "sha256": "400bcd03f1101b631837581c5124ae52543f03a24811153b97b6ab9d9d8f3ca2",
       "role": "SCHEMA_REGISTRY",
       "mutationPolicy": "OPERATION_SCOPED",
-      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06"]
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
     },
     {
       "path": "packages/contracts/schemas/meta/example-suite.schema.json",
