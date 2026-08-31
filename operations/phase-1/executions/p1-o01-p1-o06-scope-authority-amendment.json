@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-P1-O06-SCOPE-AUTHORITY-AMENDMENT-ISSUE-64-2026-08-31-01",
+  "executionType": "PHASE_1_GOVERNANCE_AMENDMENT",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Issue #64 P1-O06 scope and Authority amendment",
+  "riskClass": "R3",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-08-31T04:58:00Z",
+  "completedAt": "2026-08-31T05:04:00Z",
+  "trackingIssue": 64,
+  "implementationBranch": "governance/p1-o06-scope-authority-amendment-issue-64",
+  "baseCommit": "3906546ccc5e001935416bb0c7e037663aeaf2e4",
+  "implementationCommit": "7c7271ac31afc80f2cb9d1a96531e6a1e6521056",
+  "implementationTree": "64be2f924ca51bea255e51993ccaca00cfdce969",
+  "priorAuthorizationGateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-64.json",
+  "authorityRefs": [
+    "operations/phase-1/write-scope.json",
+    "docs/roadmap/phase-1-write-scope.md",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-64.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/64"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "p1O06Implemented": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false
+  },
+  "verification": [
+    {
+      "check": "prior independent authorization Gate",
+      "result": "PASS",
+      "gateMainCommit": "3906546ccc5e001935416bb0c7e037663aeaf2e4"
+    },
+    {
+      "check": "exact governance amendment paths",
+      "result": "PASS",
+      "changedPaths": 5
+    },
+    {
+      "check": "Authority ownership delta",
+      "result": "PASS",
+      "paths": 3
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o06-scope-authority-amendment.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/64"
+  ],
+  "remainingGaps": [
+    "Immutable-head GitHub checks and independent verification remain required.",
+    "P1-O06 remains blocked until transition enforcement and an independent start Gate pass."
+  ]
+}
