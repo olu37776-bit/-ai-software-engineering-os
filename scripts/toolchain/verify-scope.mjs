@@ -1134,14 +1134,12 @@ if (
 ) {
   const prettier = await import("prettier");
   const paths = [
-    "scripts/toolchain/scope-policy.mjs",
-    "scripts/toolchain/verify-scope.mjs",
-    "tests/qualification/toolchain/p1-o05-start-gate.test.mjs",
+    "tests/qualification/toolchain/p1-o05-start-gate-integration.test.mjs",
   ];
   for (const path of paths) {
     const source = runRaw("git", [
       "show",
-      `ee2c90a2d068f581d441f6c9457c24aa3bf4614c:${path}`,
+      `087f46cd53b59ce55dbc5fab33c12592395ad717:${path}`,
     ]);
     const config = await prettier.resolveConfig(resolve(repositoryRoot, path));
     const formatted = await prettier.format(source, {
