@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "reportId": "0198e0a1-0000-7000-8000-000000000705",
+  "capabilityId": "windows-process-restricted",
+  "capabilityVersion": "1.0.0",
+  "providerId": "aseos.windows-job-object",
+  "providerVersion": "1.0.0",
+  "platform": "win32",
+  "isolationLevel": "PROCESS_RESTRICTED",
+  "probe": {
+    "probeId": "0198e0a1-0000-7000-8000-000000000706",
+    "performedAt": "2026-09-01T00:00:00Z",
+    "windowsBuild": "10.0.26100",
+    "jobObjectAvailable": true,
+    "nestedProcessAssignmentSupported": true
+  },
+  "budgetSupport": {
+    "cpuTime": true,
+    "memory": true,
+    "processCount": true,
+    "wallClock": true,
+    "stdout": true,
+    "stderr": true
+  },
+  "guarantees": {
+    "processTreeLifecycleContained": true,
+    "resourceBudgetsEnforced": true,
+    "networkAccessDenied": true,
+    "filesystemAccessDenied": false,
+    "registryAccessDenied": false,
+    "securitySandbox": false
+  },
+  "result": "AVAILABLE",
+  "reasonCodes": [],
+  "reportedAt": "2026-09-01T00:00:01Z"
+}

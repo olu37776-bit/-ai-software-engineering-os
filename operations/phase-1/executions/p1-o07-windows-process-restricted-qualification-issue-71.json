@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O07-WINDOWS-PROCESS-RESTRICTED-QUALIFICATION-ISSUE-71-2026-09-01-01",
+  "executionType": "P1_O07_WINDOWS_PROCESS_RESTRICTED_QUALIFICATION",
+  "operationId": "P1-O07",
+  "writeScopeOperationId": "P1-O07",
+  "title": "Windows PROCESS_RESTRICTED worker qualification",
+  "riskClass": "R4",
+  "status": "IN_PROGRESS",
+  "startedAt": "2026-08-31T20:32:19Z",
+  "trackingIssue": 71,
+  "implementationBranch": "phase-1/p1-o07-windows-process-restricted-qualification-issue-71",
+  "baseCommit": "c175ca2ba06ff35bddbcd1cca765af8972a06b76",
+  "authorityRefs": [
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/71",
+    "docs/decisions/ADR-0010-windows-execution-isolation.md",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/evidence/o01/p1-o07-start-after-issue-71-independent-gate.json"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "phase1Verified": false,
+    "productionWorkflowRuntimeImplemented": false,
+    "securitySandboxImplemented": false,
+    "filesystemDenialClaimed": false,
+    "registryDenialClaimed": false,
+    "networkDenialClaimed": false,
+    "osSandboxedImplemented": false,
+    "isolationDowngradeAuthorized": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false,
+    "independentVerificationRequired": true
+  },
+  "remainingGaps": [
+    "Complete the Windows Job Object provider, canonical isolation Contracts, and P1-V08 qualification.",
+    "Publish immutable implementation Evidence and obtain an independent read-only verdict.",
+    "Merge the exact reviewed head and complete protected-main post-merge verification."
+  ]
+}

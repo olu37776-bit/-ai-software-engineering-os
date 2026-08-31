@@ -12,7 +12,7 @@
 - First-slice examples：[`examples/first-slice/example-suite.json`](examples/first-slice/example-suite.json)
 - Human catalog：[`../../docs/contracts/core-contract-catalog.md`](../../docs/contracts/core-contract-catalog.md)
 
-两份 inventory 合计 73 个 Contract 条目：33 个已经落盘的 `BASELINE_DRAFT` Contract 和 40 个 `PLANNED` Contract。`PLANNED` 条目只冻结 ID、owner、phase、authority path 和 ADR 关系；字段、依赖和兼容性在对应 Operation 中冻结。
+两份 inventory 合计 73 个 Contract 条目：36 个已经落盘的 `BASELINE_DRAFT` Contract 和 37 个 `PLANNED` Contract。`PLANNED` 条目只冻结 ID、owner、phase、authority path 和 ADR 关系；字段、依赖和兼容性在对应 Operation 中冻结。
 
 当前实际落盘的核心 Contract：
 
@@ -80,3 +80,18 @@ references those canonical schemas instead of duplicating payload shapes. The de
 transport host to `127.0.0.1`, carries only a relative token-file reference, and never contains bearer
 token material. Operation status is a projection string and does not introduce canonical terminal
 transition semantics.
+
+## Phase 1 Windows PROCESS_RESTRICTED authority
+
+P1-O07 activates three Draft 2020-12 authorities: `IsolationRequirement`,
+`IsolationCapabilityReport`, and `IsolationEvidence`. They bind the requested minimum isolation,
+provider/version and capability probe, enforceable resource budgets, observed usage, process-tree
+cleanup result, and supporting Evidence references. `HOST_UNRESTRICTED` and downward isolation are
+invalid.
+
+`PROCESS_RESTRICTED` is explicitly limited to process lifecycle and resource containment. Its
+canonical capability and Evidence shapes cannot claim network, filesystem, or registry denial and
+cannot claim a security sandbox. An unavailable or failed probe reports no containment guarantee and
+blocks execution instead of silently falling back. IsolationEvidence is emitted only after successful
+Job Object assignment; an unavailable provider or failed-to-start attempt remains a fail-closed
+capability/execution result and cannot invent a contained process tree.

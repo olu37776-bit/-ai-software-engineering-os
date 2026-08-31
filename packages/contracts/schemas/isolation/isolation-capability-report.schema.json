@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:isolation-capability-report:1.0.0",
+  "title": "IsolationCapabilityReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "reportId",
+    "capabilityId",
+    "capabilityVersion",
+    "providerId",
+    "providerVersion",
+    "platform",
+    "isolationLevel",
+    "probe",
+    "budgetSupport",
+    "guarantees",
+    "result",
+    "reasonCodes",
+    "reportedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "reportId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "capabilityId": {
+      "const": "windows-process-restricted"
+    },
+    "capabilityVersion": {
+      "const": "1.0.0"
+    },
+    "providerId": {
+      "const": "aseos.windows-job-object"
+    },
+    "providerVersion": {
+      "const": "1.0.0"
+    },
+    "platform": {
+      "enum": ["win32", "linux", "darwin"]
+    },
+    "isolationLevel": {
+      "const": "PROCESS_RESTRICTED"
+    },
+    "probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "probeId",
+        "performedAt",
+        "jobObjectAvailable",
+        "nestedProcessAssignmentSupported"
+      ],
+      "properties": {
+        "probeId": {
+          "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+        },
+        "performedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "windowsBuild": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "maxLength": 32
+        },
+        "jobObjectAvailable": {
+          "type": "boolean"
+        },
+        "nestedProcessAssignmentSupported": {
+          "type": "boolean"
+        }
+      }
+    },
+    "budgetSupport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cpuTime", "memory", "processCount", "wallClock", "stdout", "stderr"],
+      "properties": {
+        "cpuTime": {
+          "type": "boolean"
+        },
+        "memory": {
+          "type": "boolean"
+        },
+        "processCount": {
+          "type": "boolean"
+        },
+        "wallClock": {
+          "type": "boolean"
+        },
+        "stdout": {
+          "type": "boolean"
+        },
+        "stderr": {
+          "type": "boolean"
+        }
+      }
+    },
+    "guarantees": {
+      "$ref": "urn:aseos:schema:isolation-capability-report:1.0.0#/$defs/processRestrictedGuarantees"
+    },
+    "result": {
+      "enum": ["AVAILABLE", "UNAVAILABLE", "PROBE_FAILED"]
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+      },
+      "uniqueItems": true
+    },
+    "reportedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "processRestrictedGuarantees": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "processTreeLifecycleContained",
+        "resourceBudgetsEnforced",
+        "networkAccessDenied",
+        "filesystemAccessDenied",
+        "registryAccessDenied",
+        "securitySandbox"
+      ],
+      "properties": {
+        "processTreeLifecycleContained": {
+          "type": "boolean"
+        },
+        "resourceBudgetsEnforced": {
+          "type": "boolean"
+        },
+        "networkAccessDenied": {
+          "const": false
+        },
+        "filesystemAccessDenied": {
+          "const": false
+        },
+        "registryAccessDenied": {
+          "const": false
+        },
+        "securitySandbox": {
+          "const": false
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "AVAILABLE"
+          }
+        },
+        "required": ["result"]
+      },
+      "then": {
+        "properties": {
+          "platform": {
+            "const": "win32"
+          },
+          "probe": {
+            "required": ["windowsBuild"],
+            "properties": {
+              "jobObjectAvailable": {
+                "const": true
+              },
+              "nestedProcessAssignmentSupported": {
+                "const": true
+              }
+            }
+          },
+          "budgetSupport": {
+            "properties": {
+              "cpuTime": {
+                "const": true
+              },
+              "memory": {
+                "const": true
+              },
+              "processCount": {
+                "const": true
+              },
+              "wallClock": {
+                "const": true
+              },
+              "stdout": {
+                "const": true
+              },
+              "stderr": {
+                "const": true
+              }
+            }
+          },
+          "guarantees": {
+            "properties": {
+              "processTreeLifecycleContained": {
+                "const": true
+              },
+              "resourceBudgetsEnforced": {
+                "const": true
+              }
+            }
+          },
+          "reasonCodes": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "guarantees": {
+            "properties": {
+              "processTreeLifecycleContained": {
+                "const": false
+              },
+              "resourceBudgetsEnforced": {
+                "const": false
+              }
+            }
+          },
+          "reasonCodes": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

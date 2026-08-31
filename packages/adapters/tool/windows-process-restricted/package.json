@@ -1,0 +1,25 @@
+{
+  "name": "@aseos/windows-process-restricted",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src/win32-bridge.ps1"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.json --pretty false && node scripts/copy-assets.mjs",
+    "clean": "tsc -b tsconfig.json --clean",
+    "test": "pnpm run build && node --test test/*.test.mjs",
+    "typecheck": "tsc -b tsconfig.json --pretty false"
+  },
+  "engines": {
+    "node": "24.19.0"
+  }
+}

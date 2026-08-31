@@ -1,0 +1,31 @@
+{
+  "name": "@aseos/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "aseos-worker": "./dist/main.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.json --pretty false",
+    "clean": "tsc -b tsconfig.json --clean",
+    "test": "pnpm --filter @aseos/windows-process-restricted build && pnpm run build && node --test test/*.test.mjs",
+    "typecheck": "tsc -b tsconfig.json --pretty false"
+  },
+  "dependencies": {
+    "@aseos/contracts": "workspace:*",
+    "@aseos/windows-process-restricted": "workspace:*"
+  },
+  "engines": {
+    "node": "24.19.0"
+  }
+}
