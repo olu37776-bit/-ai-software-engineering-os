@@ -44,7 +44,12 @@ async function makeRepository() {
   for (const path of ["scripts/toolchain/scope-policy.mjs", "scripts/toolchain/verify-scope.mjs"]) {
     await writeFile(join(repository, path), await readFile(join(root, path)));
   }
-  git(repository, "add", "scripts/toolchain/scope-policy.mjs", "scripts/toolchain/verify-scope.mjs");
+  git(
+    repository,
+    "add",
+    "scripts/toolchain/scope-policy.mjs",
+    "scripts/toolchain/verify-scope.mjs",
+  );
   git(repository, "commit", "--quiet", "-m", "test: install Issue 53 transition enforcement");
   return { repository, enforcementBase: git(repository, "rev-parse", "HEAD") };
 }
