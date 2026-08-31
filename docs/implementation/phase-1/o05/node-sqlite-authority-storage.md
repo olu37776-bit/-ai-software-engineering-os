@@ -2,8 +2,8 @@
 
 Status: `IMPLEMENTED — PENDING INDEPENDENT VERIFICATION`
 
-Qualified code subject: `f2fc83e879f34cac8a46cd8e76f36288569b4292`
-(tree `667b8d7024c66c604f6df6563fcaf7ef0edebf73`) on PR #63. Exact-subject
+Qualified code subject: `fd0eb489c231d8ff27c26c87e22b95a7c6db0785`
+(tree `b573573c3f747ae8cea1a45cbb425668cb074109`) on PR #63. Exact-subject
 M0, Linux, Windows, and the aggregate quality check passed before Evidence
 publication.
 
@@ -31,13 +31,21 @@ Migration `001-initial.sql` is ordered and checksum-bound by
 `migrations/manifest.json`. Startup runs `quick_check`; backup uses SQLite
 online backup and full `integrity_check`. An existing database that cannot be
 opened or checked is moved to a quarantine path and is never replaced with an
-empty database.
+empty database. An exclusive recovery-required marker is written before the
+move; every later normal open checks it before SQLite access and fails closed
+until an explicit recovery action.
 
 The migration SQL is marked `-text` by the package-local `.gitattributes` so
 Git cannot rewrite checksum-bound bytes on Windows. A real Git-filter regression
 uses `core.autocrlf=true`, proves SQL checkout bytes equal the canonical blob,
 and proves an adjacent JSON control does receive CRLF conversion. Checksum
-semantics remain raw-byte and fail closed.
+semantics remain raw-byte and fail closed. The loader hashes the exact Buffer
+before a separate fatal UTF-8 decode; tests reject both raw drift and malformed
+UTF-8 with an otherwise matching raw hash.
+
+Inbox replay is exact across `resultId`, `taskId`, and `payloadHash`. Either ID
+reused with a different counterpart is an idempotency conflict even when the
+payload hash is identical.
 
 P1-V06 qualification covers:
 
