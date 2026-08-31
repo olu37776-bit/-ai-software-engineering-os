@@ -11,10 +11,7 @@ const actorSchemaPath = "packages/contracts/schemas/common/actor-ref.schema.json
 
 describe("JSON Schema and TypeScript public-shape consistency", () => {
   test("checks semantic shape, enums, optionality and readonly exports", async () => {
-    const typeBindings = await readJson(
-      repositoryRoot,
-      "packages/contracts/type-bindings.json",
-    );
+    const typeBindings = await readJson(repositoryRoot, "packages/contracts/type-bindings.json");
     await expect(runSchemaTypeConsistency({ repositoryRoot })).resolves.toMatchObject({
       evidenceType: "SchemaTypeConsistencyResult",
       result: "PASS",
