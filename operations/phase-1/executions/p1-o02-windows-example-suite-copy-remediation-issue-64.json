@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O02-WINDOWS-EXAMPLE-SUITE-COPY-REMEDIATION-ISSUE-64-2026-08-31-01",
+  "operationId": "P1-O02",
+  "writeScopeOperationId": "P1-O02",
+  "title": "Windows example-suite fixture copy remediation",
+  "riskClass": "R3",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-08-31T05:25:00Z",
+  "implementationBranch": "phase-1/p1-o02-windows-example-suite-copy-remediation-issue-64",
+  "baseCommit": "4d0aedd2a9b696e1ebea8b49ec60b487449583c1",
+  "completedAt": "2026-08-31T05:28:00Z",
+  "qualifiedImplementationCommit": "18aeab3fc6e25b659774b309f6aee0fcffb11196",
+  "qualifiedImplementationTree": "d2ed16d8539f88f0c7cae8e62d761822981cb792",
+  "authorityRefs": [
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/64",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/evidence/o01/p1-o02-independent-gate.json"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "contractSemanticsChanged": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false,
+    "independentVerificationRequired": true
+  },
+  "evidenceRef": "operations/phase-1/evidence/o02/p1-o06-amendment-windows-example-suite-copy-remediation.json",
+  "results": {
+    "writeScope": "PASS",
+    "authorityLock": "PASS",
+    "fixtureCopyExcludes": ["dist", "node_modules"],
+    "timeoutChanged": false,
+    "assertionsChanged": false,
+    "contractSemanticsChanged": false,
+    "targetedWindowsRegression": "3/3 PASS",
+    "fullQuality": "PENDING_NEW_IMMUTABLE_HEAD_PUBLICATION"
+  }
+}
