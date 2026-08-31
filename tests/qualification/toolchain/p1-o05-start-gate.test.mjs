@@ -40,8 +40,7 @@ function makeGate() {
     },
     authorization: {
       p1O05Start: "RELEASED",
-      authorizedBasePolicy:
-        "PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE_AFTER_POST_MERGE_PASS",
+      authorizedBasePolicy: "PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE_AFTER_POST_MERGE_PASS",
       scopeAuthorityAmendmentChangedPaths: P1_O05_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS,
       authorityOwnershipDeltas: P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS,
     },

@@ -77,8 +77,7 @@ export const P1_O04_START_GATE_PATH =
   "operations/phase-1/evidence/o01/p1-o04-resume-after-issue-29-independent-gate.json";
 export const P1_O05_START_GATE_PATH =
   "operations/phase-1/evidence/o01/p1-o05-start-after-issue-53-independent-gate.json";
-export const P1_O05_AUTHORIZATION_GATE_MAIN_COMMIT =
-  "15b42b2c9c84d06aae99def832ef4c59d195c6cb";
+export const P1_O05_AUTHORIZATION_GATE_MAIN_COMMIT = "15b42b2c9c84d06aae99def832ef4c59d195c6cb";
 export const P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT =
   "62e2de7225503c48c66fc08c6883d397aef5518a";
 export const P1_O05_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH =
