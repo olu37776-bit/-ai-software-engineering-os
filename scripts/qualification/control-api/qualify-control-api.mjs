@@ -98,10 +98,7 @@ try {
       evidenceType: "TokenAclRedactionResult",
       result: token.length === 43 && !rejectedText.includes(token) ? "PASS" : "FAIL",
       tokenBits: 256,
-      acl:
-        process.platform === "win32"
-          ? "CURRENT_USER_PLUS_TRUSTED_OS_SESSION_PRINCIPALS_NO_INHERITANCE"
-          : "0600",
+      acl: process.platform === "win32" ? "CURRENT_USER_ONLY_NO_INHERITANCE" : "0600",
       publicErrorRedacted: !rejectedText.includes(token),
     },
     {

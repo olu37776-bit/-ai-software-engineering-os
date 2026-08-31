@@ -167,13 +167,7 @@ async function assertWindowsUserOnlyAcl(
     return normalized === expected || normalized.endsWith(` ${expected}`);
   };
   const allowed = (principal: string): boolean => {
-    const normalized = principal.toLowerCase();
-    return (
-      isExactOrFirstLineSuffix(principal, normalizedIdentity) ||
-      isExactOrFirstLineSuffix(principal, "nt authority\\system") ||
-      normalized.startsWith("nt authority\\logonsessionid_") ||
-      normalized.includes(" nt authority\\logonsessionid_")
-    );
+    return isExactOrFirstLineSuffix(principal, normalizedIdentity);
   };
   const identityLine = aclLines.find((line) =>
     isExactOrFirstLineSuffix(line.slice(0, line.indexOf(":(")).trim(), normalizedIdentity),
@@ -186,9 +180,7 @@ async function assertWindowsUserOnlyAcl(
     principals.some((principal) => !allowed(principal)) ||
     aclLines.some((line) => line.includes("(I)"))
   ) {
-    throw new Error(
-      "ACL verification permits only the current user and trusted OS/session principals without inherited access",
-    );
+    throw new Error("ACL verification permits only the current user without inherited access");
   }
 }
 
@@ -198,11 +190,29 @@ async function applyWindowsUserOnlyAcl(
   inheritToChildren = false,
 ): Promise<void> {
   try {
-    const grant = inheritToChildren ? `${identity}:(OI)(CI)(F)` : `${identity}:(F)`;
-    await execFileAsync("icacls.exe", [path, "/inheritance:r", "/grant:r", grant], {
+    const script = [
+      "$ErrorActionPreference = 'Stop'",
+      "$target = $env:ASEOS_CONTROL_ACL_TARGET",
+      "$account = [System.Security.Principal.NTAccount]::new($env:ASEOS_CONTROL_ACL_IDENTITY)",
+      "$directory = $env:ASEOS_CONTROL_ACL_DIRECTORY -eq 'true'",
+      "$acl = if ($directory) { [System.Security.AccessControl.DirectorySecurity]::new() } else { [System.Security.AccessControl.FileSecurity]::new() }",
+      "$acl.SetOwner($account)",
+      "$acl.SetAccessRuleProtection($true, $false)",
+      "$inheritance = if ($directory) { [System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit } else { [System.Security.AccessControl.InheritanceFlags]::None }",
+      "$rule = [System.Security.AccessControl.FileSystemAccessRule]::new($account, [System.Security.AccessControl.FileSystemRights]::FullControl, $inheritance, [System.Security.AccessControl.PropagationFlags]::None, [System.Security.AccessControl.AccessControlType]::Allow)",
+      "$acl.AddAccessRule($rule)",
+      "if ($directory) { [System.IO.DirectoryInfo]::new($target).SetAccessControl($acl) } else { [System.IO.FileInfo]::new($target).SetAccessControl($acl) }",
+    ].join("; ");
+    await execFileAsync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script], {
       windowsHide: true,
       timeout: 5_000,
       maxBuffer: 64 * 1024,
+      env: {
+        ...process.env,
+        ASEOS_CONTROL_ACL_TARGET: path,
+        ASEOS_CONTROL_ACL_IDENTITY: identity,
+        ASEOS_CONTROL_ACL_DIRECTORY: inheritToChildren ? "true" : "false",
+      },
     });
     await assertWindowsUserOnlyAcl(path, identity, inheritToChildren);
   } catch (error) {
