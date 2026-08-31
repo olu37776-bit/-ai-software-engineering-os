@@ -12,8 +12,8 @@
   "implementationBranch": "phase-1/p1-o01-p1-o05-start-gate-enforcement-issue-53",
   "baseCommit": "62e2de7225503c48c66fc08c6883d397aef5518a",
   "trackingIssue": 53,
-  "implementationCommit": "a918dde776a8c3be69dda2175ccc6ca3fee1a2c5",
-  "implementationTree": "fcda20a3eb291e5f8d0884bee34e9820cd7226d5",
+  "implementationCommit": "5e1f103d7c79640d6055f0c3da85a7f1592bfee3",
+  "implementationTree": "5d3882e66a0cc6bc3c55644b0ba73251b74ce973",
   "authorityRefs": [
     "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-53.json",
     "operations/phase-1/evidence/o01/p1-o05-scope-authority-amendment.json",
@@ -38,6 +38,11 @@
       "operationId": "P1-O01",
       "enforcementMode": "DENY_BY_DEFAULT",
       "scopeViolations": 0
+    },
+    {
+      "check": "ISSUE53-ENF-CI-01 formatting remediation",
+      "result": "REMEDIATED_PENDING_IMMUTABLE_HEAD_REQUALIFICATION",
+      "changedSemantics": false
     },
     {
       "check": "P1-O05 start Gate policy and chain binding",
