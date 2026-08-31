@@ -4,14 +4,14 @@
   "evidenceType": "P1V06PersistenceImplementationEvidence",
   "gateStepId": "P1-V06-PERSISTENCE",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-31T03:19:40Z",
+  "recordedAt": "2026-08-31T03:55:30Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "pullRequest": 63,
     "branch": "phase-1/p1-o05-node-sqlite-qualification-resume-issue-60",
     "authorizedBase": "33b422fe5f05da25a8b931d38a4da8d8c098aa25",
-    "qualifiedImplementationCommit": "fd0eb489c231d8ff27c26c87e22b95a7c6db0785",
-    "qualifiedImplementationTree": "b573573c3f747ae8cea1a45cbb425668cb074109"
+    "qualifiedImplementationCommit": "e157d7888262ef5484273cca35b5c21df34f9d01",
+    "qualifiedImplementationTree": "088b863ab188234b3bda5deedd16ba7c75d5d478"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -50,6 +50,10 @@
     "payloadHashesEnforced": true,
     "exactIdempotentReceiptReplay": true,
     "conflictingIdempotencyFailsClosed": true,
+    "commandIdConflict": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+    "commandIdempotencyPairConflict": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+    "outboxTaskIdConflict": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+    "outboxIdempotencyPairConflict": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
     "appendOnlyJournalTriggers": true,
     "strictTables": true
   },
@@ -113,7 +117,12 @@
     "checksumSemantics": "SHA256_EXACT_RAW_BYTES",
     "fatalUtf8DecodeAfterRawHash": true,
     "rawByteDrift": "FAIL_CLOSED",
-    "authorizedMalformedUtf8": "FAIL_CLOSED"
+    "authorizedMalformedUtf8": "FAIL_CLOSED",
+    "existingSchemaFingerprint": "EXACT_SQLITE_SCHEMA_AUTHORITY",
+    "appliedMigrationHistory": "EXACT_AUTHORITY_SET",
+    "unknownFutureMigrationVersion": "FAIL_CLOSED",
+    "incompatibleExistingSchema": "FAIL_CLOSED_BEFORE_MIGRATION_WRITE",
+    "compatibleStateReportedAfterVerificationOnly": true
   },
   "inboxDeduplication": {
     "result": "PASS",
@@ -137,14 +146,14 @@
     "result": "PASS",
     "totalEvents": 100000,
     "batchSize": 1000,
-    "sampleAppendDurationMs": 2613,
+    "sampleAppendDurationMs": 2551,
     "replay": {
       "events": 10000,
-      "sampleDurationMs": 59
+      "sampleDurationMs": 64
     },
     "recovery": {
       "events": 100000,
-      "sampleDurationMs": 90
+      "sampleDurationMs": 95
     },
     "eventLoopIsolation": "DEDICATED_WORKER_THREAD",
     "runtimeVersionAttested": true
@@ -162,9 +171,9 @@
     "typecheck": "PASS",
     "cleanAuthorityRebuild": "PASS",
     "rootTestFilesPassed": 26,
-    "rootTestsPassed": 169,
+    "rootTestsPassed": 171,
     "rootTestsFailed": 0,
-    "persistenceAndFaultTestsPassed": 14,
+    "persistenceAndFaultTestsPassed": 16,
     "architectureTestsPassed": 9,
     "p1V03Contracts": "PASS",
     "p1V04Architecture": "PASS",
@@ -172,12 +181,12 @@
     "m0Independent": "PASS",
     "linuxX64": "PASS",
     "windowsX64": "PASS",
-    "qualityWorkflowRunId": 33353268901,
-    "linuxJobId": 99370519130,
-    "windowsJobId": 99370519289,
-    "aggregatorJobId": 99371111459,
-    "m0WorkflowRunId": 33353268923,
-    "verifyJobId": 99370519158
+    "qualityWorkflowRunId": 33355088926,
+    "linuxJobId": 99375584776,
+    "windowsJobId": 99375584932,
+    "aggregatorJobId": 99376294817,
+    "m0WorkflowRunId": 33355088956,
+    "verifyJobId": 99375585027
   },
   "remediationHistory": [
     {
@@ -205,6 +214,18 @@
       "class": "INBOX_CROSS_IDENTITY_DEDUPLICATION",
       "result": "CLOSED",
       "resolution": "Inbox replay returns DUPLICATE only for one row whose resultId, taskId, and payloadHash all match. Reusing either identity with the same hash but a different counterpart now returns typed PERSISTENCE_IDEMPOTENCY_CONFLICT; both directions have executable regressions."
+    },
+    {
+      "findingId": "P1-O05-IV-04",
+      "class": "STARTUP_SCHEMA_VERSION_COMPATIBILITY_BYPASS",
+      "result": "CLOSED",
+      "resolution": "Existing authority databases are checked before migration execution against the exact sqlite_schema produced by the authorized migration and the exact ordered migration-history set. Unknown future versions and structurally incompatible tables fail closed before any migration write; COMPATIBLE is exposed only after both checks pass."
+    },
+    {
+      "findingId": "P1-O05-IV-05",
+      "class": "INCOMPLETE_TYPED_IDEMPOTENCY_CONFLICTS",
+      "result": "CLOSED",
+      "resolution": "Command lookup now covers commandId and the idempotency-key/effect-scope pair as one canonical identity set. Transactional outbox preflight covers taskId and its idempotency pair, including duplicates inside a batch. Reusing any identity outside the exact command replay returns PERSISTENCE_IDEMPOTENCY_CONFLICT before SQLite UNIQUE constraints or journal mutation."
     }
   ],
   "authority": {

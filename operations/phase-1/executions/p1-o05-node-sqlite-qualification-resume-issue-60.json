@@ -28,9 +28,9 @@
     "requiredCheckIdentityChanged": false,
     "independentVerificationRequired": true
   },
-  "completedAt": "2026-08-31T03:19:40Z",
-  "qualifiedImplementationCommit": "fd0eb489c231d8ff27c26c87e22b95a7c6db0785",
-  "qualifiedImplementationTree": "b573573c3f747ae8cea1a45cbb425668cb074109",
+  "completedAt": "2026-08-31T03:55:30Z",
+  "qualifiedImplementationCommit": "e157d7888262ef5484273cca35b5c21df34f9d01",
+  "qualifiedImplementationTree": "088b863ab188234b3bda5deedd16ba7c75d5d478",
   "evidenceRef": "operations/phase-1/evidence/o05/p1-v06-persistence.json",
   "results": {
     "writeScope": "PASS",
@@ -41,7 +41,7 @@
     "m0Independent": "PASS",
     "linuxX64": "PASS",
     "windowsX64": "PASS",
-    "rootTests": "169/169",
+    "rootTests": "171/171",
     "architectureTests": "9/9"
   }
 }

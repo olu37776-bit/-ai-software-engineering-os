@@ -2,8 +2,8 @@
 
 Status: `IMPLEMENTED — PENDING INDEPENDENT VERIFICATION`
 
-Qualified code subject: `fd0eb489c231d8ff27c26c87e22b95a7c6db0785`
-(tree `b573573c3f747ae8cea1a45cbb425668cb074109`) on PR #63. Exact-subject
+Qualified code subject: `e157d7888262ef5484273cca35b5c21df34f9d01`
+(tree `088b863ab188234b3bda5deedd16ba7c75d5d478`) on PR #63. Exact-subject
 M0, Linux, Windows, and the aggregate quality check passed before Evidence
 publication.
 
@@ -18,7 +18,10 @@ feeds a serial worker queue. Each append uses one `BEGIN IMMEDIATE` transaction
 covering the Event journal, command receipt, outbox, and audit facts. Expected
 versions, Event payload hashes, outbox payload hashes, command identities, and
 idempotency scope are checked before commit. Duplicate commands return the
-original persisted receipt; conflicts fail with typed errors.
+original persisted receipt. Command IDs and command idempotency pairs are checked
+as one canonical identity set. Outbox task IDs and outbox idempotency pairs are
+checked transactionally before journal mutation. Any non-exact reuse fails with
+`PERSISTENCE_IDEMPOTENCY_CONFLICT` instead of leaking a SQLite uniqueness error.
 
 Connection qualification explicitly attests WAL, FULL synchronous durability,
 foreign keys, trusted schema off, non-zero busy timeout, defensive mode,
@@ -28,7 +31,12 @@ ATTACH, schema mutation, and extension loading. Tables are STRICT and the Event
 journal has append-only update/delete triggers.
 
 Migration `001-initial.sql` is ordered and checksum-bound by
-`migrations/manifest.json`. Startup runs `quick_check`; backup uses SQLite
+`migrations/manifest.json`. Before an existing authority database can run any
+migration, startup compares its complete governed `sqlite_schema` with the exact
+schema produced by the authorized migration and requires the applied migration
+history to equal the ordered manifest set. Unknown future versions and malformed
+or partial tables fail closed before any migration write. `COMPATIBLE` is
+reported only after those checks and `quick_check` pass. Backup uses SQLite
 online backup and full `integrity_check`. An existing database that cannot be
 opened or checked is moved to a quarantine path and is never replaced with an
 empty database. An exclusive recovery-required marker is written before the
@@ -51,6 +59,8 @@ P1-V06 qualification covers:
 
 - Event, command receipt, outbox, and audit atomicity;
 - exact idempotent replay and optimistic-concurrency rejection;
+- typed command-ID, command-pair, outbox-task, and outbox-pair conflicts;
+- unknown migration-version and incompatible-schema startup rejection;
 - inbox deduplication and monotonic projection checkpoints;
 - worker termination before and after commit, WAL recovery, and database locks;
 - online backup/restore and corruption quarantine;
