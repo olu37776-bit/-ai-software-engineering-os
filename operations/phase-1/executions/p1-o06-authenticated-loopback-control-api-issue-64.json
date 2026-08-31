@@ -6,7 +6,7 @@
   "writeScopeOperationId": "P1-O06",
   "title": "Authenticated loopback Control API and lifecycle qualification",
   "riskClass": "R4",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-31T07:15:59Z",
   "trackingIssue": 64,
   "implementationBranch": "phase-1/p1-o06-authenticated-loopback-control-api-issue-64",
@@ -29,5 +29,22 @@
     "acceptedAdrChanged": false,
     "requiredCheckIdentityChanged": false,
     "independentVerificationRequired": true
+  },
+  "completedAt": "2026-08-31T07:50:00Z",
+  "qualifiedImplementationCommit": "c55b5d069a9e019bc3e5e031cbb2cbc6ddad65c4",
+  "qualifiedImplementationTree": "5927384540ecfcb80937211dcce02682110e11fe",
+  "evidenceRef": "operations/phase-1/evidence/o06/p1-v07-control-api.json",
+  "results": {
+    "writeScope": "PASS",
+    "authorityLock": "PASS",
+    "p1V03": "PASS",
+    "p1V04": "PASS",
+    "p1V07": "PASS",
+    "m0Independent": "PASS",
+    "localWindows": "PASS",
+    "rootTests": "214/214",
+    "architectureTests": "9/9",
+    "focusedControlApiTests": "22/22",
+    "platformTests": "3/3"
   }
 }
