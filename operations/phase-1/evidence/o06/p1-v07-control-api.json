@@ -10,8 +10,8 @@
     "pullRequest": 70,
     "branch": "phase-1/p1-o06-authenticated-loopback-control-api-issue-64",
     "authorizedBase": "7a8d2374fdb1ef39e4efcbd1c3b968d903647d09",
-    "qualifiedImplementationCommit": "af39be6ba755e9dede3513b9dceaf4ae65945fc7",
-    "qualifiedImplementationTree": "1755c9c6dfae769fffb108a400bc9f4e91922a7d"
+    "qualifiedImplementationCommit": "571bed2ed1f0ae9e76a497a0d65532f5747ef2eb",
+    "qualifiedImplementationTree": "4ab4c70546fbea571ba822374e416a24d3311dd1"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -60,7 +60,7 @@
     "result": "PASS",
     "tokenBits": 256,
     "rotation": "PER_RUNTIME_START",
-    "windowsAcl": "CURRENT_USER_PLUS_TRUSTED_OS_SESSION_PRINCIPALS_NO_INHERITANCE",
+    "windowsAcl": "CURRENT_USER_ONLY_NO_INHERITANCE",
     "secretWriteSequence": "EMPTY_TEMP_THEN_STRICT_ACL_THEN_SECRET_WRITE_FSYNC_RENAME_FINAL_VERIFY",
     "posixMode": "0600",
     "descriptorContainsToken": false,
@@ -144,6 +144,13 @@
       "result": "CLOSED",
       "failedRequiredVerifyJobId": 99419558397,
       "resolution": "The six P1-O06 schemas keep executable valid and invalid examples under the operation-owned control-api example directory and 12 dedicated Contract tests. Their registry flags no longer claim enrollment in the separately locked legacy first-slice example suite, whose authority is P1-O02-only. The exact M0 verifier now passes all 14 checks without changing the verifier, the locked suite, or its ownership."
+    },
+    {
+      "findingId": "P1-O06-CI-02",
+      "class": "WINDOWS_RUNNER_ACL_MODULE_AUTOLOAD_VARIANCE",
+      "result": "CLOSED",
+      "failedRequiredVerifyJobIds": [99438671411, 99438685002],
+      "resolution": "The Windows token writer no longer depends on PowerShell's Set-Acl cmdlet or security-module auto-loading under the exact constrained toolchain PATH. It constructs a protected current-user-only DACL and applies it through the .NET DirectoryInfo/FileInfo access-control API, then independently verifies FullControl, child inheritance on the protected parent, no inheritance on token files, and the absence of every other principal before writing any secret bytes. The exact Windows qualification, 31 focused Control API tests, 3 package-owned platform tests, and the 223-test root baseline pass locally."
     },
     {
       "findingId": "P1-O06-INDEPENDENT-REVIEW-01",

@@ -31,8 +31,8 @@
     "independentVerificationRequired": true
   },
   "completedAt": "2026-08-31T09:05:00Z",
-  "qualifiedImplementationCommit": "af39be6ba755e9dede3513b9dceaf4ae65945fc7",
-  "qualifiedImplementationTree": "1755c9c6dfae769fffb108a400bc9f4e91922a7d",
+  "qualifiedImplementationCommit": "571bed2ed1f0ae9e76a497a0d65532f5747ef2eb",
+  "qualifiedImplementationTree": "4ab4c70546fbea571ba822374e416a24d3311dd1",
   "evidenceRef": "operations/phase-1/evidence/o06/p1-v07-control-api.json",
   "results": {
     "writeScope": "PASS",
