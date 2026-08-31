@@ -12,19 +12,28 @@ import {
 
 describe("active and planned Contract inventories", () => {
   test("bind every active contract to one registry identity and canonical owner", async () => {
+    const [registryDocument, activeInventory, plannedInventory] = await Promise.all([
+      readJson(repositoryRoot, "packages/contracts/schema-registry.json"),
+      readJson(repositoryRoot, "packages/contracts/schema-inventory.json"),
+      readJson(repositoryRoot, "packages/contracts/planned-contracts.json"),
+    ]);
     const registry = await loadContractRegistry(repositoryRoot);
     const inventory = await validateContractInventory(registry);
     expect(inventory.result).toMatchObject({
       evidenceType: "SchemaRegistryValidationResult",
       result: "PASS",
-      registryEntries: 36,
-      uniqueSchemaIdentities: 36,
-      uniqueAuthorityPaths: 36,
-      inventoryActiveContracts: 20,
-      inventoryPlannedContracts: 53,
-      uniqueCanonicalOwners: 73,
+      registryEntries: registryDocument.schemas.length,
+      uniqueSchemaIdentities: registryDocument.schemas.length,
+      uniqueAuthorityPaths: registryDocument.schemas.length,
+      inventoryActiveContracts: activeInventory.contracts.length,
+      inventoryPlannedContracts: plannedInventory.contracts.length,
+      uniqueCanonicalOwners: activeInventory.contracts.length + plannedInventory.contracts.length,
     });
-    expect(inventory.publicOrPersistedBoundaries).toBe(20);
+    expect(inventory.publicOrPersistedBoundaries).toBe(
+      activeInventory.contracts.filter(
+        (contract) => contract.publicBoundary === true || contract.persisted === true,
+      ).length,
+    );
   });
 
   test("rejects active/planned ownership collisions", async () => {

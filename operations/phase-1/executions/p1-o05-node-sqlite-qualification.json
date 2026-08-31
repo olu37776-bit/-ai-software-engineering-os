@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O05-NODE-SQLITE-QUALIFICATION-2026-08-31-01",
+  "executionType": "P1_O05_NODE_SQLITE_QUALIFICATION",
+  "operationId": "P1-O05",
+  "writeScopeOperationId": "P1-O05",
+  "title": "SQLite node:sqlite authority-storage qualification",
+  "riskClass": "R4",
+  "status": "IN_PROGRESS",
+  "startedAt": "2026-08-31T01:00:00Z",
+  "implementationBranch": "phase-1/p1-o05-node-sqlite-qualification",
+  "baseCommit": "572629dfae69945ffc94135fe0f4394b9e32edd6",
+  "authorityRefs": [
+    "docs/decisions/ADR-0008-embedded-persistence-sqlite.md",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/evidence/o01/p1-o05-start-after-issue-53-independent-gate.json"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "productionWorkflowRuntimeImplemented": false,
+    "kernelStateTransitionImplemented": false,
+    "alternatePersistenceDriverIntroduced": false,
+    "acceptedAdrChanged": false,
+    "independentVerificationRequired": true
+  },
+  "remainingGaps": [
+    "P1-V06 implementation and qualification Evidence are not yet complete.",
+    "Independent verification, exact merge and protected-main post-merge checks remain required."
+  ]
+}

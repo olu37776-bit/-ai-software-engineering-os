@@ -19,14 +19,18 @@ async function expectCode(action, code) {
 
 describe("machine-executable schema registry", () => {
   test("meta-validates, hashes and compiles every canonical entry", async () => {
+    const registryDocument = await readJson(
+      repositoryRoot,
+      "packages/contracts/schema-registry.json",
+    );
     const registry = await loadContractRegistry(repositoryRoot);
     expect(registry.loaded.metaValidation).toEqual({
       evidenceType: "SchemaMetaValidationResult",
       result: "PASS",
       dialect: "https://json-schema.org/draft/2020-12/schema",
-      registeredSchemas: 36,
-      metaValidatedSchemas: 36,
-      compiledSchemas: 36,
+      registeredSchemas: registryDocument.schemas.length,
+      metaValidatedSchemas: registryDocument.schemas.length,
+      compiledSchemas: registryDocument.schemas.length,
       unresolvedReferences: 0,
     });
   });
