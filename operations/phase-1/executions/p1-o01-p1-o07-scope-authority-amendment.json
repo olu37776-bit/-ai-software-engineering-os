@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-P1-O07-SCOPE-AUTHORITY-AMENDMENT-ISSUE-71-2026-09-01-01",
+  "executionType": "PHASE_1_GOVERNANCE_AMENDMENT",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Issue #71 P1-O07 scope and Authority amendment",
+  "riskClass": "R3",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-08-31T18:31:00Z",
+  "completedAt": "2026-08-31T18:45:00Z",
+  "trackingIssue": 71,
+  "implementationBranch": "governance/p1-o07-scope-authority-amendment-issue-71",
+  "baseCommit": "ad9ad7c5602c40aafcdbfb3d4e96c139366e7f6e",
+  "implementationCommit": "abf9987c2cfad71ea9cf4247f2c7c34da380dbfa",
+  "implementationTree": "b45f2a91a0583f02bbe01cf19d744db80eff7472",
+  "priorAuthorizationGateRef": "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-71.json",
+  "authorityRefs": [
+    "operations/phase-1/write-scope.json",
+    "docs/roadmap/phase-1-write-scope.md",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-71.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/71"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "p1O07Implemented": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false,
+    "isolationDowngradeAuthorized": false
+  },
+  "verification": [
+    {
+      "check": "prior independent authorization Gate",
+      "result": "PASS",
+      "gateMainCommit": "ad9ad7c5602c40aafcdbfb3d4e96c139366e7f6e"
+    },
+    {
+      "check": "exact governance amendment paths",
+      "result": "PASS",
+      "changedPaths": 5
+    },
+    {
+      "check": "Authority ownership delta",
+      "result": "PASS",
+      "paths": 3
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/p1-o07-scope-authority-amendment.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/71"
+  ],
+  "remainingGaps": [
+    "Immutable-head GitHub checks and independent verification remain required.",
+    "P1-O07 remains blocked until transition enforcement and an independent start Gate pass."
+  ]
+}
