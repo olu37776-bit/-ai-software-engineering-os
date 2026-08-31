@@ -474,6 +474,140 @@
       "exampleRequired": true
     },
     {
+      "contractId": "aseos.isolation.isolation-capability-report",
+      "canonicalName": "IsolationCapabilityReport",
+      "domain": "isolation",
+      "canonicalOwner": "packages/contracts",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/isolation/isolation-capability-report.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "windows-process-restricted-capability-probe"
+      ],
+      "consumers": [
+        "canonical-policy-evaluator",
+        "worker-runtime",
+        "verification"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0010"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/isolation/valid/isolation-capability-report.json",
+        "packages/contracts/examples/isolation/invalid/isolation-capability-report-false-network-claim.json"
+      ],
+      "verificationObligations": [
+        "probe-result-fail-closed",
+        "provider-version-bound",
+        "process-restricted-not-security-sandbox",
+        "no-false-network-filesystem-registry-denial"
+      ],
+      "schemaId": "urn:aseos:schema:isolation-capability-report:1.0.0",
+      "sha256": "6552770af08ec3add9e46b7eb3c3c82f6f4e3c47e71102d9f1983d8a0e418d62",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
+    },
+    {
+      "contractId": "aseos.isolation.isolation-evidence",
+      "canonicalName": "IsolationEvidence",
+      "domain": "isolation",
+      "canonicalOwner": "packages/evidence",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/isolation/isolation-evidence.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "windows-process-restricted-adapter"
+      ],
+      "consumers": [
+        "verification",
+        "canonical-policy-evaluator",
+        "kernel"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.common.subject-ref",
+        "aseos.isolation.isolation-capability-report",
+        "aseos.isolation.isolation-requirement"
+      ],
+      "adrRefs": [
+        "ADR-0010"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/isolation/valid/isolation-evidence.json",
+        "packages/contracts/examples/isolation/invalid/isolation-evidence-downgrade.json"
+      ],
+      "verificationObligations": [
+        "requirement-capability-probe-linkage",
+        "budget-and-usage-evidence-complete",
+        "job-object-process-tree-cleanup",
+        "no-downgrade",
+        "process-restricted-not-security-sandbox"
+      ],
+      "schemaId": "urn:aseos:schema:isolation-evidence:1.0.0",
+      "sha256": "a930da4ecbdc1b9ddabe444a580bb9853aa57cd4374d0ca8efcf66e77d70b9b3",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
+    },
+    {
+      "contractId": "aseos.isolation.isolation-requirement",
+      "canonicalName": "IsolationRequirement",
+      "domain": "isolation",
+      "canonicalOwner": "packages/contracts",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/isolation/isolation-requirement.schema.json",
+      "persisted": false,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "canonical-policy-evaluator",
+        "worker-runtime"
+      ],
+      "consumers": [
+        "windows-process-restricted-adapter",
+        "verification"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0010",
+        "ADR-0011"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/isolation/valid/isolation-requirement.json",
+        "packages/contracts/examples/isolation/invalid/isolation-requirement-host-unrestricted.json"
+      ],
+      "verificationObligations": [
+        "host-unrestricted-invalid",
+        "resource-budgets-explicit",
+        "required-provider-features-explicit",
+        "no-downward-isolation"
+      ],
+      "schemaId": "urn:aseos:schema:isolation-requirement:1.0.0",
+      "sha256": "882826e06628869939c362aa66793976e1dda15f5e93452a361e98236764dcf9",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
+    },
+    {
       "contractId": "aseos.kernel.command-envelope",
       "canonicalName": "CommandEnvelope",
       "domain": "kernel",

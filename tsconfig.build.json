@@ -17,10 +17,16 @@
       "path": "./packages/platform"
     },
     {
+      "path": "./packages/adapters/tool/windows-process-restricted"
+    },
+    {
       "path": "./apps/runtime"
     },
     {
       "path": "./apps/cli"
+    },
+    {
+      "path": "./apps/worker"
     }
   ]
 }

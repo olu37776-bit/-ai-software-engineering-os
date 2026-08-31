@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "0198e0a1-0000-7000-8000-000000000707",
+  "requirementId": "0198e0a1-0000-7000-8000-000000000701",
+  "capabilityReportId": "0198e0a1-0000-7000-8000-000000000703",
+  "taskId": "0198e0a1-0000-7000-8000-000000000708",
+  "executionId": "0198e0a1-0000-7000-8000-000000000709",
+  "providerId": "aseos.windows-job-object",
+  "providerVersion": "1.0.0",
+  "probeId": "0198e0a1-0000-7000-8000-000000000704",
+  "selectedIsolationLevel": "PROCESS_RESTRICTED",
+  "downgradeOccurred": false,
+  "budgets": {
+    "maxCpuTimeMs": 30000,
+    "maxMemoryBytes": 268435456,
+    "maxProcessCount": 8,
+    "maxWallClockMs": 60000,
+    "maxStdoutBytes": 1048576,
+    "maxStderrBytes": 1048576
+  },
+  "usage": {
+    "cpuTimeMs": 120,
+    "memoryPeakBytes": 33554432,
+    "processPeakCount": 3,
+    "wallClockMs": 540,
+    "stdoutBytes": 128,
+    "stderrBytes": 0
+  },
+  "processTree": {
+    "rootProcessId": 4242,
+    "jobObjectAssigned": true,
+    "killOnJobClose": true,
+    "descendantTerminationVerified": true,
+    "activeProcessCountAfterCompletion": 0
+  },
+  "guarantees": {
+    "processTreeLifecycleContained": true,
+    "resourceBudgetsEnforced": true,
+    "networkAccessDenied": false,
+    "filesystemAccessDenied": false,
+    "registryAccessDenied": false,
+    "securitySandbox": false
+  },
+  "result": {
+    "outcome": "SUCCEEDED",
+    "exitCode": 0,
+    "terminationReason": "EXITED",
+    "processTreeTerminated": true,
+    "reasonCodes": []
+  },
+  "evidenceRefs": [
+    {
+      "subjectType": "ArtifactRef",
+      "subjectId": "job-object-probe-2026-09-01"
+    }
+  ],
+  "startedAt": "2026-09-01T00:01:00Z",
+  "completedAt": "2026-09-01T00:01:01Z"
+}

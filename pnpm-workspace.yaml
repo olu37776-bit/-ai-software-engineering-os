@@ -3,8 +3,10 @@ packages:
   - packages/policy
   - packages/persistence
   - packages/platform
+  - packages/adapters/tool/windows-process-restricted
   - apps/runtime
   - apps/cli
+  - apps/worker
 
 allowBuilds:
   protobufjs: true

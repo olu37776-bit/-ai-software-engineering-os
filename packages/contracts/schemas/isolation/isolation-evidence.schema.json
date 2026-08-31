@@ -1,0 +1,309 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:isolation-evidence:1.0.0",
+  "title": "IsolationEvidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceId",
+    "requirementId",
+    "capabilityReportId",
+    "taskId",
+    "executionId",
+    "providerId",
+    "providerVersion",
+    "probeId",
+    "selectedIsolationLevel",
+    "downgradeOccurred",
+    "budgets",
+    "usage",
+    "processTree",
+    "guarantees",
+    "result",
+    "evidenceRefs",
+    "startedAt",
+    "completedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "evidenceId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "requirementId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "capabilityReportId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "taskId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "executionId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "providerId": {
+      "const": "aseos.windows-job-object"
+    },
+    "providerVersion": {
+      "const": "1.0.0"
+    },
+    "probeId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "selectedIsolationLevel": {
+      "const": "PROCESS_RESTRICTED"
+    },
+    "downgradeOccurred": {
+      "const": false
+    },
+    "budgets": {
+      "$ref": "urn:aseos:schema:isolation-evidence:1.0.0#/$defs/resourceBudgets"
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cpuTimeMs",
+        "memoryPeakBytes",
+        "processPeakCount",
+        "wallClockMs",
+        "stdoutBytes",
+        "stderrBytes"
+      ],
+      "properties": {
+        "cpuTimeMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "memoryPeakBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "processPeakCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wallClockMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stdoutBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stderrBytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "processTree": {
+      "$ref": "urn:aseos:schema:isolation-evidence:1.0.0#/$defs/processTree"
+    },
+    "guarantees": {
+      "$ref": "urn:aseos:schema:isolation-evidence:1.0.0#/$defs/processRestrictedGuarantees"
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "terminationReason", "processTreeTerminated", "reasonCodes"],
+      "properties": {
+        "outcome": {
+          "enum": ["SUCCEEDED", "FAILED", "CANCELLED", "TIMED_OUT"]
+        },
+        "exitCode": {
+          "type": "integer"
+        },
+        "terminationReason": {
+          "enum": [
+            "EXITED",
+            "CANCELLED",
+            "WALL_CLOCK_LIMIT",
+            "CPU_LIMIT",
+            "MEMORY_LIMIT",
+            "PROCESS_COUNT_LIMIT",
+            "OUTPUT_LIMIT"
+          ]
+        },
+        "processTreeTerminated": {
+          "const": true
+        },
+        "reasonCodes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/stableCode"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:aseos:schema:subject-ref:1.0.0"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "resourceBudgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxCpuTimeMs",
+        "maxMemoryBytes",
+        "maxProcessCount",
+        "maxWallClockMs",
+        "maxStdoutBytes",
+        "maxStderrBytes"
+      ],
+      "properties": {
+        "maxCpuTimeMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxMemoryBytes": {
+          "type": "integer",
+          "minimum": 1048576
+        },
+        "maxProcessCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
+        },
+        "maxWallClockMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400000
+        },
+        "maxStdoutBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxStderrBytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "processRestrictedGuarantees": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "processTreeLifecycleContained",
+        "resourceBudgetsEnforced",
+        "networkAccessDenied",
+        "filesystemAccessDenied",
+        "registryAccessDenied",
+        "securitySandbox"
+      ],
+      "properties": {
+        "processTreeLifecycleContained": {
+          "const": true
+        },
+        "resourceBudgetsEnforced": {
+          "const": true
+        },
+        "networkAccessDenied": {
+          "const": false
+        },
+        "filesystemAccessDenied": {
+          "const": false
+        },
+        "registryAccessDenied": {
+          "const": false
+        },
+        "securitySandbox": {
+          "const": false
+        }
+      }
+    },
+    "processTree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rootProcessId",
+        "jobObjectAssigned",
+        "killOnJobClose",
+        "descendantTerminationVerified",
+        "activeProcessCountAfterCompletion"
+      ],
+      "properties": {
+        "rootProcessId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "jobObjectAssigned": {
+          "const": true
+        },
+        "killOnJobClose": {
+          "const": true
+        },
+        "descendantTerminationVerified": {
+          "type": "boolean"
+        },
+        "activeProcessCountAfterCompletion": {
+          "const": 0
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "properties": {
+              "outcome": {
+                "const": "SUCCEEDED"
+              }
+            },
+            "required": ["outcome"]
+          }
+        },
+        "required": ["result"]
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "required": ["exitCode"],
+            "properties": {
+              "exitCode": {
+                "const": 0
+              },
+              "terminationReason": {
+                "const": "EXITED"
+              },
+              "reasonCodes": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "result": {
+            "properties": {
+              "reasonCodes": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

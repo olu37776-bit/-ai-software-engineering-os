@@ -15,6 +15,13 @@ export default defineConfig({
       "@aseos/platform": fileURLToPath(
         new URL("./packages/platform/dist/index.js", import.meta.url),
       ),
+      "@aseos/windows-process-restricted": fileURLToPath(
+        new URL(
+          "./packages/adapters/tool/windows-process-restricted/dist/index.js",
+          import.meta.url,
+        ),
+      ),
+      "@aseos/worker": fileURLToPath(new URL("./apps/worker/dist/index.js", import.meta.url)),
     },
   },
   test: {
@@ -24,8 +31,10 @@ export default defineConfig({
       "tests/qualification/policy/**/*.test.mjs",
       "tests/qualification/persistence/**/*.test.mjs",
       "tests/qualification/control-api/**/*.test.mjs",
+      "tests/qualification/isolation/**/*.test.mjs",
       "tests/acceptance/control-api/**/*.test.mjs",
       "tests/fault-injection/persistence/**/*.test.mjs",
+      "tests/security/isolation/**/*.test.mjs",
       "tests/contract/**/*.test.mjs",
     ],
     passWithNoTests: false,

@@ -19,6 +19,12 @@ importers:
       "@aseos/policy":
         specifier: workspace:*
         version: link:packages/policy
+      "@aseos/windows-process-restricted":
+        specifier: workspace:*
+        version: link:packages/adapters/tool/windows-process-restricted
+      "@aseos/worker":
+        specifier: workspace:*
+        version: link:apps/worker
     devDependencies:
       "@eslint/js":
         specifier: 10.0.1
@@ -74,6 +80,17 @@ importers:
       "@aseos/platform":
         specifier: workspace:*
         version: link:../../packages/platform
+
+  apps/worker:
+    dependencies:
+      "@aseos/contracts":
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      "@aseos/windows-process-restricted":
+        specifier: workspace:*
+        version: link:../../packages/adapters/tool/windows-process-restricted
+
+  packages/adapters/tool/windows-process-restricted: {}
 
   packages/contracts:
     dependencies:
