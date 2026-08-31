@@ -6,11 +6,14 @@
   "writeScopeOperationId": "P1-O01",
   "title": "Issue #71 P1-O07 start-Gate enforcement",
   "riskClass": "R4",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-31T19:15:00Z",
+  "completedAt": "2026-08-31T19:27:00Z",
   "trackingIssue": 71,
   "implementationBranch": "phase-1/p1-o01-p1-o07-start-gate-enforcement-issue-71",
   "baseCommit": "ce7373c980141ba65e1ba9b65592fdbedc6029b8",
+  "implementationCommit": "1035e5787f904156d509c6ed66230fada8935a2e",
+  "implementationTree": "05fc600111d9364cdaea930d27fb1262d194d6ee",
   "authorityRefs": [
     "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/71",
     "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-71.json",
@@ -23,7 +26,7 @@
     "docs/decisions/ADR-0010-windows-execution-isolation.md"
   ],
   "claimBoundary": {
-    "maximumImplementationClaim": "IN_PROGRESS",
+    "maximumImplementationClaim": "IMPLEMENTED",
     "p1O07Started": false,
     "acceptedAdrChanged": false,
     "requiredCheckIdentityChanged": false,
@@ -31,7 +34,34 @@
     "isolationDowngradeAuthorized": false,
     "independentVerificationRequired": true
   },
-  "verification": [],
+  "verification": [
+    {
+      "check": "operation-aware WRITE_SCOPE preflight",
+      "result": "PASS",
+      "mode": "OPERATION_EXECUTION",
+      "operationId": "P1-O01",
+      "enforcementMode": "DENY_BY_DEFAULT",
+      "scopeViolations": 0
+    },
+    {
+      "check": "P1-O07 start Gate policy and exact transition-chain binding",
+      "result": "PASS_PENDING_IMMUTABLE_HEAD_QUALIFICATION"
+    },
+    {
+      "check": "P1-O07 missing operation context and missing or malformed Gate fail-closed routing",
+      "result": "PASS_PENDING_IMMUTABLE_HEAD_QUALIFICATION"
+    },
+    {
+      "check": "P1-O02, P1-O04, P1-O05 and P1-O06 Gate backward compatibility",
+      "result": "PASS"
+    },
+    {
+      "check": "required verify authority uniqueness",
+      "result": "PASS",
+      "verifyProducers": 1,
+      "producer": ".github/workflows/m0-independent-verify.yml#verify"
+    }
+  ],
   "documentRefs": ["docs/implementation/phase-1/o01/p1-o07-start-gate-enforcement-issue-71.md"],
   "evidenceRefs": [
     "operations/phase-1/evidence/o01/p1-o07-start-gate-enforcement-issue-71.json",
