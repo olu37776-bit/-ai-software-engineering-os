@@ -231,10 +231,7 @@ export class PersistenceWorker {
   }
 
   public async recordInbox(record: InboxRecord): Promise<InboxRecord> {
-    const validated = this.#validate<InboxRecord>(
-      "urn:aseos:schema:inbox-record:1.0.0",
-      record,
-    );
+    const validated = this.#validate<InboxRecord>("urn:aseos:schema:inbox-record:1.0.0", record);
     const persisted = await this.#request<InboxRecord>("record-inbox", validated);
     return this.#validate<InboxRecord>("urn:aseos:schema:inbox-record:1.0.0", persisted);
   }
@@ -257,10 +254,7 @@ export class PersistenceWorker {
     const record = await this.#request<CommandDedupRecord | null>("get-command", { commandId });
     return record === null
       ? null
-      : this.#validate<CommandDedupRecord>(
-          "urn:aseos:schema:command-dedup-record:1.0.0",
-          record,
-        );
+      : this.#validate<CommandDedupRecord>("urn:aseos:schema:command-dedup-record:1.0.0", record);
   }
 
   public async listOutbox(): Promise<readonly OutboxRecord[]> {
@@ -377,7 +371,7 @@ export class PersistenceWorker {
     });
   }
 
-  #validate<T>(schemaId: string, value: unknown): T {
+  #validate<T>(schemaId: string, value: T): T {
     const result = this.#registry.validate<T>({ schemaId, schemaVersion: "1.0.0" }, value);
     if (!result.ok) {
       throw new PersistenceError(

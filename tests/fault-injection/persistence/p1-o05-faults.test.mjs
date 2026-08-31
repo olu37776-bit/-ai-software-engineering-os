@@ -52,8 +52,9 @@ describe("P1-O05 crash recovery and storage fault injection", () => {
 
     const recovered = await PersistenceWorker.open({ dataRoot: root });
     try {
-      await expect(recovered.readEvents("QualificationStream", "qualification-stream")).resolves
-        .toEqual(batch.events);
+      await expect(
+        recovered.readEvents("QualificationStream", "qualification-stream"),
+      ).resolves.toEqual(batch.events);
       await expect(recovered.recover()).resolves.toMatchObject({
         eventCount: 2,
         commandCount: 1,

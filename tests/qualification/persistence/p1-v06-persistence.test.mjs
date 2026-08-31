@@ -1,6 +1,7 @@
 import { cp, mkdir, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { clearInterval, setInterval } from "node:timers";
 
 import { afterEach, describe, expect, test } from "vitest";
 

@@ -48,7 +48,7 @@ type SerializedError = Readonly<{
 }>;
 
 type MigrationManifest = Readonly<{
-  schemaVersion: "1.0.0";
+  schemaVersion: string;
   databaseSchemaVersion: number;
   migrations: readonly Readonly<{
     version: number;
@@ -118,7 +118,7 @@ function requiredSafeInteger(record: JsonRecord, key: string, context: string): 
   return value;
 }
 
-function parseJson<T>(value: unknown, context: string): T {
+function parseJson(value: unknown, context: string): unknown {
   if (typeof value !== "string") {
     throw new InternalPersistenceError(
       "PERSISTENCE_STORAGE_FAILURE",
@@ -126,7 +126,7 @@ function parseJson<T>(value: unknown, context: string): T {
     );
   }
   try {
-    return JSON.parse(value) as T;
+    return JSON.parse(value) as unknown;
   } catch (error: unknown) {
     throw new InternalPersistenceError(
       "PERSISTENCE_STORAGE_FAILURE",
@@ -138,10 +138,7 @@ function parseJson<T>(value: unknown, context: string): T {
 
 function db(): DatabaseSync {
   if (database === undefined) {
-    throw new InternalPersistenceError(
-      "PERSISTENCE_CLOSED",
-      "SQLite connection is not available",
-    );
+    throw new InternalPersistenceError("PERSISTENCE_CLOSED", "SQLite connection is not available");
   }
   return database;
 }
@@ -276,8 +273,7 @@ async function loadMigrationAssets(): Promise<{
     parsed.schemaVersion !== "1.0.0" ||
     parsed.databaseSchemaVersion !== 1 ||
     parsed.migrations.length !== 1 ||
-    migration === undefined ||
-    migration.version !== 1 ||
+    migration?.version !== 1 ||
     migration.path !== "migrations/001-initial.sql" ||
     sha256(sql) !== migration.sha256
   ) {
@@ -344,7 +340,7 @@ async function initialize(): Promise<void> {
   }
   await mkdir(dirname(databasePath), { recursive: true });
   const assets = await loadMigrationAssets();
-  const connection = new DatabaseSync(databasePath, {
+  const databaseOptions = {
     allowExtension: false,
     defensive: true,
     enableDoubleQuotedStringLiterals: false,
@@ -365,7 +361,8 @@ async function initialize(): Promise<void> {
       variableNumber: 2_048,
       triggerDepth: 16,
     },
-  });
+  };
+  const connection = new DatabaseSync(databasePath, databaseOptions);
   database = connection;
   connection.exec("PRAGMA journal_mode = WAL");
   connection.exec("PRAGMA synchronous = FULL");
@@ -454,7 +451,7 @@ function commitBatch(batch: JournalAppendBatch): PersistenceCommitReceipt {
         "Idempotency identity was reused with a different command or payload",
       );
     }
-    return parseJson<PersistenceCommitReceipt>(duplicate["receipt_json"], "command receipt");
+    return parseJson(duplicate["receipt_json"], "command receipt") as PersistenceCommitReceipt;
   }
   verifyOutbox(batch);
   return runTransaction(() => {
@@ -469,10 +466,10 @@ function commitBatch(batch: JournalAppendBatch): PersistenceCommitReceipt {
           "Idempotency identity was reused inside the transaction",
         );
       }
-      return parseJson<PersistenceCommitReceipt>(
+      return parseJson(
         transactionalDuplicate["receipt_json"],
         "command receipt",
-      );
+      ) as PersistenceCommitReceipt;
     }
     const currentVersion = currentAggregateVersion(batch);
     if (currentVersion !== batch.stream.expectedVersion) {
@@ -590,14 +587,15 @@ function recordInbox(record: InboxRecord): InboxRecord {
 function saveCheckpoint(checkpoint: ProjectionCheckpoint): ProjectionCheckpoint {
   return runTransaction(() => {
     const existing = db()
-      .prepare(
-        "SELECT source_sequence FROM projection_checkpoints WHERE projection_name = ?",
-      )
+      .prepare("SELECT source_sequence FROM projection_checkpoints WHERE projection_name = ?")
       .get(checkpoint.projectionName);
     if (
       existing !== undefined &&
-      requiredSafeInteger(asRecord(existing, "projection checkpoint"), "source_sequence", "checkpoint") >
-        checkpoint.sourceSequence
+      requiredSafeInteger(
+        asRecord(existing, "projection checkpoint"),
+        "source_sequence",
+        "checkpoint",
+      ) > checkpoint.sourceSequence
     ) {
       throw new InternalPersistenceError(
         "PERSISTENCE_OPTIMISTIC_CONCURRENCY",
@@ -671,8 +669,12 @@ function readEvents(payload: JsonRecord): readonly DomainEventEnvelope[] {
       "SELECT event_json FROM event_journal WHERE aggregate_type = ? AND aggregate_id = ? ORDER BY aggregate_version LIMIT ?",
     )
     .all(aggregateType, aggregateId, limit) as unknown[];
-  return rows.map((value) =>
-    parseJson<DomainEventEnvelope>(asRecord(value, "event journal")["event_json"], "event journal"),
+  return rows.map(
+    (value) =>
+      parseJson(
+        asRecord(value, "event journal")["event_json"],
+        "event journal",
+      ) as DomainEventEnvelope,
   );
 }
 
@@ -833,7 +835,12 @@ function securityQualification(): Readonly<Record<string, unknown>> {
   const injection = "'; DROP TABLE event_journal; --";
   const bound = asRecord(connection.prepare("SELECT ? AS value").get(injection), "binding probe");
   const journalPresent = count("event_journal") >= 0;
-  if (!attachDenied || !schemaMutationDenied || !extensionLoadingDenied || bound["value"] !== injection) {
+  if (
+    !attachDenied ||
+    !schemaMutationDenied ||
+    !extensionLoadingDenied ||
+    bound["value"] !== injection
+  ) {
     throw new InternalPersistenceError(
       "PERSISTENCE_SECURITY_CONTROL_FAILED",
       "SQLite runtime security qualification did not fail closed",
