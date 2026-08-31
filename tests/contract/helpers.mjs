@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { cp, mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, resolve } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 
 export const repositoryRoot = resolve(import.meta.dirname, "../..");
 
@@ -29,14 +29,21 @@ export async function updateRegistryHash(root, authorityPath) {
   await writeJson(root, "packages/contracts/schema-registry.json", registry);
 }
 
+function isRepositoryFixtureSource(source) {
+  const segments = relative(repositoryRoot, source).split(/[\\/]/u);
+  return !segments.includes("node_modules") && !segments.includes("dist");
+}
+
 export async function withContractRepository(action) {
   const root = await mkdtemp(resolve(tmpdir(), "aseos-contract-repository-"));
   try {
     await Promise.all([
       cp(resolve(repositoryRoot, "packages/contracts"), resolve(root, "packages/contracts"), {
+        filter: isRepositoryFixtureSource,
         recursive: true,
       }),
       cp(resolve(repositoryRoot, "operations/phase-1"), resolve(root, "operations/phase-1"), {
+        filter: isRepositoryFixtureSource,
         recursive: true,
       }),
     ]);
