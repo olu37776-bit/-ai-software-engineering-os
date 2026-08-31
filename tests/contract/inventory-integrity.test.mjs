@@ -27,7 +27,8 @@ describe("active and planned Contract inventories", () => {
       uniqueAuthorityPaths: registryDocument.schemas.length,
       inventoryActiveContracts: activeInventory.contracts.length,
       inventoryPlannedContracts: plannedInventory.contracts.length,
-      uniqueCanonicalOwners: activeInventory.contracts.length + plannedInventory.contracts.length,
+      uniqueCanonicalOwners:
+        activeInventory.contracts.length + plannedInventory.contracts.length,
     });
     expect(inventory.publicOrPersistedBoundaries).toBe(
       activeInventory.contracts.filter(
