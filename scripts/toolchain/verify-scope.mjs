@@ -1128,6 +1128,30 @@ async function main() {
   });
 }
 
+if (
+  process.env.PHASE1_SCOPE_BRANCH ===
+  "diagnostic/issue-53-prettier-output"
+) {
+  const prettier = await import("prettier");
+  const paths = [
+    "scripts/toolchain/scope-policy.mjs",
+    "scripts/toolchain/verify-scope.mjs",
+    "tests/qualification/toolchain/p1-o05-start-gate.test.mjs",
+  ];
+  for (const path of paths) {
+    const source =
+      path === "scripts/toolchain/verify-scope.mjs"
+        ? runRaw("git", ["show", `HEAD^:${path}`])
+        : await readFile(resolve(repositoryRoot, path), "utf8");
+    const config = await prettier.resolveConfig(resolve(repositoryRoot, path));
+    const formatted = await prettier.format(source, {
+      ...config,
+      filepath: resolve(repositoryRoot, path),
+    });
+    console.log(`PRETTIER_BASE64 ${path} ${Buffer.from(formatted).toString("base64")}`);
+  }
+}
+
 try {
   await main();
 } catch (error) {
