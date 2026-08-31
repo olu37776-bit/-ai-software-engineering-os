@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:command-dedup-record:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "CommandDedupRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "commandId",
+    "idempotencyKey",
+    "effectScope",
+    "payloadHash",
+    "outcomeHash",
+    "status",
+    "completedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "commandId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "idempotencyKey": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/idempotencyKey"
+    },
+    "effectScope": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "payloadHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "outcomeHash": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/sha256"
+    },
+    "status": {
+      "enum": [
+        "COMMITTED",
+        "REJECTED"
+      ]
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

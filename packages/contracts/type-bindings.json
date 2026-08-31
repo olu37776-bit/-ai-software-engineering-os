@@ -22,6 +22,10 @@
       "exportName": "CapabilityManifest"
     },
     {
+      "schemaId": "urn:aseos:schema:command-dedup-record:1.0.0",
+      "exportName": "CommandDedupRecord"
+    },
+    {
       "schemaId": "urn:aseos:schema:command-envelope:1.0.0",
       "exportName": "CommandEnvelope"
     },
@@ -46,8 +50,24 @@
       "exportName": "GateDecision"
     },
     {
+      "schemaId": "urn:aseos:schema:inbox-record:1.0.0",
+      "exportName": "InboxRecord"
+    },
+    {
+      "schemaId": "urn:aseos:schema:journal-append-batch:1.0.0",
+      "exportName": "JournalAppendBatch"
+    },
+    {
       "schemaId": "urn:aseos:schema:node-execution-identity:1.0.0",
       "exportName": "NodeExecutionIdentity"
+    },
+    {
+      "schemaId": "urn:aseos:schema:outbox-record:1.0.0",
+      "exportName": "OutboxRecord"
+    },
+    {
+      "schemaId": "urn:aseos:schema:persistence-commit-receipt:1.0.0",
+      "exportName": "PersistenceCommitReceipt"
     },
     {
       "schemaId": "urn:aseos:schema:policy-decision:1.0.0",
@@ -70,6 +90,10 @@
       "exportName": "PolicySnapshot"
     },
     {
+      "schemaId": "urn:aseos:schema:projection-checkpoint:1.0.0",
+      "exportName": "ProjectionCheckpoint"
+    },
+    {
       "schemaId": "urn:aseos:schema:schema-ref:1.0.0",
       "exportName": "SchemaRef"
     },
@@ -80,6 +104,10 @@
     {
       "schemaId": "urn:aseos:schema:side-effect-task-envelope:1.0.0",
       "exportName": "SideEffectTaskEnvelope"
+    },
+    {
+      "schemaId": "urn:aseos:schema:state-schema-manifest:1.0.0",
+      "exportName": "StateSchemaManifest"
     },
     {
       "schemaId": "urn:aseos:schema:subject-ref:1.0.0",

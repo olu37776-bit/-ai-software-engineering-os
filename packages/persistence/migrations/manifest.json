@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "databaseSchemaVersion": 1,
+  "migrations": [
+    {
+      "version": 1,
+      "name": "initial-authority-storage",
+      "path": "migrations/001-initial.sql",
+      "sha256": "0684ff34039eb2cb1aab856fcfccde1f20ce8b0050018b61f6c93bfefc3ee324"
+    }
+  ]
+}
