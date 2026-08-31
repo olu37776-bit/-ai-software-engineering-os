@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-GOVERNANCE-AMENDMENT-AUTHORIZATION-ISSUE-64-2026-08-31-01",
+  "evidenceType": "Phase1GovernanceAmendmentAuthorization",
+  "trackingIssue": 64,
+  "decision": "AUTHORIZED",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "authorizationBase": "a68de0bb78a46c45453fc17e7430139db1f3d0d1",
+    "authorizedBasePolicy": "DIRECT_PROTECTED_MAIN_CHILD_CONTAINING_THIS_GATE",
+    "implementationBranch": "governance/p1-o06-scope-authority-amendment-issue-64"
+  },
+  "verifier": {
+    "role": "INDEPENDENT_VERIFIER",
+    "independent": true,
+    "readOnlySubjectVerification": true,
+    "remediationPerformed": false
+  },
+  "authorization": {
+    "mode": "GOVERNANCE_AMENDMENT",
+    "allowedChangedPaths": [
+      "docs/roadmap/phase-1-write-scope.md",
+      "operations/phase-1/authority-lock.json",
+      "operations/phase-1/evidence/o01/p1-o06-scope-authority-amendment.json",
+      "operations/phase-1/executions/p1-o01-p1-o06-scope-authority-amendment.json",
+      "operations/phase-1/write-scope.json"
+    ],
+    "exactAmendmentPaths": [
+      "docs/roadmap/phase-1-write-scope.md",
+      "operations/phase-1/authority-lock.json",
+      "operations/phase-1/evidence/o01/p1-o06-scope-authority-amendment.json",
+      "operations/phase-1/executions/p1-o01-p1-o06-scope-authority-amendment.json",
+      "operations/phase-1/write-scope.json"
+    ],
+    "authorityOwnershipDeltas": [
+      {
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06"],
+        "beforeAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05"],
+        "path": "packages/contracts/planned-contracts.json"
+      },
+      {
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06"],
+        "beforeAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05"],
+        "path": "packages/contracts/schema-inventory.json"
+      },
+      {
+        "afterAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06"],
+        "beforeAllowedOperationIds": ["P1-O02", "P1-O04", "P1-O05"],
+        "path": "packages/contracts/schema-registry.json"
+      }
+    ],
+    "unlistedPhase1AuthorityPaths": "DENIED"
+  },
+  "claimBoundary": {
+    "acceptedAdrMutationAuthorized": false,
+    "productionRuntimeAuthorized": false,
+    "p1O02ImplementationAuthorized": false,
+    "p1O06ImplementationAuthorized": false
+  }
+}
