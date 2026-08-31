@@ -6,7 +6,7 @@
   "writeScopeOperationId": "P1-O07",
   "title": "Windows PROCESS_RESTRICTED worker qualification",
   "riskClass": "R4",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-31T20:32:19Z",
   "trackingIssue": 71,
   "implementationBranch": "phase-1/p1-o07-windows-process-restricted-qualification-issue-71",
@@ -35,9 +35,22 @@
     "requiredCheckIdentityChanged": false,
     "independentVerificationRequired": true
   },
-  "remainingGaps": [
-    "Complete the Windows Job Object provider, canonical isolation Contracts, and P1-V08 qualification.",
-    "Publish immutable implementation Evidence and obtain an independent read-only verdict.",
-    "Merge the exact reviewed head and complete protected-main post-merge verification."
-  ]
+  "completedAt": "2026-08-31T23:27:00Z",
+  "qualifiedImplementationCommit": "06efbc0901bf2ae7c7750aa7e10103281318dd50",
+  "qualifiedImplementationTree": "6b19641b32d585e71125a784f60456cb91148d3b",
+  "evidenceRef": "operations/phase-1/evidence/o07/p1-v08-isolation.json",
+  "results": {
+    "writeScope": "PASS",
+    "authorityLock": "PASS",
+    "p1V03": "PASS",
+    "p1V04": "PASS",
+    "p1V08": "PASS",
+    "m0Independent": "PASS",
+    "localWindows": "PASS",
+    "rootTests": "277/277",
+    "architectureTests": "9/9",
+    "focusedIsolationTests": "21/21",
+    "adapterTests": "6/6",
+    "workerTests": "3/3"
+  }
 }
