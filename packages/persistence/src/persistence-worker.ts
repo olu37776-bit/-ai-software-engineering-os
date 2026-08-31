@@ -59,6 +59,7 @@ const databasePath = resolve(configuration.dataRoot, "state", "aseos.db");
 const quarantineMarkerPath = `${databasePath}.quarantine-required.json`;
 let database: DatabaseSync | undefined;
 let manifest: MigrationManifest | undefined;
+let schemaCompatibilityVerified = false;
 let writeLockHeld = false;
 let crashTransactionArmed = false;
 
@@ -326,6 +327,95 @@ function applyMigration(
   }
 }
 
+type SchemaAuthorityRow = Readonly<{
+  type: string;
+  name: string;
+  tableName: string;
+  sql: string;
+}>;
+
+function schemaAuthorityRows(connection: DatabaseSync): readonly SchemaAuthorityRow[] {
+  const rows = connection
+    .prepare(
+      "SELECT type, name, tbl_name, sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type, name",
+    )
+    .all() as unknown[];
+  return rows.map((value) => {
+    const row = asRecord(value, "sqlite_schema");
+    return {
+      type: requiredString(row, "type", "sqlite_schema"),
+      name: requiredString(row, "name", "sqlite_schema"),
+      tableName: requiredString(row, "tbl_name", "sqlite_schema"),
+      sql: requiredString(row, "sql", "sqlite_schema"),
+    };
+  });
+}
+
+function expectedSchemaAuthorityRows(sql: string): readonly SchemaAuthorityRow[] {
+  const authority = new DatabaseSync(":memory:", {
+    allowExtension: false,
+    defensive: true,
+    enableDoubleQuotedStringLiterals: false,
+  });
+  try {
+    authority.exec(sql);
+    return schemaAuthorityRows(authority);
+  } finally {
+    authority.close();
+  }
+}
+
+function verifyAppliedSchema(
+  connection: DatabaseSync,
+  sql: string,
+  authorityManifest: MigrationManifest,
+): void {
+  try {
+    const actualSchema = schemaAuthorityRows(connection);
+    const expectedSchema = expectedSchemaAuthorityRows(sql);
+    if (canonicalJson(actualSchema) !== canonicalJson(expectedSchema)) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_MIGRATION_MISMATCH",
+        "SQLite schema structure differs from migration authority",
+      );
+    }
+
+    const applied = (
+      connection
+        .prepare("SELECT version, name, sha256 FROM migration_history ORDER BY version")
+        .all() as unknown[]
+    ).map((value) => {
+      const row = asRecord(value, "migration_history");
+      return {
+        version: requiredSafeInteger(row, "version", "migration_history"),
+        name: requiredString(row, "name", "migration_history"),
+        sha256: requiredString(row, "sha256", "migration_history"),
+      };
+    });
+    const expected = authorityManifest.migrations.map((migration) => ({
+      version: migration.version,
+      name: migration.name,
+      sha256: migration.sha256,
+    }));
+    if (
+      authorityManifest.databaseSchemaVersion !== expected.at(-1)?.version ||
+      canonicalJson(applied) !== canonicalJson(expected)
+    ) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_MIGRATION_MISMATCH",
+        "Applied migration history differs from migration authority",
+      );
+    }
+  } catch (error: unknown) {
+    if (error instanceof InternalPersistenceError) throw error;
+    throw new InternalPersistenceError(
+      "PERSISTENCE_MIGRATION_MISMATCH",
+      "SQLite schema compatibility could not be verified",
+      { cause: error instanceof Error ? error.message : String(error) },
+    );
+  }
+}
+
 async function initialize(): Promise<void> {
   if (
     !Number.isSafeInteger(configuration.busyTimeoutMs) ||
@@ -369,10 +459,16 @@ async function initialize(): Promise<void> {
   connection.exec("PRAGMA trusted_schema = OFF");
   connection.exec(`PRAGMA busy_timeout = ${String(configuration.busyTimeoutMs)}`);
   quickCheck(connection, "quick_check");
-  applyMigration(connection, assets.sql, assets.migration);
+  if (databaseExisted) {
+    verifyAppliedSchema(connection, assets.sql, assets.manifest);
+  } else {
+    applyMigration(connection, assets.sql, assets.migration);
+    verifyAppliedSchema(connection, assets.sql, assets.manifest);
+  }
   quickCheck(connection, "quick_check");
   applyAuthorizer(connection);
   manifest = assets.manifest;
+  schemaCompatibilityVerified = true;
 }
 
 function verifyEvent(
@@ -429,47 +525,73 @@ function currentAggregateVersion(batch: JournalAppendBatch): number {
   return requiredSafeInteger(row, "version", "aggregate version");
 }
 
-function findDuplicate(batch: JournalAppendBatch): JsonRecord | undefined {
-  const existing = db()
+function findCommandDuplicate(batch: JournalAppendBatch): JsonRecord | undefined {
+  const matches = db()
     .prepare(
-      "SELECT command_id, payload_hash, receipt_json FROM command_receipts WHERE idempotency_key = ? AND effect_scope = ?",
+      "SELECT command_id, idempotency_key, effect_scope, payload_hash, receipt_json FROM command_receipts WHERE command_id = ? OR (idempotency_key = ? AND effect_scope = ?)",
     )
-    .get(batch.idempotencyKey, batch.effectScope);
-  return existing === undefined ? undefined : asRecord(existing, "command receipt");
+    .all(batch.commandId, batch.idempotencyKey, batch.effectScope) as unknown[];
+  if (matches.length === 0) return undefined;
+  const rows = matches.map((value) => asRecord(value, "command receipt"));
+  const row = rows[0];
+  if (
+    rows.length !== 1 ||
+    row?.["command_id"] !== batch.commandId ||
+    row["idempotency_key"] !== batch.idempotencyKey ||
+    row["effect_scope"] !== batch.effectScope ||
+    row["payload_hash"] !== batch.payloadHash
+  ) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+      "Command identity was reused by a different command or payload",
+    );
+  }
+  return row;
+}
+
+function verifyOutboxIdentities(batch: JournalAppendBatch): void {
+  const taskIds = new Set<string>();
+  const idempotencyPairs = new Set<string>();
+  for (const task of batch.outbox) {
+    const pair = canonicalJson([task.idempotencyKey, task.effectScope]);
+    if (taskIds.has(task.taskId) || idempotencyPairs.has(pair)) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+        "Outbox identity is duplicated inside the append batch",
+      );
+    }
+    taskIds.add(task.taskId);
+    idempotencyPairs.add(pair);
+    const existing = db()
+      .prepare(
+        "SELECT task_id FROM outbox WHERE task_id = ? OR (idempotency_key = ? AND effect_scope = ?)",
+      )
+      .all(task.taskId, task.idempotencyKey, task.effectScope) as unknown[];
+    if (existing.length > 0) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+        "Outbox task or idempotency identity was reused by another command",
+        { taskId: task.taskId },
+      );
+    }
+  }
 }
 
 function commitBatch(batch: JournalAppendBatch): PersistenceCommitReceipt {
-  const duplicate = findDuplicate(batch);
+  const duplicate = findCommandDuplicate(batch);
   if (duplicate !== undefined) {
-    if (
-      duplicate["command_id"] !== batch.commandId ||
-      duplicate["payload_hash"] !== batch.payloadHash
-    ) {
-      throw new InternalPersistenceError(
-        "PERSISTENCE_IDEMPOTENCY_CONFLICT",
-        "Idempotency identity was reused with a different command or payload",
-      );
-    }
     return parseJson(duplicate["receipt_json"], "command receipt") as PersistenceCommitReceipt;
   }
   verifyOutbox(batch);
   return runTransaction(() => {
-    const transactionalDuplicate = findDuplicate(batch);
+    const transactionalDuplicate = findCommandDuplicate(batch);
     if (transactionalDuplicate !== undefined) {
-      if (
-        transactionalDuplicate["command_id"] !== batch.commandId ||
-        transactionalDuplicate["payload_hash"] !== batch.payloadHash
-      ) {
-        throw new InternalPersistenceError(
-          "PERSISTENCE_IDEMPOTENCY_CONFLICT",
-          "Idempotency identity was reused inside the transaction",
-        );
-      }
       return parseJson(
         transactionalDuplicate["receipt_json"],
         "command receipt",
       ) as PersistenceCommitReceipt;
     }
+    verifyOutboxIdentities(batch);
     const currentVersion = currentAggregateVersion(batch);
     if (currentVersion !== batch.stream.expectedVersion) {
       throw new InternalPersistenceError(
@@ -763,7 +885,7 @@ function recover(): Readonly<Record<string, unknown>> {
 }
 
 function stateSchemaManifest(): StateSchemaManifest {
-  if (manifest === undefined) {
+  if (manifest === undefined || !schemaCompatibilityVerified) {
     throw new InternalPersistenceError(
       "PERSISTENCE_MIGRATION_MISMATCH",
       "State schema manifest is unavailable",

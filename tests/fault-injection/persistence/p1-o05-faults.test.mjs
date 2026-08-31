@@ -1,6 +1,7 @@
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { DatabaseSync } from "node:sqlite";
 
 import { afterEach, describe, expect, test } from "vitest";
 
@@ -21,6 +22,59 @@ afterEach(async () => {
 });
 
 describe("P1-O05 crash recovery and storage fault injection", () => {
+  test("rejects future migration history before declaring schema compatibility", async () => {
+    const root = await dataRoot("future-migration");
+    const databasePath = join(root, "state", "aseos.db");
+    const worker = await PersistenceWorker.open({ dataRoot: root });
+    await worker.close();
+
+    const connection = new DatabaseSync(databasePath);
+    connection
+      .prepare(
+        "INSERT INTO migration_history(version, name, sha256, applied_at) VALUES (?, ?, ?, ?)",
+      )
+      .run(2, "future-migration", "2".repeat(64), "2026-08-31T00:00:00.000Z");
+    connection.close();
+
+    await expect(PersistenceWorker.open({ dataRoot: root })).rejects.toMatchObject({
+      code: "PERSISTENCE_CORRUPTION",
+      message: "Applied migration history differs from migration authority",
+    });
+  });
+
+  test("rejects incompatible existing schema before applying the authority migration", async () => {
+    const root = await dataRoot("incompatible-schema");
+    const state = join(root, "state");
+    const databasePath = join(state, "aseos.db");
+    await mkdir(state, { recursive: true });
+    const connection = new DatabaseSync(databasePath);
+    connection.exec("CREATE TABLE event_journal(bad TEXT) STRICT");
+    connection.close();
+
+    let quarantinePath;
+    try {
+      await PersistenceWorker.open({ dataRoot: root });
+      throw new Error("Expected incompatible schema to fail closed");
+    } catch (error) {
+      expect(error).toMatchObject({
+        code: "PERSISTENCE_CORRUPTION",
+        message: "SQLite schema structure differs from migration authority",
+      });
+      quarantinePath = error.details?.quarantinePath;
+    }
+    expect(typeof quarantinePath).toBe("string");
+    const quarantined = new DatabaseSync(quarantinePath, { readOnly: true });
+    try {
+      const names = quarantined
+        .prepare("SELECT name FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY name")
+        .all()
+        .map((row) => row.name);
+      expect(names).toEqual(["event_journal"]);
+    } finally {
+      quarantined.close();
+    }
+  });
+
   test("rolls back a worker-terminated pre-commit transaction", async () => {
     const root = await dataRoot("crash-before");
     const worker = await PersistenceWorker.open({ dataRoot: root });

@@ -72,6 +72,34 @@ describe("P1-V06 node:sqlite authority storage qualification", () => {
           payloadHash: "0".repeat(64),
         }),
       ).rejects.toMatchObject({ code: "PERSISTENCE_IDEMPOTENCY_CONFLICT" });
+      const reusedCommand = makeJournalBatch({ sequence: 3, expectedVersion: 2, eventCount: 1 });
+      await expect(
+        worker.commit({ ...reusedCommand, commandId: batch.commandId }),
+      ).rejects.toMatchObject({ code: "PERSISTENCE_IDEMPOTENCY_CONFLICT" });
+      const reusedTask = makeJournalBatch({ sequence: 4, expectedVersion: 2, eventCount: 1 });
+      await expect(
+        worker.commit({
+          ...reusedTask,
+          outbox: [{ ...reusedTask.outbox[0], taskId: batch.outbox[0].taskId }],
+        }),
+      ).rejects.toMatchObject({ code: "PERSISTENCE_IDEMPOTENCY_CONFLICT" });
+      const reusedOutboxPair = makeJournalBatch({
+        sequence: 5,
+        expectedVersion: 2,
+        eventCount: 1,
+      });
+      await expect(
+        worker.commit({
+          ...reusedOutboxPair,
+          outbox: [
+            {
+              ...reusedOutboxPair.outbox[0],
+              idempotencyKey: batch.outbox[0].idempotencyKey,
+              effectScope: batch.outbox[0].effectScope,
+            },
+          ],
+        }),
+      ).rejects.toMatchObject({ code: "PERSISTENCE_IDEMPOTENCY_CONFLICT" });
       await expect(
         worker.commit(
           makeJournalBatch({
