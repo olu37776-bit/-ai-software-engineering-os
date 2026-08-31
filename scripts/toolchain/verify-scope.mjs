@@ -536,8 +536,7 @@ function verifyP1O05ScopeAuthorityAmendmentOutcome(commits, gate, baseCommit) {
     "P1_O05_SCOPE_AUTHORITY_AMENDMENT_DIFF",
   );
   if (
-    JSON.stringify(changedPaths) !==
-    JSON.stringify(P1_O05_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS)
+    JSON.stringify(changedPaths) !== JSON.stringify(P1_O05_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS)
   ) {
     throw new Error("P1_O05_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS_MISMATCH");
   }
@@ -548,13 +547,10 @@ function verifyP1O05ScopeAuthorityAmendmentOutcome(commits, gate, baseCommit) {
     execution?.writeScopeOperationId !== "P1-O01" ||
     execution?.status !== "IMPLEMENTED" ||
     execution?.trackingIssue !== 53 ||
-    execution?.implementationBranch !==
-      "governance/p1-o05-scope-authority-amendment-issue-53" ||
+    execution?.implementationBranch !== "governance/p1-o05-scope-authority-amendment-issue-53" ||
     execution?.baseCommit !== commits.scopeAuthorizationGateMainCommit ||
-    execution?.implementationCommit !==
-      commits.scopeAuthorityAmendmentImplementationCommit ||
-    execution?.implementationTree !==
-      commits.scopeAuthorityAmendmentImplementationTree ||
+    execution?.implementationCommit !== commits.scopeAuthorityAmendmentImplementationCommit ||
+    execution?.implementationTree !== commits.scopeAuthorityAmendmentImplementationTree ||
     execution?.priorAuthorizationGateRef !== authorizationGatePath ||
     evidence?.schemaVersion !== "1.0.0" ||
     evidence?.evidenceType !== "P1O05ScopeAuthorityAmendmentEvidence" ||
@@ -563,8 +559,7 @@ function verifyP1O05ScopeAuthorityAmendmentOutcome(commits, gate, baseCommit) {
     evidence?.trackingIssue !== 53 ||
     evidence?.subject?.implementationCommit !==
       commits.scopeAuthorityAmendmentImplementationCommit ||
-    evidence?.subject?.implementationTree !==
-      commits.scopeAuthorityAmendmentImplementationTree ||
+    evidence?.subject?.implementationTree !== commits.scopeAuthorityAmendmentImplementationTree ||
     JSON.stringify(evidence?.governanceOutcome?.requiredScopePaths) !==
       JSON.stringify(P1_O05_REQUIRED_SCOPE_PATHS) ||
     JSON.stringify(evidence?.governanceOutcome?.authorityOwnershipPaths) !==
@@ -584,9 +579,7 @@ function verifyP1O05ScopeAuthorityAmendmentOutcome(commits, gate, baseCommit) {
   if (
     amendmentScope?.enforcementMode !== "DENY_BY_DEFAULT" ||
     !operationScope ||
-    P1_O05_REQUIRED_SCOPE_PATHS.some(
-      (path) => !operationScope.allowedPathGlobs.includes(path),
-    )
+    P1_O05_REQUIRED_SCOPE_PATHS.some((path) => !operationScope.allowedPathGlobs.includes(path))
   ) {
     throw new Error("P1_O05_SCOPE_AUTHORITY_AMENDMENT_OUTCOME_MISMATCH");
   }
@@ -612,11 +605,7 @@ function verifyP1O05ScopeAuthorityAmendmentOutcome(commits, gate, baseCommit) {
 }
 
 function verifyOperationStartGate(operationId, baseCommit) {
-  if (
-    operationId !== "P1-O02" &&
-    operationId !== "P1-O04" &&
-    operationId !== "P1-O05"
-  ) {
+  if (operationId !== "P1-O02" && operationId !== "P1-O04" && operationId !== "P1-O05") {
     return { required: false };
   }
   if (operationId === "P1-O02") {
@@ -691,11 +680,7 @@ function verifyOperationStartGate(operationId, baseCommit) {
       commits.finalAmendmentReviewedHeadCommit,
       "FINAL_AMENDMENT",
     );
-    const finalAmendmentOutcome = verifyP1O04FinalAmendmentOutcome(
-      commits,
-      gate,
-      baseCommit,
-    );
+    const finalAmendmentOutcome = verifyP1O04FinalAmendmentOutcome(commits, gate, baseCommit);
     return {
       required: true,
       path: P1_O04_START_GATE_PATH,
@@ -708,9 +693,7 @@ function verifyOperationStartGate(operationId, baseCommit) {
 
   const gate = loadStartGate(baseCommit, P1_O05_START_GATE_PATH, "P1_O05_START_BLOCKED");
   const commits = validateP1O05StartGate(gate);
-  for (const [label, commit] of Object.entries(commits).filter(([key]) =>
-    key.endsWith("Commit"),
-  )) {
+  for (const [label, commit] of Object.entries(commits).filter(([key]) => key.endsWith("Commit"))) {
     assertCommit(
       commit,
       label.replaceAll(/(?<!^)[A-Z]/g, (letter) => `_${letter}`).toUpperCase(),

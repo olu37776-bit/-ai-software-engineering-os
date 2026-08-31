@@ -24,12 +24,9 @@ function makeGate() {
       scopeAuthorityAmendmentImplementationCommit: "2".repeat(40),
       scopeAuthorityAmendmentImplementationTree: "3".repeat(40),
       scopeAuthorityAmendmentReviewedHeadCommit: "4".repeat(40),
-      scopeAuthorityAmendmentMainCommit:
-        P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT,
-      scopeAuthorityAmendmentExecutionPath:
-        P1_O05_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH,
-      scopeAuthorityAmendmentEvidencePath:
-        P1_O05_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH,
+      scopeAuthorityAmendmentMainCommit: P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT,
+      scopeAuthorityAmendmentExecutionPath: P1_O05_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH,
+      scopeAuthorityAmendmentEvidencePath: P1_O05_SCOPE_AUTHORITY_AMENDMENT_EVIDENCE_PATH,
       transitionEnforcementImplementationCommit: "5".repeat(40),
       transitionEnforcementImplementationTree: "6".repeat(40),
       transitionEnforcementReviewedHeadCommit: "7".repeat(40),
@@ -45,10 +42,8 @@ function makeGate() {
       p1O05Start: "RELEASED",
       authorizedBasePolicy:
         "PROTECTED_MAIN_COMMIT_CONTAINING_THIS_GATE_AFTER_POST_MERGE_PASS",
-      scopeAuthorityAmendmentChangedPaths:
-        P1_O05_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS,
-      authorityOwnershipDeltas:
-        P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS,
+      scopeAuthorityAmendmentChangedPaths: P1_O05_SCOPE_AUTHORITY_AMENDMENT_CHANGED_PATHS,
+      authorityOwnershipDeltas: P1_O05_REQUIRED_AUTHORITY_OWNERSHIP_DELTAS,
     },
     verification: {
       scopeAuthorityAmendmentIndependentVerdict: "PASS",
@@ -73,10 +68,8 @@ describe("P1-O05 Issue #53 start Gate policy", () => {
       "operations/phase-1/evidence/o01/p1-o05-start-after-issue-53-independent-gate.json",
     );
     expect(validateP1O05StartGate(makeGate())).toMatchObject({
-      scopeAuthorizationGateMainCommit:
-        P1_O05_AUTHORIZATION_GATE_MAIN_COMMIT,
-      scopeAuthorityAmendmentMainCommit:
-        P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT,
+      scopeAuthorizationGateMainCommit: P1_O05_AUTHORIZATION_GATE_MAIN_COMMIT,
+      scopeAuthorityAmendmentMainCommit: P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT,
       transitionEnforcementImplementationCommit: "5".repeat(40),
       transitionEnforcementImplementationTree: "6".repeat(40),
       transitionEnforcementReviewedHeadCommit: "7".repeat(40),

@@ -728,8 +728,7 @@ export function validateP1O05StartGate(gate) {
     !Object.values(commits).every((commit) => /^[0-9a-f]{40}$/.test(commit ?? "")) ||
     !Object.values(trees).every((tree) => /^[0-9a-f]{40}$/.test(tree ?? "")) ||
     commits.scopeAuthorizationGateMainCommit !== P1_O05_AUTHORIZATION_GATE_MAIN_COMMIT ||
-    commits.scopeAuthorityAmendmentMainCommit !==
-      P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT ||
+    commits.scopeAuthorityAmendmentMainCommit !== P1_O05_SCOPE_AUTHORITY_AMENDMENT_MAIN_COMMIT ||
     gate?.subject?.scopeAuthorityAmendmentExecutionPath !==
       P1_O05_SCOPE_AUTHORITY_AMENDMENT_EXECUTION_PATH ||
     gate?.subject?.scopeAuthorityAmendmentEvidencePath !==
