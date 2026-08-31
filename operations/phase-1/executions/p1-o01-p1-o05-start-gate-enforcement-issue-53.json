@@ -12,8 +12,8 @@
   "implementationBranch": "phase-1/p1-o01-p1-o05-start-gate-enforcement-issue-53",
   "baseCommit": "62e2de7225503c48c66fc08c6883d397aef5518a",
   "trackingIssue": 53,
-  "implementationCommit": "1a94883a6e40d6809170966baf2e3069f56a9f40",
-  "implementationTree": "16abe672f2722c5936e96429a0d2c853e2073696",
+  "implementationCommit": "c16c80c95cd3114bd36dd8d520b8237ba9fa2758",
+  "implementationTree": "1708dcfa98c4f3923a66186263196021892b78a5",
   "authorityRefs": [
     "operations/phase-1/evidence/o01/p1-governance-amendment-authorization-issue-53.json",
     "operations/phase-1/evidence/o01/p1-o05-scope-authority-amendment.json",
