@@ -6,7 +6,7 @@
   "writeScopeOperationId": "P1-O05",
   "title": "SQLite node:sqlite authority-storage qualification",
   "riskClass": "R4",
-  "status": "IN_PROGRESS",
+  "status": "IMPLEMENTED",
   "startedAt": "2026-08-31T01:43:00Z",
   "implementationBranch": "phase-1/p1-o05-node-sqlite-qualification-resume-issue-60",
   "baseCommit": "33b422fe5f05da25a8b931d38a4da8d8c098aa25",
@@ -27,5 +27,21 @@
     "acceptedAdrChanged": false,
     "requiredCheckIdentityChanged": false,
     "independentVerificationRequired": true
+  },
+  "completedAt": "2026-08-31T02:35:30Z",
+  "qualifiedImplementationCommit": "f2fc83e879f34cac8a46cd8e76f36288569b4292",
+  "qualifiedImplementationTree": "667b8d7024c66c604f6df6563fcaf7ef0edebf73",
+  "evidenceRef": "operations/phase-1/evidence/o05/p1-v06-persistence.json",
+  "results": {
+    "writeScope": "PASS",
+    "authorityLock": "PASS",
+    "p1V03": "PASS",
+    "p1V04": "PASS",
+    "p1V06": "PASS",
+    "m0Independent": "PASS",
+    "linuxX64": "PASS",
+    "windowsX64": "PASS",
+    "rootTests": "167/167",
+    "architectureTests": "9/9"
   }
 }

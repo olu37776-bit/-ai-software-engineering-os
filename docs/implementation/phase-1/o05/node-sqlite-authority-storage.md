@@ -2,6 +2,11 @@
 
 Status: `IMPLEMENTED — PENDING INDEPENDENT VERIFICATION`
 
+Qualified code subject: `f2fc83e879f34cac8a46cd8e76f36288569b4292`
+(tree `667b8d7024c66c604f6df6563fcaf7ef0edebf73`) on PR #63. Exact-subject
+M0, Linux, Windows, and the aggregate quality check passed before Evidence
+publication.
+
 P1-O05 implements the ADR-0008 qualification boundary with the exact Node.js
 24.19.0 built-in `node:sqlite` driver. All driver calls and synchronous database
 work execute inside a dedicated `PersistenceWorker` thread. The public
@@ -27,6 +32,12 @@ Migration `001-initial.sql` is ordered and checksum-bound by
 online backup and full `integrity_check`. An existing database that cannot be
 opened or checked is moved to a quarantine path and is never replaced with an
 empty database.
+
+The migration SQL is marked `-text` by the package-local `.gitattributes` so
+Git cannot rewrite checksum-bound bytes on Windows. A real Git-filter regression
+uses `core.autocrlf=true`, proves SQL checkout bytes equal the canonical blob,
+and proves an adjacent JSON control does receive CRLF conversion. Checksum
+semantics remain raw-byte and fail closed.
 
 P1-V06 qualification covers:
 
