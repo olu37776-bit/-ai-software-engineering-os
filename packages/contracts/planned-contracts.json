@@ -304,48 +304,6 @@
       ]
     },
     {
-      "contractId": "aseos.persistence.command-dedup-record",
-      "canonicalName": "CommandDedupRecord",
-      "domain": "persistence",
-      "canonicalOwner": "packages/kernel",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/persistence/command-dedup-record.schema.json",
-      "adrRefs": [
-        "ADR-0003",
-        "ADR-0008",
-        "ADR-0009"
-      ]
-    },
-    {
-      "contractId": "aseos.persistence.inbox-record",
-      "canonicalName": "InboxRecord",
-      "domain": "persistence",
-      "canonicalOwner": "packages/kernel",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/persistence/inbox-record.schema.json",
-      "adrRefs": [
-        "ADR-0003",
-        "ADR-0008"
-      ]
-    },
-    {
-      "contractId": "aseos.persistence.journal-append-batch",
-      "canonicalName": "JournalAppendBatch",
-      "domain": "persistence",
-      "canonicalOwner": "packages/persistence",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/persistence/journal-append-batch.schema.json",
-      "adrRefs": [
-        "ADR-0008"
-      ]
-    },
-    {
       "contractId": "aseos.persistence.lease-record",
       "canonicalName": "LeaseRecord",
       "domain": "persistence",
@@ -356,59 +314,6 @@
       "authorityPath": "packages/contracts/schemas/persistence/lease-record.schema.json",
       "adrRefs": [
         "ADR-0003",
-        "ADR-0008"
-      ]
-    },
-    {
-      "contractId": "aseos.persistence.outbox-record",
-      "canonicalName": "OutboxRecord",
-      "domain": "persistence",
-      "canonicalOwner": "packages/kernel",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/persistence/outbox-record.schema.json",
-      "adrRefs": [
-        "ADR-0003",
-        "ADR-0008"
-      ]
-    },
-    {
-      "contractId": "aseos.persistence.persistence-commit-receipt",
-      "canonicalName": "PersistenceCommitReceipt",
-      "domain": "persistence",
-      "canonicalOwner": "packages/persistence",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/persistence/persistence-commit-receipt.schema.json",
-      "adrRefs": [
-        "ADR-0008"
-      ]
-    },
-    {
-      "contractId": "aseos.persistence.projection-checkpoint",
-      "canonicalName": "ProjectionCheckpoint",
-      "domain": "persistence",
-      "canonicalOwner": "packages/persistence",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/persistence/projection-checkpoint.schema.json",
-      "adrRefs": [
-        "ADR-0008"
-      ]
-    },
-    {
-      "contractId": "aseos.persistence.state-schema-manifest",
-      "canonicalName": "StateSchemaManifest",
-      "domain": "persistence",
-      "canonicalOwner": "packages/persistence",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/persistence/state-schema-manifest.schema.json",
-      "adrRefs": [
         "ADR-0008"
       ]
     },

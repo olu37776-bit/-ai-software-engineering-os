@@ -192,7 +192,7 @@
     },
     {
       "path": "packages/contracts/planned-contracts.json",
-      "sha256": "204d49f0dcc627e4d2742a7edc6fef6fd55b6a041b9ae0936fba8ff4d73f460a",
+      "sha256": "91363b6b9ce83ace762b7c7e1a5a851ddd91e10f68b4327466d2323189e47e38",
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
@@ -203,7 +203,7 @@
     },
     {
       "path": "packages/contracts/schema-inventory.json",
-      "sha256": "e0046aedadbc0260e46c36e8dd0230b6b19a8e1d4625a49dcf80da06e4a62136",
+      "sha256": "d17c891b58d061fc3d7973d11529cd0762c215ab476618baefb1b97452ed5de8",
       "role": "CONTRACT_INVENTORY",
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [
@@ -214,7 +214,7 @@
     },
     {
       "path": "packages/contracts/schema-registry.json",
-      "sha256": "8d58c84b3a27c938dfc2b7ed17c724d6f7179c37b50de7175835721e0cd5fead",
+      "sha256": "724bd3bd42ed4a247bc4bed388b80bd5de4bb8e4f69bae78a4fbaae5b86c4b0c",
       "role": "SCHEMA_REGISTRY",
       "mutationPolicy": "OPERATION_SCOPED",
       "allowedOperationIds": [

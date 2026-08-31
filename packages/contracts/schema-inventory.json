@@ -528,6 +528,273 @@
       "exampleRequired": true
     },
     {
+      "contractId": "aseos.persistence.command-dedup-record",
+      "canonicalName": "CommandDedupRecord",
+      "domain": "persistence",
+      "canonicalOwner": "packages/kernel",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/persistence/command-dedup-record.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "kernel"
+      ],
+      "consumers": [
+        "persistence-worker"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0003",
+        "ADR-0008",
+        "ADR-0009"
+      ],
+      "examplePaths": [],
+      "verificationObligations": [
+        "command-id-unique",
+        "idempotency-payload-consistency",
+        "original-outcome-replay"
+      ],
+      "schemaId": "urn:aseos:schema:command-dedup-record:1.0.0",
+      "sha256": "1773a9805a7b619c95f7a19d8910eab33b7dbf0fbdb92fe0c3f77423824b23d6",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.persistence.inbox-record",
+      "canonicalName": "InboxRecord",
+      "domain": "persistence",
+      "canonicalOwner": "packages/kernel",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/persistence/inbox-record.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "persistence-worker"
+      ],
+      "consumers": [
+        "kernel"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0003",
+        "ADR-0008"
+      ],
+      "examplePaths": [],
+      "verificationObligations": [
+        "result-id-unique",
+        "payload-hash-deduplication",
+        "duplicate-result-replay"
+      ],
+      "schemaId": "urn:aseos:schema:inbox-record:1.0.0",
+      "sha256": "6cd85ed878228bdcf135bf2371e60644b4ec3ab85e4f62684dc577a717556aca",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.persistence.journal-append-batch",
+      "canonicalName": "JournalAppendBatch",
+      "domain": "persistence",
+      "canonicalOwner": "packages/persistence",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/persistence/journal-append-batch.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "kernel"
+      ],
+      "consumers": [
+        "persistence-worker"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.kernel.domain-event-envelope",
+        "aseos.kernel.side-effect-task-envelope"
+      ],
+      "adrRefs": [
+        "ADR-0008"
+      ],
+      "examplePaths": [],
+      "verificationObligations": [
+        "expected-version-conflict",
+        "event-outbox-audit-atomicity",
+        "canonical-payload-hash"
+      ],
+      "schemaId": "urn:aseos:schema:journal-append-batch:1.0.0",
+      "sha256": "a6e38af5f603cfac956729358917615fdde3a2a7b404b3707bc4ebe8e60015a9",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.persistence.outbox-record",
+      "canonicalName": "OutboxRecord",
+      "domain": "persistence",
+      "canonicalOwner": "packages/kernel",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/persistence/outbox-record.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "persistence-worker"
+      ],
+      "consumers": [
+        "side-effect-dispatcher"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers",
+        "aseos.kernel.side-effect-task-envelope"
+      ],
+      "adrRefs": [
+        "ADR-0003",
+        "ADR-0008"
+      ],
+      "examplePaths": [],
+      "verificationObligations": [
+        "task-id-unique",
+        "effect-scope-idempotency",
+        "durable-dispatch-status"
+      ],
+      "schemaId": "urn:aseos:schema:outbox-record:1.0.0",
+      "sha256": "baa1ea763bd21f13ec5a21f4dddd1a85e4bf929b3e542a5ba0dc058cac6efe51",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.persistence.persistence-commit-receipt",
+      "canonicalName": "PersistenceCommitReceipt",
+      "domain": "persistence",
+      "canonicalOwner": "packages/persistence",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/persistence/persistence-commit-receipt.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "persistence-worker"
+      ],
+      "consumers": [
+        "kernel"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0008"
+      ],
+      "examplePaths": [],
+      "verificationObligations": [
+        "no-driver-type-exposure",
+        "receipt-content-hash",
+        "committed-version-identity"
+      ],
+      "schemaId": "urn:aseos:schema:persistence-commit-receipt:1.0.0",
+      "sha256": "82bbec316efa04cd5441aedbc3fc616d7279952f2c4d64304e7759470cd4e7dc",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.persistence.projection-checkpoint",
+      "canonicalName": "ProjectionCheckpoint",
+      "domain": "persistence",
+      "canonicalOwner": "packages/persistence",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/persistence/projection-checkpoint.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "persistence-worker"
+      ],
+      "consumers": [
+        "projection-rebuilder"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0008"
+      ],
+      "examplePaths": [],
+      "verificationObligations": [
+        "source-sequence-monotonicity",
+        "rebuild-equivalence",
+        "safe-integer-boundary"
+      ],
+      "schemaId": "urn:aseos:schema:projection-checkpoint:1.0.0",
+      "sha256": "042cb2d65c6c1375fd17612aa6b8301103c7f1c450566fdda7de488d4fd6596c",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
+      "contractId": "aseos.persistence.state-schema-manifest",
+      "canonicalName": "StateSchemaManifest",
+      "domain": "persistence",
+      "canonicalOwner": "packages/persistence",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P1",
+      "phaseIntroduced": "PHASE_1",
+      "authorityPath": "packages/contracts/schemas/persistence/state-schema-manifest.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "persistence-worker"
+      ],
+      "consumers": [
+        "release-gate",
+        "platform-operations"
+      ],
+      "dependsOn": [
+        "aseos.common.identifiers"
+      ],
+      "adrRefs": [
+        "ADR-0008"
+      ],
+      "examplePaths": [],
+      "verificationObligations": [
+        "ordered-migration-checksum",
+        "sqlite-version-attestation",
+        "compatibility-fail-closed"
+      ],
+      "schemaId": "urn:aseos:schema:state-schema-manifest:1.0.0",
+      "sha256": "bfe54c80a84c01e7606bd8f7ed503024d1484d4fc9080df8ee6a36381a8e5045",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": false
+    },
+    {
       "contractId": "aseos.policy.capability-manifest",
       "canonicalName": "CapabilityManifest",
       "domain": "policy",

@@ -1,0 +1,270 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O05-P1-V06-PERSISTENCE-2026-08-31-01",
+  "evidenceType": "P1V06PersistenceImplementationEvidence",
+  "gateStepId": "P1-V06-PERSISTENCE",
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-08-31T03:55:30Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "pullRequest": 63,
+    "branch": "phase-1/p1-o05-node-sqlite-qualification-resume-issue-60",
+    "authorizedBase": "33b422fe5f05da25a8b931d38a4da8d8c098aa25",
+    "qualifiedImplementationCommit": "e157d7888262ef5484273cca35b5c21df34f9d01",
+    "qualifiedImplementationTree": "088b863ab188234b3bda5deedd16ba7c75d5d478"
+  },
+  "authorizationPreflight": {
+    "result": "PASS",
+    "mode": "OPERATION_EXECUTION",
+    "operationId": "P1-O05",
+    "writeScopeOperationId": "P1-O05",
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "operationStartGateRequired": true,
+    "operationStartGateDecision": "PASS",
+    "operationStartGateRelease": "RELEASED",
+    "operationStartGatePath": "operations/phase-1/evidence/o01/p1-o05-start-after-issue-53-independent-gate.json",
+    "immutableAuthorityFilesVerified": 25,
+    "scopeViolations": 0
+  },
+  "authorityStorage": {
+    "result": "PASS",
+    "package": "@aseos/persistence",
+    "canonicalOwner": "packages/persistence",
+    "publicEntryOnly": true,
+    "databasePath": "<data-root>/state/aseos.db",
+    "databaseCount": 1,
+    "driver": "node:sqlite",
+    "node": "24.19.0",
+    "sqlite": "3.53.3",
+    "sqliteCallsOutsideWorker": 0,
+    "sqlOrDriverPublicTypes": 0,
+    "alternateDrivers": 0,
+    "fallbackPersistence": false
+  },
+  "persistenceAtomicity": {
+    "evidenceType": "PersistenceAtomicityResult",
+    "result": "PASS",
+    "transactionMode": "BEGIN IMMEDIATE",
+    "atomicAuthorities": ["Event", "command receipt", "outbox", "audit"],
+    "expectedVersionEnforced": true,
+    "payloadHashesEnforced": true,
+    "exactIdempotentReceiptReplay": true,
+    "conflictingIdempotencyFailsClosed": true,
+    "commandIdConflict": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+    "commandIdempotencyPairConflict": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+    "outboxTaskIdConflict": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+    "outboxIdempotencyPairConflict": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+    "appendOnlyJournalTriggers": true,
+    "strictTables": true
+  },
+  "crashRecovery": {
+    "evidenceType": "CrashRecoveryResult",
+    "result": "PASS",
+    "preCommitWorkerTerminationRollsBack": true,
+    "postCommitWorkerTerminationRecovers": true,
+    "walRecovery": true,
+    "busyLockTypedFailure": true,
+    "authorityAvailableAfterLockRelease": true,
+    "quickCheckAtOpen": true,
+    "persistentRecoveryRequiredMarker": true,
+    "subsequentNormalOpenFailsClosed": true
+  },
+  "backupRestore": {
+    "evidenceType": "BackupRestoreResult",
+    "result": "PASS",
+    "mechanism": "node:sqlite online backup",
+    "integrityCheck": "ok",
+    "independentRestore": true,
+    "sampleBackupSizeBytes": 152207360,
+    "sampleBackupPages": 37160
+  },
+  "corruptionQuarantine": {
+    "evidenceType": "CorruptionQuarantineResult",
+    "result": "PASS",
+    "corruptAuthorityQuarantined": true,
+    "emptyReplacementCreated": false,
+    "startupFailsClosed": true,
+    "recoveryRequiredMarker": "<data-root>/state/aseos.db.quarantine-required.json",
+    "secondOpenFailsClosed": true,
+    "explicitRecoveryRequired": true
+  },
+  "sqliteControls": {
+    "result": "PASS",
+    "journalMode": "wal",
+    "synchronous": "FULL",
+    "foreignKeys": true,
+    "trustedSchema": false,
+    "busyTimeoutMs": 5000,
+    "defensive": true,
+    "extensionLoading": false,
+    "doubleQuotedStringLiterals": false,
+    "runtimeLimitsApplied": true,
+    "preparedParameterBinding": true,
+    "attachDenied": true,
+    "runtimeSchemaMutationDenied": true,
+    "loadExtensionDenied": true
+  },
+  "migrationAuthority": {
+    "result": "PASS",
+    "orderedMigrations": 1,
+    "databaseSchemaVersion": 1,
+    "migration": "migrations/001-initial.sql",
+    "sha256": "0684ff34039eb2cb1aab856fcfccde1f20ce8b0050018b61f6c93bfefc3ee324",
+    "manifestMismatchFailsClosed": true,
+    "gitAttributePath": "packages/persistence/.gitattributes",
+    "coreAutocrlfTrueFilteredBytes": "CANONICAL_BLOB_IDENTITY",
+    "adjacentTextControl": "CRLF_CONVERTED",
+    "checksumSemantics": "SHA256_EXACT_RAW_BYTES",
+    "fatalUtf8DecodeAfterRawHash": true,
+    "rawByteDrift": "FAIL_CLOSED",
+    "authorizedMalformedUtf8": "FAIL_CLOSED",
+    "existingSchemaFingerprint": "EXACT_SQLITE_SCHEMA_AUTHORITY",
+    "appliedMigrationHistory": "EXACT_AUTHORITY_SET",
+    "unknownFutureMigrationVersion": "FAIL_CLOSED",
+    "incompatibleExistingSchema": "FAIL_CLOSED_BEFORE_MIGRATION_WRITE",
+    "compatibleStateReportedAfterVerificationOnly": true
+  },
+  "inboxDeduplication": {
+    "result": "PASS",
+    "exactReplayRequiresResultIdTaskIdAndPayloadHash": true,
+    "resultIdCrossIdentityReuse": "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+    "taskIdCrossIdentityReuse": "PERSISTENCE_IDEMPOTENCY_CONFLICT"
+  },
+  "contracts": {
+    "result": "PASS",
+    "registryEntries": 43,
+    "activeInventoryContracts": 27,
+    "plannedInventoryContracts": 46,
+    "typeBindings": 31,
+    "activatedPersistenceContracts": 7,
+    "leaseRecord": "PLANNED_PHASE_2",
+    "schemaDraft": "JSON Schema 2020-12",
+    "unknownPublicFields": "FAIL_CLOSED"
+  },
+  "nonfunctionalQualification": {
+    "evidenceType": "PersistencePerformanceQualificationResult",
+    "result": "PASS",
+    "totalEvents": 100000,
+    "batchSize": 1000,
+    "sampleAppendDurationMs": 2551,
+    "replay": {
+      "events": 10000,
+      "sampleDurationMs": 64
+    },
+    "recovery": {
+      "events": 100000,
+      "sampleDurationMs": 95
+    },
+    "eventLoopIsolation": "DEDICATED_WORKER_THREAD",
+    "runtimeVersionAttested": true
+  },
+  "qualification": {
+    "result": "PASS",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "lockfileSha256": "1149265fed8700a5bf5b26623d2ce5c1990c4daa1e800ca322a7bb99b54d728d",
+    "frozenOfflineInstall": "PASS",
+    "format": "PASS",
+    "lint": "PASS",
+    "generatedTypes": "PASS",
+    "typecheck": "PASS",
+    "cleanAuthorityRebuild": "PASS",
+    "rootTestFilesPassed": 26,
+    "rootTestsPassed": 171,
+    "rootTestsFailed": 0,
+    "persistenceAndFaultTestsPassed": 16,
+    "architectureTestsPassed": 9,
+    "p1V03Contracts": "PASS",
+    "p1V04Architecture": "PASS",
+    "p1V06Persistence": "PASS",
+    "m0Independent": "PASS",
+    "linuxX64": "PASS",
+    "windowsX64": "PASS",
+    "qualityWorkflowRunId": 33355088926,
+    "linuxJobId": 99375584776,
+    "windowsJobId": 99375584932,
+    "aggregatorJobId": 99376294817,
+    "m0WorkflowRunId": 33355088956,
+    "verifyJobId": 99375585027
+  },
+  "remediationHistory": [
+    {
+      "findingId": "P1-O05-CI-01",
+      "class": "WINDOWS_MIGRATION_RAW_BYTE_CHECKOUT_DRIFT",
+      "result": "CLOSED",
+      "failedQualityWorkflowRunId": 33350239331,
+      "failedWindowsJobId": 99362034800,
+      "resolution": "A package-local Git attribute preserves checksum-bound SQL as raw canonical blob bytes under core.autocrlf=true; an executable Git-filter regression proves the adjacent JSON control still converts to CRLF. Migration checksum comparison remains byte-exact and fail-closed."
+    },
+    {
+      "findingId": "P1-O05-IV-01",
+      "class": "NON_PERSISTENT_CORRUPTION_QUARANTINE",
+      "result": "CLOSED",
+      "resolution": "Quarantine writes an exclusive recovery-required marker before moving the corrupt database. Every subsequent normal open checks the marker before SQLite can create or open a database, returns typed corruption with recoveryRequired=true, and leaves aseos.db absent until an explicit recovery action."
+    },
+    {
+      "findingId": "P1-O05-IV-02",
+      "class": "DECODED_TEXT_MIGRATION_CHECKSUM",
+      "result": "CLOSED",
+      "resolution": "The internal migration loader hashes the exact Buffer bytes, compares the manifest SHA-256, and only then performs fatal UTF-8 decoding. Executable regressions reject raw byte drift and malformed UTF-8 even when the malformed bytes' raw hash is placed in the fixture manifest."
+    },
+    {
+      "findingId": "P1-O05-IV-03",
+      "class": "INBOX_CROSS_IDENTITY_DEDUPLICATION",
+      "result": "CLOSED",
+      "resolution": "Inbox replay returns DUPLICATE only for one row whose resultId, taskId, and payloadHash all match. Reusing either identity with the same hash but a different counterpart now returns typed PERSISTENCE_IDEMPOTENCY_CONFLICT; both directions have executable regressions."
+    },
+    {
+      "findingId": "P1-O05-IV-04",
+      "class": "STARTUP_SCHEMA_VERSION_COMPATIBILITY_BYPASS",
+      "result": "CLOSED",
+      "resolution": "Existing authority databases are checked before migration execution against the exact sqlite_schema produced by the authorized migration and the exact ordered migration-history set. Unknown future versions and structurally incompatible tables fail closed before any migration write; COMPATIBLE is exposed only after both checks pass."
+    },
+    {
+      "findingId": "P1-O05-IV-05",
+      "class": "INCOMPLETE_TYPED_IDEMPOTENCY_CONFLICTS",
+      "result": "CLOSED",
+      "resolution": "Command lookup now covers commandId and the idempotency-key/effect-scope pair as one canonical identity set. Transactional outbox preflight covers taskId and its idempotency pair, including duplicates inside a batch. Reusing any identity outside the exact command replay returns PERSISTENCE_IDEMPOTENCY_CONFLICT before SQLite UNIQUE constraints or journal mutation."
+    }
+  ],
+  "authority": {
+    "result": "PASS",
+    "authorityLock": "PASS",
+    "authorityHashRefreshPaths": [
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json"
+    ],
+    "acceptedAdrMutations": 0,
+    "frozenGovernanceSemanticMutations": 0,
+    "architectureAuthorityMutations": 0,
+    "workflowFilesChanged": 0
+  },
+  "requiredCheckAuthority": {
+    "result": "PASS",
+    "verifyProducerCount": 1,
+    "verifyOwner": ".github/workflows/m0-independent-verify.yml",
+    "qualityAggregator": "p1-o01-toolchain-qualify",
+    "collision": false
+  },
+  "independentVerification": {
+    "required": true,
+    "performed": false,
+    "immutableReviewHead": "PENDING_EVIDENCE_PUBLICATION"
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "phase1Verified": false,
+    "productionWorkflowRuntimeImplemented": false,
+    "schedulerImplemented": false,
+    "terminalTransitionsImplemented": false,
+    "alternatePersistenceDriverIntroduced": false
+  },
+  "remainingGaps": [
+    "Publish the Evidence commit and requalify its immutable head on Linux, Windows and the unique M0 verify authority.",
+    "Obtain an independent read-only PASS verdict bound to the exact base and Evidence head.",
+    "Merge the exact reviewed head and complete protected-main post-merge verification."
+  ]
+}

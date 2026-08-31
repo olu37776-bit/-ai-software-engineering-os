@@ -38,6 +38,16 @@ export type CapabilityManifest = Readonly<{
   readonly riskClasses: readonly ("R0" | "R1" | "R2" | "R3" | "R4")[];
   readonly schemaVersion: "1.0.0";
 }>;
+export type CommandDedupRecord = Readonly<{
+  readonly commandId: string;
+  readonly completedAt: string;
+  readonly effectScope: string;
+  readonly idempotencyKey: string;
+  readonly outcomeHash: string;
+  readonly payloadHash: string;
+  readonly schemaVersion: "1.0.0";
+  readonly status: "COMMITTED" | "REJECTED";
+}>;
 export type CommandEnvelope = Readonly<{
   readonly actor: ActorRef;
   readonly aggregateId: string;
@@ -128,11 +138,65 @@ export type GateDecision = Readonly<{
   readonly schemaVersion: "1.0.0";
   readonly subjectRef: SubjectRef;
 }>;
+export type InboxRecord = Readonly<{
+  readonly payloadHash: string;
+  readonly receivedAt: string;
+  readonly resultId: string;
+  readonly schemaVersion: "1.0.0";
+  readonly status: "ACCEPTED" | "DUPLICATE" | "REJECTED";
+  readonly taskId: string;
+}>;
+export type JournalAppendBatch = Readonly<{
+  readonly audit: readonly Readonly<{
+    readonly action: string;
+    readonly auditId: string;
+    readonly occurredAt: string;
+    readonly payloadHash: string;
+  }>[];
+  readonly capturedAt: string;
+  readonly commandId: string;
+  readonly effectScope: string;
+  readonly events: readonly DomainEventEnvelope[];
+  readonly idempotencyKey: string;
+  readonly outbox: readonly SideEffectTaskEnvelope[];
+  readonly payloadHash: string;
+  readonly schemaVersion: "1.0.0";
+  readonly stream: Readonly<{
+    readonly aggregateId: string;
+    readonly aggregateType: string;
+    readonly expectedVersion: number;
+  }>;
+  readonly transactionId: string;
+}>;
 export type NodeExecutionIdentity = Readonly<{
   readonly attempt: number;
   readonly executionId: string;
   readonly nodeId: string;
   readonly runId: string;
+}>;
+export type OutboxRecord = Readonly<{
+  readonly attempt: number;
+  readonly createdAt: string;
+  readonly effectScope: string;
+  readonly idempotencyKey: string;
+  readonly leasedUntil: string | null;
+  readonly payloadHash: string;
+  readonly schemaVersion: "1.0.0";
+  readonly status: "PENDING" | "DISPATCHED" | "FAILED";
+  readonly taskId: string;
+}>;
+export type PersistenceCommitReceipt = Readonly<{
+  readonly aggregateId: string;
+  readonly aggregateType: string;
+  readonly auditIds: readonly string[];
+  readonly commandId: string;
+  readonly committedAt: string;
+  readonly committedVersion: number;
+  readonly eventIds: readonly string[];
+  readonly outboxTaskIds: readonly string[];
+  readonly receiptHash: string;
+  readonly schemaVersion: "1.0.0";
+  readonly transactionId: string;
 }>;
 export type PolicyDecision = Readonly<{
   readonly decisionId: string;
@@ -218,6 +282,14 @@ export type PolicySnapshot = Readonly<{
   readonly schemaVersion: "1.0.0";
   readonly snapshotId: string;
 }>;
+export type ProjectionCheckpoint = Readonly<{
+  readonly projectionName: string;
+  readonly projectionVersion: string;
+  readonly rebuiltFromSequence: number | null;
+  readonly schemaVersion: "1.0.0";
+  readonly sourceSequence: number;
+  readonly updatedAt: string;
+}>;
 export type SchemaRef = Readonly<{
   readonly schemaHash: string;
   readonly schemaId: string;
@@ -272,6 +344,17 @@ export type SideEffectTaskEnvelope = Readonly<{
   readonly schemaVersion: "1.0.0";
   readonly taskId: string;
   readonly timeoutMs: number;
+}>;
+export type StateSchemaManifest = Readonly<{
+  readonly compatibility: "COMPATIBLE" | "UPGRADE_REQUIRED" | "INCOMPATIBLE";
+  readonly databaseSchemaVersion: number;
+  readonly migrations: readonly Readonly<{
+    readonly name: string;
+    readonly sha256: string;
+    readonly version: number;
+  }>[];
+  readonly schemaVersion: "1.0.0";
+  readonly sqliteVersion: string;
 }>;
 export type SubjectRef = Readonly<{
   readonly subjectId: string;

@@ -9,6 +9,9 @@ export default defineConfig({
         new URL("./packages/contracts/dist/index.js", import.meta.url),
       ),
       "@aseos/policy": fileURLToPath(new URL("./packages/policy/dist/index.js", import.meta.url)),
+      "@aseos/persistence": fileURLToPath(
+        new URL("./packages/persistence/dist/index.js", import.meta.url),
+      ),
     },
   },
   test: {
@@ -16,6 +19,8 @@ export default defineConfig({
     include: [
       "tests/qualification/toolchain/**/*.test.mjs",
       "tests/qualification/policy/**/*.test.mjs",
+      "tests/qualification/persistence/**/*.test.mjs",
+      "tests/fault-injection/persistence/**/*.test.mjs",
       "tests/contract/**/*.test.mjs",
     ],
     passWithNoTests: false,

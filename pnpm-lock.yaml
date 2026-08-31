@@ -13,6 +13,9 @@ importers:
       "@aseos/policy":
         specifier: workspace:*
         version: link:packages/policy
+      "@aseos/persistence":
+        specifier: workspace:*
+        version: link:packages/persistence
     devDependencies:
       "@eslint/js":
         specifier: 10.0.1
@@ -64,6 +67,12 @@ importers:
         version: 8.20.0
 
   packages/policy:
+    dependencies:
+      "@aseos/contracts":
+        specifier: workspace:*
+        version: link:../contracts
+
+  packages/persistence:
     dependencies:
       "@aseos/contracts":
         specifier: workspace:*
