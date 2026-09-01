@@ -59,6 +59,7 @@ AI Software Engineering OS
 - [完整能力地图](docs/architecture/09-capability-map.md)
 - [当前建设状态](docs/roadmap/progress-status.md)
 - [M0 — Architecture Baseline Verified](docs/reviews/m0-architecture-baseline-verified.md)
+- [Phase 1 集成验证交接](docs/implementation/phase-1/o09/integrated-verification-handoff.md)
 
 ### 架构
 
@@ -91,12 +92,13 @@ AI Software Engineering OS
 ```text
 Phase 0 — Architecture Authority: VERIFIED / COMPLETE
 M0 — Architecture Baseline Verified: PASS
-Phase 1 entry: BLOCKED_PENDING_REPOSITORY_PROTECTION
-Phase 1: NOT_STARTED
+Phase 1 implementation declaration: IMPLEMENTED
+Phase 1 integrated Gate: see independent verification receipt
 Production runtime capability: NOT_IMPLEMENTED
 ```
 
-M0 已确认完整重建架构和 Phase 1 治理基线可实施；它不表示 Framework Runtime 已实现。下一步必须先启用并核验 `main` branch protection 与 required check，之后才能单独授权进入 `P1-O01`。
+P1-O01 至 P1-O09 已形成实现收据与集成验证交接。实现方只声明 `IMPLEMENTED`；独立结论以 `operations/phase-1/evidence/o09/independent-verification-receipt.json` 为准。Phase 1 qualification 不表示生产 Framework Runtime、生产 installer、签名/自动升级或 OS 级沙箱已经实现。
 
-本文档状态：`BASELINE v0.3`  
-基线日期：`2026-08-27`
+本文档状态：`PHASE_1_IMPLEMENTED v0.4`
+
+状态日期：`2026-09-01`

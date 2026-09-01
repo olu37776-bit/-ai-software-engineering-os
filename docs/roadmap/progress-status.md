@@ -1,7 +1,7 @@
 # Current Progress Status
 
 状态：`ACTIVE`  
-日期：`2026-08-27`
+日期：`2026-09-01`
 
 ## 1. Authority Status
 
@@ -14,11 +14,16 @@ M0 — Architecture Baseline Verified: PASS
 Phase 0 — Architecture Authority: VERIFIED_COMPLETE
 Repository protection prerequisite: PASS
 Phase 1 Entry Gate: PASS
-Phase 1: READY_TO_START_AFTER_GATE_MERGE
-Current operation: NONE
-Next operation: P1-O01
+Phase 1 implementation declaration: IMPLEMENTED
+P1-O01 through P1-O09: IMPLEMENTED
+P1-V00 through P1-V09 implementation Evidence: PASS
+P1-V10 independent Gate: see independent verification receipt
+Current operation: P1-O09 integrated verification handoff
+Next operation: Phase 2 planning only after the independent Gate permits it
 Production runtime capability: NOT_IMPLEMENTED
 ```
+
+实现方声明固定为 `IMPLEMENTED`，不得自行升级为 `VERIFIED`。P1-V10 的机器权威结论位于 `operations/phase-1/evidence/o09/independent-verification-receipt.json`；该结论不改变非生产能力边界。
 
 ## 2. M0 Subject and Evidence
 
@@ -68,7 +73,7 @@ Issue `#4 — Gate: enable and verify main protection before Phase 1 entry` 已�
 
 `required_review_thread_resolution` 当前为 `false`。它属于非阻塞 hardening，不属于 M0 Gate 的机器硬前置。
 
-## 4. Phase 1 Entry Authorization
+## 4. Phase 1 Entry Authorization（历史入口）
 
 Machine-readable Gate：
 
@@ -91,7 +96,7 @@ Risk class: R3
 
 `operations/phase-1/operation.json` 和 Authority Lock 保持 immutable；执行进度使用独立 execution record / receipt，不通过修改冻结 Operation Plan 表达。
 
-## 5. P1-O01 Authorized Scope
+## 5. P1-O01 Authorized Scope（历史首项范围）
 
 P1-O01 只允许：
 
@@ -112,9 +117,9 @@ P1-O01 只允许：
 - real model / GBrain adapter；
 - P1-O04～P1-O08 对应的后续实现语义。
 
-## 6. Phase 1 Qualification Obligations
+## 6. Phase 1 Qualification Evidence
 
-Phase 1 后续仍必须按冻结治理资产逐项验证：
+Phase 1 已按冻结治理资产形成下列 qualification Evidence，并由 P1-O09 收据统一索引：
 
 - exact Node.js/TypeScript/pnpm/ESM clean build；
 - Schema build、generation、runtime validation 与 examples；
@@ -123,7 +128,14 @@ Phase 1 后续仍必须按冻结治理资产逐项验证：
 - authenticated loopback Control API 与 stale-discovery/idempotency tests；
 - Windows Job Object process-tree/resource containment；
 - SQLite/`node:sqlite` transaction/crash/WAL/backup/migration/package behavior；
-- Windows self-contained artifact、SBOM/provenance/package smoke。
+- Windows self-contained artifact、SBOM/provenance/package smoke；
+- structured receipt、write-scope compliance 与 independent Gate decision。
+
+交接入口：
+
+- `docs/implementation/phase-1/o09/integrated-verification-handoff.md`；
+- `docs/reviews/phase-1-integrated-verification-handoff.md`；
+- `operations/phase-1/implementation-receipt.json`。
 
 ## 7. Tracked Future Work
 

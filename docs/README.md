@@ -57,6 +57,8 @@ docs/
 1. [ADR Index](decisions/README.md)
 2. [Phase 0 Independent Architecture Review](reviews/phase-0-independent-architecture-review.md)
 3. [当前状态](roadmap/progress-status.md)
+4. [Phase 1 集成验证交接](implementation/phase-1/o09/integrated-verification-handoff.md)
+5. [Phase 1 独立 Gate 说明](reviews/phase-1-integrated-verification-handoff.md)
 
 当前五项实现级基线：
 
