@@ -48,6 +48,6 @@
     "independentSupplyChainReview": "PASS",
     "independentWindowsCiReview": "PASS",
     "independentVerification": "PASS",
-    "continuousIntegration": "NOT_RECORDED"
+    "continuousIntegration": "PASS"
   }
 }
