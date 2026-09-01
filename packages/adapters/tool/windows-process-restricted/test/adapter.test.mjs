@@ -54,17 +54,46 @@ async function whoamiFixture(stagingRoot, overrides = {}) {
 }
 
 function windowsShortPath(path) {
-  assert.doesNotMatch(
-    path,
-    /[&|<>^%!()]/,
-    "short-path fixture must not contain CMD metacharacters",
+  assert.doesNotMatch(path, /\0/, "short-path fixture must not contain NUL characters");
+  const escapedPath = path.replaceAll("'", "''");
+  const source = `
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Text;
+
+public static class AseosShortPathProbe
+{
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern uint GetShortPathNameW(string longPath, StringBuilder shortPath, uint size);
+
+    public static string Get(string path)
+    {
+        var buffer = new StringBuilder(32768);
+        var length = GetShortPathNameW(path, buffer, (uint)buffer.Capacity);
+        if (length == 0) throw new Win32Exception(Marshal.GetLastWin32Error(), "GetShortPathNameW");
+        if (length >= buffer.Capacity) throw new InvalidOperationException("Short path exceeded buffer");
+        return buffer.ToString();
+    }
+}`;
+  const script = `[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\nAdd-Type -TypeDefinition @'\n${source}\n'@\n[Console]::Out.Write([AseosShortPathProbe]::Get('${escapedPath}'))`;
+  const encoded = Buffer.from(script, "utf16le").toString("base64");
+  const powershell = join(
+    process.env.SystemRoot ?? "C:\\Windows",
+    "System32",
+    "WindowsPowerShell",
+    "v1.0",
+    "powershell.exe",
   );
-  const shell = join(process.env.SystemRoot ?? "C:\\Windows", "System32", "cmd.exe");
-  const result = spawnSync(shell, ["/d", "/s", "/c", `for %I in ("${path}") do @echo %~sI`], {
-    encoding: "utf8",
-    shell: false,
-    windowsHide: true,
-  });
+  const result = spawnSync(
+    powershell,
+    ["-NoLogo", "-NoProfile", "-NonInteractive", "-EncodedCommand", encoded],
+    {
+      encoding: "utf8",
+      shell: false,
+      windowsHide: true,
+    },
+  );
   assert.equal(result.status, 0, result.stderr);
   return result.stdout.trim();
 }
@@ -124,7 +153,7 @@ test("executes a digest-pinned native tool without shell fallback", async (conte
       },
       trustedCatalog,
     );
-    assert.equal(result.status, "COMPLETED");
+    assert.equal(result.status, "COMPLETED", JSON.stringify(result));
     if (result.status === "COMPLETED") {
       assert.equal(result.exitCode, 0);
       assert.equal(result.evidence.downgradeOccurred, false);
@@ -330,7 +359,7 @@ test("accepts a non-reparse Windows 8.3 alias and launches only its long canonic
         },
       ]),
     );
-    assert.equal(result.status, "COMPLETED");
+    assert.equal(result.status, "COMPLETED", JSON.stringify(result));
     if (result.status === "COMPLETED") {
       assert.ok(result.stagedWorkingDirectory.startsWith(await realpath(stagingRoot)));
       const bridgeRequest = JSON.parse(
