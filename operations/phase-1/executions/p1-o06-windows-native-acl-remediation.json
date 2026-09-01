@@ -32,8 +32,8 @@
     "independentVerificationRequired": true
   },
   "completedAt": "2026-09-01T01:06:00Z",
-  "qualifiedImplementationCommit": "1b414084c4cf0036ffa53b65667aa08f4a299a03",
-  "qualifiedImplementationTree": "fcb83824b62a4a5301f7e8c5a18983277a6b83d5",
+  "qualifiedImplementationCommit": "a25ec44ec7f36eb957ad1bea6a52ef79522f54b5",
+  "qualifiedImplementationTree": "f2719d93b30fed4171e3bb0060bc4a12d8582816",
   "evidenceRef": "operations/phase-1/evidence/o06/p1-v07-windows-native-acl-remediation.json",
   "results": {
     "writeScope": "PASS",

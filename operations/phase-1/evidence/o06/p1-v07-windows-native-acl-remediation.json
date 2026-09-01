@@ -10,8 +10,8 @@
     "pullRequest": 79,
     "branch": "remediation/p1-o06-windows-acl-native",
     "authorizedBase": "aab42064396c5fa6df87f6a89e18c4df5f40f1a1",
-    "qualifiedImplementationCommit": "1b414084c4cf0036ffa53b65667aa08f4a299a03",
-    "qualifiedImplementationTree": "fcb83824b62a4a5301f7e8c5a18983277a6b83d5"
+    "qualifiedImplementationCommit": "a25ec44ec7f36eb957ad1bea6a52ef79522f54b5",
+    "qualifiedImplementationTree": "f2719d93b30fed4171e3bb0060bc4a12d8582816"
   },
   "finding": {
     "findingId": "P1-O06-POST-MERGE-WINDOWS-ACL-COLD-START",
@@ -61,10 +61,19 @@
         "linuxResult": "PASS",
         "windowsResult": "FAIL",
         "fixedStage": "VERIFY_USER_ONLY_DACL"
+      },
+      {
+        "headCommit": "7040f2c7d1ced99ff5d2e13c0b1c564414e22d09",
+        "workflowRunId": 33460273666,
+        "windowsJobId": 99708777395,
+        "aggregateJobId": 99710019531,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "VERIFY_USER_ONLY_DACL"
       }
     ],
-    "windowsFinding": "The hosted runner can spell the same local principal as unqualified runneradmin while whoami returns MACHINE\\runneradmin, and can expand RUNNER~1 in the first icacls output line. The strict verifier rejected those equivalent host-local spellings after the DACL mutations succeeded.",
-    "resolution": "ACL output verification now binds the first entry to either the supplied or realpath-resolved path. It accepts an unqualified username only when the qualified whoami domain exactly equals COMPUTERNAME, while rejecting other-domain same-name principals, SYSTEM, Administrators, inherited entries, deny entries, and permissions below FullControl.",
+    "windowsFinding": "The hosted runner can spell the same local principal as unqualified runneradmin while whoami returns MACHINE\\runneradmin. Independently, icacls emits target paths in the active OEM code page, so Unicode path text can decode to replacement characters under Node UTF-8. Both differences occur after the DACL mutations succeed.",
+    "resolution": "The first ACL entry identifies its principal only at a whitespace boundary immediately before an exact allowed identity alias, so it does not depend on untrusted or lossy path text. An unqualified username is allowed only when the qualified whoami domain exactly equals COMPUTERNAME. Other-domain same-name principals, SYSTEM, Administrators, inherited entries, deny entries, and permissions below FullControl remain rejected.",
     "timeoutIncreased": false,
     "securityBoundaryRelaxed": false
   },
