@@ -3,10 +3,10 @@
   "schemaVersion": "1.0.0",
   "operationId": "P1-O08",
   "verificationStepId": "P1-V09-PACKAGING",
-  "recordedAt": "2026-09-01T06:15:01.524Z",
+  "recordedAt": "2026-09-01T06:27:19.384Z",
   "subject": {
     "frameworkVersion": "0.1.0",
-    "gitCommit": "8028585f2d04473e45d6ee98c473edca50acb736",
+    "gitCommit": "62f14d7fb5c6699cade844b06486a5850a9347fc",
     "platform": "win32-x64"
   },
   "results": [
@@ -28,14 +28,14 @@
     {
       "evidenceType": "ReleaseManifestConsistencyResult",
       "result": "PASS",
-      "payloadFileCount": 250,
+      "payloadFileCount": 245,
       "verifiedBeforeStartup": true,
       "verifiedAfterShutdown": true,
-      "manifestSha256": "e5ad62ed4c53431650a4b9ef7708b4f00061e30361805056d4fed41d85e78045",
-      "verifiedManifestSha256Before": "e5ad62ed4c53431650a4b9ef7708b4f00061e30361805056d4fed41d85e78045",
-      "verifiedManifestSha256After": "e5ad62ed4c53431650a4b9ef7708b4f00061e30361805056d4fed41d85e78045",
-      "manifestSizeBytes": 40276,
-      "payloadSizeBytes": 93793392,
+      "manifestSha256": "356b497771c38fe95fbe35b0cccae465b9d3fe03d62d40a157ddaed6c1b32ca5",
+      "verifiedManifestSha256Before": "356b497771c38fe95fbe35b0cccae465b9d3fe03d62d40a157ddaed6c1b32ca5",
+      "verifiedManifestSha256After": "356b497771c38fe95fbe35b0cccae465b9d3fe03d62d40a157ddaed6c1b32ca5",
+      "manifestSizeBytes": 39546,
+      "payloadSizeBytes": 93790633,
       "tamperRejected": true,
       "missingPayloadRejected": true
     },
@@ -44,7 +44,13 @@
       "result": "PASS",
       "installRootClass": "UNICODE_AND_SPACE_TEMP_PATH",
       "dataRootClass": "SEPARATE_UNICODE_AND_SPACE_TEMP_PATH",
-      "commands": ["start", "version", "doctor", "status", "stop"],
+      "commands": [
+        "start",
+        "version",
+        "doctor",
+        "status",
+        "stop"
+      ],
       "releaseDataSeparated": true,
       "releasePayloadUnchanged": true,
       "processExited": true,
@@ -55,24 +61,26 @@
           "outcome": "STARTED",
           "descriptor": {
             "schemaVersion": "1.0.0",
-            "instanceId": "01a05b9b-4a2c-70e3-9309-81aa34fae8b5",
-            "pid": 1548,
-            "startedAt": "2026-09-01T06:14:58.860Z",
+            "instanceId": "01a05ba6-8e92-737c-955c-f41af80cc185",
+            "pid": 7820,
+            "startedAt": "2026-09-01T06:27:17.266Z",
             "host": "127.0.0.1",
-            "port": 62581,
-            "apiVersions": ["v1"],
+            "port": 64180,
+            "apiVersions": [
+              "v1"
+            ],
             "frameworkVersion": "0.1.0",
-            "releaseId": "p1-v09-457873d8-c966-42e8-a053-3f9ffc2470dc",
+            "releaseId": "p1-v09-71a745b7-638c-448a-a1a5-0d0a04c5d31d",
             "tokenFileRef": "secrets/runtime/control-api.token"
           },
           "health": {
             "schemaVersion": "1.0.0",
-            "instanceId": "01a05b9b-4a2c-70e3-9309-81aa34fae8b5",
+            "instanceId": "01a05ba6-8e92-737c-955c-f41af80cc185",
             "readiness": "READY",
             "runtimeVersion": "0.1.0",
-            "releaseId": "p1-v09-457873d8-c966-42e8-a053-3f9ffc2470dc",
+            "releaseId": "p1-v09-71a745b7-638c-448a-a1a5-0d0a04c5d31d",
             "stateVersion": 0,
-            "checkedAt": "2026-09-01T06:14:59.258Z",
+            "checkedAt": "2026-09-01T06:27:17.622Z",
             "findings": []
           }
         },
@@ -80,23 +88,23 @@
           "schemaVersion": "1.0.0",
           "apiVersion": "v1",
           "frameworkVersion": "0.1.0",
-          "releaseId": "p1-v09-457873d8-c966-42e8-a053-3f9ffc2470dc",
-          "instanceId": "01a05b9b-4a2c-70e3-9309-81aa34fae8b5",
-          "requestId": "01a05b9b-4c82-7bfc-a5f3-f296197371f9",
-          "correlationId": "01a05b9b-4c82-7bfc-a5f3-f296197371f9"
+          "releaseId": "p1-v09-71a745b7-638c-448a-a1a5-0d0a04c5d31d",
+          "instanceId": "01a05ba6-8e92-737c-955c-f41af80cc185",
+          "requestId": "01a05ba6-90bd-7d2c-a559-bb51b5cc2b13",
+          "correlationId": "01a05ba6-90bd-7d2c-a559-bb51b5cc2b13"
         },
         "doctor": {
           "schemaVersion": "1.0.0",
           "status": "PASS",
           "findings": [],
-          "requestId": "01a05b9b-4d45-74f3-985a-beef387c3aa1",
-          "correlationId": "01a05b9b-4d45-74f3-985a-beef387c3aa1"
+          "requestId": "01a05ba6-9181-772e-9d06-281fb066e23e",
+          "correlationId": "01a05ba6-9181-772e-9d06-281fb066e23e"
         },
         "status": {
           "schemaVersion": "1.0.0",
           "status": "READY",
-          "instanceId": "01a05b9b-4a2c-70e3-9309-81aa34fae8b5",
-          "uptimeMs": 983,
+          "instanceId": "01a05ba6-8e92-737c-955c-f41af80cc185",
+          "uptimeMs": 949,
           "limits": {
             "authenticationRateLimit": {
               "capacity": 20,
@@ -115,15 +123,15 @@
               "heartbeatMs": 15000
             }
           },
-          "requestId": "01a05b9b-4e03-7dab-80a5-960a6b64006a",
-          "correlationId": "01a05b9b-4e03-7dab-80a5-960a6b64006a"
+          "requestId": "01a05ba6-9246-77f7-8f68-c1b3bd2b0ed9",
+          "correlationId": "01a05ba6-9246-77f7-8f68-c1b3bd2b0ed9"
         },
         "stop": {
           "schemaVersion": "1.0.0",
-          "operationId": "01a05b9b-4ecd-7634-8670-adc624e75b7f",
+          "operationId": "01a05ba6-930e-7b4d-b96f-ab8f89aff736",
           "type": "RuntimeStop",
           "status": "ACCEPTED",
-          "resourceUri": "/v1/operations/01a05b9b-4ecd-7634-8670-adc624e75b7f",
+          "resourceUri": "/v1/operations/01a05ba6-930e-7b4d-b96f-ab8f89aff736",
           "evidenceRefs": []
         },
         "tamper": {
