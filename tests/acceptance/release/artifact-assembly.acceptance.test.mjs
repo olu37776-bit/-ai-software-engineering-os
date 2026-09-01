@@ -144,6 +144,16 @@ describe("P1-O08 deterministic Windows x64 artifact assembly", () => {
         ]),
       );
       expect(manifest.payload.some(({ path }) => path === "release-manifest.json")).toBe(false);
+      expect(
+        manifest.payload.some(({ path }) =>
+          path.split("/").some((component) => component.startsWith(".")),
+        ),
+      ).toBe(false);
+      expect(
+        manifest.payload.some(({ path }) =>
+          /\/(?:eslint\.config\.js|tsconfig(?:\..+)?\.json)$/u.test(path),
+        ),
+      ).toBe(false);
       expect(await readFile(join(outputOne, "aseos.cmd"), "utf8")).toContain(
         '"%~dp0node\\node.exe"',
       );

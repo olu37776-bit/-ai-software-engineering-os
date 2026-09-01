@@ -248,6 +248,13 @@ async function copyExternalPackage(sourceRoot, packageName, destinationRoot, dep
         !entry.name.startsWith(".") && !["test", "tests", "spec", "benchmark"].includes(entry.name)
       );
     }
+    if (
+      entry.name.startsWith(".") ||
+      entry.name === "eslint.config.js" ||
+      /^tsconfig(?:\..+)?\.json$/u.test(entry.name)
+    ) {
+      return false;
+    }
     return !/\.(md|map|ts)$/iu.test(path);
   });
 }
