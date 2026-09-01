@@ -10,8 +10,8 @@
     "pullRequest": 79,
     "branch": "remediation/p1-o06-windows-acl-native",
     "authorizedBase": "aab42064396c5fa6df87f6a89e18c4df5f40f1a1",
-    "qualifiedImplementationCommit": "cdb62388ae0be6d31aa9e096019f82d619cc6d8a",
-    "qualifiedImplementationTree": "04c65e553567c73a14af65782c5cdeb63db515c9"
+    "qualifiedImplementationCommit": "1b414084c4cf0036ffa53b65667aa08f4a299a03",
+    "qualifiedImplementationTree": "fcb83824b62a4a5301f7e8c5a18983277a6b83d5"
   },
   "finding": {
     "findingId": "P1-O06-POST-MERGE-WINDOWS-ACL-COLD-START",
@@ -44,13 +44,27 @@
   },
   "evidenceHeadRemediation": {
     "status": "IMPLEMENTED",
-    "failedHeadCommit": "1c42cdf85e4fe248886d691f57011f26d3a84a5b",
-    "failedWorkflowRunId": 33457714955,
-    "failedWindowsJobId": 99701207562,
-    "failedAggregateJobId": 99702578736,
-    "linuxJobResult": "PASS",
-    "windowsFinding": "The hosted runner rejected the extra icacls owner-reassignment operation while the strict DACL operations completed without a timeout.",
-    "resolution": "Ownership reassignment is removed because P1-V07 requires and verifies the DACL boundary, not an owner mutation. The implementation retains explicit current-user FullControl, removes inherited access, strictly verifies the resulting DACL, and reports a fixed non-sensitive operation stage on failure.",
+    "failedAttempts": [
+      {
+        "headCommit": "1c42cdf85e4fe248886d691f57011f26d3a84a5b",
+        "workflowRunId": 33457714955,
+        "windowsJobId": 99701207562,
+        "aggregateJobId": 99702578736,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL"
+      },
+      {
+        "headCommit": "b0612f1d51c70d290f4bf9a19cc01fc579d7e2c5",
+        "workflowRunId": 33459029719,
+        "windowsJobId": 99705059417,
+        "aggregateJobId": 99706208059,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "VERIFY_USER_ONLY_DACL"
+      }
+    ],
+    "windowsFinding": "The hosted runner can spell the same local principal as unqualified runneradmin while whoami returns MACHINE\\runneradmin, and can expand RUNNER~1 in the first icacls output line. The strict verifier rejected those equivalent host-local spellings after the DACL mutations succeeded.",
+    "resolution": "ACL output verification now binds the first entry to either the supplied or realpath-resolved path. It accepts an unqualified username only when the qualified whoami domain exactly equals COMPUTERNAME, while rejecting other-domain same-name principals, SYSTEM, Administrators, inherited entries, deny entries, and permissions below FullControl.",
     "timeoutIncreased": false,
     "securityBoundaryRelaxed": false
   },
@@ -65,7 +79,7 @@
     "rootTestsFailed": 0,
     "architectureTestsPassed": 9,
     "focusedControlApiTestsPassed": 16,
-    "platformTestsPassed": 3,
+    "platformTestsPassed": 4,
     "p1V03Contracts": "PASS",
     "p1V04Architecture": "PASS",
     "p1V07ControlApi": "PASS",
