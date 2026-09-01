@@ -1,7 +1,7 @@
 import { execFile } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
-import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { basename, dirname, isAbsolute, join, parse, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 
 import { ControlApiError } from "./errors.js";
@@ -14,7 +14,7 @@ const SEMANTIC_VERSION_PATTERN =
   /^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/u;
 const TOKEN_REF_PATTERN = /^(?!\/)(?![A-Za-z]:)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]+$/u;
 
-function windowsSystemExecutable(name: "icacls.exe" | "whoami.exe"): string {
+function windowsSystemDirectory(): string {
   const report: unknown = process.report.getReport();
   const reportSharedObjects =
     typeof report === "object" && report !== null
@@ -31,7 +31,13 @@ function windowsSystemExecutable(name: "icacls.exe" | "whoami.exe"): string {
   if (kernel32 === undefined || !isAbsolute(kernel32) || kernel32.includes("\0")) {
     throw new Error("The loaded Windows system directory is unavailable");
   }
-  return join(dirname(kernel32), name);
+  return dirname(kernel32);
+}
+
+function windowsSystemExecutable(
+  name: "icacls.exe" | "whoami.exe" | "WindowsPowerShell\\v1.0\\powershell.exe",
+): string {
+  return join(windowsSystemDirectory(), name);
 }
 
 function isRfc3339DateTime(value: unknown): value is string {
@@ -165,19 +171,8 @@ function normalizeWindowsSid(sid: string): string | undefined {
 }
 
 export function windowsCurrentUserSidFromWhoami(stdout: string): string | undefined {
-  const match = /^(?:\uFEFF)?"(?:[^"]|"")*","(S-1-\d+(?:-\d+){1,15})"\r?\n?$/iu.exec(stdout);
+  const match = /^(?:\uFEFF)?"(?:[^"\r\n]|"")*","(S-1-\d+(?:-\d+){1,15})"\r?\n?$/iu.exec(stdout);
   return match === null ? undefined : normalizeWindowsSid(match[1] ?? "");
-}
-
-function exactTokenSet(value: string, tokens: readonly string[]): Set<string> | undefined {
-  const found = new Set<string>();
-  for (let offset = 0; offset < value.length;) {
-    const token = tokens.find((candidate) => value.startsWith(candidate, offset));
-    if (token === undefined || found.has(token)) return undefined;
-    found.add(token);
-    offset += token.length;
-  }
-  return found;
 }
 
 async function currentWindowsSid(): Promise<string> {
@@ -195,79 +190,64 @@ async function currentWindowsSid(): Promise<string> {
   return sid;
 }
 
-export function windowsSavedAclIsUserOnly(
-  savedAcl: string,
-  sid: string,
-  requireChildInheritance: boolean,
-): boolean {
-  const expectedSid = normalizeWindowsSid(sid);
-  if (expectedSid === undefined) return false;
-  const normalized = savedAcl.replace(/^\uFEFF/u, "");
-  if (normalized.includes("\0")) return false;
-  const lines = normalized.split("\r\n");
-  if (lines.length !== 3 || lines[0] === "" || lines[2] !== "") return false;
-  const dacl = (lines[1] ?? "").toUpperCase();
-  if (!/^D:[A-Z]*(?:\([^()]*\))+$/u.test(dacl)) return false;
-  const firstAce = dacl.indexOf("(");
-  const control = dacl.slice(2, firstAce);
-  const controlTokens = exactTokenSet(control, ["AR", "AI", "P"]);
-  if (controlTokens?.has("P") !== true) return false;
-  const aceMatches = [...dacl.matchAll(/\(([^()]*)\)/gu)];
-  if (aceMatches.length !== 1) return false;
-  const fields = (aceMatches[0]?.[1] ?? "").split(";");
-  if (fields.length !== 6) return false;
-  const [type, flags, rights, objectGuid, inheritedObjectGuid, trustee] = fields;
-  if (
-    type !== "A" ||
-    rights !== "FA" ||
-    objectGuid !== "" ||
-    inheritedObjectGuid !== "" ||
-    trustee !== expectedSid
-  ) {
-    return false;
-  }
-  const inheritanceFlags = exactTokenSet(flags ?? "", ["OI", "CI"]);
-  if (inheritanceFlags === undefined) return false;
-  if (!requireChildInheritance) return inheritanceFlags.size === 0;
-  return inheritanceFlags.size === 2 && inheritanceFlags.has("OI") && inheritanceFlags.has("CI");
-}
+const WINDOWS_ACL_VERIFICATION_SCRIPT = [
+  "$ErrorActionPreference = 'Stop'",
+  "$target = $env:ASEOS_ACL_TARGET",
+  "$expectedSid = $env:ASEOS_ACL_SID",
+  "$directory = $env:ASEOS_ACL_DIRECTORY -eq 'true'",
+  "$sections = [System.Security.AccessControl.AccessControlSections]::Owner -bor [System.Security.AccessControl.AccessControlSections]::Access",
+  "$acl = if ($directory) { [System.IO.DirectoryInfo]::new($target).GetAccessControl($sections) } else { [System.IO.FileInfo]::new($target).GetAccessControl($sections) }",
+  "$owner = $acl.GetOwner([System.Security.Principal.SecurityIdentifier]).Value",
+  "if ($owner -ne $expectedSid) { throw 'OWNER_SID_MISMATCH' }",
+  "if (-not $acl.AreAccessRulesProtected) { throw 'DACL_NOT_PROTECTED' }",
+  "$rules = @($acl.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier]))",
+  "if ($rules.Count -ne 1) { throw 'DACL_RULE_COUNT_MISMATCH' }",
+  "$rule = $rules[0]",
+  "if ($rule.IdentityReference.Value -ne $expectedSid) { throw 'DACL_SID_MISMATCH' }",
+  "if ($rule.AccessControlType -ne [System.Security.AccessControl.AccessControlType]::Allow) { throw 'DACL_NOT_ALLOW' }",
+  "if ($rule.FileSystemRights -ne [System.Security.AccessControl.FileSystemRights]::FullControl) { throw 'DACL_NOT_FULL_CONTROL' }",
+  "if ($rule.IsInherited) { throw 'DACL_RULE_INHERITED' }",
+  "$expectedInheritance = if ($directory) { [System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit } else { [System.Security.AccessControl.InheritanceFlags]::None }",
+  "if ($rule.InheritanceFlags -ne $expectedInheritance) { throw 'DACL_INHERITANCE_MISMATCH' }",
+  "if ($rule.PropagationFlags -ne [System.Security.AccessControl.PropagationFlags]::None) { throw 'DACL_PROPAGATION_MISMATCH' }",
+  "[Console]::Out.Write('ASEOS_ACL_OK')",
+].join("; ");
 
 async function assertWindowsUserOnlyAcl(
   path: string,
   sid: string,
   requireChildInheritance: boolean,
 ): Promise<void> {
-  const savedAclPath = join(
-    requireChildInheritance ? path : dirname(path),
-    `.aseos-acl-${String(process.pid)}-${randomBytes(8).toString("hex")}.tmp`,
-  );
-  try {
-    await writeFile(savedAclPath, "", { encoding: "utf8", flag: "wx", mode: 0o600 });
-    const icacls = windowsSystemExecutable("icacls.exe");
-    const options = { windowsHide: true, timeout: 5_000, maxBuffer: 64 * 1024 } as const;
-    await execFileAsync(icacls, [savedAclPath, "/grant:r", `*${sid}:(F)`], options);
-    await execFileAsync(icacls, [savedAclPath, "/inheritance:r"], options);
-    await execFileAsync(icacls, [path, "/save", savedAclPath], {
+  const systemDirectory = windowsSystemDirectory();
+  const systemRoot = dirname(systemDirectory);
+  const encodedCommand = Buffer.from(WINDOWS_ACL_VERIFICATION_SCRIPT, "utf16le").toString("base64");
+  const { stdout } = await execFileAsync(
+    windowsSystemExecutable("WindowsPowerShell\\v1.0\\powershell.exe"),
+    ["-NoLogo", "-NoProfile", "-NonInteractive", "-EncodedCommand", encodedCommand],
+    {
       windowsHide: true,
-      timeout: 5_000,
+      timeout: 30_000,
       maxBuffer: 64 * 1024,
-    });
-    const savedAclBytes = await readFile(savedAclPath);
-    if (
-      savedAclBytes.byteLength === 0 ||
-      savedAclBytes.byteLength > 64 * 1024 ||
-      savedAclBytes.byteLength % 2 !== 0
-    ) {
-      throw new Error("Saved ACL is not a bounded UTF-16LE document");
-    }
-    const savedAcl = savedAclBytes.toString("utf16le");
-    if (!windowsSavedAclIsUserOnly(savedAcl, sid, requireChildInheritance)) {
-      throw new Error(
-        "ACL verification permits only the current user SID without inherited access",
-      );
-    }
-  } finally {
-    await rm(savedAclPath, { force: true });
+      env: {
+        SystemDrive: parse(systemRoot).root.replace(/\\$/u, ""),
+        SystemRoot: systemRoot,
+        windir: systemRoot,
+        PATH: systemDirectory,
+        PATHEXT: ".COM;.EXE;.BAT;.CMD",
+        ComSpec: join(systemDirectory, "cmd.exe"),
+        TEMP: process.env["TEMP"],
+        TMP: process.env["TMP"],
+        USERPROFILE: process.env["USERPROFILE"],
+        APPDATA: process.env["APPDATA"],
+        LOCALAPPDATA: process.env["LOCALAPPDATA"],
+        ASEOS_ACL_TARGET: path,
+        ASEOS_ACL_SID: sid,
+        ASEOS_ACL_DIRECTORY: requireChildInheritance ? "true" : "false",
+      },
+    },
+  );
+  if (stdout !== "ASEOS_ACL_OK") {
+    throw new Error("ACL verification did not produce the exact success marker");
   }
 }
 
@@ -275,6 +255,7 @@ async function applyWindowsUserOnlyAcl(
   path: string,
   sid: string,
   inheritToChildren = false,
+  verifyImmediately = true,
 ): Promise<void> {
   let operation = "GRANT_CURRENT_USER";
   try {
@@ -290,11 +271,10 @@ async function applyWindowsUserOnlyAcl(
     await execFileAsync(icacls, [path, "/grant:r", grant], options);
     operation = "REMOVE_INHERITANCE";
     await execFileAsync(icacls, [path, "/inheritance:r"], options);
-    // Owner reassignment is not needed to establish a user-only DACL and can require
-    // SeTakeOwnershipPrivilege/SeRestorePrivilege on hosted or otherwise restricted runners.
-    // The explicit Full Control rule is sufficient for the current process to verify and clean up.
-    operation = "VERIFY_USER_ONLY_DACL";
-    await assertWindowsUserOnlyAcl(path, sid, inheritToChildren);
+    if (verifyImmediately) {
+      operation = "VERIFY_USER_ONLY_DACL";
+      await assertWindowsUserOnlyAcl(path, sid, inheritToChildren);
+    }
   } catch (error) {
     throw new ControlApiError(
       "CONTROL_TOKEN_ACL_UNSAFE",
@@ -322,7 +302,7 @@ async function replaceWindowsTokenAtomically(path: string, content: string): Pro
   const temporary = `${path}.${String(process.pid)}.${randomBytes(8).toString("hex")}.tmp`;
   try {
     await writeFile(temporary, "", { encoding: "utf8", flag: "wx", mode: 0o600 });
-    await applyWindowsUserOnlyAcl(temporary, sid);
+    await applyWindowsUserOnlyAcl(temporary, sid, false, false);
     const handle = await open(temporary, "r+");
     try {
       await handle.writeFile(content, { encoding: "utf8" });
@@ -330,7 +310,6 @@ async function replaceWindowsTokenAtomically(path: string, content: string): Pro
     } finally {
       await handle.close();
     }
-    await assertWindowsUserOnlyAcl(temporary, sid, false);
     await rename(temporary, path);
     await assertWindowsUserOnlyAcl(path, sid, false);
   } finally {

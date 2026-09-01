@@ -14,12 +14,11 @@ import {
   redactForPublicBoundary,
   startControlApi,
 } from "../dist/index.js";
-import { windowsCurrentUserSidFromWhoami, windowsSavedAclIsUserOnly } from "../dist/filesystem.js";
+import { windowsCurrentUserSidFromWhoami } from "../dist/filesystem.js";
 
 const repositoryRoot = resolve(import.meta.dirname, "../../..");
 
-test("Windows ACL verification binds the current user by SID without trusting display names", () => {
-  const shortPath = "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\ASEOS-1\\secrets\\runtime";
+test("Windows identity parsing binds one exact CSV record to a bounded numeric SID", () => {
   const sid = "S-1-5-21-111111111-222222222-333333333-1001";
   for (const whoamiOutput of [
     `"FV-AZ123\\runneradmin","${sid}"\r\n`,
@@ -33,30 +32,8 @@ test("Windows ACL verification binds the current user by SID without trusting di
   assert.equal(windowsCurrentUserSidFromWhoami(`header\r\n"runneradmin","${sid}"\r\n`), undefined);
   assert.equal(windowsCurrentUserSidFromWhoami(`"runneradmin","${sid}","extra"\r\n`), undefined);
   assert.equal(windowsCurrentUserSidFromWhoami('"runneradmin","S-1-5-4294967296"\r\n'), undefined);
-
-  const savedDirectoryAcl = `\uFEFF${shortPath}\r\nD:PAI(A;OICI;FA;;;${sid})\r\n`;
-  const savedFileAcl = `Data 中文\\token\r\nD:PAI(A;;FA;;;${sid})\r\n`;
-  assert.equal(windowsSavedAclIsUserOnly(savedDirectoryAcl, sid, true), true);
-  assert.equal(windowsSavedAclIsUserOnly(savedFileAcl, sid, false), true);
-
-  for (const hostileAcl of [
-    `${shortPath}\r\nD:PAI(A;OICI;FA;;;FV-AZ123\\evil runneradmin)\r\n`,
-    `${shortPath}\r\nD:PAI(A;OICI;FA;;;evil runneradmin)\r\n`,
-    `${shortPath}\r\nD:PAI(A;OICI;FA;;;S-1-5-21-111111111-222222222-333333333-1002)\r\n`,
-    `${shortPath}\r\nD:PAI(A;OICI;FA;;;${sid})(A;OICI;FA;;;S-1-5-18)\r\n`,
-    `${shortPath}\r\nD:PAI(D;OICI;FA;;;${sid})\r\n`,
-    `${shortPath}\r\nD:PAI(A;OICIID;FA;;;${sid})\r\n`,
-    `${shortPath}\r\nD:AI(A;OICI;FA;;;${sid})\r\n`,
-    `${shortPath}\r\nD:PAI(A;OI;FA;;;${sid})\r\n`,
-    `${shortPath}\r\nD:PAI(A;OICI;GA;;;${sid})\r\n`,
-    `${shortPath}\r\nD:PPAI(A;OICI;FA;;;${sid})\r\n`,
-    `${shortPath}\r\nD:PAI(A;OICIOI;FA;;;${sid})\r\n`,
-    `garbage\r\n${shortPath}\r\nD:PAI(A;OICI;FA;;;${sid})\r\n`,
-    `${shortPath}\nD:PAI(A;OICI;FA;;;${sid})\n`,
-  ]) {
-    assert.equal(windowsSavedAclIsUserOnly(hostileAcl, sid, true), false, hostileAcl);
-  }
-  assert.equal(windowsSavedAclIsUserOnly(savedDirectoryAcl, sid, false), false);
+  assert.equal(windowsCurrentUserSidFromWhoami(`"header\r\nuser","${sid}"\r\n`), undefined);
+  assert.equal(windowsCurrentUserSidFromWhoami(`"header\nuser","${sid}"\r\n`), undefined);
 });
 
 async function rawRequest(
