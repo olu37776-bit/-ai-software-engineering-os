@@ -14,6 +14,14 @@ const SEMANTIC_VERSION_PATTERN =
   /^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/u;
 const TOKEN_REF_PATTERN = /^(?!\/)(?![A-Za-z]:)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]+$/u;
 
+function windowsSystemExecutable(name: "icacls.exe" | "whoami.exe"): string {
+  const windowsRoot = process.env["SystemRoot"] ?? "C:\\Windows";
+  if (!isAbsolute(windowsRoot) || windowsRoot.includes("\0")) {
+    throw new Error("The Windows system root is not an absolute host path");
+  }
+  return join(windowsRoot, "System32", name);
+}
+
 function isRfc3339DateTime(value: unknown): value is string {
   if (typeof value !== "string") return false;
   const match =
@@ -135,7 +143,7 @@ async function replaceAtomically(path: string, content: string, mode: number): P
 }
 
 async function currentWindowsIdentity(): Promise<string> {
-  const { stdout } = await execFileAsync("whoami.exe", [], {
+  const { stdout } = await execFileAsync(windowsSystemExecutable("whoami.exe"), [], {
     windowsHide: true,
     timeout: 5_000,
     maxBuffer: 64 * 1024,
@@ -150,7 +158,7 @@ async function assertWindowsUserOnlyAcl(
   identity: string,
   requireChildInheritance: boolean,
 ): Promise<void> {
-  const { stdout } = await execFileAsync("icacls.exe", [path], {
+  const { stdout } = await execFileAsync(windowsSystemExecutable("icacls.exe"), [path], {
     windowsHide: true,
     timeout: 5_000,
     maxBuffer: 64 * 1024,
@@ -190,30 +198,18 @@ async function applyWindowsUserOnlyAcl(
   inheritToChildren = false,
 ): Promise<void> {
   try {
-    const script = [
-      "$ErrorActionPreference = 'Stop'",
-      "$target = $env:ASEOS_CONTROL_ACL_TARGET",
-      "$account = [System.Security.Principal.NTAccount]::new($env:ASEOS_CONTROL_ACL_IDENTITY)",
-      "$directory = $env:ASEOS_CONTROL_ACL_DIRECTORY -eq 'true'",
-      "$acl = if ($directory) { [System.Security.AccessControl.DirectorySecurity]::new() } else { [System.Security.AccessControl.FileSecurity]::new() }",
-      "$acl.SetOwner($account)",
-      "$acl.SetAccessRuleProtection($true, $false)",
-      "$inheritance = if ($directory) { [System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit } else { [System.Security.AccessControl.InheritanceFlags]::None }",
-      "$rule = [System.Security.AccessControl.FileSystemAccessRule]::new($account, [System.Security.AccessControl.FileSystemRights]::FullControl, $inheritance, [System.Security.AccessControl.PropagationFlags]::None, [System.Security.AccessControl.AccessControlType]::Allow)",
-      "$acl.AddAccessRule($rule)",
-      "if ($directory) { [System.IO.DirectoryInfo]::new($target).SetAccessControl($acl) } else { [System.IO.FileInfo]::new($target).SetAccessControl($acl) }",
-    ].join("; ");
-    await execFileAsync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script], {
+    const icacls = windowsSystemExecutable("icacls.exe");
+    const options = {
       windowsHide: true,
       timeout: 5_000,
       maxBuffer: 64 * 1024,
-      env: {
-        ...process.env,
-        ASEOS_CONTROL_ACL_TARGET: path,
-        ASEOS_CONTROL_ACL_IDENTITY: identity,
-        ASEOS_CONTROL_ACL_DIRECTORY: inheritToChildren ? "true" : "false",
-      },
-    });
+    } as const;
+    const grant = `${identity}:${inheritToChildren ? "(OI)(CI)" : ""}(F)`;
+    // Grant the user explicitly before removing inherited entries so a partial failure never
+    // leaves the current process without an access rule for the path it must verify or clean up.
+    await execFileAsync(icacls, [path, "/grant:r", grant], options);
+    await execFileAsync(icacls, [path, "/inheritance:r"], options);
+    await execFileAsync(icacls, [path, "/setowner", identity], options);
     await assertWindowsUserOnlyAcl(path, identity, inheritToChildren);
   } catch (error) {
     throw new ControlApiError("CONTROL_TOKEN_ACL_UNSAFE", "Token ACL could not be made user-only", {

@@ -1,6 +1,7 @@
-import { networkInterfaces } from "node:os";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { networkInterfaces, tmpdir } from "node:os";
+import { join } from "node:path";
 /* global AbortController, AbortSignal, fetch, setTimeout */
-import { writeFile } from "node:fs/promises";
 
 import {
   BoundedIdempotencyRegistry,
@@ -129,6 +130,32 @@ describe("P1-V07 authenticated loopback Control API", () => {
       expect(await readBearer(runtime)).not.toBe(firstToken);
     });
   });
+
+  test.skipIf(process.platform !== "win32")(
+    "uses absolute System32 ACL tools when cwd and PATH contain hostile executable names",
+    async () => {
+      const hostileDirectory = await mkdtemp(join(tmpdir(), "aseos-hostile-system-tools-"));
+      const originalCwd = process.cwd();
+      const originalPath = process.env.PATH;
+      try {
+        await Promise.all([
+          writeFile(join(hostileDirectory, "whoami.exe"), "not a Windows executable", "utf8"),
+          writeFile(join(hostileDirectory, "icacls.exe"), "not a Windows executable", "utf8"),
+        ]);
+        process.chdir(hostileDirectory);
+        process.env.PATH = hostileDirectory;
+        await withControlApi(async ({ runtime }) => {
+          expect(await readBearer(runtime)).toMatch(/^[A-Za-z0-9_-]{43}$/u);
+          expect((await tokenAclEvidence(runtime.tokenFilePath)).userOnly).toBe(true);
+        });
+      } finally {
+        process.chdir(originalCwd);
+        if (originalPath === undefined) delete process.env.PATH;
+        else process.env.PATH = originalPath;
+        await rm(hostileDirectory, { force: true, recursive: true });
+      }
+    },
+  );
 
   test("validates discovery identity and exposes bounded status metadata through the public client", async () => {
     await withControlApi(async ({ dataRoot, runtime }) => {

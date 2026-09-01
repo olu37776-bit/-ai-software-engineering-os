@@ -79,7 +79,8 @@ export async function tokenAclEvidence(path) {
       mode: (metadata.mode & 0o777).toString(8).padStart(3, "0"),
     };
   }
-  const { stdout } = await execFileAsync("icacls.exe", [path], {
+  const icacls = join(process.env.SystemRoot ?? "C:\\Windows", "System32", "icacls.exe");
+  const { stdout } = await execFileAsync(icacls, [path], {
     windowsHide: true,
     timeout: 5_000,
     maxBuffer: 64 * 1024,
