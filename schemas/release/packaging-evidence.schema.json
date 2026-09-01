@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:release-schema:packaging-evidence:1.0.0",
+  "title": "ASEOS P1-V09 packaging qualification evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "operationId",
+    "verificationStepId",
+    "recordedAt",
+    "subject",
+    "results"
+  ],
+  "properties": {
+    "$schema": { "const": "urn:aseos:release-schema:packaging-evidence:1.0.0" },
+    "schemaVersion": { "const": "1.0.0" },
+    "operationId": { "const": "P1-O08" },
+    "verificationStepId": { "const": "P1-V09-PACKAGING" },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frameworkVersion", "gitCommit", "platform"],
+      "properties": {
+        "frameworkVersion": { "$ref": "#/$defs/semver" },
+        "gitCommit": { "$ref": "#/$defs/gitCommit" },
+        "platform": { "const": "win32-x64" }
+      }
+    },
+    "results": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/selfContainedArtifactResult" },
+        { "$ref": "#/$defs/releaseManifestConsistencyResult" },
+        { "$ref": "#/$defs/cleanWindowsStartupResult" }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    }
+  },
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "gitCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "selfContainedArtifactResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceType",
+        "result",
+        "bundledRuntimeExecutable",
+        "pathWasEmpty",
+        "developmentToolchainEnvironmentRemoved",
+        "elevationRequested",
+        "privilegedLocationUsed",
+        "offlineStartup",
+        "networkGuardMechanism",
+        "negativeNonLoopbackProbeBlocked",
+        "observedNonLoopbackOutboundAttempts",
+        "observedLoopbackOperations",
+        "runtimeGuardInstalled"
+      ],
+      "properties": {
+        "evidenceType": { "const": "SelfContainedArtifactResult" },
+        "result": { "const": "PASS" },
+        "bundledRuntimeExecutable": { "const": "node/node.exe" },
+        "pathWasEmpty": { "const": true },
+        "developmentToolchainEnvironmentRemoved": { "const": true },
+        "elevationRequested": { "const": false },
+        "privilegedLocationUsed": { "const": false },
+        "offlineStartup": { "const": true },
+        "networkGuardMechanism": {
+          "const": "NODE_OPTIONS_ESM_BUILTIN_NETWORK_GUARD_V1"
+        },
+        "negativeNonLoopbackProbeBlocked": { "const": true },
+        "observedNonLoopbackOutboundAttempts": { "const": 0 },
+        "observedLoopbackOperations": { "type": "integer", "minimum": 1 },
+        "runtimeGuardInstalled": { "const": true }
+      }
+    },
+    "releaseManifestConsistencyResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceType",
+        "result",
+        "payloadFileCount",
+        "verifiedBeforeStartup",
+        "verifiedAfterShutdown",
+        "tamperRejected",
+        "missingPayloadRejected",
+        "manifestSha256",
+        "verifiedManifestSha256Before",
+        "verifiedManifestSha256After",
+        "manifestSizeBytes",
+        "payloadSizeBytes"
+      ],
+      "properties": {
+        "evidenceType": { "const": "ReleaseManifestConsistencyResult" },
+        "result": { "const": "PASS" },
+        "payloadFileCount": { "type": "integer", "minimum": 1 },
+        "verifiedBeforeStartup": { "const": true },
+        "verifiedAfterShutdown": { "const": true },
+        "tamperRejected": { "const": true },
+        "missingPayloadRejected": { "const": true },
+        "manifestSha256": { "$ref": "#/$defs/sha256" },
+        "verifiedManifestSha256Before": { "$ref": "#/$defs/sha256" },
+        "verifiedManifestSha256After": { "$ref": "#/$defs/sha256" },
+        "manifestSizeBytes": { "type": "integer", "minimum": 1 },
+        "payloadSizeBytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "cleanWindowsStartupResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceType",
+        "result",
+        "installRootClass",
+        "dataRootClass",
+        "commands",
+        "releaseDataSeparated",
+        "releasePayloadUnchanged",
+        "processExited",
+        "discoveryRemoved",
+        "tokenRemoved",
+        "commandResults"
+      ],
+      "properties": {
+        "evidenceType": { "const": "CleanWindowsStartupResult" },
+        "result": { "const": "PASS" },
+        "installRootClass": { "const": "UNICODE_AND_SPACE_TEMP_PATH" },
+        "dataRootClass": { "const": "SEPARATE_UNICODE_AND_SPACE_TEMP_PATH" },
+        "commands": { "const": ["start", "version", "doctor", "status", "stop"] },
+        "releaseDataSeparated": { "const": true },
+        "releasePayloadUnchanged": { "const": true },
+        "processExited": { "const": true },
+        "discoveryRemoved": { "const": true },
+        "tokenRemoved": { "const": true },
+        "commandResults": {
+          "type": "object",
+          "required": ["start", "version", "doctor", "status", "stop", "tamper", "missing"],
+          "properties": {
+            "start": { "type": "object" },
+            "version": { "type": "object" },
+            "doctor": { "type": "object" },
+            "status": { "type": "object" },
+            "stop": { "type": "object" },
+            "tamper": { "$ref": "#/$defs/rejectionResult" },
+            "missing": { "$ref": "#/$defs/rejectionResult" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "rejectionResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expectedCode", "rejected", "message"],
+      "properties": {
+        "expectedCode": {
+          "enum": ["RELEASE_PAYLOAD_HASH_MISMATCH", "RELEASE_PAYLOAD_MISSING"]
+        },
+        "rejected": { "const": true },
+        "message": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

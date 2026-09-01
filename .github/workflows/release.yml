@@ -1,0 +1,167 @@
+name: Qualification release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/release.yml"
+      - "apps/cli/**"
+      - "apps/runtime/**"
+      - "packages/contracts/**"
+      - "packages/platform/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "schemas/release/**"
+      - "scripts/release/**"
+      - "toolchain/**"
+      - "tsconfig*.json"
+      - "tests/acceptance/release/**"
+      - "tests/qualification/packaging/**"
+      - "docs/implementation/phase-1/o08/**"
+      - "operations/phase-1/evidence/o08/**"
+      - "operations/phase-1/executions/p1-o08-*.json"
+  pull_request:
+    paths:
+      - ".github/workflows/release.yml"
+      - "apps/cli/**"
+      - "apps/runtime/**"
+      - "packages/contracts/**"
+      - "packages/platform/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "schemas/release/**"
+      - "scripts/release/**"
+      - "toolchain/**"
+      - "tsconfig*.json"
+      - "tests/acceptance/release/**"
+      - "tests/qualification/packaging/**"
+      - "docs/implementation/phase-1/o08/**"
+      - "operations/phase-1/evidence/o08/**"
+      - "operations/phase-1/executions/p1-o08-*.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "24.19.0"
+  PNPM_VERSION: "11.24.0"
+  QUALIFICATION_VERSION: "0.1.0"
+
+jobs:
+  assemble:
+    name: Assemble immutable Windows x64 artifact
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      artifact-digest: ${{ steps.upload-qualification.outputs.artifact-digest }}
+    steps:
+      - name: Checkout immutable source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Install pinned Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare "pnpm@${PNPM_VERSION}" --activate
+
+      - name: Install and build from frozen inputs
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Qualify manifest and deterministic assembly controls
+        run: pnpm exec vitest run --config tests/qualification/packaging/vitest.config.mjs
+
+      - name: Download and verify the pinned official Windows runtime
+        shell: bash
+        run: |
+          node - <<'NODE' > "$RUNNER_TEMP/runtime.env"
+          const lock = JSON.parse(require("node:fs").readFileSync("scripts/release/windows-runtime-lock.json", "utf8"));
+          const runtime = lock.runtime;
+          if (runtime.platform !== "win-x64") throw new Error("WINDOWS_RUNTIME_LOCK_MISSING");
+          console.log(`NODE_RUNTIME_URL=${runtime.archiveUrl}`);
+          console.log(`NODE_RUNTIME_SHA256=${runtime.sha256}`);
+          NODE
+          source "$RUNNER_TEMP/runtime.env"
+          curl --fail --location --proto '=https' --tlsv1.2 \
+            --output "$RUNNER_TEMP/node-win-x64.zip" "$NODE_RUNTIME_URL"
+          echo "$NODE_RUNTIME_SHA256  $RUNNER_TEMP/node-win-x64.zip" | sha256sum --check --strict
+
+      - name: Assemble and verify qualification artifact
+        shell: bash
+        run: |
+          node scripts/release/assemble-windows-x64.mjs \
+            --runtime-archive "$RUNNER_TEMP/node-win-x64.zip" \
+            --output "$RUNNER_TEMP/aseos-windows-x64" \
+            --git-commit "$GITHUB_SHA" \
+            --built-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --build-id "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          node scripts/release/verify-manifest.mjs \
+            --artifact-root "$RUNNER_TEMP/aseos-windows-x64" \
+            --manifest "release-manifest.json" \
+            --expected-version "$QUALIFICATION_VERSION" \
+            --expected-git-commit "$GITHUB_SHA" \
+            --toolchain-path "toolchain/toolchain.json"
+
+      - name: Upload qualification artifact
+        id: upload-qualification
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: aseos-windows-x64-qualification
+          path: ${{ runner.temp }}/aseos-windows-x64
+          if-no-files-found: error
+          retention-days: 7
+
+  clean-windows-startup:
+    name: P1-V09 clean Windows startup
+    needs: assemble
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - name: Checkout qualification scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Install qualification orchestrator Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Download exact assembled artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: aseos-windows-x64-qualification
+          path: dist/aseos-windows-x64
+          digest-mismatch: error
+
+      - name: Record GitHub artifact transport digest
+        shell: pwsh
+        run: |
+          Write-Output "qualification-artifact-digest=${{ needs.assemble.outputs.artifact-digest }}"
+
+      - name: Run self-contained clean-start qualification
+        shell: pwsh
+        run: |
+          node tests/qualification/packaging/clean-windows-startup.test.mjs
+        env:
+          ASEOS_QUALIFICATION_ARTIFACT: ${{ github.workspace }}\dist\aseos-windows-x64
+          ASEOS_QUALIFICATION_EVIDENCE: ${{ github.workspace }}\dist\evidence\p1-v09-packaging.json
+          ASEOS_QUALIFICATION_EXPECTED_VERSION: ${{ env.QUALIFICATION_VERSION }}
+          ASEOS_QUALIFICATION_EXPECTED_GIT_COMMIT: ${{ github.sha }}
+          ASEOS_QUALIFICATION_TOOLCHAIN: ${{ github.workspace }}\toolchain\toolchain.json
+
+      - name: Upload P1-V09 Evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: p1-v09-packaging-evidence
+          path: dist/evidence/p1-v09-packaging.json
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:release-schema:release-manifest:1.0.0",
+  "title": "ASEOS qualification release manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "frameworkVersion",
+    "gitCommit",
+    "buildId",
+    "builtAt",
+    "artifact",
+    "platform",
+    "toolchain",
+    "runtime",
+    "contracts",
+    "configSchemaVersion",
+    "stateSchemaVersion",
+    "supportedUpgradeSources",
+    "sbom",
+    "provenance",
+    "payload"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "urn:aseos:release-schema:release-manifest:1.0.0"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "frameworkVersion": {
+      "$ref": "#/$defs/semver"
+    },
+    "gitCommit": {
+      "$ref": "#/$defs/gitCommit"
+    },
+    "buildId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "builtAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "productionApproved"],
+      "properties": {
+        "kind": {
+          "const": "NON_PRODUCTION_QUALIFICATION"
+        },
+        "productionApproved": {
+          "const": false
+        }
+      }
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "os", "arch"],
+      "properties": {
+        "id": {
+          "const": "windows-x64"
+        },
+        "os": {
+          "const": "windows"
+        },
+        "arch": {
+          "const": "x64"
+        }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "pnpm", "typescript"],
+      "properties": {
+        "node": {
+          "$ref": "#/$defs/semver"
+        },
+        "pnpm": {
+          "$ref": "#/$defs/semver"
+        },
+        "typescript": {
+          "$ref": "#/$defs/semver"
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "distribution",
+        "version",
+        "platform",
+        "archiveUrl",
+        "archiveSha256",
+        "executable"
+      ],
+      "properties": {
+        "distribution": {
+          "const": "node"
+        },
+        "version": {
+          "$ref": "#/$defs/semver"
+        },
+        "platform": {
+          "const": "win-x64"
+        },
+        "archiveUrl": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://nodejs\\.org/dist/"
+        },
+        "archiveSha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "executable": {
+          "$ref": "#/$defs/relativePath"
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,127}$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/semver"
+      }
+    },
+    "configSchemaVersion": {
+      "$ref": "#/$defs/semver"
+    },
+    "stateSchemaVersion": {
+      "$ref": "#/$defs/semver"
+    },
+    "supportedUpgradeSources": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/semver"
+      }
+    },
+    "sbom": {
+      "$ref": "#/$defs/boundPayload"
+    },
+    "provenance": {
+      "$ref": "#/$defs/boundPayload"
+    },
+    "payload": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/payloadEntry"
+      }
+    }
+  },
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "gitCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.{1,2}(?:/|$))[^\\u0000-\\u001f\\u007f:]+$"
+    },
+    "boundPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "payloadEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "sizeBytes"],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      }
+    }
+  }
+}

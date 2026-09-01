@@ -3,6 +3,12 @@
 状态：`BASELINE DRAFT v0.1`  
 日期：`2026-08-26`
 
+> P1-O08 qualification note: the repository now contains a non-production Windows x64 artifact
+> assembler and clean-start gate. Its manifest, hash, SBOM, provenance, bundled runtime, Unicode
+> path, empty-`PATH`, and release/data separation checks are qualification controls only; they do
+> not constitute production release approval. See
+> `docs/implementation/phase-1/o08/windows-clean-start-qualification.md`.
+
 ## 1. 目标
 
 GitHub 完整构建 Framework，用户从 GitHub 单向下载到本地运行。正常使用不要求本地上传源码、配置、知识库、Evidence 或业务数据。
