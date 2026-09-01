@@ -1,6 +1,16 @@
 import { execFile } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
+import {
+  chmod,
+  mkdir,
+  open,
+  readFile,
+  realpath,
+  rename,
+  rm,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 
@@ -153,6 +163,61 @@ async function currentWindowsIdentity(): Promise<string> {
   return identity;
 }
 
+export function windowsAclOutputIsUserOnly(
+  stdout: string,
+  pathSpellings: readonly string[],
+  identity: string,
+  computerName: string | undefined,
+  requireChildInheritance: boolean,
+): boolean {
+  const normalizedIdentity = identity.trim().toLowerCase();
+  if (normalizedIdentity === "") return false;
+  const allowedPrincipals = new Set([normalizedIdentity]);
+  const separator = normalizedIdentity.indexOf("\\");
+  const normalizedComputerName = computerName?.trim().toLowerCase();
+  if (
+    separator > 0 &&
+    separator < normalizedIdentity.length - 1 &&
+    normalizedIdentity.slice(0, separator) === normalizedComputerName
+  ) {
+    allowedPrincipals.add(normalizedIdentity.slice(separator + 1));
+  }
+  const normalizedPaths = [...pathSpellings]
+    .filter((candidate) => candidate !== "")
+    .sort((left, right) => right.length - left.length)
+    .map((candidate) => ({ length: candidate.length, value: candidate.toLowerCase() }));
+  const aclLines: string[] = [];
+  for (const rawLine of stdout.replace(/^\uFEFF/u, "").split(/\r?\n/u)) {
+    if (!rawLine.includes(":(")) continue;
+    let aclLine = rawLine;
+    if (aclLines.length === 0) {
+      const normalizedLine = rawLine.toLowerCase();
+      const pathPrefix = normalizedPaths.find(
+        (candidate) =>
+          normalizedLine.startsWith(candidate.value) &&
+          /^\s$/u.test(rawLine.charAt(candidate.length)),
+      );
+      if (pathPrefix === undefined) return false;
+      aclLine = rawLine.slice(pathPrefix.length);
+    }
+    aclLines.push(aclLine.trim());
+  }
+  if (aclLines.length === 0) return false;
+  const principals = aclLines.map((line) => line.slice(0, line.indexOf(":(")).trim().toLowerCase());
+  const identityLines = aclLines.filter((_, index) =>
+    allowedPrincipals.has(principals[index] ?? ""),
+  );
+  return (
+    identityLines.length === 1 &&
+    identityLines[0]?.includes("(F)") === true &&
+    !identityLines[0].includes("(DENY)") &&
+    (!requireChildInheritance ||
+      (identityLines[0].includes("(OI)") && identityLines[0].includes("(CI)"))) &&
+    principals.every((principal) => allowedPrincipals.has(principal)) &&
+    aclLines.every((line) => !line.includes("(I)"))
+  );
+}
+
 async function assertWindowsUserOnlyAcl(
   path: string,
   identity: string,
@@ -163,30 +228,15 @@ async function assertWindowsUserOnlyAcl(
     timeout: 5_000,
     maxBuffer: 64 * 1024,
   });
-  const aclLines = stdout
-    .split(/\r?\n/u)
-    .map((line, index) => (index === 0 && line.startsWith(path) ? line.slice(path.length) : line))
-    .map((line) => line.trim())
-    .filter((line) => line.includes(":("));
-  const principals = aclLines.map((line) => line.slice(0, line.indexOf(":(")).trim());
-  const normalizedIdentity = identity.toLowerCase();
-  const isExactOrFirstLineSuffix = (principal: string, expected: string): boolean => {
-    const normalized = principal.toLowerCase();
-    return normalized === expected || normalized.endsWith(` ${expected}`);
-  };
-  const allowed = (principal: string): boolean => {
-    return isExactOrFirstLineSuffix(principal, normalizedIdentity);
-  };
-  const identityLine = aclLines.find((line) =>
-    isExactOrFirstLineSuffix(line.slice(0, line.indexOf(":(")).trim(), normalizedIdentity),
-  );
+  const canonicalPath = await realpath(path);
   if (
-    identityLine === undefined ||
-    !identityLine.includes("(F)") ||
-    (requireChildInheritance &&
-      (!identityLine.includes("(OI)") || !identityLine.includes("(CI)"))) ||
-    principals.some((principal) => !allowed(principal)) ||
-    aclLines.some((line) => line.includes("(I)"))
+    !windowsAclOutputIsUserOnly(
+      stdout,
+      [path, canonicalPath],
+      identity,
+      process.env["COMPUTERNAME"],
+      requireChildInheritance,
+    )
   ) {
     throw new Error("ACL verification permits only the current user without inherited access");
   }
