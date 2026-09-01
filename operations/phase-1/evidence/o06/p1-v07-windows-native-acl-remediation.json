@@ -10,8 +10,8 @@
     "pullRequest": 79,
     "branch": "remediation/p1-o06-windows-acl-native",
     "authorizedBase": "aab42064396c5fa6df87f6a89e18c4df5f40f1a1",
-    "qualifiedImplementationCommit": "1a3a797204bec2a63a52499fb9fd0c3252503cda",
-    "qualifiedImplementationTree": "ef866b1fb9689bc63861e24d8cc96a83b3317f18"
+    "qualifiedImplementationCommit": "cdb62388ae0be6d31aa9e096019f82d619cc6d8a",
+    "qualifiedImplementationTree": "04c65e553567c73a14af65782c5cdeb63db515c9"
   },
   "finding": {
     "findingId": "P1-O06-POST-MERGE-WINDOWS-ACL-COLD-START",
@@ -42,6 +42,18 @@
     "absoluteSystemToolsUsed": true,
     "tokenAcl": "CURRENT_USER_ONLY_NO_INHERITANCE"
   },
+  "evidenceHeadRemediation": {
+    "status": "IMPLEMENTED",
+    "failedHeadCommit": "1c42cdf85e4fe248886d691f57011f26d3a84a5b",
+    "failedWorkflowRunId": 33457714955,
+    "failedWindowsJobId": 99701207562,
+    "failedAggregateJobId": 99702578736,
+    "linuxJobResult": "PASS",
+    "windowsFinding": "The hosted runner rejected the extra icacls owner-reassignment operation while the strict DACL operations completed without a timeout.",
+    "resolution": "Ownership reassignment is removed because P1-V07 requires and verifies the DACL boundary, not an owner mutation. The implementation retains explicit current-user FullControl, removes inherited access, strictly verifies the resulting DACL, and reports a fixed non-sensitive operation stage on failure.",
+    "timeoutIncreased": false,
+    "securityBoundaryRelaxed": false
+  },
   "qualification": {
     "result": "PASS",
     "node": "24.19.0",
@@ -63,10 +75,10 @@
   },
   "independentVerification": {
     "required": true,
-    "performed": true,
-    "result": "PASS",
-    "reviewedImplementationCommit": "1a3a797204bec2a63a52499fb9fd0c3252503cda",
-    "reviewedImplementationTree": "ef866b1fb9689bc63861e24d8cc96a83b3317f18",
+    "performed": false,
+    "result": "PENDING_FINAL_HEAD",
+    "reviewedImplementationCommit": "PENDING_FINAL_HEAD",
+    "reviewedImplementationTree": "PENDING_FINAL_HEAD",
     "reviewFocus": [
       "Windows ACL fail-closed behavior",
       "PATH and working-directory injection",
