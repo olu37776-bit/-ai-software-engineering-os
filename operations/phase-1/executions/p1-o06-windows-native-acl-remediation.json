@@ -31,24 +31,24 @@
     "requiredCheckIdentityChanged": false,
     "independentVerificationRequired": true
   },
-  "completedAt": "2026-09-01T02:23:34Z",
-  "qualifiedImplementationCommit": "8abdfd188342b8f937b94e8d5607fb2c90ebb8ac",
-  "qualifiedImplementationTree": "8891292ca1014f3c68495eb354c27b5732393ff4",
+  "completedAt": "2026-09-01T04:06:00Z",
+  "qualifiedImplementationCommit": "46f1d0b944eedf3b5fd0d1cb8048bacdbae82f9c",
+  "qualifiedImplementationTree": "b76e1a7f0e89ceabd681ea1188ea1a6a68214ee0",
   "evidenceRef": "operations/phase-1/evidence/o06/p1-v07-windows-native-acl-remediation.json",
   "results": {
     "writeScope": "PASS",
     "authorityLock": "PASS",
     "fullQuality": "PASS",
-    "rootTests": "278/278",
+    "rootTests": "279/279",
     "architectureTests": "9/9",
-    "focusedControlApiTests": "16/16",
-    "platformTests": "4/4",
+    "focusedControlApiTests": "17/17",
+    "platformTests": "5/5",
     "p1V03": "PASS",
     "p1V04": "PASS",
     "p1V07": "PASS",
     "p1V08": "PASS",
     "frozenOfflineInstall": "PASS",
-    "independentReview": "PENDING_FINAL_HEAD",
+    "independentReview": "PASS",
     "localWindows": "PASS"
   }
 }
