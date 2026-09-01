@@ -1,16 +1,6 @@
 import { execFile } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import {
-  chmod,
-  mkdir,
-  open,
-  readFile,
-  realpath,
-  rename,
-  rm,
-  stat,
-  writeFile,
-} from "node:fs/promises";
+import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 
@@ -165,7 +155,6 @@ async function currentWindowsIdentity(): Promise<string> {
 
 export function windowsAclOutputIsUserOnly(
   stdout: string,
-  pathSpellings: readonly string[],
   identity: string,
   computerName: string | undefined,
   requireChildInheritance: boolean,
@@ -182,23 +171,21 @@ export function windowsAclOutputIsUserOnly(
   ) {
     allowedPrincipals.add(normalizedIdentity.slice(separator + 1));
   }
-  const normalizedPaths = [...pathSpellings]
-    .filter((candidate) => candidate !== "")
-    .sort((left, right) => right.length - left.length)
-    .map((candidate) => ({ length: candidate.length, value: candidate.toLowerCase() }));
+  const aliases = [...allowedPrincipals].sort((left, right) => right.length - left.length);
   const aclLines: string[] = [];
   for (const rawLine of stdout.replace(/^\uFEFF/u, "").split(/\r?\n/u)) {
     if (!rawLine.includes(":(")) continue;
     let aclLine = rawLine;
     if (aclLines.length === 0) {
-      const normalizedLine = rawLine.toLowerCase();
-      const pathPrefix = normalizedPaths.find(
+      const permissionSeparator = rawLine.indexOf(":(");
+      const principalPrefix = rawLine.slice(0, permissionSeparator).trimEnd().toLowerCase();
+      const alias = aliases.find(
         (candidate) =>
-          normalizedLine.startsWith(candidate.value) &&
-          /^\s$/u.test(rawLine.charAt(candidate.length)),
+          principalPrefix.endsWith(candidate) &&
+          /^\s$/u.test(principalPrefix.charAt(principalPrefix.length - candidate.length - 1)),
       );
-      if (pathPrefix === undefined) return false;
-      aclLine = rawLine.slice(pathPrefix.length);
+      if (alias === undefined) return false;
+      aclLine = `${alias}${rawLine.slice(permissionSeparator)}`;
     }
     aclLines.push(aclLine.trim());
   }
@@ -228,11 +215,9 @@ async function assertWindowsUserOnlyAcl(
     timeout: 5_000,
     maxBuffer: 64 * 1024,
   });
-  const canonicalPath = await realpath(path);
   if (
     !windowsAclOutputIsUserOnly(
       stdout,
-      [path, canonicalPath],
       identity,
       process.env["COMPUTERNAME"],
       requireChildInheritance,

@@ -18,67 +18,32 @@ import { windowsAclOutputIsUserOnly } from "../dist/filesystem.js";
 
 const repositoryRoot = resolve(import.meta.dirname, "../../..");
 
-test("Windows ACL output parser binds path spelling and only accepts the exact local identity", () => {
+test("Windows ACL output parser tolerates path encoding loss and only accepts the exact local identity", () => {
   const shortPath = "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\ASEOS-1\\secrets\\runtime";
   const longPath = "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\aseos-1\\secrets\\runtime";
+  const mojibakePath = "D:\\Data ����\\aseos\\secrets\\runtime";
   const localIdentity = "FV-AZ123\\runneradmin";
   const computerName = "FV-AZ123";
   const validQualified = `${longPath} ${localIdentity}:(OI)(CI)(F)\r\n\r\nSuccessfully processed 1 files; Failed processing 0 files\r\n`;
   const validShortQualified = `${shortPath} ${localIdentity}:(OI)(CI)(F)\r\n`;
-  const validUnqualified = `${longPath} runneradmin:(OI)(CI)(F)\r\n`;
+  const validUnqualified = `${mojibakePath} runneradmin:(OI)(CI)(F)\r\n`;
+  assert.equal(windowsAclOutputIsUserOnly(validQualified, localIdentity, computerName, true), true);
   assert.equal(
-    windowsAclOutputIsUserOnly(
-      validQualified,
-      [shortPath, longPath],
-      localIdentity,
-      computerName,
-      true,
-    ),
+    windowsAclOutputIsUserOnly(validShortQualified, localIdentity, computerName, true),
     true,
   );
   assert.equal(
-    windowsAclOutputIsUserOnly(
-      validShortQualified,
-      [shortPath, longPath],
-      localIdentity,
-      computerName,
-      true,
-    ),
+    windowsAclOutputIsUserOnly(validUnqualified, localIdentity, computerName, true),
     true,
   );
   assert.equal(
-    windowsAclOutputIsUserOnly(
-      validUnqualified,
-      [shortPath, longPath],
-      localIdentity,
-      computerName,
-      true,
-    ),
-    true,
-  );
-  assert.equal(
-    windowsAclOutputIsUserOnly(
-      validUnqualified,
-      [shortPath, longPath],
-      "CORP\\runneradmin",
-      computerName,
-      true,
-    ),
+    windowsAclOutputIsUserOnly(validUnqualified, "CORP\\runneradmin", computerName, true),
     false,
   );
-  assert.equal(
-    windowsAclOutputIsUserOnly(
-      validUnqualified,
-      [shortPath, longPath],
-      localIdentity,
-      undefined,
-      true,
-    ),
-    false,
-  );
+  assert.equal(windowsAclOutputIsUserOnly(validUnqualified, localIdentity, undefined, true), false);
   for (const hostileAcl of [
-    `C:\\unbound\\path ${localIdentity}:(OI)(CI)(F)\r\n`,
     `${longPath} EVIL\\runneradmin:(OI)(CI)(F)\r\n`,
+    `${longPath}\\runneradmin EVIL\\runneradmin:(OI)(CI)(F)\r\n`,
     `${longPath} ${localIdentity}:(OI)(CI)(F)\r\n  NT AUTHORITY\\SYSTEM:(F)\r\n`,
     `${longPath} ${localIdentity}:(OI)(CI)(F)\r\n  BUILTIN\\Administrators:(F)\r\n`,
     `${longPath} ${localIdentity}:(I)(OI)(CI)(F)\r\n`,
@@ -86,13 +51,7 @@ test("Windows ACL output parser binds path spelling and only accepts the exact l
     `${longPath} ${localIdentity}:(DENY)(OI)(CI)(F)\r\n`,
   ]) {
     assert.equal(
-      windowsAclOutputIsUserOnly(
-        hostileAcl,
-        [shortPath, longPath],
-        localIdentity,
-        computerName,
-        true,
-      ),
+      windowsAclOutputIsUserOnly(hostileAcl, localIdentity, computerName, true),
       false,
       hostileAcl,
     );
