@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O08-WINDOWS-QUALIFICATION-RELEASE-2026-09-01-01",
+  "executionType": "P1_O08_WINDOWS_QUALIFICATION_RELEASE",
+  "operationId": "P1-O08",
+  "writeScopeOperationId": "P1-O08",
+  "title": "Self-contained Windows qualification release and supply-chain baseline",
+  "riskClass": "R4",
+  "status": "IMPLEMENTED",
+  "startedAt": "2026-09-01T04:47:44Z",
+  "implementationBranch": "phase-1/p1-o08-packaging",
+  "baseCommit": "44415c7ca641be439faa064d81079f6d3c88a39f",
+  "authorityRefs": [
+    "docs/operations/release-local-runtime.md",
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/authority-lock.json",
+    "operations/phase-1/verification-plan.json",
+    "schemas/release/release-manifest.schema.json",
+    "schemas/release/packaging-evidence.schema.json"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "independentlyVerified": true,
+    "phase1Verified": false,
+    "productionApproved": false,
+    "productionReleaseImplemented": false,
+    "productionAutoUpdateImplemented": false,
+    "signedDistributionImplemented": false,
+    "licenseNoticeComplete": false,
+    "acceptedAdrChanged": false,
+    "requiredCheckIdentityChanged": false,
+    "independentVerificationRequired": true
+  },
+  "completedAt": "2026-09-01T06:14:50Z",
+  "qualifiedImplementationCommit": "8028585f2d04473e45d6ee98c473edca50acb736",
+  "qualifiedImplementationTree": "428c178314e4673466271298a13ef48fc7b46c0f",
+  "evidenceRef": "operations/phase-1/evidence/o08/p1-v09-packaging.json",
+  "results": {
+    "packagingEvidenceSchema": "PASS",
+    "localP1V09EvidenceTypes": "3/3",
+    "focusedPackagingTests": "21/21",
+    "realWindowsEndToEndTests": "5/5",
+    "rootQuality": "PASS",
+    "rootTests": "279/279",
+    "architectureTests": "9/9",
+    "localWindows": "PASS",
+    "independentSupplyChainReview": "PASS",
+    "independentWindowsCiReview": "PASS",
+    "independentVerification": "PASS",
+    "continuousIntegration": "NOT_RECORDED"
+  }
+}
