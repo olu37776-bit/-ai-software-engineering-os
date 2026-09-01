@@ -197,6 +197,7 @@ async function applyWindowsUserOnlyAcl(
   identity: string,
   inheritToChildren = false,
 ): Promise<void> {
+  let operation = "GRANT_CURRENT_USER";
   try {
     const icacls = windowsSystemExecutable("icacls.exe");
     const options = {
@@ -208,13 +209,19 @@ async function applyWindowsUserOnlyAcl(
     // Grant the user explicitly before removing inherited entries so a partial failure never
     // leaves the current process without an access rule for the path it must verify or clean up.
     await execFileAsync(icacls, [path, "/grant:r", grant], options);
+    operation = "REMOVE_INHERITANCE";
     await execFileAsync(icacls, [path, "/inheritance:r"], options);
-    await execFileAsync(icacls, [path, "/setowner", identity], options);
+    // Owner reassignment is not needed to establish a user-only DACL and can require
+    // SeTakeOwnershipPrivilege/SeRestorePrivilege on hosted or otherwise restricted runners.
+    // The explicit Full Control rule is sufficient for the current process to verify and clean up.
+    operation = "VERIFY_USER_ONLY_DACL";
     await assertWindowsUserOnlyAcl(path, identity, inheritToChildren);
   } catch (error) {
-    throw new ControlApiError("CONTROL_TOKEN_ACL_UNSAFE", "Token ACL could not be made user-only", {
-      cause: error,
-    });
+    throw new ControlApiError(
+      "CONTROL_TOKEN_ACL_UNSAFE",
+      `Token ACL could not be made user-only during ${operation}`,
+      { cause: error },
+    );
   }
 }
 
