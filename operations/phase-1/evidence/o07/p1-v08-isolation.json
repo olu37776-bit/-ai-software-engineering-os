@@ -4,14 +4,14 @@
   "evidenceType": "P1V08IsolationImplementationEvidence",
   "gateStepId": "P1-V08-ISOLATION",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-08-31T23:27:00Z",
+  "recordedAt": "2026-09-01T00:05:55Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "pullRequest": 77,
     "branch": "phase-1/p1-o07-windows-process-restricted-qualification-issue-71",
     "authorizedBase": "c175ca2ba06ff35bddbcd1cca765af8972a06b76",
-    "qualifiedImplementationCommit": "06efbc0901bf2ae7c7750aa7e10103281318dd50",
-    "qualifiedImplementationTree": "6b19641b32d585e71125a784f60456cb91148d3b"
+    "qualifiedImplementationCommit": "3dae67633c29d9bb65e72290886ee96b93ad771a",
+    "qualifiedImplementationTree": "b9aa3e0e6b4747d437ceabcf2320ee6cd43c1a81"
   },
   "authorizationPreflight": {
     "result": "PASS",
@@ -127,8 +127,8 @@
     "rootTestsFailed": 0,
     "architectureTestsPassed": 9,
     "focusedIsolationTestsPassed": 21,
-    "adapterTestsPassed": 7,
-    "adapterTestsSkipped": 1,
+    "adapterTestsPassed": 8,
+    "adapterTestsSkipped": 0,
     "workerTestsPassed": 3,
     "p1V03Contracts": "PASS",
     "p1V04Architecture": "PASS",
@@ -180,6 +180,14 @@
       "failedQualityRunId": 33448795593,
       "failedWindowsJobId": 99673778118,
       "resolution": "Bridge cancellation now registers its listener before rechecking the AbortSignal and writes the cancellation marker idempotently, closing cancellations that occur before or during listener registration. The security qualification publishes a unique readiness marker only after the root, child and grandchild are active, then measures cancellation from that observable Job Object state without relaxing the five-second limit and proves all three processes exit."
+    },
+    {
+      "findingId": "P1-O07-CI-05",
+      "class": "WINDOWS_SHORT_PATH_FIXTURE_ARGUMENT_QUOTING",
+      "result": "CLOSED",
+      "failedQualityRunId": 33450920719,
+      "failedWindowsJobId": 99682667245,
+      "resolution": "The regression now calls Win32 GetShortPathNameW through a UTF-16LE PowerShell EncodedCommand instead of passing a quoted for command through cmd.exe argv serialization. This removes the malformed pseudo-path produced by the prior double quoting, preserves Unicode and spaces without shell interpolation, and keeps the adapter's existing same-filesystem-identity and no-reparse checks unchanged. The Windows adapter suite now exercises the real 8.3 executable and staging aliases with 8/8 tests and reports the complete typed result if the launch boundary fails."
     },
     {
       "findingId": "P1-O07-LOCAL-01",

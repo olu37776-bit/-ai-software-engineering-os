@@ -35,9 +35,9 @@
     "requiredCheckIdentityChanged": false,
     "independentVerificationRequired": true
   },
-  "completedAt": "2026-08-31T23:27:00Z",
-  "qualifiedImplementationCommit": "06efbc0901bf2ae7c7750aa7e10103281318dd50",
-  "qualifiedImplementationTree": "6b19641b32d585e71125a784f60456cb91148d3b",
+  "completedAt": "2026-09-01T00:05:55Z",
+  "qualifiedImplementationCommit": "3dae67633c29d9bb65e72290886ee96b93ad771a",
+  "qualifiedImplementationTree": "b9aa3e0e6b4747d437ceabcf2320ee6cd43c1a81",
   "evidenceRef": "operations/phase-1/evidence/o07/p1-v08-isolation.json",
   "results": {
     "writeScope": "PASS",
@@ -50,7 +50,7 @@
     "rootTests": "277/277",
     "architectureTests": "9/9",
     "focusedIsolationTests": "21/21",
-    "adapterTests": "6/6",
+    "adapterTests": "8/8",
     "workerTests": "3/3"
   }
 }
