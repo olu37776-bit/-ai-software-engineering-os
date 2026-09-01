@@ -1,12 +1,15 @@
+import { execFile } from "node:child_process";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { networkInterfaces, tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, dirname, join } from "node:path";
+import { promisify } from "node:util";
 /* global AbortController, AbortSignal, fetch, setTimeout */
 
 import {
   BoundedIdempotencyRegistry,
   ControlApiError,
   createControlApiClient,
+  verifyControlPathUserOnly,
 } from "@aseos/platform";
 import { describe, expect, test } from "vitest";
 
@@ -19,6 +22,8 @@ import {
   tokenAclEvidence,
   withControlApi,
 } from "./helpers.mjs";
+
+const execFileAsync = promisify(execFile);
 
 describe("P1-V07 authenticated loopback Control API", () => {
   test("binds only to the IPv4 loopback endpoint and rejects Host, Origin and unauthenticated access", async () => {
@@ -160,6 +165,28 @@ describe("P1-V07 authenticated loopback Control API", () => {
         else process.env.SystemRoot = originalSystemRoot;
         await rm(hostileDirectory, { force: true, recursive: true });
       }
+    },
+  );
+
+  test.skipIf(process.platform !== "win32")(
+    "fails closed when token inheritance is enabled after secure creation",
+    async () => {
+      await withControlApi(async ({ runtime }) => {
+        const report = process.report.getReport();
+        const kernel32 = report.sharedObjects.find(
+          (path) =>
+            basename(path).toLowerCase() === "kernel32.dll" &&
+            basename(dirname(path)).toLowerCase() === "system32",
+        );
+        expect(kernel32).toBeTypeOf("string");
+        await execFileAsync(join(dirname(kernel32), "icacls.exe"), [
+          runtime.tokenFilePath,
+          "/inheritance:e",
+        ]);
+        await expect(verifyControlPathUserOnly(runtime.tokenFilePath)).rejects.toMatchObject({
+          code: "CONTROL_TOKEN_ACL_UNSAFE",
+        });
+      });
     },
   );
 

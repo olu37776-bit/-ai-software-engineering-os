@@ -1,14 +1,10 @@
 /* global TextDecoder, clearTimeout, fetch, setTimeout */
-import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import { request } from "node:http";
-import { tmpdir, userInfo } from "node:os";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { promisify } from "node:util";
 
-import { startControlApi } from "@aseos/platform";
-
-const execFileAsync = promisify(execFile);
+import { startControlApi, verifyControlPathUserOnly } from "@aseos/platform";
 
 export async function withControlApi(run, options = {}) {
   const dataRoot = await mkdtemp(join(tmpdir(), "aseos-p1-v07-"));
@@ -79,20 +75,11 @@ export async function tokenAclEvidence(path) {
       mode: (metadata.mode & 0o777).toString(8).padStart(3, "0"),
     };
   }
-  const icacls = join(process.env.SystemRoot ?? "C:\\Windows", "System32", "icacls.exe");
-  const { stdout } = await execFileAsync(icacls, [path], {
-    windowsHide: true,
-    timeout: 5_000,
-    maxBuffer: 64 * 1024,
-  });
-  const normalized = stdout.toLowerCase();
+  await verifyControlPathUserOnly(path);
   return {
     platform: process.platform,
-    userOnly:
-      normalized.includes(userInfo().username.toLowerCase()) &&
-      !normalized.includes("everyone:") &&
-      !normalized.includes("authenticated users:"),
-    acl: stdout.trim(),
+    userOnly: true,
+    verification: "LIVE_HANDLE_OWNER_AND_PROTECTED_DACL",
   };
 }
 

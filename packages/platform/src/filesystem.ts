@@ -190,37 +190,335 @@ async function currentWindowsSid(): Promise<string> {
   return sid;
 }
 
-const WINDOWS_ACL_VERIFICATION_SCRIPT = [
+const WINDOWS_ACL_NATIVE_SOURCE = String.raw`
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Cryptography;
+using System.Security.Principal;
+using System.Text;
+using Microsoft.Win32.SafeHandles;
+
+public static class AseosWindowsTokenFile
+{
+    private const uint GENERIC_READ = 0x80000000;
+    private const uint GENERIC_WRITE = 0x40000000;
+    private const uint READ_CONTROL = 0x00020000;
+    private const uint DELETE = 0x00010000;
+    private const uint FILE_SHARE_READ = 0x00000001;
+    private const uint FILE_SHARE_WRITE = 0x00000002;
+    private const uint FILE_SHARE_DELETE = 0x00000004;
+    private const uint CREATE_NEW = 1;
+    private const uint OPEN_EXISTING = 3;
+    private const uint FILE_ATTRIBUTE_DIRECTORY = 0x00000010;
+    private const uint FILE_ATTRIBUTE_REPARSE_POINT = 0x00000400;
+    private const uint FILE_ATTRIBUTE_NORMAL = 0x00000080;
+    private const uint FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
+    private const uint FILE_FLAG_OPEN_REPARSE_POINT = 0x00200000;
+    private const uint OWNER_SECURITY_INFORMATION = 0x00000001;
+    private const uint DACL_SECURITY_INFORMATION = 0x00000004;
+    private const int SE_FILE_OBJECT = 1;
+    private const int FILE_DISPOSITION_INFO_CLASS = 4;
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct SECURITY_ATTRIBUTES
+    {
+        public int nLength;
+        public IntPtr lpSecurityDescriptor;
+        [MarshalAs(UnmanagedType.Bool)] public bool bInheritHandle;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct BY_HANDLE_FILE_INFORMATION
+    {
+        public uint dwFileAttributes;
+        public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
+        public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
+        public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
+        public uint dwVolumeSerialNumber;
+        public uint nFileSizeHigh;
+        public uint nFileSizeLow;
+        public uint nNumberOfLinks;
+        public uint nFileIndexHigh;
+        public uint nFileIndexLow;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct FILE_DISPOSITION_INFO
+    {
+        [MarshalAs(UnmanagedType.Bool)] public bool DeleteFile;
+    }
+
+    [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern bool ConvertStringSecurityDescriptorToSecurityDescriptorW(
+        string stringSecurityDescriptor,
+        uint stringSDRevision,
+        out IntPtr securityDescriptor,
+        out uint securityDescriptorSize);
+
+    [DllImport("advapi32.dll", SetLastError = true)]
+    private static extern uint GetSecurityInfo(
+        SafeFileHandle handle,
+        int objectType,
+        uint securityInfo,
+        out IntPtr owner,
+        out IntPtr group,
+        out IntPtr dacl,
+        out IntPtr sacl,
+        out IntPtr securityDescriptor);
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern SafeFileHandle CreateFileW(
+        string fileName,
+        uint desiredAccess,
+        uint shareMode,
+        ref SECURITY_ATTRIBUTES securityAttributes,
+        uint creationDisposition,
+        uint flagsAndAttributes,
+        IntPtr templateFile);
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern SafeFileHandle CreateFileW(
+        string fileName,
+        uint desiredAccess,
+        uint shareMode,
+        IntPtr securityAttributes,
+        uint creationDisposition,
+        uint flagsAndAttributes,
+        IntPtr templateFile);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool WriteFile(
+        SafeFileHandle file,
+        byte[] buffer,
+        uint bytesToWrite,
+        out uint bytesWritten,
+        IntPtr overlapped);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool FlushFileBuffers(SafeFileHandle file);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool GetFileInformationByHandle(
+        SafeFileHandle file,
+        out BY_HANDLE_FILE_INFORMATION information);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool SetFileInformationByHandle(
+        SafeFileHandle file,
+        int fileInformationClass,
+        ref FILE_DISPOSITION_INFO information,
+        uint bufferSize);
+
+    [DllImport("advapi32.dll")]
+    private static extern uint GetSecurityDescriptorLength(IntPtr securityDescriptor);
+
+    [DllImport("kernel32.dll")]
+    private static extern IntPtr LocalFree(IntPtr memory);
+
+    private static Exception Win32(string operation)
+    {
+        return new Win32Exception(Marshal.GetLastWin32Error(), operation);
+    }
+
+    private static void ValidateIdentity(string sid)
+    {
+        SecurityIdentifier identity = new SecurityIdentifier(sid);
+        if (!String.Equals(identity.Value, sid, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("SID_NOT_CANONICAL");
+        SecurityIdentifier processIdentity = WindowsIdentity.GetCurrent().User;
+        if (processIdentity == null || !String.Equals(processIdentity.Value, identity.Value, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("PROCESS_SID_MISMATCH");
+    }
+
+    private static void VerifyHandle(SafeFileHandle handle, string sid, bool directory)
+    {
+        BY_HANDLE_FILE_INFORMATION information;
+        if (!GetFileInformationByHandle(handle, out information)) throw Win32("GetFileInformationByHandle");
+        if ((information.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0)
+            throw new InvalidOperationException("REPARSE_POINT_REJECTED");
+        bool actualDirectory = (information.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+        if (actualDirectory != directory) throw new InvalidOperationException("FILE_TYPE_MISMATCH");
+
+        IntPtr owner;
+        IntPtr group;
+        IntPtr dacl;
+        IntPtr sacl;
+        IntPtr descriptor;
+        uint result = GetSecurityInfo(
+            handle,
+            SE_FILE_OBJECT,
+            OWNER_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION,
+            out owner,
+            out group,
+            out dacl,
+            out sacl,
+            out descriptor);
+        if (result != 0) throw new Win32Exception((int)result, "GetSecurityInfo");
+        try
+        {
+            uint length = GetSecurityDescriptorLength(descriptor);
+            if (length == 0 || length > 65536) throw new InvalidOperationException("SECURITY_DESCRIPTOR_SIZE_INVALID");
+            byte[] bytes = new byte[length];
+            Marshal.Copy(descriptor, bytes, 0, (int)length);
+            RawSecurityDescriptor raw = new RawSecurityDescriptor(bytes, 0);
+            if (raw.Owner == null || !String.Equals(raw.Owner.Value, sid, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("OWNER_SID_MISMATCH");
+            if ((raw.ControlFlags & ControlFlags.DiscretionaryAclProtected) == 0)
+                throw new InvalidOperationException("DACL_NOT_PROTECTED");
+            if ((raw.ControlFlags & ControlFlags.DiscretionaryAclDefaulted) != 0)
+                throw new InvalidOperationException("DACL_DEFAULTED");
+            if ((raw.ControlFlags & ControlFlags.DiscretionaryAclPresent) == 0 || raw.DiscretionaryAcl == null)
+                throw new InvalidOperationException("DACL_MISSING");
+            if (raw.DiscretionaryAcl.Count != 1) throw new InvalidOperationException("DACL_RULE_COUNT_MISMATCH");
+            CommonAce ace = raw.DiscretionaryAcl[0] as CommonAce;
+            AceFlags expectedFlags = directory
+                ? AceFlags.ContainerInherit | AceFlags.ObjectInherit
+                : AceFlags.None;
+            if (ace == null || ace.AceQualifier != AceQualifier.AccessAllowed || ace.AceFlags != expectedFlags)
+                throw new InvalidOperationException("DACL_ACE_SHAPE_MISMATCH");
+            if (ace.SecurityIdentifier == null || !String.Equals(ace.SecurityIdentifier.Value, sid, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("DACL_SID_MISMATCH");
+            if (ace.AccessMask != (int)FileSystemRights.FullControl)
+                throw new InvalidOperationException("DACL_NOT_FULL_CONTROL");
+        }
+        finally
+        {
+            if (descriptor != IntPtr.Zero) LocalFree(descriptor);
+        }
+    }
+
+    public static void Verify(string path, string sid, bool directory)
+    {
+        ValidateIdentity(sid);
+        uint flags = FILE_FLAG_OPEN_REPARSE_POINT | (directory ? FILE_FLAG_BACKUP_SEMANTICS : 0);
+        using (SafeFileHandle handle = CreateFileW(
+            path,
+            READ_CONTROL,
+            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+            IntPtr.Zero,
+            OPEN_EXISTING,
+            flags,
+            IntPtr.Zero))
+        {
+            if (handle.IsInvalid) throw Win32("CreateFile(verify)");
+            VerifyHandle(handle, sid, directory);
+        }
+    }
+
+    public static string Create(string path, string sid)
+    {
+        ValidateIdentity(sid);
+        DeleteExistingSecure(path, sid);
+        IntPtr descriptor = IntPtr.Zero;
+        uint descriptorSize;
+        string sddl = "O:" + sid + "D:P(A;;FA;;;" + sid + ")";
+        if (!ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, 1, out descriptor, out descriptorSize))
+            throw Win32("ConvertStringSecurityDescriptorToSecurityDescriptor");
+        try
+        {
+            SECURITY_ATTRIBUTES attributes = new SECURITY_ATTRIBUTES();
+            attributes.nLength = Marshal.SizeOf(typeof(SECURITY_ATTRIBUTES));
+            attributes.lpSecurityDescriptor = descriptor;
+            attributes.bInheritHandle = false;
+            SafeFileHandle handle = CreateFileW(
+                path,
+                GENERIC_READ | GENERIC_WRITE | READ_CONTROL | DELETE,
+                0,
+                ref attributes,
+                CREATE_NEW,
+                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OPEN_REPARSE_POINT,
+                IntPtr.Zero);
+            try
+            {
+                if (handle.IsInvalid) throw Win32("CreateFile(create)");
+                VerifyHandle(handle, sid, false);
+                byte[] random = new byte[32];
+                using (RandomNumberGenerator generator = RandomNumberGenerator.Create()) generator.GetBytes(random);
+                string token = Convert.ToBase64String(random).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+                byte[] content = Encoding.UTF8.GetBytes(token + "\n");
+                uint written;
+                if (!WriteFile(handle, content, (uint)content.Length, out written, IntPtr.Zero)) throw Win32("WriteFile");
+                if (written != content.Length) throw new InvalidOperationException("TOKEN_WRITE_INCOMPLETE");
+                if (!FlushFileBuffers(handle)) throw Win32("FlushFileBuffers");
+                VerifyHandle(handle, sid, false);
+                return token;
+            }
+            catch
+            {
+                if (handle != null && !handle.IsInvalid && !handle.IsClosed)
+                {
+                    FILE_DISPOSITION_INFO disposition = new FILE_DISPOSITION_INFO();
+                    disposition.DeleteFile = true;
+                    SetFileInformationByHandle(
+                        handle,
+                        FILE_DISPOSITION_INFO_CLASS,
+                        ref disposition,
+                        (uint)Marshal.SizeOf(typeof(FILE_DISPOSITION_INFO)));
+                }
+                throw;
+            }
+            finally
+            {
+                if (handle != null) handle.Dispose();
+            }
+        }
+        finally
+        {
+            if (descriptor != IntPtr.Zero) LocalFree(descriptor);
+        }
+    }
+
+    private static void DeleteExistingSecure(string path, string sid)
+    {
+        using (SafeFileHandle handle = CreateFileW(
+            path,
+            READ_CONTROL | DELETE,
+            0,
+            IntPtr.Zero,
+            OPEN_EXISTING,
+            FILE_FLAG_OPEN_REPARSE_POINT,
+            IntPtr.Zero))
+        {
+            if (handle.IsInvalid)
+            {
+                int error = Marshal.GetLastWin32Error();
+                if (error == 2 || error == 3) return;
+                throw new Win32Exception(error, "CreateFile(stale-token)");
+            }
+            VerifyHandle(handle, sid, false);
+            FILE_DISPOSITION_INFO disposition = new FILE_DISPOSITION_INFO();
+            disposition.DeleteFile = true;
+            if (!SetFileInformationByHandle(
+                handle,
+                FILE_DISPOSITION_INFO_CLASS,
+                ref disposition,
+                (uint)Marshal.SizeOf(typeof(FILE_DISPOSITION_INFO))))
+                throw Win32("SetFileInformationByHandle(stale-token)");
+        }
+    }
+}
+`;
+
+const WINDOWS_ACL_NATIVE_COMMAND = [
   "$ErrorActionPreference = 'Stop'",
-  "$target = $env:ASEOS_ACL_TARGET",
-  "$expectedSid = $env:ASEOS_ACL_SID",
+  "$source = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($env:ASEOS_ACL_SOURCE))",
+  "Add-Type -TypeDefinition $source",
   "$directory = $env:ASEOS_ACL_DIRECTORY -eq 'true'",
-  "$sections = [System.Security.AccessControl.AccessControlSections]::Owner -bor [System.Security.AccessControl.AccessControlSections]::Access",
-  "$acl = if ($directory) { [System.IO.DirectoryInfo]::new($target).GetAccessControl($sections) } else { [System.IO.FileInfo]::new($target).GetAccessControl($sections) }",
-  "$owner = $acl.GetOwner([System.Security.Principal.SecurityIdentifier]).Value",
-  "if ($owner -ne $expectedSid) { throw 'OWNER_SID_MISMATCH' }",
-  "if (-not $acl.AreAccessRulesProtected) { throw 'DACL_NOT_PROTECTED' }",
-  "$rules = @($acl.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier]))",
-  "if ($rules.Count -ne 1) { throw 'DACL_RULE_COUNT_MISMATCH' }",
-  "$rule = $rules[0]",
-  "if ($rule.IdentityReference.Value -ne $expectedSid) { throw 'DACL_SID_MISMATCH' }",
-  "if ($rule.AccessControlType -ne [System.Security.AccessControl.AccessControlType]::Allow) { throw 'DACL_NOT_ALLOW' }",
-  "if ($rule.FileSystemRights -ne [System.Security.AccessControl.FileSystemRights]::FullControl) { throw 'DACL_NOT_FULL_CONTROL' }",
-  "if ($rule.IsInherited) { throw 'DACL_RULE_INHERITED' }",
-  "$expectedInheritance = if ($directory) { [System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit } else { [System.Security.AccessControl.InheritanceFlags]::None }",
-  "if ($rule.InheritanceFlags -ne $expectedInheritance) { throw 'DACL_INHERITANCE_MISMATCH' }",
-  "if ($rule.PropagationFlags -ne [System.Security.AccessControl.PropagationFlags]::None) { throw 'DACL_PROPAGATION_MISMATCH' }",
-  "[Console]::Out.Write('ASEOS_ACL_OK')",
+  "if ($env:ASEOS_ACL_MODE -eq 'create') { [Console]::Out.Write([AseosWindowsTokenFile]::Create($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID)) } else { [AseosWindowsTokenFile]::Verify($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID, $directory); [Console]::Out.Write('ASEOS_ACL_OK') }",
 ].join("; ");
 
-async function assertWindowsUserOnlyAcl(
+async function invokeWindowsAclNative(
+  mode: "create" | "verify",
   path: string,
   sid: string,
   requireChildInheritance: boolean,
-): Promise<void> {
+): Promise<string> {
   const systemDirectory = windowsSystemDirectory();
   const systemRoot = dirname(systemDirectory);
-  const encodedCommand = Buffer.from(WINDOWS_ACL_VERIFICATION_SCRIPT, "utf16le").toString("base64");
+  const trustedTemporaryDirectory = requireChildInheritance ? path : dirname(path);
+  const encodedCommand = Buffer.from(WINDOWS_ACL_NATIVE_COMMAND, "utf16le").toString("base64");
   const { stdout } = await execFileAsync(
     windowsSystemExecutable("WindowsPowerShell\\v1.0\\powershell.exe"),
     ["-NoLogo", "-NoProfile", "-NonInteractive", "-EncodedCommand", encodedCommand],
@@ -235,17 +533,25 @@ async function assertWindowsUserOnlyAcl(
         PATH: systemDirectory,
         PATHEXT: ".COM;.EXE;.BAT;.CMD",
         ComSpec: join(systemDirectory, "cmd.exe"),
-        TEMP: process.env["TEMP"],
-        TMP: process.env["TMP"],
-        USERPROFILE: process.env["USERPROFILE"],
-        APPDATA: process.env["APPDATA"],
-        LOCALAPPDATA: process.env["LOCALAPPDATA"],
+        TEMP: trustedTemporaryDirectory,
+        TMP: trustedTemporaryDirectory,
+        ASEOS_ACL_MODE: mode,
+        ASEOS_ACL_SOURCE: Buffer.from(WINDOWS_ACL_NATIVE_SOURCE, "utf8").toString("base64"),
         ASEOS_ACL_TARGET: path,
         ASEOS_ACL_SID: sid,
         ASEOS_ACL_DIRECTORY: requireChildInheritance ? "true" : "false",
       },
     },
   );
+  return stdout;
+}
+
+async function assertWindowsUserOnlyAcl(
+  path: string,
+  sid: string,
+  requireChildInheritance: boolean,
+): Promise<void> {
+  const stdout = await invokeWindowsAclNative("verify", path, sid, requireChildInheritance);
   if (stdout !== "ASEOS_ACL_OK") {
     throw new Error("ACL verification did not produce the exact success marker");
   }
@@ -294,27 +600,15 @@ async function assertPosixUserOnly(path: string): Promise<void> {
   }
 }
 
-async function replaceWindowsTokenAtomically(path: string, content: string): Promise<void> {
+async function createWindowsTokenAtomically(path: string): Promise<string> {
   const parent = dirname(path);
   await mkdir(parent, { recursive: true, mode: 0o700 });
   const sid = await currentWindowsSid();
   await applyWindowsUserOnlyAcl(parent, sid, true);
-  const temporary = `${path}.${String(process.pid)}.${randomBytes(8).toString("hex")}.tmp`;
-  try {
-    await writeFile(temporary, "", { encoding: "utf8", flag: "wx", mode: 0o600 });
-    await applyWindowsUserOnlyAcl(temporary, sid, false, false);
-    const handle = await open(temporary, "r+");
-    try {
-      await handle.writeFile(content, { encoding: "utf8" });
-      await handle.sync();
-    } finally {
-      await handle.close();
-    }
-    await rename(temporary, path);
-    await assertWindowsUserOnlyAcl(path, sid, false);
-  } finally {
-    await rm(temporary, { force: true });
-  }
+  const token = await invokeWindowsAclNative("create", path, sid, false);
+  if (!TOKEN_PATTERN.test(token)) throw new Error("Native token creation returned invalid output");
+  await assertWindowsUserOnlyAcl(path, sid, false);
+  return token;
 }
 
 export async function verifyControlPathUserOnly(path: string): Promise<void> {
@@ -333,18 +627,17 @@ export async function verifyControlPathUserOnly(path: string): Promise<void> {
 }
 
 export async function createSecureToken(path: string): Promise<string> {
-  const token = randomBytes(32).toString("base64url");
   try {
     if (process.platform === "win32") {
-      await replaceWindowsTokenAtomically(path, `${token}\n`);
-    } else {
-      await replaceAtomically(path, `${token}\n`, 0o600);
-      await chmod(path, 0o600);
-      await assertPosixUserOnly(path);
+      return await createWindowsTokenAtomically(path);
     }
+    const token = randomBytes(32).toString("base64url");
+    await replaceAtomically(path, `${token}\n`, 0o600);
+    await chmod(path, 0o600);
+    await assertPosixUserOnly(path);
     return token;
   } catch (error) {
-    await rm(path, { force: true });
+    if (process.platform !== "win32") await rm(path, { force: true });
     if (error instanceof ControlApiError) throw error;
     throw new ControlApiError(
       "CONTROL_TOKEN_CREATE_FAILED",
