@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O06-P1-V07-WINDOWS-NATIVE-ACL-REMEDIATION-2026-09-01-01",
+  "evidenceType": "P1V07ControlApiRemediationEvidence",
+  "gateStepId": "P1-V07-CONTROL-API",
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-09-01T01:06:00Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "pullRequest": 78,
+    "branch": "remediation/p1-o06-windows-acl-native",
+    "authorizedBase": "aab42064396c5fa6df87f6a89e18c4df5f40f1a1",
+    "qualifiedImplementationCommit": "1a3a797204bec2a63a52499fb9fd0c3252503cda",
+    "qualifiedImplementationTree": "ef866b1fb9689bc63861e24d8cc96a83b3317f18"
+  },
+  "finding": {
+    "findingId": "P1-O06-POST-MERGE-WINDOWS-ACL-COLD-START",
+    "class": "WINDOWS_RUNNER_ACL_TOOL_STARTUP_TIMEOUT",
+    "result": "CLOSED",
+    "failedWorkflowRunId": 33455381310,
+    "failedWindowsJobId": 99695828911,
+    "observedFailure": "PowerShell ACL application exceeded the five-second fail-closed operation budget on the protected-main Windows runner.",
+    "resolution": "Control token ACL creation and verification now invoke absolute System32 whoami.exe and icacls.exe paths without a shell or PowerShell runtime. The strict current-user-only, FullControl, no-inheritance verification remains authoritative."
+  },
+  "securityBoundary": {
+    "result": "PASS",
+    "executableResolution": "ABSOLUTE_SYSTEMROOT_SYSTEM32",
+    "shell": false,
+    "pathSearch": false,
+    "currentUserExplicitFullControl": true,
+    "inheritedAccessRemoved": true,
+    "directoryChildInheritanceRequired": true,
+    "otherPrincipalsRejected": true,
+    "failureCode": "CONTROL_TOKEN_ACL_UNSAFE"
+  },
+  "adversarialQualification": {
+    "result": "PASS",
+    "hostileWorkingDirectory": true,
+    "hostilePath": true,
+    "fakeWhoamiExecutable": true,
+    "fakeIcaclsExecutable": true,
+    "absoluteSystemToolsUsed": true,
+    "tokenAcl": "CURRENT_USER_ONLY_NO_INHERITANCE"
+  },
+  "qualification": {
+    "result": "PASS",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "fullQuality": "PASS",
+    "rootTestFilesPassed": 37,
+    "rootTestsPassed": 278,
+    "rootTestsFailed": 0,
+    "architectureTestsPassed": 9,
+    "focusedControlApiTestsPassed": 16,
+    "platformTestsPassed": 3,
+    "p1V03Contracts": "PASS",
+    "p1V04Architecture": "PASS",
+    "p1V07ControlApi": "PASS",
+    "p1V08Isolation": "PASS",
+    "frozenOfflineInstall": "PASS",
+    "localWindowsX64": "PASS"
+  },
+  "independentVerification": {
+    "required": true,
+    "performed": true,
+    "result": "PASS",
+    "reviewedImplementationCommit": "1a3a797204bec2a63a52499fb9fd0c3252503cda",
+    "reviewedImplementationTree": "ef866b1fb9689bc63861e24d8cc96a83b3317f18",
+    "reviewFocus": [
+      "Windows ACL fail-closed behavior",
+      "PATH and working-directory injection",
+      "icacls argument semantics and partial-failure cleanup",
+      "P1-O06 write scope"
+    ]
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "phase1Verified": false,
+    "productionWorkflowRuntimeImplemented": false,
+    "durableOperationSemanticsImplemented": false,
+    "authoritativeEventJournalImplemented": false,
+    "remoteBindingAuthorized": false
+  },
+  "remainingGaps": [
+    "Qualify the immutable Evidence head on Linux and Windows under the required verify authority.",
+    "Merge the exact reviewed head and complete protected-main post-merge verification."
+  ]
+}
