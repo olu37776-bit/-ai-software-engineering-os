@@ -73,46 +73,6 @@
       "adrRefs": []
     },
     {
-      "contractId": "aseos.isolation.isolation-capability-report",
-      "canonicalName": "IsolationCapabilityReport",
-      "domain": "isolation",
-      "canonicalOwner": "packages/contracts",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/isolation/isolation-capability-report.schema.json",
-      "adrRefs": [
-        "ADR-0010"
-      ]
-    },
-    {
-      "contractId": "aseos.isolation.isolation-evidence",
-      "canonicalName": "IsolationEvidence",
-      "domain": "isolation",
-      "canonicalOwner": "packages/evidence",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/isolation/isolation-evidence.schema.json",
-      "adrRefs": [
-        "ADR-0010"
-      ]
-    },
-    {
-      "contractId": "aseos.isolation.isolation-requirement",
-      "canonicalName": "IsolationRequirement",
-      "domain": "isolation",
-      "canonicalOwner": "packages/contracts",
-      "contractKind": "JSON_SCHEMA",
-      "priority": "P1",
-      "phaseIntroduced": "PHASE_1",
-      "authorityPath": "packages/contracts/schemas/isolation/isolation-requirement.schema.json",
-      "adrRefs": [
-        "ADR-0010",
-        "ADR-0011"
-      ]
-    },
-    {
       "contractId": "aseos.knowledge.knowledge-query",
       "canonicalName": "KnowledgeQuery",
       "domain": "knowledge",

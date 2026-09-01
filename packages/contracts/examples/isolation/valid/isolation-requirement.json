@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "requirementId": "0198e0a1-0000-7000-8000-000000000701",
+  "capabilityId": "windows-process-restricted",
+  "minimumIsolationLevel": "PROCESS_RESTRICTED",
+  "requiredProviderFeatures": [
+    "JOB_OBJECT_KILL_ON_CLOSE",
+    "PROCESS_TREE_CONTAINMENT",
+    "CPU_LIMIT",
+    "MEMORY_LIMIT",
+    "PROCESS_COUNT_LIMIT",
+    "WALL_CLOCK_LIMIT",
+    "OUTPUT_LIMIT",
+    "ENVIRONMENT_ALLOWLIST",
+    "EXPLICIT_EXECUTABLE_AND_ARGV",
+    "STAGED_WORKING_DIRECTORY",
+    "CLOSED_STDIN",
+    "CONTROLLED_STANDARD_HANDLES",
+    "NO_SECRET_INHERITANCE"
+  ],
+  "budgets": {
+    "maxCpuTimeMs": 30000,
+    "maxMemoryBytes": 268435456,
+    "maxProcessCount": 8,
+    "maxWallClockMs": 60000,
+    "maxStdoutBytes": 1048576,
+    "maxStderrBytes": 1048576
+  },
+  "downgradeAllowed": false
+}

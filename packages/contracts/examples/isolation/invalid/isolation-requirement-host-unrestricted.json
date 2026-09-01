@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0.0",
+  "requirementId": "0198e0a1-0000-7000-8000-000000000702",
+  "capabilityId": "windows-process-restricted",
+  "minimumIsolationLevel": "HOST_UNRESTRICTED",
+  "requiredProviderFeatures": ["PROCESS_TREE_CONTAINMENT"],
+  "budgets": {
+    "maxCpuTimeMs": 30000,
+    "maxMemoryBytes": 268435456,
+    "maxProcessCount": 8,
+    "maxWallClockMs": 60000,
+    "maxStdoutBytes": 1048576,
+    "maxStderrBytes": 1048576
+  },
+  "downgradeAllowed": false
+}

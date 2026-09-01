@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:isolation-requirement:1.0.0",
+  "title": "IsolationRequirement",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "requirementId",
+    "capabilityId",
+    "minimumIsolationLevel",
+    "requiredProviderFeatures",
+    "budgets",
+    "downgradeAllowed"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "requirementId": {
+      "$ref": "urn:aseos:schema:common-identifiers:1.0.0#/$defs/uuidV7"
+    },
+    "capabilityId": {
+      "const": "windows-process-restricted"
+    },
+    "minimumIsolationLevel": {
+      "enum": ["PROCESS_RESTRICTED", "OS_SANDBOXED", "CONTAINER_ISOLATED", "REMOTE_ISOLATED"]
+    },
+    "requiredProviderFeatures": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "JOB_OBJECT_KILL_ON_CLOSE",
+          "PROCESS_TREE_CONTAINMENT",
+          "CPU_LIMIT",
+          "MEMORY_LIMIT",
+          "PROCESS_COUNT_LIMIT",
+          "WALL_CLOCK_LIMIT",
+          "OUTPUT_LIMIT",
+          "ENVIRONMENT_ALLOWLIST",
+          "EXPLICIT_EXECUTABLE_AND_ARGV",
+          "STAGED_WORKING_DIRECTORY",
+          "CLOSED_STDIN",
+          "CONTROLLED_STANDARD_HANDLES",
+          "NO_SECRET_INHERITANCE"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "budgets": {
+      "$ref": "urn:aseos:schema:isolation-requirement:1.0.0#/$defs/resourceBudgets"
+    },
+    "downgradeAllowed": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "resourceBudgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxCpuTimeMs",
+        "maxMemoryBytes",
+        "maxProcessCount",
+        "maxWallClockMs",
+        "maxStdoutBytes",
+        "maxStderrBytes"
+      ],
+      "properties": {
+        "maxCpuTimeMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxMemoryBytes": {
+          "type": "integer",
+          "minimum": 1048576
+        },
+        "maxProcessCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
+        },
+        "maxWallClockMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400000
+        },
+        "maxStdoutBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxStderrBytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

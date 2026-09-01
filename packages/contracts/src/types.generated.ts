@@ -212,6 +212,134 @@ export type InboxRecord = Readonly<{
   readonly status: "ACCEPTED" | "DUPLICATE" | "REJECTED";
   readonly taskId: string;
 }>;
+export type IsolationCapabilityReport = Readonly<{
+  readonly budgetSupport: Readonly<{
+    readonly cpuTime: boolean;
+    readonly memory: boolean;
+    readonly processCount: boolean;
+    readonly stderr: boolean;
+    readonly stdout: boolean;
+    readonly wallClock: boolean;
+  }>;
+  readonly capabilityId: "windows-process-restricted";
+  readonly capabilityVersion: "1.0.0";
+  readonly guarantees: Readonly<{
+    readonly filesystemAccessDenied: false;
+    readonly networkAccessDenied: false;
+    readonly processTreeLifecycleContained: boolean;
+    readonly registryAccessDenied: false;
+    readonly resourceBudgetsEnforced: boolean;
+    readonly securitySandbox: false;
+  }>;
+  readonly isolationLevel: "PROCESS_RESTRICTED";
+  readonly platform: "win32" | "linux" | "darwin";
+  readonly probe: Readonly<{
+    readonly jobObjectAvailable: boolean;
+    readonly nestedProcessAssignmentSupported: boolean;
+    readonly performedAt: string;
+    readonly probeId: string;
+    readonly windowsBuild?: string;
+  }>;
+  readonly providerId: "aseos.windows-job-object";
+  readonly providerVersion: "1.0.0";
+  readonly reasonCodes: readonly string[];
+  readonly reportId: string;
+  readonly reportedAt: string;
+  readonly result: "AVAILABLE" | "UNAVAILABLE" | "PROBE_FAILED";
+  readonly schemaVersion: "1.0.0";
+}>;
+export type IsolationEvidence = Readonly<{
+  readonly budgets: Readonly<{
+    readonly maxCpuTimeMs: number;
+    readonly maxMemoryBytes: number;
+    readonly maxProcessCount: number;
+    readonly maxStderrBytes: number;
+    readonly maxStdoutBytes: number;
+    readonly maxWallClockMs: number;
+  }>;
+  readonly capabilityReportId: string;
+  readonly completedAt: string;
+  readonly downgradeOccurred: false;
+  readonly evidenceId: string;
+  readonly evidenceRefs: readonly SubjectRef[];
+  readonly executionId: string;
+  readonly guarantees: Readonly<{
+    readonly filesystemAccessDenied: false;
+    readonly networkAccessDenied: false;
+    readonly processTreeLifecycleContained: true;
+    readonly registryAccessDenied: false;
+    readonly resourceBudgetsEnforced: true;
+    readonly securitySandbox: false;
+  }>;
+  readonly probeId: string;
+  readonly processTree: Readonly<{
+    readonly activeProcessCountAfterCompletion: 0;
+    readonly descendantTerminationVerified: boolean;
+    readonly jobObjectAssigned: true;
+    readonly killOnJobClose: true;
+    readonly rootProcessId: number;
+  }>;
+  readonly providerId: "aseos.windows-job-object";
+  readonly providerVersion: "1.0.0";
+  readonly requirementId: string;
+  readonly result: Readonly<{
+    readonly exitCode?: number;
+    readonly outcome: "SUCCEEDED" | "FAILED" | "CANCELLED" | "TIMED_OUT";
+    readonly processTreeTerminated: true;
+    readonly reasonCodes: readonly string[];
+    readonly terminationReason:
+      | "EXITED"
+      | "CANCELLED"
+      | "WALL_CLOCK_LIMIT"
+      | "CPU_LIMIT"
+      | "MEMORY_LIMIT"
+      | "PROCESS_COUNT_LIMIT"
+      | "OUTPUT_LIMIT";
+  }>;
+  readonly schemaVersion: "1.0.0";
+  readonly selectedIsolationLevel: "PROCESS_RESTRICTED";
+  readonly startedAt: string;
+  readonly taskId: string;
+  readonly usage: Readonly<{
+    readonly cpuTimeMs: number;
+    readonly memoryPeakBytes: number;
+    readonly processPeakCount: number;
+    readonly stderrBytes: number;
+    readonly stdoutBytes: number;
+    readonly wallClockMs: number;
+  }>;
+}>;
+export type IsolationRequirement = Readonly<{
+  readonly budgets: Readonly<{
+    readonly maxCpuTimeMs: number;
+    readonly maxMemoryBytes: number;
+    readonly maxProcessCount: number;
+    readonly maxStderrBytes: number;
+    readonly maxStdoutBytes: number;
+    readonly maxWallClockMs: number;
+  }>;
+  readonly capabilityId: "windows-process-restricted";
+  readonly downgradeAllowed: false;
+  readonly minimumIsolationLevel:
+    "PROCESS_RESTRICTED" | "OS_SANDBOXED" | "CONTAINER_ISOLATED" | "REMOTE_ISOLATED";
+  readonly requiredProviderFeatures: readonly (
+    | "JOB_OBJECT_KILL_ON_CLOSE"
+    | "PROCESS_TREE_CONTAINMENT"
+    | "CPU_LIMIT"
+    | "MEMORY_LIMIT"
+    | "PROCESS_COUNT_LIMIT"
+    | "WALL_CLOCK_LIMIT"
+    | "OUTPUT_LIMIT"
+    | "ENVIRONMENT_ALLOWLIST"
+    | "EXPLICIT_EXECUTABLE_AND_ARGV"
+    | "STAGED_WORKING_DIRECTORY"
+    | "CLOSED_STDIN"
+    | "CONTROLLED_STANDARD_HANDLES"
+    | "NO_SECRET_INHERITANCE"
+  )[];
+  readonly requirementId: string;
+  readonly schemaVersion: "1.0.0";
+}>;
 export type JournalAppendBatch = Readonly<{
   readonly audit: readonly Readonly<{
     readonly action: string;

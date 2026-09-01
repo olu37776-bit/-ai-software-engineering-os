@@ -193,6 +193,27 @@
       "examplesRequired": false
     },
     {
+      "schemaId": "urn:aseos:schema:isolation-capability-report:1.0.0",
+      "authorityPath": "packages/contracts/schemas/isolation/isolation-capability-report.schema.json",
+      "sha256": "6552770af08ec3add9e46b7eb3c3c82f6f4e3c47e71102d9f1983d8a0e418d62",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:isolation-evidence:1.0.0",
+      "authorityPath": "packages/contracts/schemas/isolation/isolation-evidence.schema.json",
+      "sha256": "a930da4ecbdc1b9ddabe444a580bb9853aa57cd4374d0ca8efcf66e77d70b9b3",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
+      "schemaId": "urn:aseos:schema:isolation-requirement:1.0.0",
+      "authorityPath": "packages/contracts/schemas/isolation/isolation-requirement.schema.json",
+      "sha256": "882826e06628869939c362aa66793976e1dda15f5e93452a361e98236764dcf9",
+      "category": "RUNTIME",
+      "examplesRequired": false
+    },
+    {
       "schemaId": "urn:aseos:schema:journal-append-batch:1.0.0",
       "authorityPath": "packages/contracts/schemas/persistence/journal-append-batch.schema.json",
       "sha256": "a6e38af5f603cfac956729358917615fdde3a2a7b404b3707bc4ebe8e60015a9",

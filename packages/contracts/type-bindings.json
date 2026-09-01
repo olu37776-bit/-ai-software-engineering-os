@@ -74,6 +74,18 @@
       "exportName": "InboxRecord"
     },
     {
+      "schemaId": "urn:aseos:schema:isolation-capability-report:1.0.0",
+      "exportName": "IsolationCapabilityReport"
+    },
+    {
+      "schemaId": "urn:aseos:schema:isolation-evidence:1.0.0",
+      "exportName": "IsolationEvidence"
+    },
+    {
+      "schemaId": "urn:aseos:schema:isolation-requirement:1.0.0",
+      "exportName": "IsolationRequirement"
+    },
+    {
       "schemaId": "urn:aseos:schema:journal-append-batch:1.0.0",
       "exportName": "JournalAppendBatch"
     },

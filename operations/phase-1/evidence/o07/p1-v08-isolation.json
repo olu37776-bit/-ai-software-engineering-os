@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O07-P1-V08-ISOLATION-2026-09-01-01",
+  "evidenceType": "P1V08IsolationImplementationEvidence",
+  "gateStepId": "P1-V08-ISOLATION",
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-09-01T00:05:55Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "pullRequest": 77,
+    "branch": "phase-1/p1-o07-windows-process-restricted-qualification-issue-71",
+    "authorizedBase": "c175ca2ba06ff35bddbcd1cca765af8972a06b76",
+    "qualifiedImplementationCommit": "3dae67633c29d9bb65e72290886ee96b93ad771a",
+    "qualifiedImplementationTree": "b9aa3e0e6b4747d437ceabcf2320ee6cd43c1a81"
+  },
+  "authorizationPreflight": {
+    "result": "PASS",
+    "mode": "OPERATION_EXECUTION",
+    "operationId": "P1-O07",
+    "writeScopeOperationId": "P1-O07",
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "operationStartGateRequired": true,
+    "operationStartGateDecision": "PASS",
+    "operationStartGateRelease": "RELEASED",
+    "operationStartGatePath": "operations/phase-1/evidence/o01/p1-o07-start-after-issue-71-independent-gate.json",
+    "immutableAuthorityFilesVerified": 25,
+    "changedPathsVerified": 43,
+    "scopeViolations": 0
+  },
+  "capabilityQualification": {
+    "result": "PASS",
+    "platform": "win32",
+    "capabilityId": "windows-process-restricted",
+    "capabilityVersion": "1.0.0",
+    "providerId": "aseos.windows-job-object",
+    "providerVersion": "1.0.0",
+    "isolationLevel": "PROCESS_RESTRICTED",
+    "probeExecuted": true,
+    "jobObjectAvailable": true,
+    "nestedProcessAssignmentSupported": true,
+    "nonWindowsFailClosed": true
+  },
+  "jobObjectLifecycle": {
+    "evidenceType": "JobObjectLifecycleResult",
+    "result": "PASS",
+    "createSuspendedBeforeAssignment": true,
+    "jobObjectAssignedBeforeResume": true,
+    "killOnJobClose": true,
+    "explicitHandleAllowlist": true,
+    "activeProcessCountAfterCompletion": 0,
+    "environmentAllowlist": "PASS",
+    "stagedUnicodeAndSpacePath": "PASS"
+  },
+  "processTreeTermination": {
+    "evidenceType": "ProcessTreeTerminationResult",
+    "result": "PASS",
+    "observedProcessCount": 3,
+    "rootChildGrandchildTerminated": true,
+    "timeoutTreeTermination": "PASS",
+    "cancellationTreeTermination": "PASS",
+    "activeProcessCountAfterCompletion": 0
+  },
+  "resourceBudgets": {
+    "result": "PASS",
+    "cpuTime": "ENFORCED",
+    "memory": "ENFORCED",
+    "processCount": "ENFORCED",
+    "wallClock": "ENFORCED",
+    "stdout": "ENFORCED",
+    "stderr": "ENFORCED",
+    "zeroOutputBudgetCanonical": true,
+    "outputLimitOutcome": "OUTPUT_LIMIT"
+  },
+  "authorityAndInputBoundary": {
+    "result": "PASS",
+    "trustedToolCatalog": "HOST_INJECTED_SEPARATE_ARGUMENT",
+    "taskJsonCanSelfAuthorizeExecutable": false,
+    "taskJsonCanSelfAuthorizeDigest": false,
+    "catalogPathVersionAndDigestPinned": true,
+    "bridgeLockedFileDigestVerified": true,
+    "renamedShellRejectedByPeIdentity": true,
+    "preCancelledRequestStarted": false,
+    "invalidUuidOrEvidenceRefsStarted": false,
+    "unknownOrAuthorityInjectingFieldsStarted": false,
+    "workerAdapterExactRequestBoundary": true
+  },
+  "noDowngrade": {
+    "evidenceType": "NoDowngradePropertyResult",
+    "result": "PASS",
+    "strongerMinimumsBlocked": ["OS_SANDBOXED", "CONTAINER_ISOLATED", "REMOTE_ISOLATED"],
+    "unavailableProcessRestrictedBlocked": true,
+    "hostUnrestrictedSelectable": false
+  },
+  "contractQualification": {
+    "result": "PASS",
+    "registryEntries": 52,
+    "activeInventoryContracts": 36,
+    "plannedInventoryContracts": 37,
+    "typeBindings": 40,
+    "schemaDraft": "JSON Schema 2020-12",
+    "isolationContractsActivated": 3,
+    "registryFirstSliceExamplesRequired": false,
+    "inventoryDedicatedExamplesRequired": true,
+    "dedicatedValidExamplesAccepted": 3,
+    "dedicatedInvalidExamplesRejected": 3,
+    "dedicatedIsolationFixturesRetained": 6,
+    "focusedContractTestsPassed": 11,
+    "lockedFirstSliceSuiteChanged": false,
+    "schemaAuthorityBytesChangedByCiRemediation": false,
+    "generatedTypesChangedByCiRemediation": false,
+    "runtimeValidationSemanticsChangedByCiRemediation": false,
+    "unknownPublicFields": "FAIL_CLOSED"
+  },
+  "qualification": {
+    "result": "PASS",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "lockfileSha256": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
+    "frozenOfflineInstall": "PASS",
+    "format": "PASS",
+    "lint": "PASS",
+    "generatedTypes": "PASS",
+    "typecheck": "PASS",
+    "rootTestFilesPassed": 37,
+    "rootTestsPassed": 277,
+    "rootTestsFailed": 0,
+    "architectureTestsPassed": 9,
+    "focusedIsolationTestsPassed": 21,
+    "adapterTestsPassed": 8,
+    "adapterTestsSkipped": 0,
+    "workerTestsPassed": 3,
+    "p1V03Contracts": "PASS",
+    "p1V04Architecture": "PASS",
+    "p1V08Isolation": "PASS",
+    "localM0ReadOnlyVerification": "PASS_14_OF_14",
+    "localWindowsX64": "PASS"
+  },
+  "authority": {
+    "result": "PASS",
+    "authorityLock": "PASS",
+    "authorityHashRefreshPaths": [
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json"
+    ],
+    "acceptedAdrMutations": 0,
+    "frozenGovernanceSemanticMutations": 0,
+    "workflowFilesChanged": 0
+  },
+  "remediationHistory": [
+    {
+      "findingId": "P1-O07-CI-01",
+      "class": "FIRST_SLICE_EXAMPLE_SUITE_AUTHORITY_ALIGNMENT",
+      "result": "CLOSED",
+      "failedRequiredVerifyRunId": 33445754961,
+      "failedRequiredVerifyJobId": 99664362782,
+      "resolution": "The three Isolation schemas retain six P1-O07-owned dedicated valid/invalid fixtures and 11 dedicated Contract tests, while their registry flags no longer claim enrollment in the separately locked P1-O02 first-slice example suite. Inventory example requirements remain true, the locked suite and schema authority bytes are unchanged, the schema-registry Authority Lock hash was refreshed transactionally, and the local M0 read-only verifier passes all 14 checks."
+    },
+    {
+      "findingId": "P1-O07-CI-02",
+      "class": "CROSS_PLATFORM_FAIL_CLOSED_PRECEDENCE_AND_DYNAMIC_PROBE_IDENTITY",
+      "result": "CLOSED",
+      "failedQualityRunId": 33446739752,
+      "failedLinuxJobId": 99667418916,
+      "resolution": "Canonical isolation requirements are validated before selection, stronger minimum levels are blocked independently of PROCESS_RESTRICTED provider availability, and canonical PROCESS_RESTRICTED requests still fail closed when the provider is unavailable. The non-Windows qualification reuses the exact probed capability and proves that an unavailable provider never resolves or launches a host tool, avoiding comparisons between separately generated probe UUIDs and timestamps."
+    },
+    {
+      "findingId": "P1-O07-CI-03",
+      "class": "WINDOWS_8_DOT_3_CANONICAL_PATH_IDENTITY",
+      "result": "CLOSED",
+      "failedQualityRunId": 33447683763,
+      "failedWindowsJobId": 99670336257,
+      "resolution": "The adapter continues to reject every symbolic-link or junction component and accepts an alternate Windows path spelling only when the source and real path identify the same filesystem object. Executable and staging paths are expanded to their long canonical identities before the bridge is invoked, while executable digest pinning and the bridge file lock and digest recheck remain mandatory. A Windows 8.3 regression inspects the staged bridge request and proves that only the long canonical executable identity is launched."
+    },
+    {
+      "findingId": "P1-O07-CI-04",
+      "class": "WINDOWS_CANCELLATION_READINESS_RACE",
+      "result": "CLOSED",
+      "failedQualityRunId": 33448795593,
+      "failedWindowsJobId": 99673778118,
+      "resolution": "Bridge cancellation now registers its listener before rechecking the AbortSignal and writes the cancellation marker idempotently, closing cancellations that occur before or during listener registration. The security qualification publishes a unique readiness marker only after the root, child and grandchild are active, then measures cancellation from that observable Job Object state without relaxing the five-second limit and proves all three processes exit."
+    },
+    {
+      "findingId": "P1-O07-CI-05",
+      "class": "WINDOWS_SHORT_PATH_FIXTURE_ARGUMENT_QUOTING",
+      "result": "CLOSED",
+      "failedQualityRunId": 33450920719,
+      "failedWindowsJobId": 99682667245,
+      "resolution": "The regression now calls Win32 GetShortPathNameW through a UTF-16LE PowerShell EncodedCommand instead of passing a quoted for command through cmd.exe argv serialization. This removes the malformed pseudo-path produced by the prior double quoting, preserves Unicode and spaces without shell interpolation, and keeps the adapter's existing same-filesystem-identity and no-reparse checks unchanged. The Windows adapter suite now exercises the real 8.3 executable and staging aliases with 8/8 tests and reports the complete typed result if the launch boundary fails."
+    },
+    {
+      "findingId": "P1-O07-LOCAL-01",
+      "class": "WINDOWS_TRANSIENT_FIXTURE_DELETE_SHARING",
+      "result": "CLOSED",
+      "resolution": "All fixture consumers use one bounded recursive cleanup with ten 100 ms retry increments for transient Windows delete-sharing races. Cleanup does not use force and does not catch the terminal error, so exhausted retries remain a qualification failure. Isolation qualification passed three consecutive runs and left no fixture process or temporary directory behind."
+    },
+    {
+      "findingId": "P1-O07-INDEPENDENT-REVIEW-01",
+      "class": "TRUSTED_TOOL_AUTHORITY_AND_RENAMED_SHELL_BYPASS",
+      "result": "CLOSED",
+      "resolution": "Executable path, version and SHA-256 now come only from a host-injected TrustedToolCatalog. The bridge locks the selected file, verifies its digest and rejects shell identities using PE OriginalFilename/InternalName before CreateProcessW."
+    },
+    {
+      "findingId": "P1-O07-INDEPENDENT-REVIEW-02",
+      "class": "PRE_CANCELLATION_AND_NON_CANONICAL_EVIDENCE",
+      "result": "CLOSED",
+      "resolution": "Pre-cancelled requests fail before probe, catalog lookup, staging or process creation. Exact runtime validation rejects invalid UUIDv7, empty or duplicate evidence refs, unknown fields and Contract budget drift before execution."
+    },
+    {
+      "findingId": "P1-O07-INDEPENDENT-REVIEW-03",
+      "class": "WORKER_ADAPTER_BOUNDARY_LEAK",
+      "result": "CLOSED",
+      "resolution": "The Worker imports the generated canonical IsolationRequirement and maps only exact Adapter request fields. A real Windows end-to-end test proves SELECTED to COMPLETED exit zero with canonical Evidence while unknown Worker metadata is not propagated."
+    },
+    {
+      "findingId": "P1-O07-INDEPENDENT-REVIEW-04",
+      "class": "QUALIFICATION_COMPOSITION_GAP",
+      "result": "CLOSED",
+      "resolution": "The root quality authority runs the Adapter and Worker package tests, including the real Worker execution regression, in addition to 277 root tests, 9 architecture tests, P1-V03, P1-V04, P1-V08 and frozen offline installation."
+    }
+  ],
+  "independentVerification": {
+    "required": true,
+    "performed": false,
+    "immutableReviewHead": "PENDING_EVIDENCE_PUBLICATION"
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "independentlyVerified": false,
+    "phase1Verified": false,
+    "productionWorkflowRuntimeImplemented": false,
+    "securitySandboxImplemented": false,
+    "filesystemDenialClaimed": false,
+    "registryDenialClaimed": false,
+    "networkDenialClaimed": false,
+    "osSandboxedImplemented": false,
+    "isolationDowngradeAuthorized": false
+  },
+  "remainingGaps": [
+    "Publish and qualify the immutable Evidence head on Linux and Windows under the unique required verify authority.",
+    "Obtain an independent read-only PASS verdict bound to the exact base and Evidence head.",
+    "Merge the exact reviewed head and complete protected-main post-merge verification."
+  ]
+}
