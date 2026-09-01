@@ -137,7 +137,7 @@ describe("P1-V07 authenticated loopback Control API", () => {
   });
 
   test.skipIf(process.platform !== "win32")(
-    "uses absolute System32 ACL tools when cwd and PATH contain hostile executable names",
+    "uses the absolute System32 security helper when cwd and PATH contain hostile executables",
     async () => {
       const hostileDirectory = await mkdtemp(join(tmpdir(), "aseos-hostile-system-tools-"));
       const originalCwd = process.cwd();
@@ -147,6 +147,7 @@ describe("P1-V07 authenticated loopback Control API", () => {
         await Promise.all([
           writeFile(join(hostileDirectory, "whoami.exe"), "not a Windows executable", "utf8"),
           writeFile(join(hostileDirectory, "icacls.exe"), "not a Windows executable", "utf8"),
+          writeFile(join(hostileDirectory, "powershell.exe"), "not a Windows executable", "utf8"),
         ]);
         process.chdir(hostileDirectory);
         process.env.PATH = hostileDirectory;
@@ -183,9 +184,17 @@ describe("P1-V07 authenticated loopback Control API", () => {
           runtime.tokenFilePath,
           "/inheritance:e",
         ]);
-        await expect(verifyControlPathUserOnly(runtime.tokenFilePath)).rejects.toMatchObject({
-          code: "CONTROL_TOKEN_ACL_UNSAFE",
-        });
+        try {
+          await expect(verifyControlPathUserOnly(runtime.tokenFilePath)).rejects.toMatchObject({
+            code: "CONTROL_TOKEN_ACL_UNSAFE",
+          });
+        } finally {
+          await execFileAsync(join(dirname(kernel32), "icacls.exe"), [
+            runtime.tokenFilePath,
+            "/inheritance:r",
+          ]);
+        }
+        await expect(verifyControlPathUserOnly(runtime.tokenFilePath)).resolves.toBeUndefined();
       });
     },
   );

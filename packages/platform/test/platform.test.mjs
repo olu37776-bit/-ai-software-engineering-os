@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { request } from "node:http";
 import { mkdtemp, readFile, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -15,6 +16,11 @@ import {
   startControlApi,
 } from "../dist/index.js";
 import { windowsCurrentUserSidFromWhoami } from "../dist/filesystem.js";
+import {
+  WIN32_TOKEN_HELPER_ASSEMBLY_BASE64,
+  WIN32_TOKEN_HELPER_ASSEMBLY_SHA256,
+  WIN32_TOKEN_HELPER_SOURCE_SHA256,
+} from "../dist/win32-token-helper.generated.js";
 
 const repositoryRoot = resolve(import.meta.dirname, "../../..");
 
@@ -34,6 +40,22 @@ test("Windows identity parsing binds one exact CSV record to a bounded numeric S
   assert.equal(windowsCurrentUserSidFromWhoami('"runneradmin","S-1-5-4294967296"\r\n'), undefined);
   assert.equal(windowsCurrentUserSidFromWhoami(`"header\r\nuser","${sid}"\r\n`), undefined);
   assert.equal(windowsCurrentUserSidFromWhoami(`"header\nuser","${sid}"\r\n`), undefined);
+});
+
+test("precompiled Windows token helper is bound to its auditable source and embedded bytes", async () => {
+  const source = await readFile(
+    resolve(repositoryRoot, "packages/platform/src/win32-token-helper.cs"),
+  );
+  const assembly = await readFile(
+    resolve(repositoryRoot, "packages/platform/src/win32-token-helper.dll"),
+  );
+  const embedded = Buffer.from(WIN32_TOKEN_HELPER_ASSEMBLY_BASE64, "base64");
+  assert.equal(createHash("sha256").update(source).digest("hex"), WIN32_TOKEN_HELPER_SOURCE_SHA256);
+  assert.equal(
+    createHash("sha256").update(assembly).digest("hex"),
+    WIN32_TOKEN_HELPER_ASSEMBLY_SHA256,
+  );
+  assert.deepEqual(embedded, assembly);
 });
 
 async function rawRequest(

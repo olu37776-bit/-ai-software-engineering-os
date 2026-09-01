@@ -1,11 +1,16 @@
 import { execFile } from "node:child_process";
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { basename, dirname, isAbsolute, join, parse, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 
 import { ControlApiError } from "./errors.js";
 import type { ControlEndpointDescriptor } from "./types.js";
+import {
+  WIN32_TOKEN_HELPER_ASSEMBLY_BASE64,
+  WIN32_TOKEN_HELPER_ASSEMBLY_SHA256,
+  WIN32_TOKEN_HELPER_SOURCE_SHA256,
+} from "./win32-token-helper.generated.js";
 
 const execFileAsync = promisify(execFile);
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/u;
@@ -35,7 +40,7 @@ function windowsSystemDirectory(): string {
 }
 
 function windowsSystemExecutable(
-  name: "icacls.exe" | "whoami.exe" | "WindowsPowerShell\\v1.0\\powershell.exe",
+  name: "whoami.exe" | "WindowsPowerShell\\v1.0\\powershell.exe",
 ): string {
   return join(windowsSystemDirectory(), name);
 }
@@ -244,10 +249,10 @@ public static class AseosWindowsTokenFile
         public uint nFileIndexLow;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct FILE_DISPOSITION_INFO
     {
-        [MarshalAs(UnmanagedType.Bool)] public bool DeleteFile;
+        [MarshalAs(UnmanagedType.U1)] public byte DeleteFile;
     }
 
     [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -410,7 +415,7 @@ public static class AseosWindowsTokenFile
     public static string Create(string path, string sid)
     {
         ValidateIdentity(sid);
-        DeleteExistingSecure(path, sid);
+        Delete(path, sid);
         IntPtr descriptor = IntPtr.Zero;
         uint descriptorSize;
         string sddl = "O:" + sid + "D:P(A;;FA;;;" + sid + ")";
@@ -450,7 +455,7 @@ public static class AseosWindowsTokenFile
                 if (handle != null && !handle.IsInvalid && !handle.IsClosed)
                 {
                     FILE_DISPOSITION_INFO disposition = new FILE_DISPOSITION_INFO();
-                    disposition.DeleteFile = true;
+                    disposition.DeleteFile = 1;
                     SetFileInformationByHandle(
                         handle,
                         FILE_DISPOSITION_INFO_CLASS,
@@ -470,8 +475,9 @@ public static class AseosWindowsTokenFile
         }
     }
 
-    private static void DeleteExistingSecure(string path, string sid)
+    public static void Delete(string path, string sid)
     {
+        ValidateIdentity(sid);
         using (SafeFileHandle handle = CreateFileW(
             path,
             READ_CONTROL | DELETE,
@@ -485,17 +491,17 @@ public static class AseosWindowsTokenFile
             {
                 int error = Marshal.GetLastWin32Error();
                 if (error == 2 || error == 3) return;
-                throw new Win32Exception(error, "CreateFile(stale-token)");
+                throw new Win32Exception(error, "CreateFile(delete-token)");
             }
             VerifyHandle(handle, sid, false);
             FILE_DISPOSITION_INFO disposition = new FILE_DISPOSITION_INFO();
-            disposition.DeleteFile = true;
+            disposition.DeleteFile = 1;
             if (!SetFileInformationByHandle(
                 handle,
                 FILE_DISPOSITION_INFO_CLASS,
                 ref disposition,
                 (uint)Marshal.SizeOf(typeof(FILE_DISPOSITION_INFO))))
-                throw Win32("SetFileInformationByHandle(stale-token)");
+                throw Win32("SetFileInformationByHandle(delete-token)");
         }
     }
 }
@@ -503,21 +509,28 @@ public static class AseosWindowsTokenFile
 
 const WINDOWS_ACL_NATIVE_COMMAND = [
   "$ErrorActionPreference = 'Stop'",
-  "$source = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($env:ASEOS_ACL_SOURCE))",
-  "Add-Type -TypeDefinition $source",
+  "$assembly = [Reflection.Assembly]::Load([Convert]::FromBase64String($env:ASEOS_ACL_ASSEMBLY))",
+  "$type = $assembly.GetType('AseosWindowsTokenFile', $true)",
   "$directory = $env:ASEOS_ACL_DIRECTORY -eq 'true'",
-  "if ($env:ASEOS_ACL_MODE -eq 'create') { [Console]::Out.Write([AseosWindowsTokenFile]::Create($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID)) } else { [AseosWindowsTokenFile]::Verify($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID, $directory); [Console]::Out.Write('ASEOS_ACL_OK') }",
+  "if ($env:ASEOS_ACL_MODE -eq 'create') { $result = $type.GetMethod('Create').Invoke($null, [object[]]@($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID)); [Console]::Out.Write([string]$result) } elseif ($env:ASEOS_ACL_MODE -eq 'delete') { $null = $type.GetMethod('Delete').Invoke($null, [object[]]@($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID)); [Console]::Out.Write('ASEOS_ACL_OK') } else { $null = $type.GetMethod('Verify').Invoke($null, [object[]]@($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID, $directory)); [Console]::Out.Write('ASEOS_ACL_OK') }",
 ].join("; ");
 
 async function invokeWindowsAclNative(
-  mode: "create" | "verify",
+  mode: "create" | "delete" | "verify",
   path: string,
   sid: string,
   requireChildInheritance: boolean,
 ): Promise<string> {
   const systemDirectory = windowsSystemDirectory();
   const systemRoot = dirname(systemDirectory);
-  const trustedTemporaryDirectory = requireChildInheritance ? path : dirname(path);
+  const assembly = Buffer.from(WIN32_TOKEN_HELPER_ASSEMBLY_BASE64, "base64");
+  if (
+    createHash("sha256").update(assembly).digest("hex") !== WIN32_TOKEN_HELPER_ASSEMBLY_SHA256 ||
+    createHash("sha256").update(WINDOWS_ACL_NATIVE_SOURCE.slice(1), "utf8").digest("hex") !==
+      WIN32_TOKEN_HELPER_SOURCE_SHA256
+  ) {
+    throw new Error("The embedded Windows token helper failed its fixed hash binding");
+  }
   const encodedCommand = Buffer.from(WINDOWS_ACL_NATIVE_COMMAND, "utf16le").toString("base64");
   const { stdout } = await execFileAsync(
     windowsSystemExecutable("WindowsPowerShell\\v1.0\\powershell.exe"),
@@ -533,10 +546,8 @@ async function invokeWindowsAclNative(
         PATH: systemDirectory,
         PATHEXT: ".COM;.EXE;.BAT;.CMD",
         ComSpec: join(systemDirectory, "cmd.exe"),
-        TEMP: trustedTemporaryDirectory,
-        TMP: trustedTemporaryDirectory,
         ASEOS_ACL_MODE: mode,
-        ASEOS_ACL_SOURCE: Buffer.from(WINDOWS_ACL_NATIVE_SOURCE, "utf8").toString("base64"),
+        ASEOS_ACL_ASSEMBLY: assembly.toString("base64"),
         ASEOS_ACL_TARGET: path,
         ASEOS_ACL_SID: sid,
         ASEOS_ACL_DIRECTORY: requireChildInheritance ? "true" : "false",
@@ -544,6 +555,13 @@ async function invokeWindowsAclNative(
     },
   );
   return stdout;
+}
+
+async function deleteWindowsUserOnlyToken(path: string): Promise<void> {
+  const stdout = await invokeWindowsAclNative("delete", path, await currentWindowsSid(), false);
+  if (stdout !== "ASEOS_ACL_OK") {
+    throw new Error("Windows token deletion did not produce the exact success marker");
+  }
 }
 
 async function assertWindowsUserOnlyAcl(
@@ -554,39 +572,6 @@ async function assertWindowsUserOnlyAcl(
   const stdout = await invokeWindowsAclNative("verify", path, sid, requireChildInheritance);
   if (stdout !== "ASEOS_ACL_OK") {
     throw new Error("ACL verification did not produce the exact success marker");
-  }
-}
-
-async function applyWindowsUserOnlyAcl(
-  path: string,
-  sid: string,
-  inheritToChildren = false,
-  verifyImmediately = true,
-): Promise<void> {
-  let operation = "GRANT_CURRENT_USER";
-  try {
-    const icacls = windowsSystemExecutable("icacls.exe");
-    const options = {
-      windowsHide: true,
-      timeout: 5_000,
-      maxBuffer: 64 * 1024,
-    } as const;
-    const grant = `*${sid}:${inheritToChildren ? "(OI)(CI)" : ""}(F)`;
-    // Grant the user explicitly before removing inherited entries so a partial failure never
-    // leaves the current process without an access rule for the path it must verify or clean up.
-    await execFileAsync(icacls, [path, "/grant:r", grant], options);
-    operation = "REMOVE_INHERITANCE";
-    await execFileAsync(icacls, [path, "/inheritance:r"], options);
-    if (verifyImmediately) {
-      operation = "VERIFY_USER_ONLY_DACL";
-      await assertWindowsUserOnlyAcl(path, sid, inheritToChildren);
-    }
-  } catch (error) {
-    throw new ControlApiError(
-      "CONTROL_TOKEN_ACL_UNSAFE",
-      `Token ACL could not be made user-only during ${operation}`,
-      { cause: error },
-    );
   }
 }
 
@@ -604,10 +589,8 @@ async function createWindowsTokenAtomically(path: string): Promise<string> {
   const parent = dirname(path);
   await mkdir(parent, { recursive: true, mode: 0o700 });
   const sid = await currentWindowsSid();
-  await applyWindowsUserOnlyAcl(parent, sid, true);
   const token = await invokeWindowsAclNative("create", path, sid, false);
   if (!TOKEN_PATTERN.test(token)) throw new Error("Native token creation returned invalid output");
-  await assertWindowsUserOnlyAcl(path, sid, false);
   return token;
 }
 
@@ -772,6 +755,8 @@ export async function removeControlFiles(dataRoot: string): Promise<void> {
   const paths = controlPaths(dataRoot);
   await Promise.all([
     rm(paths.descriptorPath, { force: true }),
-    rm(paths.tokenFilePath, { force: true }),
+    process.platform === "win32"
+      ? deleteWindowsUserOnlyToken(paths.tokenFilePath)
+      : rm(paths.tokenFilePath, { force: true }),
   ]);
 }
