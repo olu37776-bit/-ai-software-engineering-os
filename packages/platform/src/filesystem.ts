@@ -1,11 +1,16 @@
 import { execFile } from "node:child_process";
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
-import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { basename, dirname, isAbsolute, join, parse, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 
 import { ControlApiError } from "./errors.js";
 import type { ControlEndpointDescriptor } from "./types.js";
+import {
+  WIN32_TOKEN_HELPER_ASSEMBLY_BASE64,
+  WIN32_TOKEN_HELPER_ASSEMBLY_SHA256,
+  WIN32_TOKEN_HELPER_SOURCE_SHA256,
+} from "./win32-token-helper.generated.js";
 
 const execFileAsync = promisify(execFile);
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/u;
@@ -13,6 +18,32 @@ const UUID_V7_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}
 const SEMANTIC_VERSION_PATTERN =
   /^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/u;
 const TOKEN_REF_PATTERN = /^(?!\/)(?![A-Za-z]:)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]+$/u;
+
+function windowsSystemDirectory(): string {
+  const report: unknown = process.report.getReport();
+  const reportSharedObjects =
+    typeof report === "object" && report !== null
+      ? (report as Record<string, unknown>)["sharedObjects"]
+      : undefined;
+  const sharedObjects = Array.isArray(reportSharedObjects)
+    ? reportSharedObjects.filter((path): path is string => typeof path === "string")
+    : [];
+  const kernel32 = sharedObjects.find(
+    (path) =>
+      basename(path).toLowerCase() === "kernel32.dll" &&
+      basename(dirname(path)).toLowerCase() === "system32",
+  );
+  if (kernel32 === undefined || !isAbsolute(kernel32) || kernel32.includes("\0")) {
+    throw new Error("The loaded Windows system directory is unavailable");
+  }
+  return dirname(kernel32);
+}
+
+function windowsSystemExecutable(
+  name: "whoami.exe" | "WindowsPowerShell\\v1.0\\powershell.exe",
+): string {
+  return join(windowsSystemDirectory(), name);
+}
 
 function isRfc3339DateTime(value: unknown): value is string {
   if (typeof value !== "string") return false;
@@ -134,91 +165,413 @@ async function replaceAtomically(path: string, content: string, mode: number): P
   }
 }
 
-async function currentWindowsIdentity(): Promise<string> {
-  const { stdout } = await execFileAsync("whoami.exe", [], {
-    windowsHide: true,
-    timeout: 5_000,
-    maxBuffer: 64 * 1024,
-  });
-  const identity = stdout.trim();
-  if (identity === "") throw new Error("Current Windows identity is unavailable");
-  return identity;
+function normalizeWindowsSid(sid: string): string | undefined {
+  const normalized = sid.trim().toUpperCase();
+  if (!/^S-1-\d+(?:-\d+){1,15}$/u.test(normalized)) return undefined;
+  const components = normalized.slice(4).split("-");
+  const authority = components.shift();
+  if (authority === undefined || BigInt(authority) > 0xffffffffffffn) return undefined;
+  if (components.some((component) => BigInt(component) > 0xffffffffn)) return undefined;
+  return normalized;
+}
+
+export function windowsCurrentUserSidFromWhoami(stdout: string): string | undefined {
+  const match = /^(?:\uFEFF)?"(?:[^"\r\n]|"")*","(S-1-\d+(?:-\d+){1,15})"\r?\n?$/iu.exec(stdout);
+  return match === null ? undefined : normalizeWindowsSid(match[1] ?? "");
+}
+
+async function currentWindowsSid(): Promise<string> {
+  const { stdout } = await execFileAsync(
+    windowsSystemExecutable("whoami.exe"),
+    ["/user", "/fo", "csv", "/nh"],
+    {
+      windowsHide: true,
+      timeout: 5_000,
+      maxBuffer: 64 * 1024,
+    },
+  );
+  const sid = windowsCurrentUserSidFromWhoami(stdout);
+  if (sid === undefined) throw new Error("Current Windows user SID is unavailable");
+  return sid;
+}
+
+const WINDOWS_ACL_NATIVE_SOURCE = String.raw`
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Cryptography;
+using System.Security.Principal;
+using System.Text;
+using Microsoft.Win32.SafeHandles;
+
+public static class AseosWindowsTokenFile
+{
+    private const uint GENERIC_READ = 0x80000000;
+    private const uint GENERIC_WRITE = 0x40000000;
+    private const uint READ_CONTROL = 0x00020000;
+    private const uint DELETE = 0x00010000;
+    private const uint FILE_SHARE_READ = 0x00000001;
+    private const uint FILE_SHARE_WRITE = 0x00000002;
+    private const uint FILE_SHARE_DELETE = 0x00000004;
+    private const uint CREATE_NEW = 1;
+    private const uint OPEN_EXISTING = 3;
+    private const uint FILE_ATTRIBUTE_DIRECTORY = 0x00000010;
+    private const uint FILE_ATTRIBUTE_REPARSE_POINT = 0x00000400;
+    private const uint FILE_ATTRIBUTE_NORMAL = 0x00000080;
+    private const uint FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
+    private const uint FILE_FLAG_OPEN_REPARSE_POINT = 0x00200000;
+    private const uint OWNER_SECURITY_INFORMATION = 0x00000001;
+    private const uint DACL_SECURITY_INFORMATION = 0x00000004;
+    private const int SE_FILE_OBJECT = 1;
+    private const int FILE_DISPOSITION_INFO_CLASS = 4;
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct SECURITY_ATTRIBUTES
+    {
+        public int nLength;
+        public IntPtr lpSecurityDescriptor;
+        [MarshalAs(UnmanagedType.Bool)] public bool bInheritHandle;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct BY_HANDLE_FILE_INFORMATION
+    {
+        public uint dwFileAttributes;
+        public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
+        public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
+        public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
+        public uint dwVolumeSerialNumber;
+        public uint nFileSizeHigh;
+        public uint nFileSizeLow;
+        public uint nNumberOfLinks;
+        public uint nFileIndexHigh;
+        public uint nFileIndexLow;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    private struct FILE_DISPOSITION_INFO
+    {
+        [MarshalAs(UnmanagedType.U1)] public byte DeleteFile;
+    }
+
+    [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern bool ConvertStringSecurityDescriptorToSecurityDescriptorW(
+        string stringSecurityDescriptor,
+        uint stringSDRevision,
+        out IntPtr securityDescriptor,
+        out uint securityDescriptorSize);
+
+    [DllImport("advapi32.dll", SetLastError = true)]
+    private static extern uint GetSecurityInfo(
+        SafeFileHandle handle,
+        int objectType,
+        uint securityInfo,
+        out IntPtr owner,
+        out IntPtr group,
+        out IntPtr dacl,
+        out IntPtr sacl,
+        out IntPtr securityDescriptor);
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern SafeFileHandle CreateFileW(
+        string fileName,
+        uint desiredAccess,
+        uint shareMode,
+        ref SECURITY_ATTRIBUTES securityAttributes,
+        uint creationDisposition,
+        uint flagsAndAttributes,
+        IntPtr templateFile);
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern SafeFileHandle CreateFileW(
+        string fileName,
+        uint desiredAccess,
+        uint shareMode,
+        IntPtr securityAttributes,
+        uint creationDisposition,
+        uint flagsAndAttributes,
+        IntPtr templateFile);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool WriteFile(
+        SafeFileHandle file,
+        byte[] buffer,
+        uint bytesToWrite,
+        out uint bytesWritten,
+        IntPtr overlapped);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool FlushFileBuffers(SafeFileHandle file);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool GetFileInformationByHandle(
+        SafeFileHandle file,
+        out BY_HANDLE_FILE_INFORMATION information);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool SetFileInformationByHandle(
+        SafeFileHandle file,
+        int fileInformationClass,
+        ref FILE_DISPOSITION_INFO information,
+        uint bufferSize);
+
+    [DllImport("advapi32.dll")]
+    private static extern uint GetSecurityDescriptorLength(IntPtr securityDescriptor);
+
+    [DllImport("kernel32.dll")]
+    private static extern IntPtr LocalFree(IntPtr memory);
+
+    private static Exception Win32(string operation)
+    {
+        return new Win32Exception(Marshal.GetLastWin32Error(), operation);
+    }
+
+    private static void ValidateIdentity(string sid)
+    {
+        SecurityIdentifier identity = new SecurityIdentifier(sid);
+        if (!String.Equals(identity.Value, sid, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("SID_NOT_CANONICAL");
+        SecurityIdentifier processIdentity = WindowsIdentity.GetCurrent().User;
+        if (processIdentity == null || !String.Equals(processIdentity.Value, identity.Value, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("PROCESS_SID_MISMATCH");
+    }
+
+    private static void VerifyHandle(SafeFileHandle handle, string sid, bool directory)
+    {
+        BY_HANDLE_FILE_INFORMATION information;
+        if (!GetFileInformationByHandle(handle, out information)) throw Win32("GetFileInformationByHandle");
+        if ((information.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0)
+            throw new InvalidOperationException("REPARSE_POINT_REJECTED");
+        bool actualDirectory = (information.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+        if (actualDirectory != directory) throw new InvalidOperationException("FILE_TYPE_MISMATCH");
+
+        IntPtr owner;
+        IntPtr group;
+        IntPtr dacl;
+        IntPtr sacl;
+        IntPtr descriptor;
+        uint result = GetSecurityInfo(
+            handle,
+            SE_FILE_OBJECT,
+            OWNER_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION,
+            out owner,
+            out group,
+            out dacl,
+            out sacl,
+            out descriptor);
+        if (result != 0) throw new Win32Exception((int)result, "GetSecurityInfo");
+        try
+        {
+            uint length = GetSecurityDescriptorLength(descriptor);
+            if (length == 0 || length > 65536) throw new InvalidOperationException("SECURITY_DESCRIPTOR_SIZE_INVALID");
+            byte[] bytes = new byte[length];
+            Marshal.Copy(descriptor, bytes, 0, (int)length);
+            RawSecurityDescriptor raw = new RawSecurityDescriptor(bytes, 0);
+            if (raw.Owner == null || !String.Equals(raw.Owner.Value, sid, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("OWNER_SID_MISMATCH");
+            if ((raw.ControlFlags & ControlFlags.DiscretionaryAclProtected) == 0)
+                throw new InvalidOperationException("DACL_NOT_PROTECTED");
+            if ((raw.ControlFlags & ControlFlags.DiscretionaryAclDefaulted) != 0)
+                throw new InvalidOperationException("DACL_DEFAULTED");
+            if ((raw.ControlFlags & ControlFlags.DiscretionaryAclPresent) == 0 || raw.DiscretionaryAcl == null)
+                throw new InvalidOperationException("DACL_MISSING");
+            if (raw.DiscretionaryAcl.Count != 1) throw new InvalidOperationException("DACL_RULE_COUNT_MISMATCH");
+            CommonAce ace = raw.DiscretionaryAcl[0] as CommonAce;
+            AceFlags expectedFlags = directory
+                ? AceFlags.ContainerInherit | AceFlags.ObjectInherit
+                : AceFlags.None;
+            if (ace == null || ace.AceQualifier != AceQualifier.AccessAllowed || ace.AceFlags != expectedFlags)
+                throw new InvalidOperationException("DACL_ACE_SHAPE_MISMATCH");
+            if (ace.SecurityIdentifier == null || !String.Equals(ace.SecurityIdentifier.Value, sid, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("DACL_SID_MISMATCH");
+            if (ace.AccessMask != (int)FileSystemRights.FullControl)
+                throw new InvalidOperationException("DACL_NOT_FULL_CONTROL");
+        }
+        finally
+        {
+            if (descriptor != IntPtr.Zero) LocalFree(descriptor);
+        }
+    }
+
+    public static void Verify(string path, string sid, bool directory)
+    {
+        ValidateIdentity(sid);
+        uint flags = FILE_FLAG_OPEN_REPARSE_POINT | (directory ? FILE_FLAG_BACKUP_SEMANTICS : 0);
+        using (SafeFileHandle handle = CreateFileW(
+            path,
+            READ_CONTROL,
+            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+            IntPtr.Zero,
+            OPEN_EXISTING,
+            flags,
+            IntPtr.Zero))
+        {
+            if (handle.IsInvalid) throw Win32("CreateFile(verify)");
+            VerifyHandle(handle, sid, directory);
+        }
+    }
+
+    public static string Create(string path, string sid)
+    {
+        ValidateIdentity(sid);
+        Delete(path, sid);
+        IntPtr descriptor = IntPtr.Zero;
+        uint descriptorSize;
+        string sddl = "O:" + sid + "D:P(A;;FA;;;" + sid + ")";
+        if (!ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, 1, out descriptor, out descriptorSize))
+            throw Win32("ConvertStringSecurityDescriptorToSecurityDescriptor");
+        try
+        {
+            SECURITY_ATTRIBUTES attributes = new SECURITY_ATTRIBUTES();
+            attributes.nLength = Marshal.SizeOf(typeof(SECURITY_ATTRIBUTES));
+            attributes.lpSecurityDescriptor = descriptor;
+            attributes.bInheritHandle = false;
+            SafeFileHandle handle = CreateFileW(
+                path,
+                GENERIC_READ | GENERIC_WRITE | READ_CONTROL | DELETE,
+                0,
+                ref attributes,
+                CREATE_NEW,
+                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OPEN_REPARSE_POINT,
+                IntPtr.Zero);
+            try
+            {
+                if (handle.IsInvalid) throw Win32("CreateFile(create)");
+                VerifyHandle(handle, sid, false);
+                byte[] random = new byte[32];
+                using (RandomNumberGenerator generator = RandomNumberGenerator.Create()) generator.GetBytes(random);
+                string token = Convert.ToBase64String(random).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+                byte[] content = Encoding.UTF8.GetBytes(token + "\n");
+                uint written;
+                if (!WriteFile(handle, content, (uint)content.Length, out written, IntPtr.Zero)) throw Win32("WriteFile");
+                if (written != content.Length) throw new InvalidOperationException("TOKEN_WRITE_INCOMPLETE");
+                if (!FlushFileBuffers(handle)) throw Win32("FlushFileBuffers");
+                VerifyHandle(handle, sid, false);
+                return token;
+            }
+            catch
+            {
+                if (handle != null && !handle.IsInvalid && !handle.IsClosed)
+                {
+                    FILE_DISPOSITION_INFO disposition = new FILE_DISPOSITION_INFO();
+                    disposition.DeleteFile = 1;
+                    SetFileInformationByHandle(
+                        handle,
+                        FILE_DISPOSITION_INFO_CLASS,
+                        ref disposition,
+                        (uint)Marshal.SizeOf(typeof(FILE_DISPOSITION_INFO)));
+                }
+                throw;
+            }
+            finally
+            {
+                if (handle != null) handle.Dispose();
+            }
+        }
+        finally
+        {
+            if (descriptor != IntPtr.Zero) LocalFree(descriptor);
+        }
+    }
+
+    public static void Delete(string path, string sid)
+    {
+        ValidateIdentity(sid);
+        using (SafeFileHandle handle = CreateFileW(
+            path,
+            READ_CONTROL | DELETE,
+            0,
+            IntPtr.Zero,
+            OPEN_EXISTING,
+            FILE_FLAG_OPEN_REPARSE_POINT,
+            IntPtr.Zero))
+        {
+            if (handle.IsInvalid)
+            {
+                int error = Marshal.GetLastWin32Error();
+                if (error == 2 || error == 3) return;
+                throw new Win32Exception(error, "CreateFile(delete-token)");
+            }
+            VerifyHandle(handle, sid, false);
+            FILE_DISPOSITION_INFO disposition = new FILE_DISPOSITION_INFO();
+            disposition.DeleteFile = 1;
+            if (!SetFileInformationByHandle(
+                handle,
+                FILE_DISPOSITION_INFO_CLASS,
+                ref disposition,
+                (uint)Marshal.SizeOf(typeof(FILE_DISPOSITION_INFO))))
+                throw Win32("SetFileInformationByHandle(delete-token)");
+        }
+    }
+}
+`;
+
+const WINDOWS_ACL_NATIVE_COMMAND = [
+  "$ErrorActionPreference = 'Stop'",
+  "$assembly = [Reflection.Assembly]::Load([Convert]::FromBase64String($env:ASEOS_ACL_ASSEMBLY))",
+  "$type = $assembly.GetType('AseosWindowsTokenFile', $true)",
+  "$directory = $env:ASEOS_ACL_DIRECTORY -eq 'true'",
+  "if ($env:ASEOS_ACL_MODE -eq 'create') { $result = $type.GetMethod('Create').Invoke($null, [object[]]@($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID)); [Console]::Out.Write([string]$result) } elseif ($env:ASEOS_ACL_MODE -eq 'delete') { $null = $type.GetMethod('Delete').Invoke($null, [object[]]@($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID)); [Console]::Out.Write('ASEOS_ACL_OK') } else { $null = $type.GetMethod('Verify').Invoke($null, [object[]]@($env:ASEOS_ACL_TARGET, $env:ASEOS_ACL_SID, $directory)); [Console]::Out.Write('ASEOS_ACL_OK') }",
+].join("; ");
+
+async function invokeWindowsAclNative(
+  mode: "create" | "delete" | "verify",
+  path: string,
+  sid: string,
+  requireChildInheritance: boolean,
+): Promise<string> {
+  const systemDirectory = windowsSystemDirectory();
+  const systemRoot = dirname(systemDirectory);
+  const assembly = Buffer.from(WIN32_TOKEN_HELPER_ASSEMBLY_BASE64, "base64");
+  if (
+    createHash("sha256").update(assembly).digest("hex") !== WIN32_TOKEN_HELPER_ASSEMBLY_SHA256 ||
+    createHash("sha256").update(WINDOWS_ACL_NATIVE_SOURCE.slice(1), "utf8").digest("hex") !==
+      WIN32_TOKEN_HELPER_SOURCE_SHA256
+  ) {
+    throw new Error("The embedded Windows token helper failed its fixed hash binding");
+  }
+  const encodedCommand = Buffer.from(WINDOWS_ACL_NATIVE_COMMAND, "utf16le").toString("base64");
+  const { stdout } = await execFileAsync(
+    windowsSystemExecutable("WindowsPowerShell\\v1.0\\powershell.exe"),
+    ["-NoLogo", "-NoProfile", "-NonInteractive", "-EncodedCommand", encodedCommand],
+    {
+      windowsHide: true,
+      timeout: 30_000,
+      maxBuffer: 64 * 1024,
+      env: {
+        SystemDrive: parse(systemRoot).root.replace(/\\$/u, ""),
+        SystemRoot: systemRoot,
+        windir: systemRoot,
+        PATH: systemDirectory,
+        PATHEXT: ".COM;.EXE;.BAT;.CMD",
+        ComSpec: join(systemDirectory, "cmd.exe"),
+        ASEOS_ACL_MODE: mode,
+        ASEOS_ACL_ASSEMBLY: assembly.toString("base64"),
+        ASEOS_ACL_TARGET: path,
+        ASEOS_ACL_SID: sid,
+        ASEOS_ACL_DIRECTORY: requireChildInheritance ? "true" : "false",
+      },
+    },
+  );
+  return stdout;
+}
+
+async function deleteWindowsUserOnlyToken(path: string): Promise<void> {
+  const stdout = await invokeWindowsAclNative("delete", path, await currentWindowsSid(), false);
+  if (stdout !== "ASEOS_ACL_OK") {
+    throw new Error("Windows token deletion did not produce the exact success marker");
+  }
 }
 
 async function assertWindowsUserOnlyAcl(
   path: string,
-  identity: string,
+  sid: string,
   requireChildInheritance: boolean,
 ): Promise<void> {
-  const { stdout } = await execFileAsync("icacls.exe", [path], {
-    windowsHide: true,
-    timeout: 5_000,
-    maxBuffer: 64 * 1024,
-  });
-  const aclLines = stdout
-    .split(/\r?\n/u)
-    .map((line, index) => (index === 0 && line.startsWith(path) ? line.slice(path.length) : line))
-    .map((line) => line.trim())
-    .filter((line) => line.includes(":("));
-  const principals = aclLines.map((line) => line.slice(0, line.indexOf(":(")).trim());
-  const normalizedIdentity = identity.toLowerCase();
-  const isExactOrFirstLineSuffix = (principal: string, expected: string): boolean => {
-    const normalized = principal.toLowerCase();
-    return normalized === expected || normalized.endsWith(` ${expected}`);
-  };
-  const allowed = (principal: string): boolean => {
-    return isExactOrFirstLineSuffix(principal, normalizedIdentity);
-  };
-  const identityLine = aclLines.find((line) =>
-    isExactOrFirstLineSuffix(line.slice(0, line.indexOf(":(")).trim(), normalizedIdentity),
-  );
-  if (
-    identityLine === undefined ||
-    !identityLine.includes("(F)") ||
-    (requireChildInheritance &&
-      (!identityLine.includes("(OI)") || !identityLine.includes("(CI)"))) ||
-    principals.some((principal) => !allowed(principal)) ||
-    aclLines.some((line) => line.includes("(I)"))
-  ) {
-    throw new Error("ACL verification permits only the current user without inherited access");
-  }
-}
-
-async function applyWindowsUserOnlyAcl(
-  path: string,
-  identity: string,
-  inheritToChildren = false,
-): Promise<void> {
-  try {
-    const script = [
-      "$ErrorActionPreference = 'Stop'",
-      "$target = $env:ASEOS_CONTROL_ACL_TARGET",
-      "$account = [System.Security.Principal.NTAccount]::new($env:ASEOS_CONTROL_ACL_IDENTITY)",
-      "$directory = $env:ASEOS_CONTROL_ACL_DIRECTORY -eq 'true'",
-      "$acl = if ($directory) { [System.Security.AccessControl.DirectorySecurity]::new() } else { [System.Security.AccessControl.FileSecurity]::new() }",
-      "$acl.SetOwner($account)",
-      "$acl.SetAccessRuleProtection($true, $false)",
-      "$inheritance = if ($directory) { [System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit } else { [System.Security.AccessControl.InheritanceFlags]::None }",
-      "$rule = [System.Security.AccessControl.FileSystemAccessRule]::new($account, [System.Security.AccessControl.FileSystemRights]::FullControl, $inheritance, [System.Security.AccessControl.PropagationFlags]::None, [System.Security.AccessControl.AccessControlType]::Allow)",
-      "$acl.AddAccessRule($rule)",
-      "if ($directory) { [System.IO.DirectoryInfo]::new($target).SetAccessControl($acl) } else { [System.IO.FileInfo]::new($target).SetAccessControl($acl) }",
-    ].join("; ");
-    await execFileAsync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script], {
-      windowsHide: true,
-      timeout: 5_000,
-      maxBuffer: 64 * 1024,
-      env: {
-        ...process.env,
-        ASEOS_CONTROL_ACL_TARGET: path,
-        ASEOS_CONTROL_ACL_IDENTITY: identity,
-        ASEOS_CONTROL_ACL_DIRECTORY: inheritToChildren ? "true" : "false",
-      },
-    });
-    await assertWindowsUserOnlyAcl(path, identity, inheritToChildren);
-  } catch (error) {
-    throw new ControlApiError("CONTROL_TOKEN_ACL_UNSAFE", "Token ACL could not be made user-only", {
-      cause: error,
-    });
+  const stdout = await invokeWindowsAclNative("verify", path, sid, requireChildInheritance);
+  if (stdout !== "ASEOS_ACL_OK") {
+    throw new Error("ACL verification did not produce the exact success marker");
   }
 }
 
@@ -232,34 +585,19 @@ async function assertPosixUserOnly(path: string): Promise<void> {
   }
 }
 
-async function replaceWindowsTokenAtomically(path: string, content: string): Promise<void> {
+async function createWindowsTokenAtomically(path: string): Promise<string> {
   const parent = dirname(path);
   await mkdir(parent, { recursive: true, mode: 0o700 });
-  const identity = await currentWindowsIdentity();
-  await applyWindowsUserOnlyAcl(parent, identity, true);
-  const temporary = `${path}.${String(process.pid)}.${randomBytes(8).toString("hex")}.tmp`;
-  try {
-    await writeFile(temporary, "", { encoding: "utf8", flag: "wx", mode: 0o600 });
-    await applyWindowsUserOnlyAcl(temporary, identity);
-    const handle = await open(temporary, "r+");
-    try {
-      await handle.writeFile(content, { encoding: "utf8" });
-      await handle.sync();
-    } finally {
-      await handle.close();
-    }
-    await assertWindowsUserOnlyAcl(temporary, identity, false);
-    await rename(temporary, path);
-    await assertWindowsUserOnlyAcl(path, identity, false);
-  } finally {
-    await rm(temporary, { force: true });
-  }
+  const sid = await currentWindowsSid();
+  const token = await invokeWindowsAclNative("create", path, sid, false);
+  if (!TOKEN_PATTERN.test(token)) throw new Error("Native token creation returned invalid output");
+  return token;
 }
 
 export async function verifyControlPathUserOnly(path: string): Promise<void> {
   try {
     if (process.platform === "win32") {
-      await assertWindowsUserOnlyAcl(path, await currentWindowsIdentity(), false);
+      await assertWindowsUserOnlyAcl(path, await currentWindowsSid(), false);
     } else {
       await assertPosixUserOnly(path);
     }
@@ -272,18 +610,17 @@ export async function verifyControlPathUserOnly(path: string): Promise<void> {
 }
 
 export async function createSecureToken(path: string): Promise<string> {
-  const token = randomBytes(32).toString("base64url");
   try {
     if (process.platform === "win32") {
-      await replaceWindowsTokenAtomically(path, `${token}\n`);
-    } else {
-      await replaceAtomically(path, `${token}\n`, 0o600);
-      await chmod(path, 0o600);
-      await assertPosixUserOnly(path);
+      return await createWindowsTokenAtomically(path);
     }
+    const token = randomBytes(32).toString("base64url");
+    await replaceAtomically(path, `${token}\n`, 0o600);
+    await chmod(path, 0o600);
+    await assertPosixUserOnly(path);
     return token;
   } catch (error) {
-    await rm(path, { force: true });
+    if (process.platform !== "win32") await rm(path, { force: true });
     if (error instanceof ControlApiError) throw error;
     throw new ControlApiError(
       "CONTROL_TOKEN_CREATE_FAILED",
@@ -418,6 +755,8 @@ export async function removeControlFiles(dataRoot: string): Promise<void> {
   const paths = controlPaths(dataRoot);
   await Promise.all([
     rm(paths.descriptorPath, { force: true }),
-    rm(paths.tokenFilePath, { force: true }),
+    process.platform === "win32"
+      ? deleteWindowsUserOnlyToken(paths.tokenFilePath)
+      : rm(paths.tokenFilePath, { force: true }),
   ]);
 }

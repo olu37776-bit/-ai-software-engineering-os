@@ -1,11 +1,15 @@
-import { networkInterfaces } from "node:os";
+import { execFile } from "node:child_process";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { networkInterfaces, tmpdir } from "node:os";
+import { basename, dirname, join } from "node:path";
+import { promisify } from "node:util";
 /* global AbortController, AbortSignal, fetch, setTimeout */
-import { writeFile } from "node:fs/promises";
 
 import {
   BoundedIdempotencyRegistry,
   ControlApiError,
   createControlApiClient,
+  verifyControlPathUserOnly,
 } from "@aseos/platform";
 import { describe, expect, test } from "vitest";
 
@@ -18,6 +22,8 @@ import {
   tokenAclEvidence,
   withControlApi,
 } from "./helpers.mjs";
+
+const execFileAsync = promisify(execFile);
 
 describe("P1-V07 authenticated loopback Control API", () => {
   test("binds only to the IPv4 loopback endpoint and rejects Host, Origin and unauthenticated access", async () => {
@@ -129,6 +135,69 @@ describe("P1-V07 authenticated loopback Control API", () => {
       expect(await readBearer(runtime)).not.toBe(firstToken);
     });
   });
+
+  test.skipIf(process.platform !== "win32")(
+    "uses the absolute System32 security helper when cwd and PATH contain hostile executables",
+    async () => {
+      const hostileDirectory = await mkdtemp(join(tmpdir(), "aseos-hostile-system-tools-"));
+      const originalCwd = process.cwd();
+      const originalPath = process.env.PATH;
+      const originalSystemRoot = process.env.SystemRoot;
+      try {
+        await Promise.all([
+          writeFile(join(hostileDirectory, "whoami.exe"), "not a Windows executable", "utf8"),
+          writeFile(join(hostileDirectory, "icacls.exe"), "not a Windows executable", "utf8"),
+          writeFile(join(hostileDirectory, "powershell.exe"), "not a Windows executable", "utf8"),
+        ]);
+        process.chdir(hostileDirectory);
+        process.env.PATH = hostileDirectory;
+        process.env.SystemRoot = hostileDirectory;
+        await withControlApi(async ({ runtime }) => {
+          expect(await readBearer(runtime)).toMatch(/^[A-Za-z0-9_-]{43}$/u);
+          if (originalSystemRoot === undefined) delete process.env.SystemRoot;
+          else process.env.SystemRoot = originalSystemRoot;
+          expect((await tokenAclEvidence(runtime.tokenFilePath)).userOnly).toBe(true);
+        });
+      } finally {
+        process.chdir(originalCwd);
+        if (originalPath === undefined) delete process.env.PATH;
+        else process.env.PATH = originalPath;
+        if (originalSystemRoot === undefined) delete process.env.SystemRoot;
+        else process.env.SystemRoot = originalSystemRoot;
+        await rm(hostileDirectory, { force: true, recursive: true });
+      }
+    },
+  );
+
+  test.skipIf(process.platform !== "win32")(
+    "fails closed when token inheritance is enabled after secure creation",
+    async () => {
+      await withControlApi(async ({ runtime }) => {
+        const report = process.report.getReport();
+        const kernel32 = report.sharedObjects.find(
+          (path) =>
+            basename(path).toLowerCase() === "kernel32.dll" &&
+            basename(dirname(path)).toLowerCase() === "system32",
+        );
+        expect(kernel32).toBeTypeOf("string");
+        await execFileAsync(join(dirname(kernel32), "icacls.exe"), [
+          runtime.tokenFilePath,
+          "/inheritance:e",
+        ]);
+        try {
+          await expect(verifyControlPathUserOnly(runtime.tokenFilePath)).rejects.toMatchObject({
+            code: "CONTROL_TOKEN_ACL_UNSAFE",
+          });
+        } finally {
+          await execFileAsync(join(dirname(kernel32), "icacls.exe"), [
+            runtime.tokenFilePath,
+            "/inheritance:r",
+          ]);
+        }
+        await expect(verifyControlPathUserOnly(runtime.tokenFilePath)).resolves.toBeUndefined();
+      });
+    },
+  );
 
   test("validates discovery identity and exposes bounded status metadata through the public client", async () => {
     await withControlApi(async ({ dataRoot, runtime }) => {

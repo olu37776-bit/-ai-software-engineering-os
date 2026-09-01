@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O06-P1-V07-WINDOWS-NATIVE-ACL-REMEDIATION-2026-09-01-01",
+  "evidenceType": "P1V07ControlApiRemediationEvidence",
+  "gateStepId": "P1-V07-CONTROL-API",
+  "status": "IMPLEMENTED",
+  "recordedAt": "2026-09-01T04:06:00Z",
+  "subject": {
+    "repository": "olu37776-bit/-ai-software-engineering-os",
+    "pullRequest": 79,
+    "branch": "remediation/p1-o06-windows-acl-native",
+    "authorizedBase": "aab42064396c5fa6df87f6a89e18c4df5f40f1a1",
+    "qualifiedImplementationCommit": "46f1d0b944eedf3b5fd0d1cb8048bacdbae82f9c",
+    "qualifiedImplementationTree": "b76e1a7f0e89ceabd681ea1188ea1a6a68214ee0"
+  },
+  "finding": {
+    "findingId": "P1-O06-POST-MERGE-WINDOWS-ACL-COLD-START",
+    "class": "WINDOWS_RUNNER_ACL_TOOL_STARTUP_TIMEOUT",
+    "result": "CLOSED",
+    "failedWorkflowRunId": 33455381310,
+    "failedWindowsJobId": 99695828911,
+    "observedFailure": "PowerShell ACL application exceeded the five-second fail-closed operation budget on the protected-main Windows runner.",
+    "resolution": "A hash-bound, precompiled AnyCPU .NET helper is loaded directly from verified in-memory bytes by Windows PowerShell without runtime compilation. The helper atomically creates the final token path with CREATE_NEW and an owner-only protected DACL, verifies the live owner SID and exact DACL on the exclusive creation handle before and after writing and flushing the secret, rejects reparse points, and deletes only a same-handle verified object through FileDispositionInfo."
+  },
+  "securityBoundary": {
+    "result": "PASS",
+    "executableResolution": "ABSOLUTE_LOADED_KERNEL32_SYSTEM_DIRECTORY",
+    "shell": false,
+    "pathSearch": false,
+    "fixedVerificationScript": true,
+    "precompiledAssemblySha256Verified": true,
+    "auditSourceSha256Verified": true,
+    "auditSourceCheckoutEol": "LF",
+    "assemblyGitClassification": "BINARY",
+    "runtimeCompilation": false,
+    "minimalTrustedVerificationEnvironment": true,
+    "ownerSidVerified": true,
+    "currentUserExplicitFullControl": true,
+    "inheritedAccessRemoved": true,
+    "atomicFinalPathCreate": true,
+    "exclusiveCreationHandle": true,
+    "sameHandlePreWriteVerification": true,
+    "sameHandlePostFlushVerification": true,
+    "sameHandleDeletion": true,
+    "reparsePointsRejected": true,
+    "otherPrincipalsRejected": true,
+    "failureCode": "CONTROL_TOKEN_ACL_UNSAFE"
+  },
+  "adversarialQualification": {
+    "result": "PASS",
+    "hostileWorkingDirectory": true,
+    "hostilePath": true,
+    "hostileSystemRoot": true,
+    "fakeWhoamiExecutable": true,
+    "fakeIcaclsExecutable": true,
+    "absoluteSystemToolsUsed": true,
+    "tokenAcl": "CURRENT_USER_ONLY_NO_INHERITANCE"
+  },
+  "evidenceHeadRemediation": {
+    "status": "IMPLEMENTED",
+    "failedAttempts": [
+      {
+        "headCommit": "1c42cdf85e4fe248886d691f57011f26d3a84a5b",
+        "workflowRunId": 33457714955,
+        "windowsJobId": 99701207562,
+        "aggregateJobId": 99702578736,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL"
+      },
+      {
+        "headCommit": "b0612f1d51c70d290f4bf9a19cc01fc579d7e2c5",
+        "workflowRunId": 33459029719,
+        "windowsJobId": 99705059417,
+        "aggregateJobId": 99706208059,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "VERIFY_USER_ONLY_DACL"
+      },
+      {
+        "headCommit": "7040f2c7d1ced99ff5d2e13c0b1c564414e22d09",
+        "workflowRunId": 33460273666,
+        "windowsJobId": 99708777395,
+        "aggregateJobId": 99710019531,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "VERIFY_USER_ONLY_DACL"
+      },
+      {
+        "headCommit": "70b682a70706220228ac4deaa1fcfe39246d8037",
+        "workflowRunId": 33460772910,
+        "windowsJobId": 99710225985,
+        "aggregateJobId": 99711613357,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "VERIFY_USER_ONLY_DACL",
+        "independentReviewResult": "FAIL",
+        "adversarialFinding": "Whitespace-bound display-name suffixes could impersonate the current principal."
+      },
+      {
+        "headCommit": "ba9af3f1e2411add697e64baea62da65a49674fb",
+        "workflowRunId": 33462455734,
+        "windowsJobId": 99715380924,
+        "aggregateJobId": 99716678525,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "VERIFY_USER_ONLY_DACL",
+        "independentReviewResult": "FAIL",
+        "adversarialFinding": "The saved-ACL snapshot neither verified the owner SID nor closed the post-create pre-hardening handle window."
+      },
+      {
+        "headCommit": "d3c8f5b15d7461b7e76aa648915bf0e122b102da",
+        "workflowRunId": 33463973397,
+        "windowsJobId": 99719875933,
+        "aggregateJobId": 99721167426,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "VERIFY_USER_ONLY_DACL",
+        "adversarialFinding": "The live .NET GetAccessControl verification path was not compatible with the hosted Windows-2025 runner."
+      },
+      {
+        "headCommit": "03609c04cc2d0f416ae628449c130ea81fa09821",
+        "workflowRunId": 33465226474,
+        "windowsJobId": 99723580607,
+        "aggregateJobId": 99724801529,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "NATIVE_HELPER_STARTUP_AND_DELETE",
+        "independentReviewResult": "FAIL",
+        "adversarialFinding": "Runtime Add-Type remained vulnerable to TEMP compilation hijacking and the FILE_DISPOSITION_INFO Boolean layout was incompatible with the Windows runner."
+      },
+      {
+        "headCommit": "8a59fad6375855b8fd9ff4ccfe048bbde6a7a386",
+        "workflowRunId": 33466550825,
+        "windowsJobId": 99727498461,
+        "aggregateJobId": 99728769104,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "PLATFORM_SOURCE_HASH_QUALIFICATION",
+        "adversarialFinding": "Windows checkout converted the auditable C# source to CRLF, so its original-byte SHA-256 no longer matched the hash-bound LF source even though root 279/279 and focused 17/17 tests passed."
+      }
+    ],
+    "windowsFinding": "Hosted Windows display names and serialized ACL text are not stable security authorities; snapshot inspection also cannot close object-identity races. Runtime compilation introduces a writable TEMP trust boundary, while the hosted Windows-2025 image does not reliably expose every managed ACL API used by earlier attempts.",
+    "resolution": "The current numeric SID is obtained from one strict System32 whoami CSV record. A source-hash-bound, DLL-hash-bound precompiled helper is loaded from memory and atomically creates the final token object with SECURITY_ATTRIBUTES containing O:<SID>D:P(A;;FA;;;<SID>). It verifies the live owner, protected non-defaulted DACL, sole exact FullControl ACE and non-reparse identity on the same exclusive handle before generating the token, then writes, flushes and verifies that handle again. Cleanup opens without following reparse points, verifies that same object and marks that handle for deletion; no Windows token cleanup uses path-based rm.",
+    "secretWriteSequence": "ATOMIC_CREATE_NEW_WITH_OWNER_DACL_VERIFY_HANDLE_WRITE_FLUSH_VERIFY_HANDLE",
+    "timeoutIncreased": true,
+    "securityBoundaryRelaxed": false
+  },
+  "qualification": {
+    "result": "PASS",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "fullQuality": "PASS",
+    "rootTestFilesPassed": 37,
+    "rootTestsPassed": 279,
+    "rootTestsFailed": 0,
+    "architectureTestsPassed": 9,
+    "focusedControlApiTestsPassed": 17,
+    "platformTestsPassed": 5,
+    "p1V03Contracts": "PASS",
+    "p1V04Architecture": "PASS",
+    "p1V07ControlApi": "PASS",
+    "p1V08Isolation": "PASS",
+    "frozenOfflineInstall": "PASS",
+    "localWindowsX64": "PASS",
+    "remotePullRequestQualification": {
+      "result": "PASS",
+      "m0WorkflowRunId": 33467152991,
+      "qualityWorkflowRunId": 33467153015,
+      "linuxJobId": 99729276578,
+      "windowsJobId": 99729276369,
+      "aggregateJobId": 99733345753
+    }
+  },
+  "independentVerification": {
+    "required": true,
+    "performed": true,
+    "result": "PASS",
+    "reviewedImplementationCommit": "46f1d0b944eedf3b5fd0d1cb8048bacdbae82f9c",
+    "reviewedImplementationTree": "b76e1a7f0e89ceabd681ea1188ea1a6a68214ee0",
+    "reviewFocus": [
+      "Windows ACL fail-closed behavior",
+      "PATH and working-directory injection",
+      "atomic SECURITY_ATTRIBUTES creation and partial-failure cleanup",
+      "live same-handle owner SID and exact protected DACL binding",
+      "hostile SystemRoot and display-name suffix injection",
+      "precompiled assembly and audit-source hash binding",
+      "cross-platform LF source and binary assembly checkout invariants",
+      "Windows-2025 loader and native structure compatibility",
+      "P1-O06 write scope"
+    ]
+  },
+  "claimBoundary": {
+    "maximumClaim": "IMPLEMENTED",
+    "phase1Verified": false,
+    "productionWorkflowRuntimeImplemented": false,
+    "durableOperationSemanticsImplemented": false,
+    "authoritativeEventJournalImplemented": false,
+    "remoteBindingAuthorized": false
+  },
+  "remainingGaps": [
+    "Qualify the immutable Evidence head on Linux and Windows under the required verify authority.",
+    "Merge the exact reviewed head and complete protected-main post-merge verification."
+  ]
+}
