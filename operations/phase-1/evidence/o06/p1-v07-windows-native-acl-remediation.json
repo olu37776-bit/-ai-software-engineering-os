@@ -4,14 +4,14 @@
   "evidenceType": "P1V07ControlApiRemediationEvidence",
   "gateStepId": "P1-V07-CONTROL-API",
   "status": "IMPLEMENTED",
-  "recordedAt": "2026-09-01T01:06:00Z",
+  "recordedAt": "2026-09-01T02:23:34Z",
   "subject": {
     "repository": "olu37776-bit/-ai-software-engineering-os",
     "pullRequest": 79,
     "branch": "remediation/p1-o06-windows-acl-native",
     "authorizedBase": "aab42064396c5fa6df87f6a89e18c4df5f40f1a1",
-    "qualifiedImplementationCommit": "a25ec44ec7f36eb957ad1bea6a52ef79522f54b5",
-    "qualifiedImplementationTree": "f2719d93b30fed4171e3bb0060bc4a12d8582816"
+    "qualifiedImplementationCommit": "8abdfd188342b8f937b94e8d5607fb2c90ebb8ac",
+    "qualifiedImplementationTree": "8891292ca1014f3c68495eb354c27b5732393ff4"
   },
   "finding": {
     "findingId": "P1-O06-POST-MERGE-WINDOWS-ACL-COLD-START",
@@ -20,11 +20,11 @@
     "failedWorkflowRunId": 33455381310,
     "failedWindowsJobId": 99695828911,
     "observedFailure": "PowerShell ACL application exceeded the five-second fail-closed operation budget on the protected-main Windows runner.",
-    "resolution": "Control token ACL creation and verification now invoke absolute System32 whoami.exe and icacls.exe paths without a shell or PowerShell runtime. The strict current-user-only, FullControl, no-inheritance verification remains authoritative."
+    "resolution": "Control token ACL creation and verification invoke System32 whoami.exe and icacls.exe paths derived from the loaded KERNEL32.DLL rather than PATH, cwd or mutable SystemRoot. Grant and strict verification bind the current numeric SID, not localized or lossy account display text."
   },
   "securityBoundary": {
     "result": "PASS",
-    "executableResolution": "ABSOLUTE_SYSTEMROOT_SYSTEM32",
+    "executableResolution": "ABSOLUTE_LOADED_KERNEL32_SYSTEM_DIRECTORY",
     "shell": false,
     "pathSearch": false,
     "currentUserExplicitFullControl": true,
@@ -37,6 +37,7 @@
     "result": "PASS",
     "hostileWorkingDirectory": true,
     "hostilePath": true,
+    "hostileSystemRoot": true,
     "fakeWhoamiExecutable": true,
     "fakeIcaclsExecutable": true,
     "absoluteSystemToolsUsed": true,
@@ -70,10 +71,21 @@
         "linuxResult": "PASS",
         "windowsResult": "FAIL",
         "fixedStage": "VERIFY_USER_ONLY_DACL"
+      },
+      {
+        "headCommit": "70b682a70706220228ac4deaa1fcfe39246d8037",
+        "workflowRunId": 33460772910,
+        "windowsJobId": 99710225985,
+        "aggregateJobId": 99711613357,
+        "linuxResult": "PASS",
+        "windowsResult": "FAIL",
+        "fixedStage": "VERIFY_USER_ONLY_DACL",
+        "independentReviewResult": "FAIL",
+        "adversarialFinding": "Whitespace-bound display-name suffixes could impersonate the current principal."
       }
     ],
-    "windowsFinding": "The hosted runner can spell the same local principal as unqualified runneradmin while whoami returns MACHINE\\runneradmin. Independently, icacls emits target paths in the active OEM code page, so Unicode path text can decode to replacement characters under Node UTF-8. Both differences occur after the DACL mutations succeed.",
-    "resolution": "The first ACL entry identifies its principal only at a whitespace boundary immediately before an exact allowed identity alias, so it does not depend on untrusted or lossy path text. An unqualified username is allowed only when the qualified whoami domain exactly equals COMPUTERNAME. Other-domain same-name principals, SYSTEM, Administrators, inherited entries, deny entries, and permissions below FullControl remain rejected.",
+    "windowsFinding": "Hosted Windows account display text and icacls path output are not stable security identifiers: qualification rejected a valid hosted spelling, while independent adversarial review proved that a different account containing the current display name as a whitespace-delimited suffix could be accepted.",
+    "resolution": "whoami is required to emit one exact CSV record whose second field is a bounded numeric SID. icacls grants that SID with the required asterisk form and saves the DACL as UTF-16LE SDDL. Verification accepts exactly one protected DACL with one Allow FullAccess ACE for that exact SID, OI plus CI only for directories, and no other, inherited, deny, GUID or partial-rights ACE. The parser ignores all display-name and target-path spellings. System tools are resolved from the loaded KERNEL32.DLL, so hostile PATH, cwd and SystemRoot values cannot redirect execution.",
     "timeoutIncreased": false,
     "securityBoundaryRelaxed": false
   },
@@ -106,6 +118,8 @@
       "Windows ACL fail-closed behavior",
       "PATH and working-directory injection",
       "icacls argument semantics and partial-failure cleanup",
+      "numeric SID and strict SDDL binding",
+      "hostile SystemRoot and display-name suffix injection",
       "P1-O06 write scope"
     ]
   },
