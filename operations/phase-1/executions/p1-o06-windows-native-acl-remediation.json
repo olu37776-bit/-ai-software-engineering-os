@@ -19,7 +19,7 @@
     "operations/phase-1/verification-plan.json",
     "operations/phase-1/evidence/o01/p1-o06-start-after-issue-64-independent-gate.json",
     "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/64",
-    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/78"
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/79"
   ],
   "claimBoundary": {
     "maximumImplementationClaim": "IMPLEMENTED",
