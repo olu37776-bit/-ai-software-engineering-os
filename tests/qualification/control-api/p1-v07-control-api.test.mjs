@@ -137,6 +137,7 @@ describe("P1-V07 authenticated loopback Control API", () => {
       const hostileDirectory = await mkdtemp(join(tmpdir(), "aseos-hostile-system-tools-"));
       const originalCwd = process.cwd();
       const originalPath = process.env.PATH;
+      const originalSystemRoot = process.env.SystemRoot;
       try {
         await Promise.all([
           writeFile(join(hostileDirectory, "whoami.exe"), "not a Windows executable", "utf8"),
@@ -144,14 +145,19 @@ describe("P1-V07 authenticated loopback Control API", () => {
         ]);
         process.chdir(hostileDirectory);
         process.env.PATH = hostileDirectory;
+        process.env.SystemRoot = hostileDirectory;
         await withControlApi(async ({ runtime }) => {
           expect(await readBearer(runtime)).toMatch(/^[A-Za-z0-9_-]{43}$/u);
+          if (originalSystemRoot === undefined) delete process.env.SystemRoot;
+          else process.env.SystemRoot = originalSystemRoot;
           expect((await tokenAclEvidence(runtime.tokenFilePath)).userOnly).toBe(true);
         });
       } finally {
         process.chdir(originalCwd);
         if (originalPath === undefined) delete process.env.PATH;
         else process.env.PATH = originalPath;
+        if (originalSystemRoot === undefined) delete process.env.SystemRoot;
+        else process.env.SystemRoot = originalSystemRoot;
         await rm(hostileDirectory, { force: true, recursive: true });
       }
     },

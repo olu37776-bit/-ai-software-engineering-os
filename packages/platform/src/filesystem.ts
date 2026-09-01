@@ -1,7 +1,7 @@
 import { execFile } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
-import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 
 import { ControlApiError } from "./errors.js";
@@ -15,11 +15,23 @@ const SEMANTIC_VERSION_PATTERN =
 const TOKEN_REF_PATTERN = /^(?!\/)(?![A-Za-z]:)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]+$/u;
 
 function windowsSystemExecutable(name: "icacls.exe" | "whoami.exe"): string {
-  const windowsRoot = process.env["SystemRoot"] ?? "C:\\Windows";
-  if (!isAbsolute(windowsRoot) || windowsRoot.includes("\0")) {
-    throw new Error("The Windows system root is not an absolute host path");
+  const report: unknown = process.report.getReport();
+  const reportSharedObjects =
+    typeof report === "object" && report !== null
+      ? (report as Record<string, unknown>)["sharedObjects"]
+      : undefined;
+  const sharedObjects = Array.isArray(reportSharedObjects)
+    ? reportSharedObjects.filter((path): path is string => typeof path === "string")
+    : [];
+  const kernel32 = sharedObjects.find(
+    (path) =>
+      basename(path).toLowerCase() === "kernel32.dll" &&
+      basename(dirname(path)).toLowerCase() === "system32",
+  );
+  if (kernel32 === undefined || !isAbsolute(kernel32) || kernel32.includes("\0")) {
+    throw new Error("The loaded Windows system directory is unavailable");
   }
-  return join(windowsRoot, "System32", name);
+  return join(dirname(kernel32), name);
 }
 
 function isRfc3339DateTime(value: unknown): value is string {
@@ -142,94 +154,126 @@ async function replaceAtomically(path: string, content: string, mode: number): P
   }
 }
 
-async function currentWindowsIdentity(): Promise<string> {
-  const { stdout } = await execFileAsync(windowsSystemExecutable("whoami.exe"), [], {
-    windowsHide: true,
-    timeout: 5_000,
-    maxBuffer: 64 * 1024,
-  });
-  const identity = stdout.trim();
-  if (identity === "") throw new Error("Current Windows identity is unavailable");
-  return identity;
+function normalizeWindowsSid(sid: string): string | undefined {
+  const normalized = sid.trim().toUpperCase();
+  if (!/^S-1-\d+(?:-\d+){1,15}$/u.test(normalized)) return undefined;
+  const components = normalized.slice(4).split("-");
+  const authority = components.shift();
+  if (authority === undefined || BigInt(authority) > 0xffffffffffffn) return undefined;
+  if (components.some((component) => BigInt(component) > 0xffffffffn)) return undefined;
+  return normalized;
 }
 
-export function windowsAclOutputIsUserOnly(
-  stdout: string,
-  identity: string,
-  computerName: string | undefined,
+export function windowsCurrentUserSidFromWhoami(stdout: string): string | undefined {
+  const match = /^(?:\uFEFF)?"(?:[^"]|"")*","(S-1-\d+(?:-\d+){1,15})"\r?\n?$/iu.exec(stdout);
+  return match === null ? undefined : normalizeWindowsSid(match[1] ?? "");
+}
+
+function exactTokenSet(value: string, tokens: readonly string[]): Set<string> | undefined {
+  const found = new Set<string>();
+  for (let offset = 0; offset < value.length;) {
+    const token = tokens.find((candidate) => value.startsWith(candidate, offset));
+    if (token === undefined || found.has(token)) return undefined;
+    found.add(token);
+    offset += token.length;
+  }
+  return found;
+}
+
+async function currentWindowsSid(): Promise<string> {
+  const { stdout } = await execFileAsync(
+    windowsSystemExecutable("whoami.exe"),
+    ["/user", "/fo", "csv", "/nh"],
+    {
+      windowsHide: true,
+      timeout: 5_000,
+      maxBuffer: 64 * 1024,
+    },
+  );
+  const sid = windowsCurrentUserSidFromWhoami(stdout);
+  if (sid === undefined) throw new Error("Current Windows user SID is unavailable");
+  return sid;
+}
+
+export function windowsSavedAclIsUserOnly(
+  savedAcl: string,
+  sid: string,
   requireChildInheritance: boolean,
 ): boolean {
-  const normalizedIdentity = identity.trim().toLowerCase();
-  if (normalizedIdentity === "") return false;
-  const allowedPrincipals = new Set([normalizedIdentity]);
-  const separator = normalizedIdentity.indexOf("\\");
-  const normalizedComputerName = computerName?.trim().toLowerCase();
+  const expectedSid = normalizeWindowsSid(sid);
+  if (expectedSid === undefined) return false;
+  const normalized = savedAcl.replace(/^\uFEFF/u, "");
+  if (normalized.includes("\0")) return false;
+  const lines = normalized.split("\r\n");
+  if (lines.length !== 3 || lines[0] === "" || lines[2] !== "") return false;
+  const dacl = (lines[1] ?? "").toUpperCase();
+  if (!/^D:[A-Z]*(?:\([^()]*\))+$/u.test(dacl)) return false;
+  const firstAce = dacl.indexOf("(");
+  const control = dacl.slice(2, firstAce);
+  const controlTokens = exactTokenSet(control, ["AR", "AI", "P"]);
+  if (controlTokens?.has("P") !== true) return false;
+  const aceMatches = [...dacl.matchAll(/\(([^()]*)\)/gu)];
+  if (aceMatches.length !== 1) return false;
+  const fields = (aceMatches[0]?.[1] ?? "").split(";");
+  if (fields.length !== 6) return false;
+  const [type, flags, rights, objectGuid, inheritedObjectGuid, trustee] = fields;
   if (
-    separator > 0 &&
-    separator < normalizedIdentity.length - 1 &&
-    normalizedIdentity.slice(0, separator) === normalizedComputerName
+    type !== "A" ||
+    rights !== "FA" ||
+    objectGuid !== "" ||
+    inheritedObjectGuid !== "" ||
+    trustee !== expectedSid
   ) {
-    allowedPrincipals.add(normalizedIdentity.slice(separator + 1));
+    return false;
   }
-  const aliases = [...allowedPrincipals].sort((left, right) => right.length - left.length);
-  const aclLines: string[] = [];
-  for (const rawLine of stdout.replace(/^\uFEFF/u, "").split(/\r?\n/u)) {
-    if (!rawLine.includes(":(")) continue;
-    let aclLine = rawLine;
-    if (aclLines.length === 0) {
-      const permissionSeparator = rawLine.indexOf(":(");
-      const principalPrefix = rawLine.slice(0, permissionSeparator).trimEnd().toLowerCase();
-      const alias = aliases.find(
-        (candidate) =>
-          principalPrefix.endsWith(candidate) &&
-          /^\s$/u.test(principalPrefix.charAt(principalPrefix.length - candidate.length - 1)),
-      );
-      if (alias === undefined) return false;
-      aclLine = `${alias}${rawLine.slice(permissionSeparator)}`;
-    }
-    aclLines.push(aclLine.trim());
-  }
-  if (aclLines.length === 0) return false;
-  const principals = aclLines.map((line) => line.slice(0, line.indexOf(":(")).trim().toLowerCase());
-  const identityLines = aclLines.filter((_, index) =>
-    allowedPrincipals.has(principals[index] ?? ""),
-  );
-  return (
-    identityLines.length === 1 &&
-    identityLines[0]?.includes("(F)") === true &&
-    !identityLines[0].includes("(DENY)") &&
-    (!requireChildInheritance ||
-      (identityLines[0].includes("(OI)") && identityLines[0].includes("(CI)"))) &&
-    principals.every((principal) => allowedPrincipals.has(principal)) &&
-    aclLines.every((line) => !line.includes("(I)"))
-  );
+  const inheritanceFlags = exactTokenSet(flags ?? "", ["OI", "CI"]);
+  if (inheritanceFlags === undefined) return false;
+  if (!requireChildInheritance) return inheritanceFlags.size === 0;
+  return inheritanceFlags.size === 2 && inheritanceFlags.has("OI") && inheritanceFlags.has("CI");
 }
 
 async function assertWindowsUserOnlyAcl(
   path: string,
-  identity: string,
+  sid: string,
   requireChildInheritance: boolean,
 ): Promise<void> {
-  const { stdout } = await execFileAsync(windowsSystemExecutable("icacls.exe"), [path], {
-    windowsHide: true,
-    timeout: 5_000,
-    maxBuffer: 64 * 1024,
-  });
-  if (
-    !windowsAclOutputIsUserOnly(
-      stdout,
-      identity,
-      process.env["COMPUTERNAME"],
-      requireChildInheritance,
-    )
-  ) {
-    throw new Error("ACL verification permits only the current user without inherited access");
+  const savedAclPath = join(
+    requireChildInheritance ? path : dirname(path),
+    `.aseos-acl-${String(process.pid)}-${randomBytes(8).toString("hex")}.tmp`,
+  );
+  try {
+    await writeFile(savedAclPath, "", { encoding: "utf8", flag: "wx", mode: 0o600 });
+    const icacls = windowsSystemExecutable("icacls.exe");
+    const options = { windowsHide: true, timeout: 5_000, maxBuffer: 64 * 1024 } as const;
+    await execFileAsync(icacls, [savedAclPath, "/grant:r", `*${sid}:(F)`], options);
+    await execFileAsync(icacls, [savedAclPath, "/inheritance:r"], options);
+    await execFileAsync(icacls, [path, "/save", savedAclPath], {
+      windowsHide: true,
+      timeout: 5_000,
+      maxBuffer: 64 * 1024,
+    });
+    const savedAclBytes = await readFile(savedAclPath);
+    if (
+      savedAclBytes.byteLength === 0 ||
+      savedAclBytes.byteLength > 64 * 1024 ||
+      savedAclBytes.byteLength % 2 !== 0
+    ) {
+      throw new Error("Saved ACL is not a bounded UTF-16LE document");
+    }
+    const savedAcl = savedAclBytes.toString("utf16le");
+    if (!windowsSavedAclIsUserOnly(savedAcl, sid, requireChildInheritance)) {
+      throw new Error(
+        "ACL verification permits only the current user SID without inherited access",
+      );
+    }
+  } finally {
+    await rm(savedAclPath, { force: true });
   }
 }
 
 async function applyWindowsUserOnlyAcl(
   path: string,
-  identity: string,
+  sid: string,
   inheritToChildren = false,
 ): Promise<void> {
   let operation = "GRANT_CURRENT_USER";
@@ -240,7 +284,7 @@ async function applyWindowsUserOnlyAcl(
       timeout: 5_000,
       maxBuffer: 64 * 1024,
     } as const;
-    const grant = `${identity}:${inheritToChildren ? "(OI)(CI)" : ""}(F)`;
+    const grant = `*${sid}:${inheritToChildren ? "(OI)(CI)" : ""}(F)`;
     // Grant the user explicitly before removing inherited entries so a partial failure never
     // leaves the current process without an access rule for the path it must verify or clean up.
     await execFileAsync(icacls, [path, "/grant:r", grant], options);
@@ -250,7 +294,7 @@ async function applyWindowsUserOnlyAcl(
     // SeTakeOwnershipPrivilege/SeRestorePrivilege on hosted or otherwise restricted runners.
     // The explicit Full Control rule is sufficient for the current process to verify and clean up.
     operation = "VERIFY_USER_ONLY_DACL";
-    await assertWindowsUserOnlyAcl(path, identity, inheritToChildren);
+    await assertWindowsUserOnlyAcl(path, sid, inheritToChildren);
   } catch (error) {
     throw new ControlApiError(
       "CONTROL_TOKEN_ACL_UNSAFE",
@@ -273,12 +317,12 @@ async function assertPosixUserOnly(path: string): Promise<void> {
 async function replaceWindowsTokenAtomically(path: string, content: string): Promise<void> {
   const parent = dirname(path);
   await mkdir(parent, { recursive: true, mode: 0o700 });
-  const identity = await currentWindowsIdentity();
-  await applyWindowsUserOnlyAcl(parent, identity, true);
+  const sid = await currentWindowsSid();
+  await applyWindowsUserOnlyAcl(parent, sid, true);
   const temporary = `${path}.${String(process.pid)}.${randomBytes(8).toString("hex")}.tmp`;
   try {
     await writeFile(temporary, "", { encoding: "utf8", flag: "wx", mode: 0o600 });
-    await applyWindowsUserOnlyAcl(temporary, identity);
+    await applyWindowsUserOnlyAcl(temporary, sid);
     const handle = await open(temporary, "r+");
     try {
       await handle.writeFile(content, { encoding: "utf8" });
@@ -286,9 +330,9 @@ async function replaceWindowsTokenAtomically(path: string, content: string): Pro
     } finally {
       await handle.close();
     }
-    await assertWindowsUserOnlyAcl(temporary, identity, false);
+    await assertWindowsUserOnlyAcl(temporary, sid, false);
     await rename(temporary, path);
-    await assertWindowsUserOnlyAcl(path, identity, false);
+    await assertWindowsUserOnlyAcl(path, sid, false);
   } finally {
     await rm(temporary, { force: true });
   }
@@ -297,7 +341,7 @@ async function replaceWindowsTokenAtomically(path: string, content: string): Pro
 export async function verifyControlPathUserOnly(path: string): Promise<void> {
   try {
     if (process.platform === "win32") {
-      await assertWindowsUserOnlyAcl(path, await currentWindowsIdentity(), false);
+      await assertWindowsUserOnlyAcl(path, await currentWindowsSid(), false);
     } else {
       await assertPosixUserOnly(path);
     }
