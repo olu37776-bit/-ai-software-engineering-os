@@ -38,7 +38,7 @@ describe("first-slice executable examples", () => {
     });
   });
 
-  test("fails closed for missing, duplicate and unknown-schema fixture bindings", async () => {
+  test("fails closed for a missing fixture binding", async () => {
     await withContractRepository(async (root) => {
       const suite = await readJson(root, suitePath);
       suite.cases[0].instancePath = "packages/contracts/examples/first-slice/valid/missing.json";
@@ -48,6 +48,9 @@ describe("first-slice executable examples", () => {
         code: "MISSING_AUTHORITY_FILE",
       });
     });
+  });
+
+  test("fails closed for duplicate fixture bindings", async () => {
     await withContractRepository(async (root) => {
       const suite = await readJson(root, suitePath);
       suite.cases[1].caseId = suite.cases[0].caseId;
@@ -57,6 +60,9 @@ describe("first-slice executable examples", () => {
         code: "VALIDATION_INPUT_INVALID",
       });
     });
+  });
+
+  test("fails closed for an unknown-schema fixture binding", async () => {
     await withContractRepository(async (root) => {
       const suite = await readJson(root, suitePath);
       suite.cases[0].schemaId = "urn:aseos:schema:not-registered:1.0.0";
