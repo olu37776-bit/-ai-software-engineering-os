@@ -34,9 +34,9 @@ test.skipIf(process.platform === "win32")(
     const step = source.slice(
       source.indexOf("      - name: Require every qualification before accepting the subject"),
     );
-    const block = step.match(/        run: \|\n((?:          .*\n)+)/u);
+    const block = step.match(/ {8}run: \|\n((?: {10}.*\n)+)/u);
     expect(block).not.toBeNull();
-    const command = block[1].replace(/^          /gmu, "");
+    const command = block[1].replace(/^ {10}/gmu, "");
     const execute = (quality, packaging) =>
       spawnSync("bash", ["--noprofile", "--norc", "-e", "-o", "pipefail", "-c", command], {
         encoding: "utf8",
