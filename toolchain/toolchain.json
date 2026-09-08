@@ -10,7 +10,7 @@
     "moduleResolution": "NodeNext",
     "target": "ES2025",
     "lib": ["ES2025"],
-    "buildCommand": "pnpm exec tsc -b tsconfig.build.json --pretty false"
+    "buildCommand": "pnpm exec tsc -b tsconfig.build.json --pretty false && node scripts/toolchain/copy-runtime-assets.mjs"
   },
   "packageManager": {
     "lockfileVersion": "9.0",
