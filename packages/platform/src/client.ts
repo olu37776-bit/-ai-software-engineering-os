@@ -1,4 +1,5 @@
 import { request, type IncomingMessage, type RequestOptions } from "node:http";
+import { TextDecoder } from "node:util";
 
 import { ControlApiError } from "./errors.js";
 import { discoverControlEndpoint, readControlToken } from "./filesystem.js";
@@ -477,6 +478,7 @@ async function invoke<T>(
   headers?: Readonly<Record<string, string>>,
   schemaId?: string,
   validateLocal?: (value: unknown) => value is T,
+  expectedStatus = 200,
 ): Promise<T> {
   const response = await new Promise<IncomingMessage>((resolvePromise, reject) => {
     const outgoing = request(requestOptions(state, method, path, headers), resolvePromise);
@@ -510,7 +512,7 @@ async function invoke<T>(
         : `Control API returned HTTP ${String(status)}`,
     );
   }
-  if (contentType !== "application/json") {
+  if (status !== expectedStatus || contentType !== "application/json") {
     throw new ControlApiError(
       "CONTROL_CLIENT_RESPONSE_INVALID",
       "Control API response used an unexpected content type",
@@ -564,7 +566,12 @@ async function* streamEvents(
       outgoing.destroy(new Error("event stream aborted"));
     };
     options?.signal?.addEventListener("abort", abort, { once: true });
+    outgoing.once("close", () => options?.signal?.removeEventListener("abort", abort));
     outgoing.once("error", reject);
+    if (options?.signal?.aborted) {
+      abort();
+      return;
+    }
     outgoing.end();
   }).catch((error: unknown) => {
     throw new ControlApiError("CONTROL_CLIENT_UNAVAILABLE", "Control event stream failed", {
@@ -596,70 +603,108 @@ async function* streamEvents(
     );
   }
   let pending = "";
-  for await (const chunk of response) {
-    pending += Buffer.from(chunk as Uint8Array).toString("utf8");
-    if (Buffer.byteLength(pending) > state.maxResponseBytes) {
-      response.destroy();
-      throw new ControlApiError(
-        "CONTROL_CLIENT_RESPONSE_TOO_LARGE",
-        "Control event frame exceeded the client limit",
-      );
-    }
-    let boundary = pending.indexOf("\n\n");
-    while (boundary >= 0) {
-      const frame = pending.slice(0, boundary);
-      pending = pending.slice(boundary + 2);
-      const event = frame
-        .split("\n")
-        .find((line) => line.startsWith("event: "))
-        ?.slice(7);
-      const data = frame
-        .split("\n")
-        .find((line) => line.startsWith("data: "))
-        ?.slice(6);
-      if (event === "gap") {
-        let gap: unknown;
-        try {
-          gap = data === undefined ? undefined : (JSON.parse(data) as unknown);
-        } catch {
-          gap = undefined;
-        }
-        const gapValue = objectValue(gap);
-        if (
-          gapValue === undefined ||
-          !exactKeys(gapValue, ["code"]) ||
-          gapValue["code"] !== "CONTROL_SSE_RETENTION_GAP"
-        ) {
-          throw new ControlApiError(
-            "CONTROL_CLIENT_EVENT_INVALID",
-            "Control event gap failed validation",
-          );
-        }
-        yield Object.freeze({ kind: "RETENTION_GAP", code: "CONTROL_SSE_RETENTION_GAP" });
-      } else if (data !== undefined) {
-        let parsed: unknown;
-        try {
-          parsed = JSON.parse(data) as unknown;
-        } catch {
-          throw new ControlApiError(
-            "CONTROL_CLIENT_EVENT_INVALID",
-            "Control event contained invalid JSON",
-          );
-        }
-        if (!isNotification(parsed) || event !== parsed.kind)
-          throw new ControlApiError(
-            "CONTROL_CLIENT_EVENT_INVALID",
-            "Control event failed validation",
-          );
-        yield parsed;
-      } else if (!frame.startsWith(":")) {
+  const decoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
+  let atStart = true;
+  let undecodedBytes = 0;
+  try {
+    for await (const chunk of response) {
+      const bytes = Buffer.from(chunk as Uint8Array);
+      let decoded: string;
+      try {
+        decoded = decoder.decode(bytes, { stream: true });
+      } catch (error) {
         throw new ControlApiError(
           "CONTROL_CLIENT_EVENT_INVALID",
-          "Control event frame was incomplete",
+          "Control event contains invalid UTF-8",
+          { cause: error },
         );
       }
-      boundary = pending.indexOf("\n\n");
+      undecodedBytes += bytes.length - Buffer.byteLength(decoded, "utf8");
+      if (atStart && decoded.length !== 0) {
+        atStart = false;
+        if (decoded.startsWith("\uFEFF")) decoded = decoded.slice(1);
+      }
+      pending += decoded;
+      if (Buffer.byteLength(pending) + undecodedBytes > state.maxResponseBytes) {
+        response.destroy();
+        throw new ControlApiError(
+          "CONTROL_CLIENT_RESPONSE_TOO_LARGE",
+          "Control event frame exceeded the client limit",
+        );
+      }
+      let boundary = pending.indexOf("\n\n");
+      while (boundary >= 0) {
+        const frame = pending.slice(0, boundary);
+        pending = pending.slice(boundary + 2);
+        const event = frame
+          .split("\n")
+          .find((line) => line.startsWith("event: "))
+          ?.slice(7);
+        const data = frame
+          .split("\n")
+          .find((line) => line.startsWith("data: "))
+          ?.slice(6);
+        if (event === "gap") {
+          let gap: unknown;
+          try {
+            gap = data === undefined ? undefined : (JSON.parse(data) as unknown);
+          } catch {
+            gap = undefined;
+          }
+          const gapValue = objectValue(gap);
+          if (
+            gapValue === undefined ||
+            !exactKeys(gapValue, ["code"]) ||
+            gapValue["code"] !== "CONTROL_SSE_RETENTION_GAP"
+          ) {
+            throw new ControlApiError(
+              "CONTROL_CLIENT_EVENT_INVALID",
+              "Control event gap failed validation",
+            );
+          }
+          yield Object.freeze({ kind: "RETENTION_GAP", code: "CONTROL_SSE_RETENTION_GAP" });
+        } else if (data !== undefined) {
+          let parsed: unknown;
+          try {
+            parsed = JSON.parse(data) as unknown;
+          } catch {
+            throw new ControlApiError(
+              "CONTROL_CLIENT_EVENT_INVALID",
+              "Control event contained invalid JSON",
+            );
+          }
+          if (!isNotification(parsed) || event !== parsed.kind)
+            throw new ControlApiError(
+              "CONTROL_CLIENT_EVENT_INVALID",
+              "Control event failed validation",
+            );
+          yield parsed;
+        } else if (!frame.startsWith(":")) {
+          throw new ControlApiError(
+            "CONTROL_CLIENT_EVENT_INVALID",
+            "Control event frame was incomplete",
+          );
+        }
+        boundary = pending.indexOf("\n\n");
+      }
     }
+    try {
+      pending += decoder.decode();
+    } catch (error) {
+      throw new ControlApiError(
+        "CONTROL_CLIENT_EVENT_INVALID",
+        "Control event ends with truncated UTF-8",
+        { cause: error },
+      );
+    }
+    if (pending.length !== 0) {
+      throw new ControlApiError(
+        "CONTROL_CLIENT_EVENT_INVALID",
+        "Control event stream ended with an incomplete frame",
+      );
+    }
+  } finally {
+    response.destroy();
   }
 }
 
@@ -704,6 +749,8 @@ export async function createControlApiClient(
         "if-match": `"${descriptor.instanceId}"`,
       },
       "urn:aseos:schema:control-operation-ref:1.0.0",
+      undefined,
+      202,
     );
   const events = (
     eventOptions?: Readonly<{ lastEventId?: string; signal?: AbortSignal }>,
