@@ -1,5 +1,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
@@ -78,6 +80,36 @@ describe("LF-C1 scope request is never entry authorization", () => {
     expect(result.status).toBe(2);
     expect(JSON.parse(result.stdout).decision).toBe("BLOCKED");
   });
+
+  test("rejects a modified source snapshot", () => {
+    const changed = globalThis.structuredClone(request);
+    changed.source.snapshotUtf8 += "\n";
+    expect(() => inspectRequest(changed, changed.writeScope.allowedChangedPaths)).toThrow(
+      "SOURCE_DOCUMENT_HASH_MISMATCH",
+    );
+  });
+
+  test("reproduces from a clean single-branch clone without the unmerged LF object", () => {
+    const directory = mkdtempSync(join(tmpdir(), "lf-c1-request-clone-"));
+    try {
+      const checkout = join(directory, "repo");
+      execFileSync("git", ["clone", "--no-local", "--single-branch", root, checkout], {
+        stdio: "pipe",
+      });
+      const result = spawnSync(
+        process.execPath,
+        ["scripts/toolchain/check-lf-c1-scope-request.mjs"],
+        { cwd: checkout, encoding: "utf8" },
+      );
+      expect(result.status).toBe(2);
+      const report = JSON.parse(result.stdout);
+      expect(report.requestValidation).toBe("PASS");
+      expect(report.existingDispatcher.error).toBe("UNKNOWN_OPERATION: LF-C1");
+      expect(report.decision).toBe("BLOCKED");
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  }, 30_000);
 
   test("real unchanged dispatcher also refuses LF-C1 through its normal CLI", () => {
     const subject = execFileSync("git", ["rev-parse", "HEAD"], {

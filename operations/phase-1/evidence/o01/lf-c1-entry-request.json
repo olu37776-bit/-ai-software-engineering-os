@@ -6,9 +6,10 @@
   "status": "BLOCKED",
   "codeStartAuthorized": false,
   "observedMain": {
-    "commit": "5577c2e8a9ef090b87924edddf6114dd75eb28a5",
-    "tree": "97d1c3f581dcdefece70d389d8af8a37bb413a3e",
-    "protectedStatus": "NOT_REATTESTED_BY_THIS_REQUEST"
+    "commit": "ed14d4179808621c8ffd5751ebbf7b6704f33b64",
+    "tree": "ad6026e0ef0f67dd1bb3becca65d353b7cb0a463",
+    "protectedStatus": "OBSERVED_ACTIVE_NO_BYPASS_STRICT_REQUIRED_VERIFY",
+    "ruleset": "https://github.com/olu37776-bit/-ai-software-engineering-os/rules/21648824"
   },
   "source": {
     "commit": "877eea857742a2458f2e5c42b3a7d9a261a5a28b",
@@ -16,7 +17,8 @@
     "path": "docs/roadmap/learning-feedback-core-entry-plan.md",
     "sha256": "0e0cb6ee599d56d40e18f9b73d8eacd0446ab9eee54076fa0581326bb064f384",
     "pullRequest": 84,
-    "merged": false
+    "merged": false,
+    "snapshotUtf8": "# LF-C1：独立纯核心建设开工包\n\n状态：`DRAFT / REVIEW_FINDINGS_ADDRESSED_PENDING_REVIEW / ENTRY_NOT_RELEASED`  \n更新：2026-09-08  \n核对主线：`5577c2e8a9ef090b87924edddf6114dd75eb28a5`  \n本轮独立审查 subject：`39cdb4b33cda6616f98ec67855e4e61ee60705b6`  \n[CURRENT](learning-feedback-branch-plan.md) · [Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) · [并行协议](../architecture/learning-feedback/parallel-development-protocol.md) · [Gate #85](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85)\n\n> 本包给出第一任务边界和验收，仍待独立复核及合法scope。下列源码、Schema和实例均未创建；本轮只修文档。\n\n## 1. 第一包：单原子义务的纯核心\n\n只实现Feedback投影、历史纠偏义务关闭评价两个纯用例；包括必要Schema/生成类型、两类key/prior、消费视图规范化及conformance/property/replay。唯一public entry为@aseos/learning，只依赖public contracts。\n\n**每次投影一个原子criterion，输出至多一个候选；每次Resolution一个Feedback和一个consumer Attempt，输出至多一条评价。** criterionRefs恰一项；多closure要求必须归属同一criterion。单次allocatedId/priorFingerprint只服务一个key。V1拒绝组合group或批量调用，不通过新增batch DTO/manager扩大本包。详细规则以Contract§3.1/7.3为准。\n\n不做数据库/网络/文件/Context/Agent调用，不接Runtime，不建Repository/cache/global/生产Adapter，也不做Router/NER/LearningCase/Proposal/dogfooding。外层用已有ContractRegistry验证Schema，纯核心不调用文件loader。\n\n## 2. E0–E4门禁\n\n| Gate | 放行证据 | 当前 |\n| --- | --- | --- |\n| E0 | 最终HEAD完整独立Contract/owner/语义review | 两轮共四项P1已作文档处置；待新HEAD复核，非PASS |\n| E1 | 正式LF-C1 operation、authority、精确scope及checker | BLOCKED_BY_AUTHORITY；P1仍禁止learning；受检suite的owner/hash需授权 |\n| E2 | 直接依赖修复及独立/合并证据 | #82相关finding未在main确认关闭 |\n| E3 | 共享文件单写者、形式/窗口、新base | PENDING_MAINLINE_AGREEMENT |\n| E4 | 开工main SHA/tree、工具链/Schema/public hashes | ENTRY时重绑定 |\n\n直接依赖为R06 canonical JSON/hash、R09生成类型、R10日期、R08架构、R01/R02/R16 Gate/回执/subject，不在LF写替代validator/serializer或降低Gate。C1不等待无关的完整Runtime/Context/Verification/Persistence；#83或修复PR的发布不表示依赖已关闭。\n\n## 3. 合法授权与共享集成\n\n不能伪装P1-O02、私改resolver/全局禁令。主线治理owner按既有流程批准合法parallel/phase operation或受控提前amendment；必要上位计划/ADR变更需独立批准。候选operations/learning-feedback/core-1/须连同validator/登记获准，不是放一个JSON即授权。\n\nSchema/生成物/受检suite/workspace/build/test/architecture由单一集成人与真实consumer在完整subject发布，或消费已获准且完整的主线接线；E3只能选择一种。路径清单是授权请求，不允许现在改源码。复用first-slice suite无需改examples.ts或runner，但该suite现有authority owner/hash仍须E1授权最小增量，不能顺带解除其他锁。\n\n## 4. 精确源码和测试清单提案\n\n```text\npackages/learning/package.json\npackages/learning/tsconfig.json\npackages/learning/src/index.ts\npackages/learning/src/feedback/domain/feedback-rules.ts\npackages/learning/src/feedback/application/project-feedback.ts\npackages/learning/src/feedback/application/evaluate-feedback-resolution.ts\npackages/learning/src/feedback/application/normalize-feedback-semantic-input.ts\npackages/learning/src/feedback/application/derive-feedback-key.ts\npackages/learning/src/feedback/application/derive-resolution-key.ts\npackages/learning/test/project-feedback.test.mjs\npackages/learning/test/evaluate-feedback-resolution.test.mjs\npackages/learning/test/feedback-replay.test.mjs\npackages/learning/test/feedback-input-validation.test.mjs\npackages/learning/test/feedback-idempotency.test.mjs\npackages/learning/test/feedback-normalization.test.mjs\npackages/learning/test/resolution-idempotency.test.mjs\ntests/contract/learning-feedback/feedback-conformance.test.mjs\ntests/architecture/learning-feedback-boundaries.test.mjs\n```\n\n两类key共用唯一normalizer，不复制JSON serializer。public/persisted类型由contracts生成，不手写平行DTO；不创建无实际I/O的ports/Repository。LF-RV-04的基数测试放已有project-feedback/input-validation/idempotency/conformance测试，不增加batch文件或包。\n\n### 共享Contract、标准受检suite与实例\n\n```text\npackages/contracts/schemas/learning/execution-feedback.schema.json\npackages/contracts/schemas/learning/feedback-resolution.schema.json\npackages/contracts/schemas/learning/feedback-projection-input.schema.json\npackages/contracts/schemas/learning/feedback-projection-result.schema.json\npackages/contracts/schemas/learning/feedback-resolution-input.schema.json\npackages/contracts/schemas/learning/feedback-resolution-result.schema.json\npackages/contracts/examples/first-slice/example-suite.json\npackages/contracts/examples/learning/execution-feedback.valid.json\npackages/contracts/examples/learning/execution-feedback.invalid.json\npackages/contracts/examples/learning/feedback-resolution.valid.json\npackages/contracts/examples/learning/feedback-resolution.invalid.json\npackages/contracts/examples/learning/feedback-projection-input.valid.json\npackages/contracts/examples/learning/feedback-projection-input.invalid.json\npackages/contracts/examples/learning/feedback-projection-result.valid.json\npackages/contracts/examples/learning/feedback-projection-result.invalid.json\npackages/contracts/examples/learning/feedback-resolution-input.valid.json\npackages/contracts/examples/learning/feedback-resolution-input.invalid.json\npackages/contracts/examples/learning/feedback-resolution-result.valid.json\npackages/contracts/examples/learning/feedback-resolution-result.invalid.json\npackages/contracts/README.md\npackages/contracts/planned-contracts.json\npackages/contracts/schema-inventory.json\npackages/contracts/schema-registry.json\npackages/contracts/type-bindings.json\npackages/contracts/src/types.generated.ts\ntests/contract/example-suite.test.mjs\n```\n\n不创建learning/example-suite.json。十二个caseId固定lf-c1.<schema-stem>.<valid|invalid>，追加原first-slice受检suite，实例放learning/；保留全部原case/expectation/semanticAssertions，不修改通用validator/runner绕过问题。\n\nexamples.ts固定读原suite；contracts:qualify调用该入口。example-suite.test.mjs有38/19/19/22统计，已纳入候选共享scope。未变基线且无新增semanticAssertions，追加十二个后为50/25/25/22；开工前冻结新main的实际案例，不用动态总数掩盖十二固定binding缺失。INVALID须expectedError(keyword/instancePath)。标准资格在隔离完整副本面对删新文件、错路径、invalid改valid、错误expectedError均必须失败；缺固定case由conformance拒绝。\n\n基数约束必须进入Input/Result及持久化对象Schema和语义validator：一个criterion、一个allocatedId/prior、单个result；零/多criterion及另一criterion的assessment/closure均拒绝。正常同一criterion的多个关闭要求仍合法且仅一条反馈。全部Schema立即有consumer，不激活其余Phase7对象；registry/hash/type用现有工具生成。\n\n### 共享构建/架构\n\n```text\npackage.json\npnpm-workspace.yaml\npnpm-lock.yaml\ntsconfig.build.json\nvitest.config.mjs\ntests/architecture/architecture-policy.json\n```\n\n仅接入真实package的dependency/reference/test discovery、learning->contracts和必要根测试边，不加platform->learning。主线已覆盖的路径可缩减；额外workflow/脚本须另行授权。新测试必须进入正常root test。\n\n### 文档与Evidence\n\n实现时同步本包、CURRENT、Contract实际映射；实施报告固定docs/implementation/learning-feedback/lf-c1-implementation.md，独立报告固定docs/reviews/learning-feedback/lf-c1-independent-verification.md。机器记录由E1先冻结，普通文档同步随操作完成。\n\n## 5. 实施顺序\n\n1. 读取#85真实E0–E4证据，在获准新main建立独立工作树/短分支。\n2. 单写者落实Schema/十二实例/原suite binding/生成物/构建接线与真实consumer。\n3. 实现单义务用例、projection/resolution key、唯一normalizer与显式prior，不存历史，不添加批量外层编排。\n4. 跑局部、正常资格、root build/test/architecture和适用quality，记录subject/命令/环境/限制。\n5. 冻结HEAD给独立verifier；有问题另轮实施，新subject重验，不同pass边审边改。\n\n## 6. VerificationPlan\n\n| ID | 必须证明 |\n| --- | --- |\n| C1-V01 | 六Schema/十二实例在原suite登记；固定ID断言；标准资格对删文件/错路径/错误invalid/expectedError均失败，新旧正常案例均通过 |\n| C1-V02 | 七Gate outcome完整，approval/terminal/risk/unknown不降级；汇总Gate不得代替选定criterion证据 |\n| C1-V03 | criterion/Evidence缺失、冲突、错subject ->gap/typed拒绝，不推测rootCause |\n| C1-V04 | 同一反馈义务全满足/部分明确不满足/均不满足 ->正确三种disposition |\n| C1-V05 | 必要条件UNKNOWN、依赖不足、非法输入不冒充EVALUATED，不写completed Resolution |\n| C1-V06 | 错run/attempt/criterion版本、无合法消费关系不关闭 |\n| C1-V07 | 风险接受/Claim fixed/过期或反证不冒充MET；capturedTime仅报告，时间判定材料固定 |\n| C1-V08 | 两用例固定材料/context重放一致；本次ID/time不改key/hash，不误删历史fingerprint |\n| C1-V09 | 单义务Projection prior同key/hash/version复用旧ID；异hash冲突；无匹配prior只返回本义务单候选 |\n| C1-V10 | LF-HN-1逐路径参数化：SET重排不变、SEQUENCE反转改变、SINGLETON基数错误拒绝、重复/未知/版本规则及HN字节向量通过public canonical API |\n| C1-V11 | 核心无时钟/UUID/global/I/O，不改输入/Evidence；validator/serializer复用contracts |\n| C1-V12 | 干净root构建/正常测试包含新包，reverse/deep import/cycle负例被拒 |\n| C1-V13 | 修复后contracts非JSON/稀疏数组/非法日期/条件类型负例仍被拒 |\n| C1-V14 | 实际回执/subject/scope校验，非法claim/旧SHA不得放行 |\n| C1-V15 | Resolution prior同key/hash/version复用旧resolutionId，异内容冲突，错误类型prior拒绝 |\n| C1-V16 | 新attempt/合法Gate-assessment/evaluator-normalization版本产生新Resolution key；改旧observation内容冲突；INCONCLUSIVE无业务记录 |\n| C1-V17 | 正常suite接入负例不能只跑LF专用检查；保留所有旧case，缺十二固定binding之一也被拒 |\n| C1-V18 | 投影0/2个criterion拒绝；assessment/closure跨criterion拒绝；单criterion多closure仅一候选；A/B分别调用key/ID不同且prior不交叉复用；Result拒绝批量/候选与错误并存；Resolution输入/输出也保持单条 |\n\nC1-V18需同时验证Schema入口和public pure-use-case语义约束，不通过as类型断言绕过。C1-V10覆盖每个表列路径，不只一个evidenceRefs例子。纯比较不证明prior真实、数据库事务/并发/restart；I1分别验证两类key。所有合成输入标CONFORMANCE_FIXTURE，不宣称生产Node/CCP事实。\n\n通用命令在entry核对：pnpm install --frozen-lockfile；pnpm run verify:versions；pnpm run contracts:generate-types；pnpm run build；pnpm run test；pnpm run contracts:qualify；pnpm run architecture:qualify；pnpm run quality。LF scope命令须E1实际支持，不传未知operation制造PASS；Windows/独立检查依risk/authority，不以Linux skip替代。\n\n## 7. 完成与停止\n\n实施最多IMPLEMENTED_PENDING_INDEPENDENT_VERIFICATION；独立通过只记LF-C1/CORE_CONFORMANCE VERIFIED @ exact SHA，Feedback V1生产仍NOT_READY。I1/I2/E1另验真实query/persistence/Context/工作流。\n\n未授权、共享竞写、相关依赖失效、Contract歧义、必须绕过正常路径才过测时停止并保留diff，不revert他人变更。受检suite/lock/生成物scope须E1批准；文档候选清单不等于实际写授权。\n\n## 8. 独立review与开工交接\n\n首轮08b701e发现suite接入、hash分类、Resolution幂等三个P1；39cdb4b复核又提出多义务调用基数P1（LF-RV-04）。本次选择收窄V1为单原子criterion，不加batch结构，更新三文档和C1-V18。所有四项仍ADDRESSED_PENDING_REVIEW；自动review未重复某项不等于已正式关闭。\n\n最终审查需绑定exact subject，覆盖四findings、D01–D05、单义务基数、owner与phase/scope/并行边界，给出明确结论。审查不能释放尚未批准的E1或关闭主线#82 finding。CI绿/emoji不替代完整覆盖证据。\n\n门禁接续不再重复总体设计：先读取#85及main最新状态；依据已有独立结果关闭E0；将E1的合法operation/scope和E3的共享写入承接交主线治理任务明确批准；逐项核对E2依赖证据，最后绑定E4。任一项无证据仍为BLOCKED，不能将评论请求当批准。E0–E4全满足，才发布正式开工回执并执行§5。\n"
   },
   "requestedOperation": {
     "operationId": "LF-C1",
@@ -241,7 +243,7 @@
       "operator": null,
       "exclusivePaths": ["operations/phase-1/authority-lock.json"]
     },
-    "overlappingActivePullRequests": [86, 87, 88]
+    "overlappingActivePullRequests": [87, 88]
   },
   "lockedSharedAssets": [
     {
@@ -379,7 +381,16 @@
         {
           "findings": ["R01", "R02", "R16"],
           "pullRequest": 86,
-          "head": "a763f581f765e4612293abe8dc5d4dccb3bd76dd"
+          "head": "a763f581f765e4612293abe8dc5d4dccb3bd76dd",
+          "merged": true,
+          "mergeCommit": "ed14d4179808621c8ffd5751ebbf7b6704f33b64",
+          "independentClosure": "NOT_ACCEPTED_WITHOUT_EXACT_EVIDENCE",
+          "protectedMainQualification": {
+            "status": "IN_PROGRESS_AT_OBSERVATION",
+            "run": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34182792727",
+            "packagingRun": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34182792657",
+            "packagingConclusion": "success"
+          }
         },
         {
           "findings": ["R06", "R09", "R10"],
@@ -392,7 +403,7 @@
           "head": "b624317b613e5b5b2093b3280d223becef366ddd"
         }
       ],
-      "reason": "All open/unmerged at observed main; no protected-main repair qualification or independent closure accepted"
+      "reason": "#86 merged as ed14d41; exact post-merge and independent closure not yet accepted; #87/#88 still open/unmerged"
     },
     "E3": {
       "status": "BLOCKED",
@@ -411,7 +422,7 @@
     "operations/phase-1/authority-lock.json": "a4245c73ef80da2f3829853cb5a8c89a589f0e0486e43dab2cf9d3b2bda41ee4",
     "scripts/toolchain/scope-policy.mjs": "f3c7bd567e649cc6fe6c3643d73b7d07e95d47aba4ff7da7521be1dca8fd5c83",
     "scripts/toolchain/verify-scope.mjs": "9018ede7a6f9631ecc117aa4b5a418abcd4f0e864f929cd76bc8ab4a9a42f9cd",
-    "toolchain/toolchain.json": "5886842d241e2a94a819a4a77d347399363328a4d2f2e788cde6853c28c7357f",
+    "toolchain/toolchain.json": "10b64a8757e0a368bbb05d5ee29a3e70409f95b05274b54bf79c3d99b9f817e0",
     "pnpm-lock.yaml": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
     "packages/contracts/src/index.ts": "dd46149610e3a6e7cc3642be17fd53f1ae8c6f248f094a7ec608082092105d5d",
     "packages/contracts/schema-registry.json": "94bfd7bfe6dbf4ac91f22ad2ff9993b6776789da294aac8e1910de3883590414",

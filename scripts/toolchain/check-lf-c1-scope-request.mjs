@@ -58,8 +58,9 @@ export function checkRequestedPaths(request, paths) {
 
 export function inspectRequest(request, paths) {
   const range = checkRequestedPaths(request, paths);
-  const { commit, path, sha256: expectedHash } = request.source;
-  const sourceBytes = at(commit, path);
+  const { snapshotUtf8: sourceBytes, ...sourceReference } = request.source;
+  const expectedHash = sourceReference.sha256;
+  if (typeof sourceBytes !== "string") throw new Error("SOURCE_SNAPSHOT_REQUIRED");
   if (sha256(sourceBytes) !== expectedHash) throw new Error("SOURCE_DOCUMENT_HASH_MISMATCH");
   const blocks = [...sourceBytes.matchAll(/```text\n([\s\S]*?)\n```/g)];
   const sourcePaths = blocks.flatMap((match) => match[1].split("\n"));
@@ -127,7 +128,7 @@ export function inspectRequest(request, paths) {
     scopeAuthorityMode: "REQUEST_RANGE_ONLY",
     requestSha256: sha256(JSON.stringify(request)),
     observedMain: request.observedMain,
-    source: request.source,
+    source: sourceReference,
     range,
     verificationSteps: steps.length,
     existingDispatcher: { operation: "LF-C1", error: dispatcherError },

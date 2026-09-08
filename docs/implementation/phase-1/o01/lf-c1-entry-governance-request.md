@@ -6,7 +6,7 @@
 
 ## 固定材料与机器请求
 
-- 观察 main：`5577c2e8a9ef090b87924edddf6114dd75eb28a5`。
+- 观察 main：`ed14d4179808621c8ffd5751ebbf7b6704f33b64`。
 - LF 文档：PR #84，`877eea857742a2458f2e5c42b3a7d9a261a5a28b`，仍未合并。
 - 请求：`operations/phase-1/evidence/o01/lf-c1-entry-request.json`。
 - 诊断：`operations/phase-1/evidence/o01/lf-c1-entry-preflight.json`。
@@ -30,20 +30,20 @@ node scripts/toolchain/check-lf-c1-scope-request.mjs --paths-json /absolute/path
 ```sh
 corepack pnpm install --frozen-lockfile
 corepack pnpm exec vitest run tests/qualification/toolchain/lf-c1-scope-request.test.mjs
-node scripts/toolchain/verify-scope.mjs --operation LF-C1 --base 5577c2e8a9ef090b87924edddf6114dd75eb28a5
+node scripts/toolchain/verify-scope.mjs --operation LF-C1 --base ed14d4179808621c8ffd5751ebbf7b6704f33b64
 ```
 
 最后一个命令应失败。测试已处于既有 root Vitest 的 toolchain discovery 范围，不改 test wiring。scope/M0、依赖安装及 hosted 结果绑定实际执行 subject 单独记录，不能把此处命令清单当作已运行证据。
 
 ## 当前 E0～E4
 
-| Gate | 实际状态与缺口                                                                                                                                                  |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| E0   | 独立 reviewer 对 877eea8 的 LF-RV-01～04 文档修订 PASS；完整 E0 为 UNPROVEN/BLOCKED，D01～D05 缺少定义与来源映射。证据为 #85 评论 5578475306。                  |
-| E1   | LF-C1 不被现行 dispatcher 识别；尚无批准的 operation/Authority/精确范围与执行入口。P1 globalDenied 和 suite owner 未改变。                                      |
-| E2   | R01/R02/R16：#86 a763f58；R06/R09/R10：#87 cf59066；R08：#88 b624317；观察时均未合并。PR 检查成功也不是受保护 main 修复闭环或独立语义结论。                     |
-| E3   | 选择同一原子完整 subject 的单一 LF-C1-INTEGRATION 写者方案，54 路径固定；尚未指定获准操作者、接受记录、base 和窗口。窗口 CLOSED；治理锁写者独立，未经批准不写。 |
-| E4   | `approvedMain=null`。5577c2e 仅是观察基线；实际开工须从获准 main 重绑 tree、工具链、Schema/公有入口、Authority 与适用 Evidence。                                |
+| Gate | 实际状态与缺口                                                                                                                                                         |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| E0   | 独立 reviewer 对 877eea8 的 LF-RV-01～04 文档修订 PASS；完整 E0 为 UNPROVEN/BLOCKED，D01～D05 缺少定义与来源映射。证据为 #85 评论 5578475306。                         |
+| E1   | LF-C1 不被现行 dispatcher 识别；尚无批准的 operation/Authority/精确范围与执行入口。P1 globalDenied 和 suite owner 未改变。                                             |
+| E2   | R01/R02/R16：#86 a763f58；R06/R09/R10：#87 cf59066；R08：#88 b624317；#86现已合并为ed14d41，仍需其独立与post-merge Evidence；#87/#88仍未合并。PR检查成功不替代该证据。 |
+| E3   | 选择同一原子完整 subject 的单一 LF-C1-INTEGRATION 写者方案，54 路径固定；尚未指定获准操作者、接受记录、base 和窗口。窗口 CLOSED；治理锁写者独立，未经批准不写。        |
+| E4   | `approvedMain=null`。ed14d41 仅是观察基线；实际开工须从获准 main 重绑 tree、工具链、Schema/公有入口、Authority 与适用 Evidence。                                       |
 
 不要求等待 C1 不使用的未来 Runtime/Context/Knowledge/Persistence 能力。也不把旧 HEAD、作者声明或未合并 PR 当作上述 Gate 的证明。
 
@@ -75,3 +75,7 @@ tests/qualification/toolchain/lf-c1-scope-request.test.mjs
 ```
 
 均为 P1-O01 当前可写路径，与 #82 修复文件不重叠。回滚通过普通 PR 撤回准备包，不改历史 Evidence 或他人分支。独立复核结果记录 #85/#95，作者最多声明请求/诊断已实现，不声明 LF-C1 或本准备包 VERIFIED。
+
+## 准备包独立发现的修复
+
+a4deb7e 的独立审查发现诊断依赖未合并 PR 的 Git object，在普通干净 clone 中不可复现。请求现附原始 source 文档 UTF-8 快照并按原 SHA256 校验，固定 commit/tree 仍作追溯；快照不是 Authority。正常测试新增干净单分支 clone 复现与篡改快照拒绝。新 subject 另行独立复核，不继承旧 FAIL/PASS。

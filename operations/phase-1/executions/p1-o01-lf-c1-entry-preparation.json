@@ -9,7 +9,7 @@
   "status": "IMPLEMENTED",
   "trackingIssue": 95,
   "implementationBranch": "phase-1/p1-o01-lf-c1-entry-preparation-issue-95",
-  "baseCommit": "5577c2e8a9ef090b87924edddf6114dd75eb28a5",
+  "baseCommit": "ed14d4179808621c8ffd5751ebbf7b6704f33b64",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
