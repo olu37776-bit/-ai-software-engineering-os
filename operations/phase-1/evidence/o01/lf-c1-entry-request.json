@@ -1,0 +1,429 @@
+{
+  "schemaVersion": "1.0.0",
+  "recordType": "LF_C1_ENTRY_REQUEST_NOT_AUTHORITY",
+  "trackingIssue": 95,
+  "entryIssue": 85,
+  "status": "BLOCKED",
+  "codeStartAuthorized": false,
+  "observedMain": {
+    "commit": "5577c2e8a9ef090b87924edddf6114dd75eb28a5",
+    "tree": "97d1c3f581dcdefece70d389d8af8a37bb413a3e",
+    "protectedStatus": "NOT_REATTESTED_BY_THIS_REQUEST"
+  },
+  "source": {
+    "commit": "877eea857742a2458f2e5c42b3a7d9a261a5a28b",
+    "tree": "0c5b9be17f25e7ff63610c61f39f95e985ef32b9",
+    "path": "docs/roadmap/learning-feedback-core-entry-plan.md",
+    "sha256": "0e0cb6ee599d56d40e18f9b73d8eacd0446ab9eee54076fa0581326bb064f384",
+    "pullRequest": 84,
+    "merged": false
+  },
+  "requestedOperation": {
+    "operationId": "LF-C1",
+    "status": "REQUESTED_NOT_AUTHORIZED",
+    "branch": "learning-feedback/lf-c1-core-1",
+    "riskClass": "R3",
+    "canonicalOwner": "packages/learning",
+    "publicEntry": "@aseos/learning",
+    "dependencies": ["@aseos/contracts"],
+    "atomicity": "ONE_CRITERION_ONE_RESULT",
+    "productionRuntime": false,
+    "implementationClaimMaximum": "IMPLEMENTED",
+    "approvedMain": null
+  },
+  "requestedAuthorityTargets": [
+    "operations/learning-feedback/core-1/operation.json",
+    "operations/learning-feedback/core-1/write-scope.json",
+    "operations/learning-feedback/core-1/verification-plan.json",
+    "operations/learning-feedback/core-1/authority-lock.json"
+  ],
+  "writeScope": {
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "allowedChangedPaths": [
+      "docs/architecture/learning-feedback/contract-and-seam-proposal.md",
+      "docs/implementation/learning-feedback/lf-c1-implementation.md",
+      "docs/roadmap/learning-feedback-branch-plan.md",
+      "docs/roadmap/learning-feedback-core-entry-plan.md",
+      "package.json",
+      "packages/contracts/README.md",
+      "packages/contracts/examples/first-slice/example-suite.json",
+      "packages/contracts/examples/learning/execution-feedback.invalid.json",
+      "packages/contracts/examples/learning/execution-feedback.valid.json",
+      "packages/contracts/examples/learning/feedback-projection-input.invalid.json",
+      "packages/contracts/examples/learning/feedback-projection-input.valid.json",
+      "packages/contracts/examples/learning/feedback-projection-result.invalid.json",
+      "packages/contracts/examples/learning/feedback-projection-result.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution-input.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution-input.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution-result.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution-result.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution.valid.json",
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json",
+      "packages/contracts/schemas/learning/execution-feedback.schema.json",
+      "packages/contracts/schemas/learning/feedback-projection-input.schema.json",
+      "packages/contracts/schemas/learning/feedback-projection-result.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution-input.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution-result.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution.schema.json",
+      "packages/contracts/src/types.generated.ts",
+      "packages/contracts/type-bindings.json",
+      "packages/learning/package.json",
+      "packages/learning/src/feedback/application/derive-feedback-key.ts",
+      "packages/learning/src/feedback/application/derive-resolution-key.ts",
+      "packages/learning/src/feedback/application/evaluate-feedback-resolution.ts",
+      "packages/learning/src/feedback/application/normalize-feedback-semantic-input.ts",
+      "packages/learning/src/feedback/application/project-feedback.ts",
+      "packages/learning/src/feedback/domain/feedback-rules.ts",
+      "packages/learning/src/index.ts",
+      "packages/learning/test/evaluate-feedback-resolution.test.mjs",
+      "packages/learning/test/feedback-idempotency.test.mjs",
+      "packages/learning/test/feedback-input-validation.test.mjs",
+      "packages/learning/test/feedback-normalization.test.mjs",
+      "packages/learning/test/feedback-replay.test.mjs",
+      "packages/learning/test/project-feedback.test.mjs",
+      "packages/learning/test/resolution-idempotency.test.mjs",
+      "packages/learning/tsconfig.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tests/architecture/architecture-policy.json",
+      "tests/architecture/learning-feedback-boundaries.test.mjs",
+      "tests/contract/example-suite.test.mjs",
+      "tests/contract/learning-feedback/feedback-conformance.test.mjs",
+      "tsconfig.build.json",
+      "vitest.config.mjs"
+    ],
+    "groups": {
+      "core": [
+        "packages/learning/package.json",
+        "packages/learning/src/feedback/application/derive-feedback-key.ts",
+        "packages/learning/src/feedback/application/derive-resolution-key.ts",
+        "packages/learning/src/feedback/application/evaluate-feedback-resolution.ts",
+        "packages/learning/src/feedback/application/normalize-feedback-semantic-input.ts",
+        "packages/learning/src/feedback/application/project-feedback.ts",
+        "packages/learning/src/feedback/domain/feedback-rules.ts",
+        "packages/learning/src/index.ts",
+        "packages/learning/test/evaluate-feedback-resolution.test.mjs",
+        "packages/learning/test/feedback-idempotency.test.mjs",
+        "packages/learning/test/feedback-input-validation.test.mjs",
+        "packages/learning/test/feedback-normalization.test.mjs",
+        "packages/learning/test/feedback-replay.test.mjs",
+        "packages/learning/test/project-feedback.test.mjs",
+        "packages/learning/test/resolution-idempotency.test.mjs",
+        "packages/learning/tsconfig.json",
+        "tests/architecture/learning-feedback-boundaries.test.mjs",
+        "tests/contract/learning-feedback/feedback-conformance.test.mjs"
+      ],
+      "contracts": [
+        "packages/contracts/README.md",
+        "packages/contracts/examples/first-slice/example-suite.json",
+        "packages/contracts/examples/learning/execution-feedback.invalid.json",
+        "packages/contracts/examples/learning/execution-feedback.valid.json",
+        "packages/contracts/examples/learning/feedback-projection-input.invalid.json",
+        "packages/contracts/examples/learning/feedback-projection-input.valid.json",
+        "packages/contracts/examples/learning/feedback-projection-result.invalid.json",
+        "packages/contracts/examples/learning/feedback-projection-result.valid.json",
+        "packages/contracts/examples/learning/feedback-resolution-input.invalid.json",
+        "packages/contracts/examples/learning/feedback-resolution-input.valid.json",
+        "packages/contracts/examples/learning/feedback-resolution-result.invalid.json",
+        "packages/contracts/examples/learning/feedback-resolution-result.valid.json",
+        "packages/contracts/examples/learning/feedback-resolution.invalid.json",
+        "packages/contracts/examples/learning/feedback-resolution.valid.json",
+        "packages/contracts/planned-contracts.json",
+        "packages/contracts/schema-inventory.json",
+        "packages/contracts/schema-registry.json",
+        "packages/contracts/schemas/learning/execution-feedback.schema.json",
+        "packages/contracts/schemas/learning/feedback-projection-input.schema.json",
+        "packages/contracts/schemas/learning/feedback-projection-result.schema.json",
+        "packages/contracts/schemas/learning/feedback-resolution-input.schema.json",
+        "packages/contracts/schemas/learning/feedback-resolution-result.schema.json",
+        "packages/contracts/schemas/learning/feedback-resolution.schema.json",
+        "packages/contracts/src/types.generated.ts",
+        "packages/contracts/type-bindings.json",
+        "tests/contract/example-suite.test.mjs"
+      ],
+      "wiring": [
+        "package.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "tests/architecture/architecture-policy.json",
+        "tsconfig.build.json",
+        "vitest.config.mjs"
+      ]
+    },
+    "implementationDocumentation": [
+      "docs/architecture/learning-feedback/contract-and-seam-proposal.md",
+      "docs/implementation/learning-feedback/lf-c1-implementation.md",
+      "docs/roadmap/learning-feedback-branch-plan.md",
+      "docs/roadmap/learning-feedback-core-entry-plan.md"
+    ],
+    "unlistedPaths": "DENIED",
+    "authorityLockHashRefresh": "SEPARATE_PRIOR_AUTHORIZED_TRANSITION_REQUIRED",
+    "independentReport": "docs/reviews/learning-feedback/lf-c1-independent-verification.md",
+    "independentReportWriter": "INDEPENDENT_VERIFIER_SEPARATE_EVIDENCE_SUBJECT"
+  },
+  "singleWriter": {
+    "form": "ONE_ATOMIC_COMPLETE_SUBJECT",
+    "task": "LF-C1-INTEGRATION",
+    "operator": null,
+    "acceptance": "PENDING_INDEPENDENT_AUTHORITY",
+    "exclusivePaths": [
+      "docs/architecture/learning-feedback/contract-and-seam-proposal.md",
+      "docs/implementation/learning-feedback/lf-c1-implementation.md",
+      "docs/roadmap/learning-feedback-branch-plan.md",
+      "docs/roadmap/learning-feedback-core-entry-plan.md",
+      "package.json",
+      "packages/contracts/README.md",
+      "packages/contracts/examples/first-slice/example-suite.json",
+      "packages/contracts/examples/learning/execution-feedback.invalid.json",
+      "packages/contracts/examples/learning/execution-feedback.valid.json",
+      "packages/contracts/examples/learning/feedback-projection-input.invalid.json",
+      "packages/contracts/examples/learning/feedback-projection-input.valid.json",
+      "packages/contracts/examples/learning/feedback-projection-result.invalid.json",
+      "packages/contracts/examples/learning/feedback-projection-result.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution-input.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution-input.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution-result.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution-result.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution.valid.json",
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json",
+      "packages/contracts/schemas/learning/execution-feedback.schema.json",
+      "packages/contracts/schemas/learning/feedback-projection-input.schema.json",
+      "packages/contracts/schemas/learning/feedback-projection-result.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution-input.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution-result.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution.schema.json",
+      "packages/contracts/src/types.generated.ts",
+      "packages/contracts/type-bindings.json",
+      "packages/learning/package.json",
+      "packages/learning/src/feedback/application/derive-feedback-key.ts",
+      "packages/learning/src/feedback/application/derive-resolution-key.ts",
+      "packages/learning/src/feedback/application/evaluate-feedback-resolution.ts",
+      "packages/learning/src/feedback/application/normalize-feedback-semantic-input.ts",
+      "packages/learning/src/feedback/application/project-feedback.ts",
+      "packages/learning/src/feedback/domain/feedback-rules.ts",
+      "packages/learning/src/index.ts",
+      "packages/learning/test/evaluate-feedback-resolution.test.mjs",
+      "packages/learning/test/feedback-idempotency.test.mjs",
+      "packages/learning/test/feedback-input-validation.test.mjs",
+      "packages/learning/test/feedback-normalization.test.mjs",
+      "packages/learning/test/feedback-replay.test.mjs",
+      "packages/learning/test/project-feedback.test.mjs",
+      "packages/learning/test/resolution-idempotency.test.mjs",
+      "packages/learning/tsconfig.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tests/architecture/architecture-policy.json",
+      "tests/architecture/learning-feedback-boundaries.test.mjs",
+      "tests/contract/example-suite.test.mjs",
+      "tests/contract/learning-feedback/feedback-conformance.test.mjs",
+      "tsconfig.build.json",
+      "vitest.config.mjs"
+    ],
+    "window": {
+      "state": "CLOSED",
+      "base": null,
+      "openOnlyAfter": ["E0", "E1", "E2", "E3", "E4"],
+      "closesOn": [
+        "MAIN_OR_SUBJECT_DRIFT",
+        "SHARED_PATH_COMPETING_WRITE",
+        "AUTHORITY_CHANGE",
+        "DEPENDENCY_EVIDENCE_INVALIDATION"
+      ]
+    },
+    "governanceWriter": {
+      "task": "MAINLINE_GOVERNANCE",
+      "operator": null,
+      "exclusivePaths": ["operations/phase-1/authority-lock.json"]
+    },
+    "overlappingActivePullRequests": [86, 87, 88]
+  },
+  "lockedSharedAssets": [
+    {
+      "path": "packages/contracts/examples/first-slice/example-suite.json",
+      "sha256": "fada428e90bd4e8507a3911a8248582f31654dba6f9325363ca14fd3a35b8306",
+      "role": "EXAMPLE_SUITE",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": ["P1-O02"]
+    },
+    {
+      "path": "packages/contracts/planned-contracts.json",
+      "sha256": "69d2e9f1c89deaa35f4fb7f718cf34d348d05a5e6a6c544385abd39bf85d9a57",
+      "role": "CONTRACT_INVENTORY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
+    },
+    {
+      "path": "packages/contracts/schema-inventory.json",
+      "sha256": "093786be4f26d1701e4e3a2d24aff3709dec795ad60de1a8b18fd2e6d295c29b",
+      "role": "CONTRACT_INVENTORY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
+    },
+    {
+      "path": "packages/contracts/schema-registry.json",
+      "sha256": "94bfd7bfe6dbf4ac91f22ad2ff9993b6776789da294aac8e1910de3883590414",
+      "role": "SCHEMA_REGISTRY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
+    }
+  ],
+  "verificationPlan": {
+    "status": "REQUESTED",
+    "sourceSection": "6",
+    "steps": [
+      {
+        "id": "C1-V01",
+        "requirement": "六Schema/十二实例在原suite登记；固定ID断言；标准资格对删文件/错路径/错误invalid/expectedError均失败，新旧正常案例均通过"
+      },
+      {
+        "id": "C1-V02",
+        "requirement": "七Gate outcome完整，approval/terminal/risk/unknown不降级；汇总Gate不得代替选定criterion证据"
+      },
+      {
+        "id": "C1-V03",
+        "requirement": "criterion/Evidence缺失、冲突、错subject ->gap/typed拒绝，不推测rootCause"
+      },
+      {
+        "id": "C1-V04",
+        "requirement": "同一反馈义务全满足/部分明确不满足/均不满足 ->正确三种disposition"
+      },
+      {
+        "id": "C1-V05",
+        "requirement": "必要条件UNKNOWN、依赖不足、非法输入不冒充EVALUATED，不写completed Resolution"
+      },
+      {
+        "id": "C1-V06",
+        "requirement": "错run/attempt/criterion版本、无合法消费关系不关闭"
+      },
+      {
+        "id": "C1-V07",
+        "requirement": "风险接受/Claim fixed/过期或反证不冒充MET；capturedTime仅报告，时间判定材料固定"
+      },
+      {
+        "id": "C1-V08",
+        "requirement": "两用例固定材料/context重放一致；本次ID/time不改key/hash，不误删历史fingerprint"
+      },
+      {
+        "id": "C1-V09",
+        "requirement": "单义务Projection prior同key/hash/version复用旧ID；异hash冲突；无匹配prior只返回本义务单候选"
+      },
+      {
+        "id": "C1-V10",
+        "requirement": "LF-HN-1逐路径参数化：SET重排不变、SEQUENCE反转改变、SINGLETON基数错误拒绝、重复/未知/版本规则及HN字节向量通过public canonical API"
+      },
+      {
+        "id": "C1-V11",
+        "requirement": "核心无时钟/UUID/global/I/O，不改输入/Evidence；validator/serializer复用contracts"
+      },
+      {
+        "id": "C1-V12",
+        "requirement": "干净root构建/正常测试包含新包，reverse/deep import/cycle负例被拒"
+      },
+      {
+        "id": "C1-V13",
+        "requirement": "修复后contracts非JSON/稀疏数组/非法日期/条件类型负例仍被拒"
+      },
+      {
+        "id": "C1-V14",
+        "requirement": "实际回执/subject/scope校验，非法claim/旧SHA不得放行"
+      },
+      {
+        "id": "C1-V15",
+        "requirement": "Resolution prior同key/hash/version复用旧resolutionId，异内容冲突，错误类型prior拒绝"
+      },
+      {
+        "id": "C1-V16",
+        "requirement": "新attempt/合法Gate-assessment/evaluator-normalization版本产生新Resolution key；改旧observation内容冲突；INCONCLUSIVE无业务记录"
+      },
+      {
+        "id": "C1-V17",
+        "requirement": "正常suite接入负例不能只跑LF专用检查；保留所有旧case，缺十二固定binding之一也被拒"
+      },
+      {
+        "id": "C1-V18",
+        "requirement": "投影0/2个criterion拒绝；assessment/closure跨criterion拒绝；单criterion多closure仅一候选；A/B分别调用key/ID不同且prior不交叉复用；Result拒绝批量/候选与错误并存；Resolution输入/输出也保持单条"
+      }
+    ],
+    "commands": [
+      "pnpm install --frozen-lockfile",
+      "pnpm run verify:versions",
+      "pnpm run contracts:generate-types",
+      "pnpm run build",
+      "pnpm run test",
+      "pnpm run contracts:qualify",
+      "pnpm run architecture:qualify",
+      "pnpm run quality"
+    ],
+    "actualLFDispatcherSupport": "ABSENT",
+    "newHeadRequiresFreshVerification": true
+  },
+  "gates": {
+    "E0": {
+      "status": "BLOCKED",
+      "reason": "D01-D05 definitions/source mapping absent; four LF-RV findings independently PASS only for source commit",
+      "evidence": "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5578475306"
+    },
+    "E1": {
+      "status": "BLOCKED",
+      "reason": "LF-C1 unknown; immutable authority/prior gate and approved dispatcher registration absent"
+    },
+    "E2": {
+      "status": "BLOCKED",
+      "dependencies": [
+        {
+          "findings": ["R01", "R02", "R16"],
+          "pullRequest": 86,
+          "head": "a763f581f765e4612293abe8dc5d4dccb3bd76dd"
+        },
+        {
+          "findings": ["R06", "R09", "R10"],
+          "pullRequest": 87,
+          "head": "cf59066a06a13d7021d076211dce585d58b19ea2"
+        },
+        {
+          "findings": ["R08"],
+          "pullRequest": 88,
+          "head": "b624317b613e5b5b2093b3280d223becef366ddd"
+        }
+      ],
+      "reason": "All open/unmerged at observed main; no protected-main repair qualification or independent closure accepted"
+    },
+    "E3": {
+      "status": "BLOCKED",
+      "reason": "Writer task/file set proposed; operator acceptance/base/window not released; locked suite owner only P1-O02"
+    },
+    "E4": {
+      "status": "BLOCKED",
+      "approvedMain": null,
+      "reason": "Observed SHA is not an approved entry baseline"
+    }
+  },
+  "observedAuthoritySha256": {
+    "operations/phase-1/operation.json": "157d1c83a798fc433b4bfb6a8b6ed12471c52e5a652e61dfb9532088f01f48dc",
+    "operations/phase-1/write-scope.json": "2934912a0c5d9794061fd856dac761dee104a0f2fb8a080e743adbbb86e149f2",
+    "operations/phase-1/verification-plan.json": "8d0758be1fe9fe8555e7c317bfd5d06b8f1a78120883c9a650d6471782108188",
+    "operations/phase-1/authority-lock.json": "a4245c73ef80da2f3829853cb5a8c89a589f0e0486e43dab2cf9d3b2bda41ee4",
+    "scripts/toolchain/scope-policy.mjs": "f3c7bd567e649cc6fe6c3643d73b7d07e95d47aba4ff7da7521be1dca8fd5c83",
+    "scripts/toolchain/verify-scope.mjs": "9018ede7a6f9631ecc117aa4b5a418abcd4f0e864f929cd76bc8ab4a9a42f9cd",
+    "toolchain/toolchain.json": "5886842d241e2a94a819a4a77d347399363328a4d2f2e788cde6853c28c7357f",
+    "pnpm-lock.yaml": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
+    "packages/contracts/src/index.ts": "dd46149610e3a6e7cc3642be17fd53f1ae8c6f248f094a7ec608082092105d5d",
+    "packages/contracts/schema-registry.json": "94bfd7bfe6dbf4ac91f22ad2ff9993b6776789da294aac8e1910de3883590414",
+    "packages/contracts/schema-inventory.json": "093786be4f26d1701e4e3a2d24aff3709dec795ad60de1a8b18fd2e6d295c29b",
+    "packages/contracts/type-bindings.json": "dea5dcef2c019037a55ae4842a5428595872bb8b3a85582733a3d9f757ca0fcf"
+  },
+  "claimBoundary": {
+    "requestIsAuthority": false,
+    "requestRangeCheckIsEntryGate": false,
+    "mainlineFindingClosed": false,
+    "independentlyVerifiedImplementation": false,
+    "phase1GlobalDenialRemoved": false,
+    "futureUnusedRuntimeRequired": false
+  }
+}

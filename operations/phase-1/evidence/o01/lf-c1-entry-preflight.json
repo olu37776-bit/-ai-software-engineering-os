@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0.0",
+  "recordType": "LF_C1_REQUEST_DIAGNOSTIC_NOT_ENTRY_EVIDENCE",
+  "decision": "BLOCKED",
+  "approvedMain": null,
+  "codeStartAuthorized": false,
+  "requestValidation": "PASS",
+  "scopeAuthorityMode": "REQUEST_RANGE_ONLY",
+  "requestSha256": "94df6c29d6010f7be62dea0516cd6044a0d5a9435dd8e7739e54f7b408ad7ab7",
+  "observedMain": {
+    "commit": "5577c2e8a9ef090b87924edddf6114dd75eb28a5",
+    "tree": "97d1c3f581dcdefece70d389d8af8a37bb413a3e",
+    "protectedStatus": "NOT_REATTESTED_BY_THIS_REQUEST"
+  },
+  "source": {
+    "commit": "877eea857742a2458f2e5c42b3a7d9a261a5a28b",
+    "tree": "0c5b9be17f25e7ff63610c61f39f95e985ef32b9",
+    "path": "docs/roadmap/learning-feedback-core-entry-plan.md",
+    "sha256": "0e0cb6ee599d56d40e18f9b73d8eacd0446ab9eee54076fa0581326bb064f384",
+    "pullRequest": 84,
+    "merged": false
+  },
+  "range": {
+    "requestedPaths": 54,
+    "authorityGranted": false
+  },
+  "verificationSteps": 18,
+  "existingDispatcher": {
+    "operation": "LF-C1",
+    "error": "UNKNOWN_OPERATION: LF-C1"
+  },
+  "p1O02LearningDenial": ["DENIED: packages/learning/src/index.ts"],
+  "actualEntryGate": "NOT_IMPLEMENTED_OR_AUTHORIZED_BY_THIS_DIAGNOSTIC",
+  "remainingGates": {
+    "E0": {
+      "status": "BLOCKED",
+      "reason": "D01-D05 definitions/source mapping absent; four LF-RV findings independently PASS only for source commit",
+      "evidence": "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5578475306"
+    },
+    "E1": {
+      "status": "BLOCKED",
+      "reason": "LF-C1 unknown; immutable authority/prior gate and approved dispatcher registration absent"
+    },
+    "E2": {
+      "status": "BLOCKED",
+      "dependencies": [
+        {
+          "findings": ["R01", "R02", "R16"],
+          "pullRequest": 86,
+          "head": "a763f581f765e4612293abe8dc5d4dccb3bd76dd"
+        },
+        {
+          "findings": ["R06", "R09", "R10"],
+          "pullRequest": 87,
+          "head": "cf59066a06a13d7021d076211dce585d58b19ea2"
+        },
+        {
+          "findings": ["R08"],
+          "pullRequest": 88,
+          "head": "b624317b613e5b5b2093b3280d223becef366ddd"
+        }
+      ],
+      "reason": "All open/unmerged at observed main; no protected-main repair qualification or independent closure accepted"
+    },
+    "E3": {
+      "status": "BLOCKED",
+      "reason": "Writer task/file set proposed; operator acceptance/base/window not released; locked suite owner only P1-O02"
+    },
+    "E4": {
+      "status": "BLOCKED",
+      "approvedMain": null,
+      "reason": "Observed SHA is not an approved entry baseline"
+    }
+  },
+  "limitation": "Checks a frozen request, not current GitHub approval/protection or live main; never issues READY."
+}

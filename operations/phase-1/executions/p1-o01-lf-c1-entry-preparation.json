@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O01-LF-C1-ENTRY-PREPARATION-ISSUE-95-2026-09-08-01",
+  "executionType": "GOVERNANCE_REQUEST_PREPARATION",
+  "operationId": "P1-O01",
+  "writeScopeOperationId": "P1-O01",
+  "title": "Issue 95 LF-C1 governance request and scope preflight; no LF authorization",
+  "riskClass": "R3",
+  "status": "IMPLEMENTED",
+  "trackingIssue": 95,
+  "implementationBranch": "phase-1/p1-o01-lf-c1-entry-preparation-issue-95",
+  "baseCommit": "5577c2e8a9ef090b87924edddf6114dd75eb28a5",
+  "authorityRefs": [
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json",
+    "operations/phase-1/authority-lock.json",
+    "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/95"
+  ],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "preparationOnly": true,
+    "lfC1Authorized": false,
+    "lfBusinessCodeImplemented": false,
+    "priorAuthorizationGateCreated": false,
+    "phase1AuthorityChanged": false
+  },
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o01/lf-c1-entry-request.json",
+    "operations/phase-1/evidence/o01/lf-c1-entry-preflight.json"
+  ],
+  "remainingGaps": [
+    "Independent preparation review and exact hosted checks pending",
+    "LF E0-E4 BLOCKED as enumerated in request"
+  ]
+}
