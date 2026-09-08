@@ -23,6 +23,15 @@
     "operations/phase-1/evidence/o09/issue-82/history/windows-failure-job-101943979967.log",
     "operations/phase-1/evidence/o09/issue-82/history/windows-failure-job-101943871783.log",
     "operations/phase-1/evidence/o09/issue-82/history/failed-qualification-96051e9a-checks.json",
-    "operations/phase-1/evidence/o09/issue-82/history/failed-qualification-b79fd28a-checks.json"
-  ]
+    "operations/phase-1/evidence/o09/issue-82/history/failed-qualification-b79fd28a-checks.json",
+    "operations/phase-1/evidence/o09/issue-82/history/o09-fixture-first-windows-job-101947487500.log",
+    "operations/phase-1/evidence/o09/issue-82/history/failed-qualification-43ea7961-checks.json"
+  ],
+  "subsequentObservation": {
+    "subject": "43ea7961f2595a30c7d29e1b3e7938e34cfd29aa",
+    "jobId": 101947487500,
+    "fixtureFixes": "Native host-death and all registry tests PASS",
+    "remainingFailure": "Lock competition returned zero winners in one round; diagnosis remains open",
+    "diagnosticChange": "Preserve each rejected result and fixture-local filesystem error in the existing assertion message; do not change its behavior or expected winner count"
+  }
 }
