@@ -37,19 +37,24 @@ function pointerValue(schema, fragment) {
     .reduce((value, part) => value?.[part], schema);
 }
 
-function refTarget(reference, schemas) {
+function refTarget(reference, schemas, currentSchemaId) {
   const hashIndex = reference.indexOf("#");
-  const schemaId = hashIndex === -1 ? reference : reference.slice(0, hashIndex);
+  const schemaId =
+    (hashIndex === -1 ? reference : reference.slice(0, hashIndex)) || currentSchemaId;
   const fragment = hashIndex === -1 ? "" : reference.slice(hashIndex);
   const schema = schemas.get(schemaId);
   if (!schema) {
     throw new Error(`UNRESOLVED_SCHEMA_REFERENCE: ${reference}`);
   }
   const target = pointerValue(schema, fragment);
-  if (!target || typeof target !== "object" || Array.isArray(target)) {
+  if (
+    target === undefined ||
+    (typeof target !== "boolean" &&
+      (typeof target !== "object" || target === null || Array.isArray(target)))
+  ) {
     throw new Error(`UNRESOLVED_SCHEMA_REFERENCE: ${reference}`);
   }
-  return { schemaId, target };
+  return { schemaId, fragment, target };
 }
 
 function objectExpression(schema, context) {
@@ -76,26 +81,59 @@ function objectExpression(schema, context) {
 }
 
 function typeExpression(schema, context) {
+  if (schema === false) return "never";
+  if (schema === true) return "unknown";
   if (!schema || typeof schema !== "object" || Array.isArray(schema)) {
     return "unknown";
   }
-  if (schema.$ref) {
-    const { schemaId, target } = refTarget(schema.$ref, context.schemas);
+  // Compose sibling constraints instead of silently discarding allOf or $ref
+  // siblings. Parenthesize unions before intersecting them.
+  const { allOf, anyOf, oneOf, $ref: reference, ...base } = schema;
+  const compositions = [];
+  if (reference) {
+    const { schemaId, fragment, target } = refTarget(
+      reference,
+      context.schemas,
+      context.currentSchemaId,
+    );
     const binding = context.bindingNames.get(schemaId);
-    if (binding && schemaId !== context.currentSchemaId) {
-      return binding;
+    if (binding && !fragment && schemaId !== context.currentSchemaId) {
+      compositions.push(binding);
+    } else {
+      const identity = `${schemaId}${fragment}`;
+      if (context.references?.has(identity)) {
+        throw new Error(`UNSUPPORTED_RECURSIVE_SCHEMA_REFERENCE: ${identity}`);
+      }
+      compositions.push(
+        typeExpression(target, {
+          ...context,
+          currentSchemaId: schemaId,
+          references: new Set([...(context.references ?? []), identity]),
+        }),
+      );
     }
-    return typeExpression(target, { ...context, currentSchemaId: schemaId });
+  }
+  if (allOf) compositions.push(...allOf.map((item) => typeExpression(item, context)));
+  for (const alternatives of [oneOf, anyOf]) {
+    if (alternatives)
+      compositions.push(
+        alternatives.map((item) => `(${typeExpression(item, context)})`).join(" | "),
+      );
+  }
+  if (compositions.length > 0) {
+    const basic = typeExpression(base, context);
+    return (
+      [basic, ...compositions]
+        .filter((expression) => expression !== "unknown")
+        .map((expression) => `(${expression})`)
+        .join(" & ") || "unknown"
+    );
   }
   if (Object.hasOwn(schema, "const")) {
     return literal(schema.const);
   }
   if (Array.isArray(schema.enum)) {
     return schema.enum.map((value) => literal(value)).join(" | ");
-  }
-  if (Array.isArray(schema.oneOf) || Array.isArray(schema.anyOf)) {
-    const alternatives = schema.oneOf ?? schema.anyOf;
-    return alternatives.map((item) => typeExpression(item, context)).join(" | ");
   }
   if (schema.type === "object" || schema.properties) {
     return objectExpression(schema, context);
@@ -168,16 +206,15 @@ export function collectSchemaShapeCounts(model) {
   let primitiveContainerChecks = 0;
   let enumDiscriminantChecks = 0;
 
-  const visit = (schema, identity) => {
+  const visit = (schema, identity, currentSchemaId) => {
     if (!schema || typeof schema !== "object" || Array.isArray(schema)) return;
     if (schema.$ref) {
-      const target = refTarget(schema.$ref, model.schemas);
-      const key = `${identity}->${schema.$ref}`;
+      const target = refTarget(schema.$ref, model.schemas, currentSchemaId);
+      const key = `${target.schemaId}${target.fragment}`;
       if (!visited.has(key)) {
         visited.add(key);
-        visit(target.target, target.schemaId);
+        visit(target.target, key, target.schemaId);
       }
-      return;
     }
     if (Array.isArray(schema.enum) || Object.hasOwn(schema, "const")) {
       enumDiscriminantChecks += 1;
@@ -188,15 +225,21 @@ export function collectSchemaShapeCounts(model) {
     if (schema.properties) {
       requiredOptionalChecks += Object.keys(schema.properties).length;
       for (const [key, child] of Object.entries(schema.properties)) {
-        visit(child, `${identity}/${key}`);
+        visit(child, `${identity}/${key}`, currentSchemaId);
       }
     }
-    if (schema.items) visit(schema.items, `${identity}/items`);
-    for (const child of schema.oneOf ?? schema.anyOf ?? []) visit(child, identity);
+    if (schema.items) visit(schema.items, `${identity}/items`, currentSchemaId);
+    for (const child of [
+      ...(schema.oneOf ?? []),
+      ...(schema.anyOf ?? []),
+      ...(schema.allOf ?? []),
+    ]) {
+      visit(child, identity, currentSchemaId);
+    }
   };
 
   for (const binding of model.bindings) {
-    visit(model.schemas.get(binding.schemaId), binding.schemaId);
+    visit(model.schemas.get(binding.schemaId), binding.schemaId, binding.schemaId);
   }
   return { requiredOptionalChecks, primitiveContainerChecks, enumDiscriminantChecks };
 }
