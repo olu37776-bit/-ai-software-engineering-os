@@ -28,12 +28,13 @@
     "docs/reviews/phase-1-integrated-verification-issue-82.md"
   ],
   "remainingGaps": [
-    "Final immutable handoff subject must receive its own hosted qualification and independent review",
-    "P1-V10 HUMAN_REVIEW and schema-valid independent receipt",
-    "Protected-main post-merge acceptance of the handoff"
+    "One final actual human Phase 1/security acceptance and matching independent receipt.",
+    "Protected-main post-merge qualification of the final handoff."
   ],
   "evidenceRefs": [
     "operations/phase-1/implementation-receipt.json",
-    "operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json"
-  ]
+    "operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json",
+    "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json"
+  ],
+  "implementationCommit": "3777bda86f090ac75a3382b8b310da17737dc257"
 }

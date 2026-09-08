@@ -1,31 +1,18 @@
 # Current Progress Status
 
-Date: 2026-09-08. **P1-O01–O08 REMEDIATION MERGED / P1-O09 HANDOFF PREPARED / P1-V10 PENDING**. Tracking: [Issue #82](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/82), [P1-O09 PR #101](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101).
+Date: 2026-09-09. **P1 AUTOMATED QUALIFICATION COMPLETE / FINAL HUMAN ACCEPTANCE PENDING**. Tracking: [Issue #82](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/82), [PR #101](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101).
 
-Protected-main foundation `db310b1d33324e72ba7767eb66760e4e54c8e1bd` passed its own post-merge Linux, Windows, packaging and unique required verify checks. P1-O08 PR #92 is merged after independent read-only review. The downloaded Windows qualification artifact's SHA-256 and all 245 payload files were verified. This supersedes the old page's unstarted O01-remediation status; the original comprehensive review retains its historical subject.
+Local main is synchronized to protected main `db310b1d33324e72ba7767eb66760e4e54c8e1bd`; current handoff implementation is `3777bda86f090ac75a3382b8b310da17737dc257`. O01–O08 remediation is merged. O09 implementation and executable mutation checks are complete in PR #101.
 
-| Operation | Current implementation state                                                                                         |
-| --------- | -------------------------------------------------------------------------------------------------------------------- |
-| O01       | Required quality/packaging Gate, actual receipt checks, checkout identity and runtime-asset repair merged.           |
-| O02       | Canonical JSON, generated composition types and timestamp repair merged.                                             |
-| O03       | Normal architecture enforcement for every workspace app merged.                                                      |
-| O04       | Missing-reference/type-mismatch fail-closed Policy repair merged.                                                    |
-| O05       | Payload admission, configuration/corruption distinction and truncated-database repair merged.                        |
-| O06       | Single-instance election, Windows claim liveness, request deadlines, streaming UTF-8 and route-status repair merged. |
-| O07       | Creation-time Job membership and host-only-death lifecycle repair merged; real Windows test passed.                  |
-| O08       | Parsed loopback qualification and exact-source packaging merged; Windows startup and artifact integrity passed.      |
-| O09       | Executable Gate/Policy mutation checks, PARTIAL receipt, Evidence index and independent input prepared in PR #101.   |
+Required workflow [34200250486](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486) passed on the exact handoff subject: Linux quality, Windows quality, required packaging, aggregation and verify. Windows: 341 passed / 1 bash-specific skip; Linux: 333 passed / 9 Windows-specific skips; architecture: 14 passed on both. The separate real packaged startup suite passed 5/5, including payload integrity and cleanup. Local Windows full `pnpm quality` also passed, and all eight Policy behavioral mutations were killed.
 
-Executable handoff source: `8d24246aea2ece10ff5793bd7647ca222638b6e3`. Its preceding f34dc15 source had 68 focused tests; the latest source fixes actual Node dependency resolution in the relocation fixture. Fresh final-source results are recorded in the index. Its own hosted checks and the final receipt-containing HEAD must be read separately; db310b1 results are not inherited as new HEAD verdicts.
+The structured receipt records V00–V09 and ADR-0007–0011 qualifications PASS. V10 remains BLOCKED because its frozen kind is HUMAN_REVIEW; implementationDeclaration therefore remains PARTIAL. The user requested one final acceptance instead of repeated per-change reviews. No additional production implementation blocker was identified in the bounded O09 assessment.
 
-Remaining completion Gate: actual independent per-finding/V00–V10 acceptance, frozen V10 HUMAN_REVIEW and matching independent receipt, followed by exact protected-main handoff acceptance. The author does not declare VERIFIED. Ordinary required workflow execution does not issue the final human Gate.
+- [Current machine evidence and source logs](../../operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json)
+- [Implementation receipt](../../operations/phase-1/implementation-receipt.json)
+- [Final acceptance input](../reviews/phase-1-integrated-verification-issue-82.md)
+- [Subsequent construction queue](../implementation/phase-1/o09/next-construction-queue.md)
 
-- [Original findings](../reviews/phase-1-comprehensive-review-2026-09-08.md)
-- [Existing remediation authority](../reviews/phase-1-remediation-plan-2026-09-08.md)
-- [Integrated review input and acceptance procedure](../reviews/phase-1-integrated-verification-issue-82.md)
-- [Structured implementation receipt](../../operations/phase-1/implementation-receipt.json)
-- [Evidence index, subjects and known gaps](../../operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json)
+Next: complete the one final human Phase 1/security acceptance, issue the matching independent receipt, merge through required checks and verify protected main. Then begin Phase 2 with the deterministic durable Kernel: command/event admission, reducers, transactional inbox/outbox, execution lifecycle and replay/recovery. Existing unmerged Learning, Coverage and GBrain proposals do not change this mainline order.
 
-Frozen planning status, Authority, accepted ADRs, deny-by-default scope, protected main and required verify identity remain intact. No Phase 2, production Workflow/Node runtime, Verification System/Learning/GBrain runtime, real models, private Workspace integration, production release or full local replacement readiness is claimed.
-
-Latest executable source `8d24246` has now been checked in a clean detached checkout: exact frozen install/root build, normal Scope/M0, 68 focused regressions, eight real Policy mutations, Contracts, Architecture, Persistence and Control API qualifiers PASS on Linux. Its Windows qualification and the receipt-containing final HEAD remain distinct required observations.
+This remains a non-production qualification foundation. PROCESS_RESTRICTED is not an OS security sandbox. Production Workflow/Node runtime, real models and private Workspace/GBrain integration remain later-phase work.

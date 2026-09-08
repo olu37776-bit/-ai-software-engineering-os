@@ -1,6 +1,10 @@
 # Phase 1 integrated verification input — Issue 82
 
-Status: **PREPARED / FINAL_INDEPENDENT_GATE_PENDING**. This is the implementation author's handoff, not an independent PASS report. No independent receipt is fabricated.
+Status: **AUTOMATED_QUALIFICATION_COMPLETE / FINAL_HUMAN_ACCEPTANCE_PENDING** (2026-09-09). The exact handoff subject `3777bda86f090ac75a3382b8b310da17737dc257` passed hosted Linux, Windows, packaging and required verify, plus local Windows quality. One final human acceptance remains. No independent receipt is fabricated.
+
+Current results supersede the historical pending machine results below. Run [34200250486](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486) checked out that exact subject: Linux 333 passed / 9 Windows-specific skipped; Windows 341 passed / 1 bash-specific skipped; architecture 14 passed on each platform; real packaged startup 5/5 passed. Local Windows `pnpm quality` exited 0 with 341 passed / 1 skipped, architecture 14 passed; all 8 Policy mutations were killed. Full logs, skip explanations and packaging JSON are archived in `operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json` and its references. The actual receipt now records V00–V09 and all five ADR qualifications PASS; V10 remains BLOCKED pending human acceptance. Source `8d24246` below is retained as a historical implementation subject.
+
+The user's 2026-09-09 instruction consolidates review into this final acceptance. Subsequent record-only changes use focused schema/scope checks and required CI; they do not trigger another broad source audit. [Next construction queue](../implementation/phase-1/o09/next-construction-queue.md) starts with the deterministic durable Kernel after Phase 1 acceptance.
 
 ## Exact subjects
 

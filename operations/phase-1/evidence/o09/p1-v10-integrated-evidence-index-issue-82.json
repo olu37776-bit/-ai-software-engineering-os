@@ -3,10 +3,10 @@
   "evidenceType": "Phase1IntegratedEvidenceIndex",
   "operationId": "P1-O09",
   "trackingIssue": 82,
-  "implementationCommit": "8d24246aea2ece10ff5793bd7647ca222638b6e3",
+  "implementationCommit": "3777bda86f090ac75a3382b8b310da17737dc257",
   "baselineCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
-  "status": "PREPARED_INDEPENDENT_GATE_PENDING",
-  "declaration": "Author assembly; historical and automated qualification are not independent P1-V10 acceptance.",
+  "status": "AUTOMATED_QUALIFICATION_COMPLETE_HUMAN_GATE_PENDING",
+  "declaration": "V00–V09 and ADR qualifications are backed by exact-subject machine results. One final actual human acceptance remains.",
   "subjects": {
     "protectedMain": {
       "commit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
@@ -20,13 +20,13 @@
       ]
     },
     "implementation": {
-      "commit": "8d24246aea2ece10ff5793bd7647ca222638b6e3",
-      "localResult": "LOCAL_APPLICABLE_CHECKS_PASS",
-      "automatedHostedResult": "NOT_RUN",
+      "commit": "3777bda86f090ac75a3382b8b310da17737dc257",
+      "localResult": "PASS",
+      "automatedHostedResult": "PASS",
       "evidenceRefs": [
-        "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-local-verification.json"
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json"
       ],
-      "localFocusedTests": 68
+      "workflowRunId": 34200250486
     },
     "previousImplementation": {
       "commit": "f34dc154ec2521327635831edec3b03b5aa7d17e",
@@ -41,6 +41,15 @@
         "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-m0.json",
         "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-policy-mutation.json"
       ]
+    },
+    "previousExecutableImplementation": {
+      "commit": "8d24246aea2ece10ff5793bd7647ca222638b6e3",
+      "localResult": "LOCAL_APPLICABLE_CHECKS_PASS",
+      "automatedHostedResult": "NOT_RUN",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-local-verification.json"
+      ],
+      "localFocusedTests": 68
     }
   },
   "findings": [
@@ -475,5 +484,107 @@
       "sha256": "1e41b5f8107d826defca724c471ccc6a983c5113922dd5dd68cb2109bb028ec0",
       "sizeBytes": 4837
     }
-  ]
+  ],
+  "automatedCompletion": {
+    "schemaVersion": "1.0.0",
+    "evidenceType": "Phase1AutomatedQualificationResult",
+    "subject": {
+      "gitCommit": "3777bda86f090ac75a3382b8b310da17737dc257",
+      "gitTree": "2de86a193e2230bfbac16e248f27a23614cc2398"
+    },
+    "result": "PASS",
+    "workflowRun": {
+      "id": 34200250486,
+      "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486",
+      "event": "pull_request",
+      "conclusion": "success"
+    },
+    "jobs": [
+      {
+        "id": 101981850149,
+        "name": "required-packaging",
+        "conclusion": "success",
+        "startedAt": "2026-09-08T07:54:58Z",
+        "completedAt": "2026-09-08T07:56:18Z",
+        "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486/job/101981850149"
+      },
+      {
+        "id": 101981850313,
+        "name": "required-quality / qualify (linux-x64)",
+        "conclusion": "success",
+        "startedAt": "2026-09-08T07:54:57Z",
+        "completedAt": "2026-09-08T07:56:44Z",
+        "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486/job/101981850313"
+      },
+      {
+        "id": 101981850502,
+        "name": "required-quality / qualify (windows-x64)",
+        "conclusion": "success",
+        "startedAt": "2026-09-08T07:54:59Z",
+        "completedAt": "2026-09-08T08:14:08Z",
+        "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486/job/101981850502"
+      },
+      {
+        "id": 101987205570,
+        "name": "required-quality / p1-o01-toolchain-qualify",
+        "conclusion": "success",
+        "startedAt": "2026-09-08T08:14:11Z",
+        "completedAt": "2026-09-08T08:14:14Z",
+        "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486/job/101987205570"
+      },
+      {
+        "id": 101987234566,
+        "name": "verify",
+        "conclusion": "success",
+        "startedAt": "2026-09-08T08:14:18Z",
+        "completedAt": "2026-09-08T08:14:30Z",
+        "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486/job/101987234566"
+      }
+    ],
+    "suites": {
+      "linux": {
+        "passed": 333,
+        "skipped": 9,
+        "architecturePassed": 14
+      },
+      "windows": {
+        "passed": 341,
+        "skipped": 1,
+        "architecturePassed": 14
+      },
+      "packaging": {
+        "focusedPassed": 22,
+        "focusedSkipped": 1,
+        "realArtifactPassed": 5,
+        "realArtifactSkipped": 0
+      }
+    },
+    "skipExplanation": "Linux skips Windows-only security and claim fixtures. Windows skips the bash dependency-shell probe, which passes on Linux. Packaging generic fixture skips artifact startup until qualify-required-packaging supplies the real artifact; the separate actual-artifact run passes 5/5.",
+    "localWindows": {
+      "result": "PASS",
+      "command": "pnpm quality",
+      "node": "24.19.0",
+      "pnpm": "11.24.0",
+      "typescript": "6.0.3",
+      "rootPassed": 341,
+      "rootSkipped": 1,
+      "architecturePassed": 14,
+      "platformPackagePassed": 5,
+      "isolationPackagePassed": 8,
+      "workerPassed": 3,
+      "policyMutationsKilled": 8,
+      "policyMutationsSurvived": 0,
+      "notes": "Executed on the subject's unchanged implementation files; newly archived evidence files do not alter executable sources."
+    },
+    "evidenceRefs": [
+      "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850149.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850313.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101987234566.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-packaging.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-policy-mutations.json"
+    ],
+    "humanReviewPerformed": false,
+    "phase1FinalGate": "PENDING_HUMAN_ACCEPTANCE"
+  }
 }
