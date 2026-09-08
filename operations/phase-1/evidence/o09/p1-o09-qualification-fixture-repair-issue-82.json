@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P1-O09",
+  "evidenceId": "P1-O09-FIXTURE-REPAIR-ISSUE-82",
+  "status": "PARTIAL",
+  "failedProtectedMain": "96051e9aa26b80decb410a411dfb7fbd0981714d",
+  "failedOperationHead": "b79fd28ab8e9e761936cf88ae5524625ef86d904",
+  "findings": [
+    "Native tree fixture publishes PID before closing writer; concurrent File.ReadAllText throws IOException before host death is induced",
+    "Contract repository fixture copies all operation execution/evidence files for every registry mutation; actual Windows runs exceed 10 second test budget"
+  ],
+  "repair": [
+    "Publish PID and readiness marker via closed temporary file followed by same-directory File.Move; read PID once",
+    "Copy the registry-declared external authority files instead of all operation history; retain canonical contract assets and all existing negative assertions",
+    "Include cross-component sparse JSON rejection with zero durable side effects and subsequent valid commit"
+  ],
+  "preservedAssertions": [
+    "Only Node host is killed; no taskkill /T",
+    "Bridge and every descendant must exit within the unchanged five-second observation budget",
+    "Existing registry corruption/traversal/hash assertions and ten-second test limits remain unchanged"
+  ],
+  "historyRefs": [
+    "operations/phase-1/evidence/o09/issue-82/history/windows-failure-job-101943979967.log",
+    "operations/phase-1/evidence/o09/issue-82/history/windows-failure-job-101943871783.log",
+    "operations/phase-1/evidence/o09/issue-82/history/failed-qualification-96051e9a-checks.json",
+    "operations/phase-1/evidence/o09/issue-82/history/failed-qualification-b79fd28a-checks.json"
+  ]
+}
