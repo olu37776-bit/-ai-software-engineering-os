@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { cp, mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, cp, mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, relative, resolve } from "node:path";
 
@@ -37,14 +37,22 @@ function isRepositoryFixtureSource(source) {
 export async function withContractRepository(action) {
   const root = await mkdtemp(resolve(tmpdir(), "aseos-contract-repository-"));
   try {
+    const registry = await readJson(repositoryRoot, "packages/contracts/schema-registry.json");
+    const externalAuthorities = registry.schemas
+      .map((entry) => entry.authorityPath)
+      .filter((path) => !path.startsWith("packages/contracts/"));
     await Promise.all([
       cp(resolve(repositoryRoot, "packages/contracts"), resolve(root, "packages/contracts"), {
         filter: isRepositoryFixtureSource,
         recursive: true,
       }),
-      cp(resolve(repositoryRoot, "operations/phase-1"), resolve(root, "operations/phase-1"), {
-        filter: isRepositoryFixtureSource,
-        recursive: true,
+      ...externalAuthorities.map(async (path) => {
+        if (!path.startsWith("operations/phase-1/") || path.split("/").includes("..")) {
+          throw new Error(`Unsupported external fixture authority: ${path}`);
+        }
+        const target = resolve(root, path);
+        await mkdir(dirname(target), { recursive: true });
+        await copyFile(resolve(repositoryRoot, path), target);
       }),
     ]);
     return await action(root);

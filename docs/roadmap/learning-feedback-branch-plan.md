@@ -1,92 +1,76 @@
 # Learning & Feedback 建设计划与 CURRENT
 
-状态：`DRAFT / DOCUMENT_AND_GOVERNANCE_PLANNING_COMPLETE_PENDING_REVIEW / CODE_ENTRY_BLOCKED`  
-更新：2026-09-08  
-最终同步 main：`eeb65baf9b0446a4b747eefdc7b7f8c1f965ea94`，tree `40cb6c1ad758ae8b3b18ce89ada3bb8b04f08a45`  
-本轮初始观察：`ed14d4179808621c8ffd5751ebbf7b6704f33b64`  
-编辑前LF HEAD：`7ead85be9c322057207fc0fef8fb0345aee1b39b`  
-跟踪：[文档#81](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/81) · [PR#84](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84) · [开工#85](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85)
+状态：`BLOCKED / BUSINESS_DESIGN_REVIEW_PASS / GOVERNANCE_PLAN_REJECTED / CODE_ENTRY_NOT_RELEASED`
+更新：2026-09-08
+本轮核对并同步 main：`b18059b27e3a9fef089c974f8dd6195d8c17dcf9`，tree `307a79feeeeaec83780657fd24a238f604d37792`
+本轮独立设计 subject：`c2001aad0aa8d17ad9f3cf57df4dd15967ab4da2`，tree `9a5173892a8872dc58b34f13a139b589d43663fd`
+approvedMain：`NONE`；共享窗口：`CLOSED`
+跟踪：[文档#81](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/81) · [PR#84](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84) · [唯一开工回执#85](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85) · [G0请求#95/#97](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/97)
 
-## 1. 当前结论
+## 1. 当前裁决
 
-| 维度 | 状态与依据 |
+| Gate | 状态与剩余缺项 |
 | --- | --- |
-| 文档/设计规划 | D01～D05原定义、来源、验收已补齐；E1～E4的实现路径和记录设计完整；作者声明PREPARED，不是独立批准 |
-| E0 | 7ead85b已有LF-RV-01～04文档层独立PASS，完整E0因D01～D05缺失BLOCKED；新subject补齐后待独立接受 |
-| E1 | 正常checker、四Authority、先验Gate的G0～G3已具体设计；实际代码/授权未完成 |
-| E2 | #86的ed14d41合并后检查成功；发布期间#87已合并为eeb65baf；#88仍未合并。均须按依赖接受规则核对独立/最终base适用性，不以合并代替关闭 |
-| E3 | ONE_ATOMIC_COMPLETE_SUBJECT / LF-C1-INTEGRATION方案固定；真实认领及RESERVED接受尚未完成；窗口CLOSED |
-| E4 | approvedMain=NONE；上述SHA只是观察与同步base，没有发行正式开工回执 |
-| LF-C1 / 生产Feedback / Learning | 均未实现，无运行VERIFIED声明 |
+| E0 | BLOCKED。c2001aa的五业务决策及四LF-RV均获本次独立文档层PASS；新增治理路线有两项P1，完整E0不通过。不是“D01～D05仍缺定义”。本轮仅同步CURRENT/main，不修业务语义；发布后必须对最终HEAD作独立适用复核。 |
+| E1 | BLOCKED。LF-C1仍UNKNOWN_OPERATION；四正式Authority/正常checker/先验安装Gate未完成。G1须先解决合法ADR前序与上位共享锁授权冲突，不能拿G0或#82权限启动。 |
+| E2 | BLOCKED。#86/#87/#88均已合并且为b18059b祖先；独立当前依赖核查发现R02回执Evidence引用缺口。准确运行subject、复现与逐finding结论归档#85/#82；不能因主线CI绿推导关闭。 |
+| E3 | BLOCKED。LF-C1-INTEGRATION是54路径业务唯一写者提案；真实operator/session、acceptanceActor、base/期限、共享委托及RESERVED记录不存在。 |
+| E4 | BLOCKED。b18059b只为观察/同步base；无已接受Authority/Start Gate/landing/正式获准main回执。 |
 
-除CURRENT外，各计划/设计顶部的观察SHA和其进度表是明确时点的设计输入，不作为动态进度。授权规划§7保留ed14d41时#87尚未合并的观察；本节与§6记录随后的eeb65baf变化，不改写历史Evidence。旧本地F1～F4/C-1不继承；Schema不等于provider。
+本轮不实现LF-C1业务代码，不修改主线裁判/Authority/禁止规则，不自批，不合并PR84。生产Feedback/Learning未实现；Schema不等于provider，旧本地F1～F4/C-1不继承。
 
-## 2. 唯一职责分工与入口
+## 2. 唯一职责入口
 
-| 文件 | 唯一负责的内容 |
+| 文件 | 唯一责任 |
 | --- | --- |
-| [架构入口](../architecture/06-learning-and-feedback.md) | Feedback/Learning/知识边界与高层导航 |
+| [架构入口](../architecture/06-learning-and-feedback.md) | Feedback/Learning/知识边界与导航 |
 | [总体设计](../architecture/learning-feedback/branch-design.md) | 模块owner、目录、生产集成职责 |
-| [精确Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) | 单criterion、字段、result、两类key/hash/prior与LF-HN-1；本轮保持字节 |
-| [决策登记](../architecture/learning-feedback/decision-register.md) | D01～D05唯一完整定义、原始来源、通过/拒绝例与验收映射 |
+| [精确Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) | 单criterion、字段/result、双key/hash/prior及LF-HN-1 |
+| [决策登记](../architecture/learning-feedback/decision-register.md) | D01～D05原文、来源、通过/拒绝例及验收映射 |
 | [业务开工包](learning-feedback-core-entry-plan.md) | 54业务路径、C1-V01～18及实施步骤 |
-| [并行协议](../architecture/learning-feedback/parallel-development-protocol.md) | 写者认领、共享范围、RESERVED/OPEN、冲突及对齐 |
-| [授权/checker实施规划](learning-feedback-authority-transition-plan.md) | 默认关闭的正式checker、四Authority、G0～G3、控制面验证、E2证据、E4发布及回滚 |
-| [原基线review](../reviews/learning-feedback/github-baseline-review-2026-09-08.md)、[初次readiness](../reviews/learning-feedback/lf-d1-readiness-2026-09-08.md) | 历史观察，不是现行许可 |
+| [并行协议](../architecture/learning-feedback/parallel-development-protocol.md) | 写者分区、共享范围、RESERVED/OPEN、冲突处理 |
+| [授权/checker规划](learning-feedback-authority-transition-plan.md) | 待批准治理路线；本轮两项独立P1尚未解决，不是可执行授权 |
+| [原基线review](../reviews/learning-feedback/github-baseline-review-2026-09-08.md)、[初次readiness](../reviews/learning-feedback/lf-d1-readiness-2026-09-08.md) | 历史观察，非当前许可 |
 
-Charter/accepted ADR/active Schema/机器Authority优先。决策登记是审查索引，不是第二业务规范；授权规划是待批准决定，不是机器Authority。业务规则只在Contract，规划不复制或改变其精确字段/hash。
+Charter/accepted ADR/active Schema/机器Authority优先；设计和请求都不是Authority。除CURRENT外，各文档顶部观察SHA及进度表保留其时点含义，不拿其旧“未合并”描述覆盖本节的实际新状态。
 
-## 3. 本轮补齐什么
+## 3. 本次有效独立结论
 
-D01～D05在历史08b701e的Contract§10原有定义（blob2869f19100bce8d61e463cef1a00246a2bc99617）；后续修订只保留编号，导致审查无法定位。decision-register恢复原条目并映射现行规则、主线来源和C1验证，未临时猜编号、未删除审查要求换PASS。
+[原独立报告及执行来源](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5580684532)：reviewer `/root/lf_current_independent`，只读完整10份LF文档，对照b18059b主线owner/Schema/Contract/授权实现，结束时工作树干净。不是作者自检或自动Completed摘要。
 
-E1不再只写“让主线建立授权”：规划选定正常dispatcher精确LF-C1分支、缺先验Gate默认关闭，列G1候选11文件、G2安装9文件、G3独立Evidence4文件、四Authority字段和14组控制面正反例。它们必须单独授权，不能混入54业务路径。
-
-E3固定一个完整subject，54路径由LF-C1-INTEGRATION写，获准lock派生hash由独立治理任务写。E3可以接受RESERVED，E0/E1/E2/E4齐全才OPEN；不形成“先开工才能获准开工”的循环。
-
-E4规定候选M0→Gate-only发布→landing M1→外部回执approvedMain=M1，避免把M1写入产生M1的文件。实际operator、审批编号、合并后的SHA不能预编；需要真实接受动作的值不是未完成的设计。
-
-## 4. 独立Evidence与业务边界保持
-
-[7ead85b独立复核](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5578647644)为四finding文档层PASS、五决策UNPROVEN、完整E0 BLOCKED；[877eea8原报告](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5578475306)保持历史。这些结果不能自动批准本轮新subject。
-
-| finding | 保持的规范/测试 |
+| 项目 | c2001aa裁决与依据 |
 | --- | --- |
-| LF-RV-01 | 原受检suite、十二固定case、54范围及正常资格负例；Contract§9、V01/V17 |
-| LF-RV-02 | SET/SINGLETON/SEQUENCE及字节向量；Contract§7.1/7.2、V10 |
-| LF-RV-03 | 独立Resolution key/hash/prior、append-only及I1事务；Contract§5/7.4、V15/V16 |
-| LF-RV-04 | 所有现行层均单criterion/单结果，无group/batch；Contract§3.1/7.3、V18 |
+| LF-RV-01 | 文档PASS：原受检suite、十二固定binding、正常资格破坏负例；Contract§9、V01/V17 |
+| LF-RV-02 | 文档PASS：逐路径SET/SINGLETON/SEQUENCE、重复/版本/历史材料；两条UTF-8 hash独立重算；§7.1/7.2、V10 |
+| LF-RV-03 | 文档PASS：独立Resolution identity/prior/replay/conflict及I1事务边界；§5/7.4、V15/V16 |
+| LF-RV-04 | 文档PASS：06/总体/Contract/entry一致单criterion/单结果，拒绝group/batch，V18完整 |
+| D01 | 业务设计PASS：learning业务owner与contracts唯一Schema来源，不复制主线状态权 |
+| D02 | 业务设计PASS：UNKNOWN、业务disposition、风险接受分离，七Gate不降级 |
+| D03 | 业务设计PASS：主线裁决与LF义务匹配分离 |
+| D04 | 业务设计PASS：纯核心/显式双指纹/公共canonical，无存储去重虚假声明 |
+| D05 | 业务设计PASS：CORE_CONFORMANCE不替代provider/生产集成/正式授权 |
 
-本轮没有改精确Contract、06入口、总体设计或两个历史报告。不自resolve线程、不自标E0 PASS。完整新subject须独立覆盖D01～D05、LF-RV-01～04和新增控制面规划。
+历史08b701e Contract§10/blob2869f19100bce8d61e463cef1a00246a2bc99617已实际核验，D定义真实恢复。54路径（18+26+6+4）与十八要求和旧请求逐项相等。这不追认旧报告完整E0 PASS，也不把业务设计PASS扩大为运行VERIFIED。
 
-## 5. 写范围与机器请求保持
+## 4. 两项治理P1是停止点
 
-用户本轮要求全部文档/规划收口，范围已登记#81。本轮原创仅3份现有文档更新（CURRENT、core-entry、parallel）+2份新文档（decision-register、authority-transition-plan）；PR相对最终main为10份Markdown。
+1. [ADR接受顺序循环](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3954170418)：规划要求G1前有accepted决定，正式ADR/index却首次放在依赖G1合并的G2。缺合法前序发布/接受步骤；不能先改Gate后补批。
+2. [上位P1共享锁冲突](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3954170420)：suite及三份inventory/registry的上位allowedOperationIds没有LF-C1。仅在下位LF lock委托且声称旧owners/语义不变不可执行；正常旧锁会拒绝，绕开旧锁即改变其语义。
 
-LF-C1业务路径仍18 core+26 contracts+6 wiring+4实施文档=54；C1-V01～18保留原要求。作者用Python对准备材料的精确路径清单与已读#97请求比对，54项唯一且集合相等，无治理路径混入。这只是静态材料核对，不是执行正式scope checker。
+必须先有独立批准、可由上位流程表达的授权决定，再进入G1/G2；本轮不自行新增operation、改变owner、删除禁止规则或把hash刷新当许可。E3 RESERVED→OPEN及E4 M0→Gate-only M1→外部approvedMain回执的无循环形式可保留，但无真实接受材料不能启用。
 
-#97请求HEAD8826c450fdbad3de5decb882c42d6a0c86af480b，路径 `operations/phase-1/evidence/o01/lf-c1-entry-request.json`，原source为877eea8开工包快照。本次开工包hash变化，G0须更新sourceCommit/tree/hash/snapshot并重验；不能以“路径没变”冒充旧请求已绑定新设计。原准备包独立报告只对其旧subject有效。本PR不改#95/#97六文件。
+## 5. G0准备与单写者边界
 
-## 6. 发布期间主线同步
+#95/#97只在既有六文件范围内刷新来源commit/tree/hash/UTF-8快照、观察main和BLOCKED诊断。开工包业务54路径及18要求不变；诊断仍exit2，正常dispatcher仍拒绝LF-C1。本轮发布HEAD/运行与独立准备包结论以#85回执和PR97 exact subject记录为准，不从旧8826c45报告继承PASS。
 
-初始读取main=ed14d41。重新查询run34182792727：required-packaging101925088786、Linux101925089055、Windows101925089328、toolchain汇总101927737664、verify101927758216均completed/success。这个事实更新原in_progress观察，但不代替独立逐finding关闭。
+业务Schema、实例、原suite、inventory/registry/bindings/generated、package/workspace/pnpm-lock/build/test/architecture与core由LF-C1-INTEGRATION单一实际操作者串行提交完整consumer subject；Authority lock/治理裁判与独立Evidence永不加入其54路径。共享许可争议未解决前，MAINLINE_GOVERNANCE也没有获准lock刷新权。任务名称不等于实际身份已承接。
 
-提交前main前进到eeb65baf9b0446a4b747eefdc7b7f8c1f965ea94，为#87的合并；父为ed14d41和6e1a98b6979ab4f3a761438658256f9fab6184a5。已核对#87的8个变更路径：P1-O02实施文档、execution/evidence、canonical-json、json-schema、generated types、type-model和Contract回归测试；与本PR10份LF文档无交集。
+主线无关工作可继续；正式预约前重新查全部活动PR精确diff。不能因#87/#88已合并就默认共享窗口OPEN，不预占全仓、不回滚他人更改。
 
-本次以eeb65baf原tree为底，只叠加LF文档，并以旧LF HEAD与新main为双父普通追加，保留主线#87修复原字节，不force/rebase、不把它记作LF原创修复。新main的相关校验实现变化意味着E2需要新的适用性检查，不使用ed14d41检查替eeb65baf盖章。#88仍需独立及合并证据。
+## 6. 主线修复观察与后续
 
-本会话git ls-remote实际DNS失败，未运行repo build/Windows/E2E；不同执行环境之前可clone不等于本会话可clone。读取和发布通过GitHub connector。作者静态核对、远端机器检查、独立语义review分别记录。
+#86合并ed14d41（R01/R02/R16），#87合并eeb65baf（R06/R09/R10），#88合并204bfbf（R08）；三者是本次main b18059b祖先。历史修复/检查可作为来源，最终适用性仍按exact subject独立验证。R02新负例是独立receipt的本地Evidence路径不存在仍被M0接受；不是要求联网下载所有外部artifact，也不声称已绕过真实PR scope或merge Gate。复现/完整限制与主线承接记录见#85/#82。
 
-## 7. 后续任务已可按文档执行
+先处理两项治理P1及R02实际门禁缺口，再取得合法G1范围/ADR与先验批准、正式checker/四Authority、独立依赖Evidence、真实RESERVED协议和landing基线回执。C1不等待未使用的未来Runtime/Context/Knowledge/Persistence provider；I1/I2/E1届时另验其真实依赖。
 
-| 工作包 | 内容 | 门禁 |
-| --- | --- | --- |
-| LF-D0/D1 | 总体设计、Contract、决策登记、业务开工/治理规划 | 准备完成，最终HEAD独立review待接受 |
-| G0～G3 | 请求刷新→默认关闭checker→先验授权安装→Evidence/Start Gate | 按授权规划分任务实际实施；不得继承#82/#95权限 |
-| LF-C1 | 单义务两个纯用例、双指纹、必要Schema/conformance | #85正式放行后实施54路径与18验证 |
-| LF-I1/I2/E1 | 真正facts/query/persistence/Context/工作流闭环 | 对应provider和独立运行Evidence |
-| LF-L1/LF-X1 | 后续学习/真实修复实验 | 既定Phase/能力与独立裁判，不提前自修改 |
-
-下一执行者读取D定义完成最终E0，再按授权规划推进获准G任务，取得E2/E3/E4真实证据。无需重新猜目录、定义D编号或再设计一套授权系统。缺批准/认领/合并/运行Evidence时应列具体缺项，不再归因为“设计没给”。
-
-普通文档更新属于操作；实施最多IMPLEMENTED，VERIFIED由独立只读验证给出。#85仍是唯一正式开工回执入口：当前approvedMain=NONE、窗口CLOSED，PR84未合并、LF业务未开工。
+本轮只同步CURRENT并以普通双父提交保留最新main原字节；其余九份LF文档不变。最终HEAD需独立只读复核，完整结果只可继续BLOCKED直到真实缺项关闭。普通文档状态最多由作者记录事实，VERIFIED与正式开工批准不得自签。

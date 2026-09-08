@@ -16,9 +16,9 @@ On Windows, a fixed PowerShell-hosted Win32 bridge performs the lifecycle sequen
 
 1. open and lock the catalog-selected executable, verify its SHA-256 and PE identity, then create controlled stdin/stdout/stderr handles and a per-task Job Object;
 2. configure kill-on-close and resource limits;
-3. call `CreateProcessW` with `CREATE_SUSPENDED` and an explicit environment block;
-4. assign the suspended process to the Job Object before calling `ResumeThread`;
-5. monitor cancellation, time and resource usage, bound output, and terminate the entire Job Object at completion;
+3. call `CreateProcessW` with `CREATE_SUSPENDED`, an explicit environment block and `PROC_THREAD_ATTRIBUTE_JOB_LIST` so Job assignment occurs at creation;
+4. verify Job membership and that the invoking Node host is alive before calling `ResumeThread`;
+5. monitor the native host-process handle, cancellation, time and resource usage, bound output, and terminate the entire Job Object at completion;
 6. wait for zero active processes and return provider/version-aligned `IsolationEvidence`.
 
 The bridge process itself receives only the Windows variables needed to start PowerShell. The target receives only caller-provided variables whose names also appear in the request allowlist. The request file contains no inherited Runtime or provider credentials.
@@ -31,6 +31,8 @@ An available report may claim process-tree lifecycle and resource-budget enforce
 
 ## Qualification
 
-P1-V08 uses a pinned, runtime-compiled standalone `.exe` test fixture rather than opening a shell capability. Windows tests cover suspended-create-before-assignment behavior, child and grandchild cleanup, timeout and cancellation, CPU/memory/process-count/output budgets, environment secret exclusion, staged Unicode/space paths, traversal and executable-hash rejection, canonical evidence validation, and no downward fallback. Non-Windows tests require an unavailable result and prove that no host fallback executes.
+P1-V08 uses a pinned, runtime-compiled standalone `.exe` test fixture rather than opening a shell capability. Windows tests cover creation-time Job assignment, host-only death and bridge/child/grandchild cleanup, timeout and cancellation, CPU/memory/process-count/output budgets, environment secret exclusion, staged Unicode/space paths, traversal and executable-hash rejection, canonical evidence validation, and no downward fallback. Non-Windows tests require an unavailable result and prove that no host fallback executes.
 
 The exact qualification results and immutable implementation commit/tree bindings are recorded in `operations/phase-1/evidence/o07/p1-v08-isolation.json`. This implementation claim remains `IMPLEMENTED`; only a separate read-only Gate bound to the published Evidence head may declare it independently verified.
+
+Issue #82 remediation and its exact hosted qualification are tracked in `review-remediation-issue-82.md`; the earlier P1-V08 record is historical evidence for its own named commit.
