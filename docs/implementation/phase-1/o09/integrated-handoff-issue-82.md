@@ -1,6 +1,8 @@
 # P1-O09 integrated handoff — Issue 82
 
-Status: AUTOMATED_QUALIFICATION_COMPLETE / FINAL_HUMAN_ACCEPTANCE_PENDING. Current implementation actor: `codex-local-p1-completion-20260909`; historical preparation actor: `codex-work-5fb93e787236`.
+Status: IMPLEMENTED / FINAL_HUMAN_ACCEPTANCE_PASS / PROTECTED_MAIN_LANDING_PENDING. Current implementation actor: `codex-local-p1-completion-20260909`; historical preparation actor: `codex-work-5fb93e787236`.
+
+The actual human user accepted P1 and its disclosed R4/non-production boundaries with “通过本次 P1 最终验收”. The final decision and independent receipt live under `operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json` and `p1-v10-independent-verification-issue-82.json`. This supersedes historical pending text below. Complete required CI/protected-main landing, then proceed with the already authorized next construction queue.
 
 The current receipt binds exact subject `3777bda86f090ac75a3382b8b310da17737dc257`. Required run 34200250486 passed Linux, Windows, packaging and verify; local Windows full quality also passed. V00–V09 and five ADR obligations are complete. The machine declaration remains PARTIAL solely because the frozen V10 human acceptance has not occurred. See the current qualification summary under `operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json` and [next construction queue](next-construction-queue.md).
 

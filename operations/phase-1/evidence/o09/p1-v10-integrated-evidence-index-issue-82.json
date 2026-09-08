@@ -5,8 +5,8 @@
   "trackingIssue": 82,
   "implementationCommit": "3777bda86f090ac75a3382b8b310da17737dc257",
   "baselineCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
-  "status": "AUTOMATED_QUALIFICATION_COMPLETE_HUMAN_GATE_PENDING",
-  "declaration": "V00–V09 and ADR qualifications are backed by exact-subject machine results. One final actual human acceptance remains.",
+  "status": "P1_V00_V10_ACCEPTED_PENDING_PROTECTED_MAIN_LANDING",
+  "declaration": "Actual human user acceptance closes P1-V10 over the qualified input. Implementation declares IMPLEMENTED; final landing checks remain mandatory.",
   "subjects": {
     "protectedMain": {
       "commit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
@@ -59,7 +59,8 @@
       "implementationPath": ".github/workflows/m0-independent-verify.yml",
       "verificationPath": "tests/qualification/toolchain/review-remediation.test.mjs",
       "acceptanceCriterion": "Actual dependency shell rejects 12 non-success combinations; hosted 455ae22 lint failure propagated to required verify.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R02",
@@ -67,7 +68,8 @@
       "implementationPath": "scripts/governance/verify_m0.py",
       "verificationPath": "tests/qualification/toolchain/review-remediation.test.mjs",
       "acceptanceCriterion": "Actual receipt validation; incomplete/VERIFIED/self-declared integrated PASS rejected.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R03",
@@ -75,7 +77,8 @@
       "implementationPath": "packages/policy/src/index.ts",
       "verificationPath": "tests/qualification/policy/p1-v05-policy.test.mjs",
       "acceptanceCriterion": "Missing constants and incompatible operands fail closed, including invalid DENY beside valid ALLOW.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R04",
@@ -83,7 +86,8 @@
       "implementationPath": "packages/persistence/src/index.ts",
       "verificationPath": "tests/qualification/persistence/review-remediation.test.mjs",
       "acceptanceCriterion": "Canonical registry validates every journal/outbox payload before writes; zero fact mutation on rejection.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R05",
@@ -91,7 +95,8 @@
       "implementationPath": "packages/persistence/src/persistence-worker.ts",
       "verificationPath": "tests/qualification/persistence/review-remediation.test.mjs",
       "acceptanceCriterion": "Invalid busy timeout preserves healthy bytes and permits reopening; operational failures do not quarantine.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R06",
@@ -99,7 +104,8 @@
       "implementationPath": "packages/contracts/src/canonical-json.ts",
       "verificationPath": "tests/contract/phase-1-integration.test.mjs",
       "acceptanceCriterion": "Sparse arrays rejected; public persistence remains zero-write and accepts subsequent valid batch.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R07",
@@ -107,7 +113,8 @@
       "implementationPath": "packages/platform/src/filesystem.ts",
       "verificationPath": "tests/qualification/control-api/review-remediation.test.mjs",
       "acceptanceCriterion": "Multi-process election, stale recovery and loser non-interference; Windows transient claim errors separately qualified.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R08",
@@ -115,7 +122,8 @@
       "implementationPath": "scripts/architecture/architecture-policy.mjs",
       "verificationPath": "tests/architecture/review-remediation.test.mjs",
       "acceptanceCriterion": "Normal entry governs every workspace app and rejects deep imports, cycles, forbidden dependencies and unknown owners.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R09",
@@ -123,7 +131,8 @@
       "implementationPath": "scripts/contracts/type-model.mjs",
       "verificationPath": "tests/contract/review-remediation.test.mjs",
       "acceptanceCriterion": "allOf/local-reference operator mutation produces type consistency failure.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R10",
@@ -131,7 +140,8 @@
       "implementationPath": "packages/contracts/src/json-schema.ts",
       "verificationPath": "tests/contract/review-remediation.test.mjs",
       "acceptanceCriterion": "Calendar-aware timestamp rejection and valid leap-year/offset fixtures.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R11",
@@ -139,7 +149,8 @@
       "implementationPath": "packages/persistence/src/persistence-worker.ts",
       "verificationPath": "tests/qualification/persistence/review-remediation.test.mjs",
       "acceptanceCriterion": "Existing truncated authority is quarantined and cannot silently become an empty database.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R12",
@@ -147,7 +158,8 @@
       "implementationPath": "packages/platform/src/server.ts",
       "verificationPath": "tests/qualification/control-api/review-remediation.test.mjs",
       "acceptanceCriterion": "Unfinished request deadline closes socket and releases capacity exactly once.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R13",
@@ -155,7 +167,8 @@
       "implementationPath": "packages/platform/src/client.ts",
       "verificationPath": "tests/qualification/control-api/review-remediation.test.mjs",
       "acceptanceCriterion": "Streaming Unicode survives split UTF-8 bytes; client success statuses bind their route.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R14",
@@ -163,7 +176,8 @@
       "implementationPath": "scripts/toolchain/copy-runtime-assets.mjs",
       "verificationPath": "tests/qualification/toolchain/review-remediation.test.mjs",
       "acceptanceCriterion": "Authoritative root build restores the byte-identical required Win32 bridge.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R15",
@@ -171,7 +185,8 @@
       "implementationPath": "scripts/release/qualify-windows-x64.mjs",
       "verificationPath": "tests/qualification/packaging/network-guard.test.mjs",
       "acceptanceCriterion": "Actual preload rejects loopback-looking DNS/invalid literals before network/DNS; six valid forms accepted.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "R16",
@@ -179,7 +194,8 @@
       "implementationPath": "scripts/toolchain/emit-ci-evidence.mjs",
       "verificationPath": "tests/qualification/toolchain/review-remediation.test.mjs",
       "acceptanceCriterion": "Evidence uses actual checkout and rejects target mismatch; controller provenance remains separate.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "findingId": "WR01",
@@ -187,7 +203,8 @@
       "implementationPath": "packages/adapters/tool/windows-process-restricted/src/win32-bridge.ps1",
       "verificationPath": "tests/security/isolation/host-death.security.test.mjs",
       "acceptanceCriterion": "Creation-time Job membership removes pre-assignment window; hosted Windows kills only Node host then observes bridge/root/child/grandchild exit.",
-      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+      "status": "ACCEPTED_BY_FINAL_HUMAN_GATE",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     }
   ],
   "steps": [
@@ -195,13 +212,15 @@
       "stepId": "P1-V00-M0-AUTHORIZATION",
       "required": true,
       "expectedEvidenceTypes": ["M0GateEvidence", "AuthorityLockEvidence"],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V01-PREFLIGHT",
       "required": true,
       "expectedEvidenceTypes": ["BaselineIdentityEvidence", "WriteScopeValidationResult"],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V02-TOOLCHAIN",
@@ -211,7 +230,8 @@
         "TypeScriptBuildResult",
         "CrossPlatformBuildEvidence"
       ],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V03-CONTRACTS",
@@ -222,7 +242,8 @@
         "ExampleSuiteResult",
         "SchemaTypeConsistencyResult"
       ],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V04-ARCHITECTURE",
@@ -232,7 +253,8 @@
         "DeepImportDenialResult",
         "DuplicateSemanticOwnerDenialResult"
       ],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V05-POLICY",
@@ -242,7 +264,8 @@
         "FailClosedPropertyResult",
         "PolicyMutationResult"
       ],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V06-PERSISTENCE",
@@ -253,7 +276,8 @@
         "BackupRestoreResult",
         "CorruptionQuarantineResult"
       ],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V07-CONTROL-API",
@@ -264,7 +288,8 @@
         "TokenAclRedactionResult",
         "CliPublicApiAcceptanceResult"
       ],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V08-ISOLATION",
@@ -274,7 +299,8 @@
         "ProcessTreeTerminationResult",
         "NoDowngradePropertyResult"
       ],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V09-PACKAGING",
@@ -284,7 +310,8 @@
         "ReleaseManifestConsistencyResult",
         "CleanWindowsStartupResult"
       ],
-      "independentResult": "NOT_RUN"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     },
     {
       "stepId": "P1-V10-INTEGRATED-GATE",
@@ -294,7 +321,8 @@
         "WriteScopeComplianceResult",
         "IndependentGateDecision"
       ],
-      "independentResult": "BLOCKED"
+      "independentResult": "PASS",
+      "acceptanceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"
     }
   ],
   "artifact": {
@@ -309,9 +337,8 @@
     "retentionMetadataRef": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-release-and-protection.json"
   },
   "knownGaps": [
-    "Final immutable handoff HEAD hosted qualification and exact-head independent review.",
-    "P1-V10 HUMAN_REVIEW and a matching schema-valid independent verification receipt.",
-    "Protected-main post-merge acceptance for the final handoff; new HEADs require new Evidence."
+    "Non-production qualification build; no production installer/signing/auto-update.",
+    "PROCESS_RESTRICTED is not OS_SANDBOXED; production Workflow/Kernel and integrations belong to subsequent phases."
   ],
   "files": [
     {
@@ -586,5 +613,10 @@
     ],
     "humanReviewPerformed": false,
     "phase1FinalGate": "PENDING_HUMAN_ACCEPTANCE"
+  },
+  "finalHumanAcceptance": {
+    "result": "PASS",
+    "evidenceRef": "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json",
+    "independentReceiptRef": "operations/phase-1/evidence/o09/p1-v10-independent-verification-issue-82.json"
   }
 }
