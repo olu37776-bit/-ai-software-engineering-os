@@ -1,39 +1,39 @@
 # Learning & Feedback 分支设计：独立核心、主线集成、受治理改进
 
 状态：`DRAFT — implementation not authorized`  
-日期：`2026-09-08`  
-基线 commit：`3c387f5f196ddfae8e8989710d5a55f9def472a7`  
-基线 tree：`5938f8e2f3e3a5e5dfbd0fde5ac66c092f2a7117`  
-入口：[06-learning-and-feedback](../06-learning-and-feedback.md)  
-计划：[分阶段建设计划](../../roadmap/learning-feedback-branch-plan.md)  
-依据与限制：[基线审查报告](../../reviews/learning-feedback/github-baseline-review-2026-09-08.md)
+更新：2026-09-08  
+设计基线：`3c387f5f196ddfae8e8989710d5a55f9def472a7`，tree `5938f8e2f3e3a5e5dfbd0fde5ac66c092f2a7117`  
+本轮依赖复核main：`5577c2e8a9ef090b87924edddf6114dd75eb28a5`  
+[架构入口](../06-learning-and-feedback.md) · [CURRENT/计划](../../roadmap/learning-feedback-branch-plan.md) · [Contract精确定义](contract-and-seam-proposal.md) · [开工包](../../roadmap/learning-feedback-core-entry-plan.md) · [历史基线审查](../../reviews/learning-feedback/github-baseline-review-2026-09-08.md)
 
-> 本设计是 Issue #81 的文档提案，需独立审查。它不覆盖 Charter、accepted ADR 或已激活 Schema；不授权 Phase 1 提前开发 Learning runtime。本文中的拟新增字段/文件均非已发布 Contract。
+> 本文件定义架构与跨模块责任，不是第二份接口规范。LF-C1字段、调用基数、key/hash、结果与规范化规则唯一在Contract提案中细化，文件及验收在core-entry-plan中细化。它们仍待独立批准，不覆盖Charter、accepted ADR、active Schema或机器Authority，不授权Phase1提前实现Learning runtime。
 
-## 1. 核心决策
+## 1. 核心决策与V1边界
 
-这条分支可以作为独立工作流建设，但不能把主线缺失能力在分支内补成第二套 Runtime。采用现有 TypeScript modular-monolith：确定性核心与外部事实读取、Context 交付、持久化、治理执行解耦；运行时仍使用唯一主线。
+分支是同一TypeScript modular-monolith中的独立工作流和模块，不是新的Runtime/数据库/部署服务。确定性核心与事实读取、Context交付、持久化和治理执行解耦，运行时复用唯一主线。
 
-当前可推进文档、接口提案、案例和验收设计。取得代码 scope 后，可先建设纯 Feedback 核心及 conformance suite；真实事实读取、Context 消费和闭环验证按主线能力门禁接入。不要空等整个 Framework 完成，也不要把 fixture 通过写成生产闭环已完成。
+LF-C1取得正式scope后可先实现纯核心/conformance，无需完整Runtime；真实集成按主线provider能力门禁接入。fixture通过只证明规则，不证明生产链。V1不训练模型，不自动改裁判，不建设插件市场或业务知识抽取系统。
 
-学习对象为 Framework 规则、Node 组件及受治理资产；不是业务知识抽取系统。V1 不训练模型、不自动改裁判规则、不建设通用插件市场或第二部署服务。
+**V1每次projectFeedback只处理一个原子criterion，criterionRefs恰一项，单个allocatedId/prior/key，至多一个候选；拒绝任何组合criterion/group或batch输入。** 同一criterion可有多个关闭要求和多个支撑/反证，但不能带另一criterion。evaluateFeedbackResolution每次也只处理一个Feedback与一个consumer Attempt，至多一条评价。原主线汇总Gate保留完整，不能为了本次选择伪造单criterion Gate。
 
-## 2. 当前能力与不可假设项
+多个独立criterion需未来外层分别调用，C1不建设批处理调度或跨义务事务。主线不可分的组合组目前明确不支持，不能借“Contract有定义”绕过V1范围；未来支持须新设计/Contract版本、scope及独立批准，不属于本次开工包。精确定义和反例见Contract§3.1与C1-V18。
 
-| 主线能力 | 基线中可见事实 | 分支当前可使用程度 |
+## 2. 已观察能力与不可假设项
+
+| 能力 | 指定基线中可见事实 | 当前用途 |
 | --- | --- | --- |
-| 工具链/Schema 基础 | exact toolchain、contracts validator、generated types、架构检查已有实现 | 复用现有规范；不得自行换版本 |
-| Policy | Phase 1 compiler/evaluator qualification | 可研究 public Contract；不等于 approval lifecycle 已实现 |
-| Persistence | node:sqlite/PersistenceWorker qualification | 不等于任意 Runtime facts Query API 已存在 |
-| CLI/runtime/worker | Control API lifecycle 与进程资格能力 | 不等于 Workflow/Node scheduler；`startRuntime` 目前包装 Control API |
-| GateDecision/EvidenceMetadata/NodeExecutionIdentity | active Schema 存在 | 可以设计 schema-conformant fixture；不能凭 Schema 假定 producer |
-| NodeExecutionRecord | planned，owner 为 node-runtime，Phase 2 | 不能调用假想 Repository；保留主线 owner |
-| ContextSnapshot/ContextItem/RouteDecision | planned，目标 Phase 3 | 当前不能声称真实反馈交付已成立 |
-| VerificationExecution/Assessment | planned，目标 Phase 3 | 当前不能声称真实反馈关闭已成立 |
-| Learning 六项 Contract | planned，目标 Phase 7 | 按 catalog 扩展，不另建同名权威 |
-| ExecutionFeedback/FeedbackResolution/LearningCase | 当前 inventory 未登记 | 先做 owner/semantic-gap 评审，再授权激活 |
+| 工具链/Schema基础 | validator、generated types、架构检查已有代码 | 复用公开入口；#82涉及修复的可信性另需Evidence |
+| Policy | Phase1 compiler/evaluator qualification | 不等于approval lifecycle实现 |
+| Persistence | node:sqlite/PersistenceWorker qualification | 不等于已提供任意Runtime facts query |
+| CLI/runtime/worker | Control API与进程资格能力 | startRuntime包装Control API，不是Workflow executor |
+| GateDecision/EvidenceMetadata/NodeExecutionIdentity | active Schema存在 | 可作conformance输入，不证明生产producer |
+| NodeExecutionRecord | planned，node-runtime owner，Phase2 | 不导入假想Repository |
+| ContextSnapshot/ContextItem/RouteDecision | planned，目标Phase3 | 不宣称真实交付完成 |
+| VerificationExecution/Assessment | planned，目标Phase3 | 不宣称真实Resolution生产评价完成 |
+| 六个Learning Contract | planned，目标Phase7 | 沿用catalog，不另建owner |
+| ExecutionFeedback/FeedbackResolution/LearningCase | 初始inventory未登记 | 先做semantic-gap与owner评审；C1不建设LearningCase |
 
-本表是指定 SHA 的事实摘要，不是 Phase 1 全量验收。详细来源见审查报告 S01–S15。
+该表为审查基线快照，不是全局CURRENT。主线5577c2e已合并#83审查/计划，但未因此关闭#82修复；实时状态由CURRENT和exact-head Evidence给出，不依赖旧绿色CI。
 
 ## 3. 三个闭环与权力边界
 
@@ -41,192 +41,142 @@
 主线：Command -> committed Event -> NodeExecution/Attempt
           -> ContextSnapshot -> controlled execution -> Verification/Gate
           -> Router/Kernel transition
-                 |
-                 | immutable facts / bounded query
-                 v
-Feedback：可信差距 -> 纠偏义务 -> 受控 Context 贡献
-                -> 后续执行已使用的 provenance -> 原义务评价
-                 |
-                 | history + successful controls
-                 v
-Learning：学习准入 -> 归因候选 -> 因果验证 -> Proposal
-                -> 既有 Policy/approval/工程变更 -> 后续效果评价
-
-KnowledgeProvider：独立负责项目知识；仅接受受治理的知识缺口交接。
+                         |
+                         | immutable facts / bounded query
+                         v
+Feedback：可信差距 -> 单原子纠偏义务 -> 受控Context贡献
+                -> 后续Attempt使用provenance -> 原义务评价
+                         |
+                         | history + successful controls
+                         v
+Learning：准入 -> 归因候选 -> 因果验证 -> Proposal
+                -> 既有Policy/approval/工程变更 -> 后续效果评价
+KnowledgeProvider：独立治理项目知识，只接受知识缺口交接。
 ```
 
-Router 先有权选择合法后续目标，Feedback 再按已证明的 causation/scope 提供输入。也可以并行消费同一 committed fact；不引入“Feedback 先选 Node”的隐式路由。Feedback 不拥有 NodeRun/NodeResult 的第二套状态机。
+Router选择合法后续目标，Feedback仅按可信causation/scope贡献内容；可并行消费同一committed fact，不形成“Feedback先选Node”。分支不拥有第二套NodeRun/NodeResult状态机。Node是最小执行与归因单位，环境/上游/外部问题不能强行归入Node内部。
 
 ## 4. Canonical ownership
 
-| 语义 | 唯一 owner | 本分支职责 |
+| 语义 | 唯一owner | 本分支责任 |
 | --- | --- | --- |
-| Execution/Attempt、NodeExecutionRecord | packages/node-runtime | 消费引用/事实视图，不重建执行身份 |
-| 运行事件、转换、幂等基础 | kernel/workflow 与 persistence 边界 | 使用公开能力，不直接改终态 |
-| ContextSnapshot 接收、预算、trust/redaction | packages/context | 提供受控贡献，不直接制作 approved snapshot |
-| EvidenceMetadata/EvidenceEdge | packages/evidence | 查询事实和关系，不建立第二 EvidenceGraph |
-| VerificationExecution/Assessment/业务 Gate | packages/verification | 使用已产生的 criteria assessment，不重新执行 Oracle |
-| Policy authority | packages/policy | 复用唯一 evaluator，不新增替代策略引擎 |
-| Feedback/Resolution、Learning 评价规则 | packages/learning（新增 Feedback ownership 待批准） | 确定性投影与派生评价 |
-| SQL、journal/projection/checkpoint | packages/persistence | 实现所需 Port，不泄漏 driver/表名 |
-| 跨模块用例、wiring、生命周期 | packages/platform | 显式装配，无 globalThis service locator |
-| 项目知识事实及其治理写入 | KnowledgeProvider/对应资产 owner | 输出缺口或提案，不直接摄取/改写 KB |
+| Execution/Attempt、NodeExecutionRecord | packages/node-runtime | 消费事实视图和引用，不重建身份 |
+| 事件、转换、运行幂等基础 | kernel/workflow与persistence边界 | 使用公开能力，不改终态 |
+| ContextSnapshot接收/预算/trust/redaction | packages/context | 贡献内容，不直接制作approved snapshot |
+| EvidenceMetadata/EvidenceEdge | packages/evidence | 只查询事实/关系，不建第二EvidenceGraph |
+| VerificationExecution/Assessment/业务Gate | packages/verification | 使用已裁决criterion事实，不重新做Oracle |
+| Policy authority | packages/policy | 复用唯一evaluator |
+| Feedback/Resolution、Learning规则 | packages/learning，新增Feedback ownership待批准 | 确定性投影/派生评价 |
+| SQL/journal/projection/checkpoint | packages/persistence | 实现Port，不泄漏driver/table |
+| 跨模块用例/wiring/lifecycle | packages/platform | 显式装配，无globalThis locator |
+| 项目知识与写入权限 | KnowledgeProvider/资产owner | 只交接缺口或提案，不直接摄取/改库 |
 
-`LearningGateDecision` 有自己的提案治理语义，但不是另一份业务 GateDecision；权限仍受同一 Policy authority 约束。不得为了延续旧聊天设计删除仓库的 NodeExecutionRecord 或既定 LearningGateDecision。
+既定LearningGateDecision是提案治理，不是复制业务Gate；仍受唯一Policy authority约束。不能因旧聊天“不要第二Gate/记录”而删除主线NER或已有正式LearningGate方向。
 
 ## 5. 代码与文档落点
 
-实现语言跟随 `toolchain/toolchain.json`、pnpm lock 与 ADR-0007：TypeScript、ESM/NodeNext、现有 project-reference build。正文不维护平行工具链版本号。不是 Swap Java package，也不新增 Python 服务。
-
-以下为授权后的目标目录，当前不创建空文件或空 package：
+语言与构建跟随toolchain/toolchain.json、pnpm lock、ADR-0007：TypeScript、ESM/NodeNext、现有project references。不维护平行工具链版本，不新建Java/Python服务。
 
 ```text
 packages/learning/
-  package.json
-  tsconfig.json
-  src/
-    index.ts                         # @aseos/learning 唯一 public entry
-    feedback/
-      domain/                        # 不可变纠偏语义/派生评价
-      application/                   # projector、resolution evaluation
-    improvement/
-      domain/                        # 后续 candidate/experiment/proposal
-      application/                   # 准入、归因、效果评价
-    ports/                           # 仅实际用例需要的只读事实/存储接口
-  test/                              # 纯逻辑、replay、边界测试
-packages/platform/src/learning-feedback/
-  ...                                # 主线 query/Context 集成、用例装配
-packages/persistence/src/             # 仅复用既有 Worker/Port 模式的实现
-packages/contracts/schemas/learning/  # public/persisted Schema，批准后登记
-packages/contracts/examples/learning/
-tests/contract/learning-feedback/
-tests/integration/learning-feedback/
-tests/replay/learning-feedback/
-tests/fault-injection/learning-feedback/
-tests/acceptance/learning-feedback/   # 真实 public CLI/API 验收
+  src/index.ts                 # @aseos/learning唯一public entry
+  src/feedback/domain/         # 反馈语义
+  src/feedback/application/    # C1纯用例、两类key、normalizer
+  src/improvement/             # 后续Learning，C1不创建
+  src/ports/                   # 后续真实I/O才创建，C1不建空接口
+  test/
+packages/platform/src/learning-feedback/  # 后续主线装配/用例
+packages/persistence/src/                 # 后续复用Worker/Port
+packages/contracts/schemas/learning/      # 批准后公共Schema
+packages/contracts/examples/learning/     # 真实实例
+packages/contracts/examples/first-slice/example-suite.json  # 原标准资格入口登记
 ```
 
-`packages/learning` 是 blueprint 已规划的 owner；不要再创建 `packages/learning-feedback`、嵌套 Java `src/main/java` 或 `.ai-local` 生产源码树。具体单文件名在每个 operation 的 WRITE_SCOPE 冻结，目录图不是无限写授权。
+conformance在tests/contract/learning-feedback/；后续integration/replay/fault-injection/acceptance各用既有测试层。精确文件清单只在core-entry-plan，目录图不是无限写授权。不创建packages/learning-feedback或.ai-local生产源码树。没有真实consumer不批量创建空包。
 
-Domain/纯 evaluation 不做文件、网络、SQL、环境变量、隐式时钟或随机读取。Application 消费显式输入/Port；mainline adapters 由 platform 装配，调用主线 public API；persistence 实现所需持久化 Port。只有外部 model/tool/knowledge 等 provider 放在 `packages/adapters`，不为了名字一致把跨主线用例塞进外部 provider 层。严禁 deep import。
+Domain不做I/O、隐式时钟/随机或环境读取；外层显式调用Port，主线Adapter由platform装配。只有外部model/tool/knowledge provider放packages/adapters。严禁deep import。C1不接platform/persistence，也不添加platform->learning反向接线。
 
-文档沿用本仓库 `docs/`；`.ai-local/docs/learning-feedback/` 是旧本地工作区约定，不适用于本仓库公开 Authority。
+公开Authority用本仓库docs/；旧.ai-local/docs/learning-feedback仅属于旧本地项目，下载副本不是第二权威。
 
-## 6. 数据流与接口提案
+## 6. 生产集成责任
 
-### 6.1 一次有边界的只读事实读取
+### 6.1 权威事实读取
 
-核心输入是经过边界校验的事实集合，包含主线 canonical identity、subject/version、criteria assessment、Evidence 引用、GateDecision、原 Contract/policy snapshot、source commit/checkpoint。准确字段必须映射已发布 Schema；不得为凑字段临时发明 NodeResultRepository。
+核心消费经边界验证的身份、版本、criterion assessment、Evidence、Gate、Contract/policy和固定snapshot/checkpoint。真实方法由主线owner提供，不发明NodeResultRepository来凑接口。
 
-Query 必须返回：成功且 snapshot 一致，或 typed NOT_FOUND/INCONCLUSIVE/BLOCKED/ERROR。区分暂时尚未提交、版本不支持、引用损坏、权限不足与依赖缺失。缺依赖不等同于“业务未解决”。
+Query区分成功一致snapshot与NOT_FOUND/INCONCLUSIVE/BLOCKED/ERROR；暂未提交、版本不支持、权限缺失、引用损坏和wiring错误不能都变成正常UNRESOLVED。多记录读取使用一致snapshot，不能新Gate配旧Evidence。权威持久化遵守SQLite/PersistenceWorker，不新增YAML Facts Store；旧ILayout不自动移植。
 
-涉及多个记录时，使用主线 read snapshot/一致 checkpoint，避免读取新 Gate 配旧 Evidence。权威存储按 ADR-0008 的 SQLite/PersistenceWorker 路径，不引入 YAML Facts Store。YAML fixture 只可作为非生产输入格式，不能冒充 committed journal；旧 ILayout 方案不自动移植。
+### 6.2 ExecutionFeedback
 
-### 6.2 ExecutionFeedback（拟新增）
+表达一个原子criterion的纠偏义务及来源、关闭要求、适用边界；无Node/Evidence完整副本，无nextNode/rootCause/任意实现指令。V1不支持组合criterion/group；调用及结果均单条，遵守§1。
 
-语义分组：
+具体字段、sourceGate与所选criterion的关系、单个prior/allocation、缺失/冲突处理唯一见Contract§3–4/6/7.3，本节不另定第二套字段或identity。保留所有相关反证，事实不足返回gap，不编造observedGap。
 
-- identity：schema version、feedback identity、idempotency key、projection version；
-- source：NodeExecutionIdentity、source decision/assessment refs、Contract/criterion version/hash、snapshot/checkpoint；
-- obligation：observedGap、requiredOutcome、retainedConstraints、closure requirements；
-- provenance：supporting/contradicting evidence refs、可解释生成依据；
-- applicability：有效执行 lineage、版本和权限边界，由主线事实证明，不由自由文本猜测。
+### 6.3 Context与消费证明
 
-不保存完整 Evidence/NodeExecutionRecord 副本，不包含 nextNode、rootCause、任意代码修改建议。通常一个原子 criterion obligation 一条反馈；组合 criteria 必须有 Contract 定义的原子组。事实不足返回 projection gap，不构造虚假的确定性 observedGap。
+主线选定目标Attempt后，由授权Context入口按causation/lineage/版本/权限查询相关反馈，不按Node名称或文本相似猜关联。内容经预算、trust、redaction、冲突及Policy检查。
 
-### 6.3 消费关系与 Context
+已消费至少需要快照含反馈sourceRef与Attempt实际使用该snapshot的事实；provider调用成功、进入候选列表、内容被裁剪/拒绝都不能记为消费，也不证明模型遵守了内容。优先复用ContextSnapshot和NER provenance，只有主线确实不足才批准最小关联Contract，不新建Context store。新Attempt产生独立消费关系。
 
-主线已确定目标 NodeExecution/Attempt 后，由授权 Context 构建入口查询相关反馈。匹配依据是 source/causation/lineage、目标 definition version 和受允许的作用域；不按 Node 名字或错误文本猜关系。
+### 6.4 FeedbackResolution
 
-Context 只携带本次必要纠偏内容及 refs，经预算、trust、redaction、冲突和 Policy 检查。证明“已消费”必须同时具备：主线快照包含 sourceRef；对应 Attempt 的启动/执行事实固定使用该 snapshot。Provider 调用成功不能充当证明，也不能保证模型真正遵守了反馈。
+一次评价一个Feedback和一个consumer Attempt。只匹配主线已裁决assessment对原关闭要求的覆盖，不跑测试、不把退出码转业务PASS、不重新做Oracle/Gate。完整评价才产生RESOLVED/PARTIALLY_RESOLVED/UNRESOLVED业务候选；必要事实不足或错误单独表达，不产生伪completed Resolution。
 
-优先使用 ContextSnapshot 与 NodeExecutionRecord 的 provenance。只有主线不足时才提议最小关联 Contract，不新建第二 Context store。被拒绝/阻塞/裁剪掉的 contribution 不记为消费。重复构建同一 snapshot 不重复消费；新 Attempt 可产生新的独立消费关系。
+风险接受/豁免/取消不是已满足；一次后续PASS不批量关闭历史。固定原版本、lineage、消费证明、必要覆盖与反证，旧记录不可变，后续append-only，当前状态可重建。独立Resolution key/hash/prior、正常/错误结果和去重规则唯一见Contract§5/7.4，不沿用Projection身份。
 
-### 6.4 FeedbackResolution（拟新增）
+### 6.5 主线Gate
 
-保留 feedbackRef、consumer execution/attempt refs、后续 assessment/Gate/Evidence refs、逐 criterion 评价、评价器版本和 source checkpoint。业务 disposition 和评价可用性必须分开：
-
-- 完整评价后：RESOLVED / PARTIALLY_RESOLVED / UNRESOLVED；
-- 无法完整评价：INCONCLUSIVE / BLOCKED / ERROR，保留 evaluation gaps，不伪造正常关闭结果；
-- 已接受风险、豁免或取消：单独保留 disposition/provenance，不记成 criterion 已实际满足。
-
-最终枚举在 Schema 评审冻结，不凭本文私下改已有 Schema。Evaluator 只匹配主线已裁决的 criterion assessments 与原 closure requirements；不自行跑测试、不把退出码转换成业务 PASS、不另做 Oracle/Gate。
-
-一次后续 Node PASS 不自动关闭所有历史反馈。必须确认同一反馈、合法 lineage、精确版本/subject、必要覆盖、无未处理反证和满足原 Gate requirement。原始 feedback 不可变，后续评价 append-only；当前状态是可重建 view，不用 last-write-wins 覆盖历史。
-
-### 6.5 GateDecision outcome 必须完整映射
-
-| 主线 outcome | Feedback 处理约束 |
-| --- | --- |
-| PASS | 通常不生成新纠偏；关闭旧反馈仍须精确 coverage/lineage |
-| PASS_WITH_RISK_ACCEPTANCE | 记录授权风险 disposition；不能默认已修复全部条件 |
-| REWORK | 仅对有依据的差距产生纠偏义务；不自行 retry |
-| BLOCK | 表达前置条件/权限等阻塞，不能编造执行失败或根因 |
-| REQUIRE_HUMAN_APPROVAL | 交给既有审批；不转成自动补丁/批准 |
-| FAIL_TERMINAL | 保留失败/学习输入，不能自行重开 terminal execution |
-| INCONCLUSIVE | 显式 evidence gap，不推断 FAIL，也不关闭反馈 |
-
-Schema 引用：`packages/contracts/schemas/verification/gate-decision.schema.json`。上游新增 enum/required field 时，先拒绝不支持版本并走兼容评审，不默认成功。
+完整处理active GateDecision的七种outcome：PASS、PASS_WITH_RISK_ACCEPTANCE、REWORK、BLOCK、REQUIRE_HUMAN_APPROVAL、FAIL_TERMINAL、INCONCLUSIVE。风险接受不等于修复，approval不变自动retry，terminal不被重开，unknown不当失败。逐项消费映射唯一见Contract§6；未知版本/required字段通过兼容评审，不默认成功。
 
 ## 7. 持久化、幂等与恢复
 
-未来持久化只记录 Feedback 自身语义及来源引用；原主线 facts 不复制。共用基础设施不等于共用写权限，Core 不能直接写其他 owner 的表。
+LF只记录自身语义及来源引用，不复制主线facts。复用基础设施不等于拥有别的owner写权限。核心不直接写SQL或跨模块状态。
 
-幂等依据至少绑定 source decision identity/version、criterion/group、projection schema/evaluator version及必要 input hash。身份格式沿用 canonical identifiers，不用 hash 冒充 UUID。相同 key 不同 payload 必须冲突可见；数据库唯一约束/事务承担并发安全，不能仅“先查再插”。
+Projection与Resolution各有独立key/hash/prior，身份材料、数组规范化及元数据排除规则只在Contract§7定义。**Projection V1 key绑定唯一原子criterion，不含group、批次下标或组合身份。** 无匹配prior的纯调用只生成候选，不宣称已查重或落库。
 
-投影发生在来源提交后；消费 checkpoint 和派生记录的推进须可原子恢复，或采用已批准的 durable outbox/retry 协议。Feedback 写失败不撤销主线既成事实，不伪装处理成功；重启可从 checkpoint 重建。缓存可丢弃，删掉缓存后结果必须等价。所有这些是后续 integration 的验收义务，Phase 1 qualification 不代表它们已经具备。
+I1分别对两类key实施数据库唯一约束和事务内原子比较/写入，相同key不同内容冲突可见，不能仅先查再插或cache去重。派生发生在源事实提交后；checkpoint与派生记录具备原子恢复或已批准outbox/retry协议。写失败不撤销主线既成事实，不伪装成功；重启可重放/重建。缓存可丢弃且不影响正确性。
 
-来源归档后保留合法可审计 refs/manifest 和显式 retention/redaction 状态。资料缺失时不能把缺失当作已解决。私有 Evidence 不因调试方便写入 GitHub。
+归档/删除保留合法manifest、retention/redaction状态与可解释引用；引用丢失不能当关闭。私有Evidence不因排错上传GitHub。当前Phase1 qualification不证明这些LF业务事务已经实现。
 
-## 8. Learning 扩展，不抢跑实施
+## 8. 后续Learning扩展
 
-先做确定性准入：同 definition/criterion/version 的重复反馈、多次未解决、治理允许的严重事件或人工升级。保留基线成功样本、暴露次数/分母；单看失败数不能得出失败率改善。
+先以确定性准入识别重复criterion/version、多次未解决、严重事件或人工升级，保留成功对照与暴露分母。LearningCase只是问题集合，不自动归因。Attribution允许in-node/upstream/external/unknown，再形成RootCauseCandidate；复用现有六个计划Learning Contract，不为空步骤造public对象。
 
-LearningCase 是问题集合，不自动归因。Attribution 允许 in-node、upstream、external、unknown，随后才形成 RootCauseCandidate。复用已规划六个 Learning Contract；LearningCase/Effectiveness 的公共化须单独做 semantic-gap 评审，避免为每个步骤制造空壳对象。
+实验冻结target version、Context、模型/工具及允许变量，复用主线Execution/Verification；单次retry PASS不证明因果。保留方法、适用范围、反证和剩余不确定性。Proposal固定target version/diff、风险、回归、rollback，经既有治理应用；效果比较控制任务结构/模型变化，关注成本、时延、误阻断和回归，不将相关性写成学习成功。
 
-因果实验冻结目标版本、输入、模型/工具版本和允许变量，复用既有 Execution/Verification 能力；不能回放时记录限制，不把一次 pass 视为根因验证。Proposal 固定 target version/diff/适用范围、风险、回归与 rollback，经现有治理执行。后续效果比较关注任务结构变化、成本、时延、false block 和 regression；不能把模型升级带来的提升归到某个 Policy patch。
+未来如需组合criterion/group或batch API，必须有独立需求/Contract版本与验证，不在V1预留可执行旁路；不影响当前单原子义务接口的一致性。
 
 ## 9. 故障隔离与安全
 
-默认反馈是可选增强：禁用时主线原来允许的路径继续工作。若主线 Policy 明确要求某类反馈/证明，则缺失应由主线 fail closed，不能一概 fail open。这两个模式须在配置/Policy 中显式区分，分支不得自行降低门禁。
+默认可选增强：禁用时主线原许可路径仍运行。Policy明确要求反馈/证明时，缺失由主线fail closed，不得以“可选”为由无条件放行。两个模式显式配置，LF不降低Gate。
 
-Feedback 内容是带 provenance 的任务数据，不因来自历史而升为系统指令。限制 payload 大小、数据敏感度、来源权限与可用寿命；被污染的自然语言不能请求改 WRITE_SCOPE 或批准自己。学习执行者不能同时修改本实验的 verifier、Gate/Policy、审批凭据和预期结果。
+历史反馈是带provenance的数据，不升为系统指令；限制大小、敏感度、来源权限、寿命和注入风险。内容不能批准自己或修改WRITE_SCOPE。待修模块不得同时改实验verifier、Gate/Policy、审批凭据或expected结果。
 
-## 10. 验证层级
+## 10. 分层验证
 
-| 等级 | 能证明什么 | 不能证明什么 |
+| 层级 | 可证明 | 不可替代 |
 | --- | --- | --- |
-| Schema/example | 格式、引用、版本约束 | 生产记录真实存在 |
-| Pure/unit/property/replay | 确定性规则与反例 | Adapter wiring/交付 |
-| Conformance fixture | producer/consumer 契约兼容 | Runtime 已集成 |
-| Production-path integration | 干净启动、正式 composition/query/持久化路径 | 整个工作流已闭环 |
-| Workflow E2E | public CLI/API 到来源、消费、复验、resolution | 任意真实 provider/私有环境都支持 |
-| Independent exact-SHA review | 当前 scope 和证据支持的 verdict | 后续 HEAD 自动继续 VERIFIED |
+| Schema/examples | 格式/引用结构/版本与基数 | 来源真实性 |
+| Pure/property/replay | 规则、两类key/normalization和反例 | 生产wiring |
+| Conformance | consumer/producer接口兼容 | provider已存在 |
+| Production integration | 干净bootstrap、正式query/persistence | 整个工作流 |
+| Workflow E2E | public CLI/API到消费、复验、关闭 | 所有provider/私有环境 |
+| Independent exact-SHA review | 指定scope/subject证据支持的结论 | 新HEAD自动继承 |
 
-核心 anti-regression cases：C-1 风格的未装配依赖必须显式失败；C-2 风格“投影写库但交付读空 cache”必须在新进程真实查询中失败。还需 coverage 缺失、错 run/attempt/version、反证、风险接受、重复投递并发、进程中断、禁用和必需模式测试。
+核心反例覆盖单criterion调用、错run/attempt/version、UNKNOWN/反证/风险接受、两类重复与冲突。I1/I2覆盖C-1式未装配依赖和C-2式写库读空cache，必须cold bootstrap/新进程正式路径，不手工补global/cache。还要覆盖crash/restart、多次纠偏、禁用/Policy必需模式。mock可用于外部不相关组件，但不得替代被证明的wiring/Context/assessment/transition。
 
-Fixture/mock 用于隔离单元和模拟外部 provider 合法，但不得替代被证明的 wiring、Context snapshot 生产、业务 assessment 或主线 transition。每份报告声明真实组件和替身边界。
+## 11. 主线交界和dogfooding
 
-## 11. 与主线交界的最小需求清单
+主线应提供：execution/attempt版本身份；一致committed facts query及错误；criterion-level authoritative assessment；Context sourceRef与Attempt实际使用；后续Proposal/approval/rollback。owner与阶段见Contract§8，具体public entry和可用性由主线真实实现确认，不能把需求表当已存在API。
 
-| 需求 | 应由谁确认/提供 | 就绪证明 |
-| --- | --- | --- |
-| Execution/Attempt 与版本身份 | node-runtime/contracts | public schema + producer + replay case |
-| committed facts query/checkpoint | kernel/persistence/platform | 一致读取、restart、权限、错误 contract |
-| 可追踪 Context contribution 与实际使用 | context/node-runtime/platform | snapshot sourceRef + Attempt 使用事实 |
-| criterion-level authoritative assessments | verification/contracts | 原 criterion/version 到后续 Evidence 的覆盖关系 |
-| Policy/approval/proposal dispatch | policy/platform | 不可绕过、scope/version 固定、结果可追踪 |
+GitHub Issue/PR/CI是工程材料，不是Runtime NER。首次真正dogfooding须有受控workspace/worker、scope enforcement、可追溯执行及独立Gate；固定Framework/verifier，选单个可复现小修复。旧C-2可作案例意图，不上传旧私有源码，不让待修任务改裁判。外部独立复核保留。
 
-缺哪个 provider，阻塞相应集成项，不为它在 Learning 内创造替代品。接口名称待主线真实 public entry 确认，不能把此需求表当作已存在 API。
+无合法scope、必要provider缺失、owner/身份冲突、HEAD证据过期、测试须造假、需要越权改ADR或上传私有数据时停止。只阻塞相应集成，不抹掉未受影响组件成果。
 
-## 12. Dogfooding 与停止条件
+## 12. 文档一致性与当前结论
 
-当前仓库 Issue/PR/CI/governance Evidence 可用来设计真实问题样本，但它们不是 Runtime NodeExecutionRecord，不能强转成“框架已自己执行”的证据。
+LF-RV-04在d3138f1的复核指出本文件原§6.2/7仍允许组合组，与Contract单criterion冲突。本轮删除该V1许可，同步§1/6.2/7；架构入口也明确单义务。历史报告仍保留旧subject，不作为现行接口授权。
 
-首次真正 dogfooding 必须已有受控 Workspace/worker、WRITE_SCOPE enforcement、可追溯执行、独立 verifier/Gate 和重试闭环。先做有 oracle 的一个隔离修复；C-2 可作为历史场景种子，不能默认把旧私有源码上传。固定 Framework/verifier 基线，待修模块不能修改自己的裁决规则；独立外部复核保留。
+架构入口和本文只总结边界，Contract是唯一精确接口说明，core-entry是唯一精确实施/验收清单，CURRENT记录进度。规范细化时同轮检查这些导航与概述，避免多份细节各自漂移。
 
-以下停止：无合法 scope、必要主线 provider 不存在、身份/owner 歧义、旧证据不适用新 HEAD、测试必须造假才能过、需要扩大 accepted ADR 语义、需要上传私有数据。普通实现错误在已授权范围内 remediation，不扩大目标。
-
-## 13. 当前结论
-
-设计方向为“同仓库独立模块、契约先行、分级证明、能力门禁集成”。当前只完成文档提案，不宣称纯核心或运行反馈已实现。下一步按建设计划评审 Contract/接口缺口与独立核心授权；不是恢复旧 F2，也不是直接实施完整 Learning。
+仍为待独立批准文档；不授权代码、不宣称生产Feedback完成。下一步按#85收口真实独立结论、合法scope、直接依赖与共享接线，不平行造Runtime。
