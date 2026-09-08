@@ -12,6 +12,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { basename, dirname, isAbsolute, join, parse, relative, resolve, sep } from "node:path";
+import { performance } from "node:perf_hooks";
 import { promisify } from "node:util";
 import { setTimeout as delay } from "node:timers/promises";
 
@@ -109,7 +110,7 @@ function processExists(pid: number): boolean {
 
 type RuntimeClaim = Readonly<{ name: string; ticket: number | null }>;
 
-async function runtimeClaims(directory: string): Promise<readonly RuntimeClaim[]> {
+async function readRuntimeClaims(directory: string): Promise<readonly RuntimeClaim[]> {
   const claims: RuntimeClaim[] = [];
   for (const name of await readdir(directory)) {
     const match = /^([1-9][0-9]*)-[0-9a-f]{32}$/u.exec(name);
@@ -144,6 +145,28 @@ async function runtimeClaims(directory: string): Promise<readonly RuntimeClaim[]
     claims.push({ name, ticket: ticket as number | null });
   }
   return claims;
+}
+
+async function runtimeClaims(directory: string): Promise<readonly RuntimeClaim[]> {
+  const deadline = performance.now() + 1_000;
+  for (;;) {
+    try {
+      return await readRuntimeClaims(directory);
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (
+        process.platform !== "win32" ||
+        (code !== "EPERM" && code !== "EACCES" && code !== "EBUSY") ||
+        performance.now() >= deadline
+      ) {
+        throw error;
+      }
+      // Windows can deny a path while another contender's deletion is pending.
+      // Rescan after handles close; never omit an unreadable live claim or
+      // delete someone else's claim to manufacture an uncontested election.
+      await delay(5);
+    }
+  }
 }
 
 export async function acquireRuntimeLock(
