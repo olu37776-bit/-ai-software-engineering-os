@@ -18,7 +18,7 @@ const EVIDENCE_TYPES = Object.freeze([
   "CleanWindowsStartupResult",
 ]);
 
-const NETWORK_GUARD_SOURCE = String.raw`
+export const NETWORK_GUARD_SOURCE = String.raw`
 import { appendFileSync } from "node:fs";
 import http from "node:http";
 import https from "node:https";
@@ -37,16 +37,18 @@ const normalizeHost = (value) => {
   if (typeof value !== "string") return "";
   let host = value.trim().toLowerCase();
   if (host.startsWith("[") && host.endsWith("]")) host = host.slice(1, -1);
-  if (host.startsWith("::ffff:")) host = host.slice(7);
-  if (/^127(?:\.\d{1,3}){3}$/u.test(host)) {
-    const octets = host.split(".").map(Number);
-    if (octets.every((octet) => octet >= 0 && octet <= 255)) return host;
-  }
   return host;
 };
 const isLoopback = (host) => {
   const normalized = normalizeHost(host);
-  return normalized === "::1" || normalized.startsWith("127.");
+  const family = net.isIP(normalized);
+  if (family === 4) return normalized.split(".")[0] === "127";
+  if (family !== 6) return false;
+  const canonical = new URL("http://[" + normalized + "]/").hostname;
+  if (canonical === "[::1]") return true;
+  // IPv4-mapped IPv6 is canonicalized to two hexadecimal words by URL.
+  const mapped = /^\[::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})\]$/u.exec(canonical);
+  return mapped !== null && (Number.parseInt(mapped[1], 16) >>> 8) === 127;
 };
 const guard = (kind, host) => {
   const normalized = normalizeHost(host);

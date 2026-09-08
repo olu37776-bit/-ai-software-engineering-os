@@ -150,5 +150,7 @@ test(
     assert.equal(startup.processExited, true);
     assert.equal(startup.discoveryRemoved, true);
     assert.equal(startup.tokenRemoved, true);
+    // Preserve the exact qualified record in both the artifact and the public job log.
+    process.stdout.write(`${JSON.stringify(evidence)}\n`);
   },
 );
