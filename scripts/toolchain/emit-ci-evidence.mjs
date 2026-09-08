@@ -1,10 +1,20 @@
-import { reportAndExit, run, sha256Utf8LfFile } from "./lib.mjs";
+import assert from "node:assert/strict";
+import { readJson, reportAndExit, run, sha256Utf8LfFile } from "./lib.mjs";
+
+const commit = run("git", ["rev-parse", "HEAD"]);
+for (const name of ["TARGET_SHA", "PHASE1_SCOPE_HEAD", "POST_MERGE_QUALIFICATION_TARGET"]) {
+  if (process.env[name]) {
+    assert.equal(commit, process.env[name], `EVIDENCE_SUBJECT_MISMATCH:${name}`);
+  }
+}
+const toolchain = await readJson("toolchain/toolchain.json");
 
 reportAndExit({
   schemaVersion: "1.0.0",
   evidenceType: "CrossPlatformBuildEvidence",
   result: "PASS",
-  commit: process.env.GITHUB_SHA ?? run("git", ["rev-parse", "HEAD"]),
+  commit,
+  controllerCommit: process.env.GITHUB_SHA ?? null,
   environment: {
     os: process.platform,
     arch: process.arch,
@@ -15,5 +25,5 @@ reportAndExit({
     runnerImageVersion: process.env.ImageVersion ?? "local",
   },
   lockfileSha256: await sha256Utf8LfFile("pnpm-lock.yaml"),
-  authorityBuild: "pnpm exec tsc -b tsconfig.build.json --pretty false",
+  authorityBuild: toolchain.authority.buildCommand,
 });

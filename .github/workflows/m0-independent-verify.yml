@@ -22,11 +22,60 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  required-quality:
+    uses: ./.github/workflows/quality.yml
+    with:
+      target_sha: ${{ github.event_name == 'workflow_dispatch' && inputs.target_sha || github.event.pull_request.head.sha || github.sha }}
+
+  required-packaging:
+    runs-on: windows-2025
+    timeout-minutes: 30
+    env:
+      TARGET_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.target_sha || github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout exact packaging subject
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          fetch-depth: 0
+      - name: Install exact Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.19.0
+          check-latest: false
+      - name: Activate exact pnpm
+        run: |
+          corepack enable
+          corepack install --global pnpm@11.24.0
+      - name: Build and qualify immutable artifact
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run build
+          pnpm exec vitest run --config tests/qualification/packaging/vitest.config.mjs
+          node scripts/toolchain/qualify-required-packaging.mjs
+      - name: Preserve exact-subject packaging Evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: required-p1-v09-packaging-evidence
+          path: ${{ runner.temp }}/required-packaging/p1-v09-packaging.json
+          if-no-files-found: error
+          retention-days: 90
+
   verify:
-    if: "${{ github.event_name != 'push' || github.event.head_commit.message != 'chore: run M0 remediation build' }}"
+    if: always()
+    needs: [required-quality, required-packaging]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Require every qualification before accepting the subject
+        env:
+          QUALITY_RESULT: ${{ needs.required-quality.result }}
+          PACKAGING_RESULT: ${{ needs.required-packaging.result }}
+        run: |
+          test "$QUALITY_RESULT" = "success"
+          test "$PACKAGING_RESULT" = "success"
+
       - name: Clone immutable subject
         env:
           TARGET_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.target_sha || github.event.pull_request.head.sha || github.sha }}
