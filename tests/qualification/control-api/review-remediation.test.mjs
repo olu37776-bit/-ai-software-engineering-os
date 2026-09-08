@@ -1,8 +1,10 @@
 import { fork } from "node:child_process";
 import { once } from "node:events";
+import { promises as filesystem } from "node:fs";
 import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createServer, request } from "node:http";
 import { tmpdir } from "node:os";
+import { syncBuiltinESMExports } from "node:module";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 
@@ -14,6 +16,29 @@ import { authenticatedFetch, readBearer, withControlApi } from "./helpers.mjs";
 
 test("concurrent lock losers cannot remove a live owner's claim or metadata", async () => {
   const root = await mkdtemp(join(tmpdir(), "aseos-lock-race-"));
+  const ioFailures = [];
+  const originals = new Map();
+  for (const method of [
+    "mkdir",
+    "readdir",
+    "readFile",
+    "writeFile",
+    "open",
+    "stat",
+    "rename",
+    "rm",
+  ]) {
+    const original = filesystem[method];
+    originals.set(method, original);
+    filesystem[method] = (...args) =>
+      original(...args).catch((error) => {
+        if (String(args[0]).includes(root) && error.code !== "ENOENT") {
+          ioFailures.push({ method, code: error.code, message: error.message });
+        }
+        throw error;
+      });
+  }
+  syncBuiltinESMExports();
   try {
     for (let round = 0; round < 40; round += 1) {
       const settled = await Promise.allSettled(
@@ -23,7 +48,16 @@ test("concurrent lock losers cannot remove a live owner's claim or metadata", as
       );
       const winners = settled.filter((result) => result.status === "fulfilled");
       try {
-        expect(winners).toHaveLength(1);
+        expect(
+          winners,
+          JSON.stringify({
+            round,
+            failures: settled
+              .filter((result) => result.status === "rejected")
+              .map(({ reason }) => ({ code: reason.code, message: reason.message })),
+            ioFailures: ioFailures.slice(-32),
+          }),
+        ).toHaveLength(1);
         expect(settled.filter((result) => result.status === "rejected")).toHaveLength(15);
         expect(await readdir(`${controlPaths(root).lockFilePath}.claims`)).toHaveLength(1);
         await expect(acquireRuntimeLock(root, "late-contender")).rejects.toMatchObject({
@@ -35,6 +69,8 @@ test("concurrent lock losers cannot remove a live owner's claim or metadata", as
     }
     expect(await readdir(`${controlPaths(root).lockFilePath}.claims`)).toEqual([]);
   } finally {
+    for (const [method, original] of originals) filesystem[method] = original;
+    syncBuiltinESMExports();
     await rm(root, { recursive: true, force: true });
   }
 }, 60_000);

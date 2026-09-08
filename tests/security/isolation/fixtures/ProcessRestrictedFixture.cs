@@ -7,6 +7,14 @@ using System.Threading;
 
 internal static class ProcessRestrictedFixture
 {
+    private static void PublishMarker(string path, string content)
+    {
+        var temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        File.WriteAllText(temporary, content, new UTF8Encoding(false));
+        // A visible marker must already be complete and its writer handle closed.
+        File.Move(temporary, path);
+    }
+
     private static Process StartSelf(string arguments)
     {
         var start = new ProcessStartInfo
@@ -45,23 +53,24 @@ internal static class ProcessRestrictedFixture
                 }
                 if (File.Exists(grandchildPath))
                 {
-                    Console.WriteLine("GRANDCHILD=" + File.ReadAllText(grandchildPath));
+                    var grandchildId = File.ReadAllText(grandchildPath).Trim();
+                    Console.WriteLine("GRANDCHILD=" + grandchildId);
                     Console.Out.Flush();
                     if (args.Length > 1)
                     {
                         var marker = args[0] == "tree-root-host"
                             ? "{\"root\":" + Process.GetCurrentProcess().Id +
                               ",\"child\":" + child.Id + ",\"grandchild\":" +
-                              File.ReadAllText(grandchildPath).Trim() + "}"
+                              grandchildId + "}"
                             : "ready";
-                        File.WriteAllText(args[1], marker, Encoding.UTF8);
+                        PublishMarker(args[1], marker);
                     }
                 }
                 Thread.Sleep(Timeout.Infinite);
                 return 0;
             case "tree-child":
                 var grandchild = StartSelf("tree-grandchild");
-                File.WriteAllText(
+                PublishMarker(
                     Path.Combine(Environment.CurrentDirectory, "grandchild.pid"),
                     grandchild.Id.ToString()
                 );
