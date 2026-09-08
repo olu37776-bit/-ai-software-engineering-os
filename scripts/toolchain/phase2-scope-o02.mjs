@@ -22,12 +22,46 @@ import {
   P2_O02_SCOPE,
   P2_O02_EXECUTION,
   P2_O02_ADDITIVE_AUTHORITY,
+  P2_O02_GENERATED_TYPE_COMMITMENT,
   RESULT_SCHEMA_PATH,
   p2O02PathAllowed,
   validateP2O02Declarations,
   validateP2O02ContractDelta,
   validateP2O02RequiredScripts,
 } from "./phase2-scope-o02-policy.mjs";
+
+export async function verifyP2O02GeneratedTypeCommitment(root = repositoryRoot) {
+  async function checkedText(path, expectedHash) {
+    const contents = await readFile(resolve(root, path), "utf8");
+    const withoutCrLf = contents.replaceAll("\r\n", "");
+    if (withoutCrLf.includes("\r") || (contents.includes("\r\n") && withoutCrLf.includes("\n"))) {
+      throw new Error(`P2_O02_GENERATION_INVALID_LINE_ENDINGS: ${path}`);
+    }
+    if (lfHash(contents) !== expectedHash) {
+      throw new Error(`P2_O02_GENERATION_COMMITMENT_MISMATCH: ${path}`);
+    }
+    return contents;
+  }
+  let registry;
+  for (const [path, expectedHash] of Object.entries(P2_O02_GENERATED_TYPE_COMMITMENT)) {
+    const contents = await checkedText(path, expectedHash);
+    if (path === "packages/contracts/schema-registry.json") registry = JSON.parse(contents);
+  }
+  // loadTypeModel reads every registered schema, not just the newly activated one.
+  // The registry itself is pinned before trusting any of its paths or hashes.
+  for (const entry of registry.schemas) {
+    if (!isSafeRepositoryPath(entry.authorityPath))
+      throw new Error("P2_O02_UNSAFE_GENERATION_INPUT");
+    await checkedText(entry.authorityPath, entry.sha256);
+  }
+  return {
+    mode: "EXACT_QUALIFIED_INPUT_OUTPUT_COMMITMENT",
+    pinnedFiles: Object.keys(P2_O02_GENERATED_TYPE_COMMITMENT).length,
+    schemaFiles: registry.schemas.length,
+    outputHash: P2_O02_GENERATED_TYPE_COMMITMENT["packages/contracts/src/types.generated.ts"],
+    liveRegeneration: "REQUIRED_BY_UNCHANGED_QUALITY_CONTRACTS_GENERATE_TYPES_CHECK",
+  };
+}
 
 export async function verifyPhase2O02Scope({
   branch,
@@ -184,15 +218,7 @@ export async function verifyPhase2O02Scope({
   const oldPackage = JSON.parse(git("show", `${baseCommit}:package.json`));
   const newPackage = await json("package.json");
   validateP2O02RequiredScripts(oldPackage, newPackage);
-  const generation = spawnSync(
-    process.execPath,
-    ["scripts/contracts/generate-contract-types.mjs", "--check"],
-    { cwd: root, encoding: "utf8", shell: false },
-  );
-  requireCondition(
-    generation.status === 0,
-    `P2_O02_GENERATED_TYPES_MISMATCH: ${generation.stderr}`,
-  );
+  const generatedTypes = await verifyP2O02GeneratedTypeCommitment(root);
   return {
     schemaVersion: "1.0.0",
     check: PHASE2_CHECK,
@@ -211,6 +237,7 @@ export async function verifyPhase2O02Scope({
     authorityFilesVerified: lock.authorityFiles.length,
     additiveAuthority,
     validatedAuthorityHashes,
+    generatedTypes,
     changedPaths,
     violations: [],
     phase2Complete: false,

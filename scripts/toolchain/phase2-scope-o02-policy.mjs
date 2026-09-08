@@ -14,6 +14,22 @@ export const RESULT_SCHEMA_ID = "urn:aseos:schema:result-journal-append-batch:1.
 export const RESULT_SCHEMA_PATH =
   "packages/contracts/schemas/persistence/result-journal-append-batch.schema.json";
 export const RESULT_CONTRACT_ID = "aseos.persistence.result-journal-append-batch";
+// Fixed O02 generation commitment, not values supplied by an execution report.
+// Real byte-for-byte regeneration remains mandatory in the unchanged quality chain.
+export const P2_O02_GENERATED_TYPE_COMMITMENT = {
+  "package.json": "490146fa1b13cd6aa7a3bf0ab341433dc8333a54eff1c4eb66680bd14c1a28fd",
+  "pnpm-lock.yaml": "8d59b2af237d30daf8f2c295efc4e1ad6e54c3191720a13262c9e6d265dec7c3",
+  "packages/contracts/schema-registry.json":
+    "bb6069c08d01daab61be362b03843b6cee5273fb296524922de4e7396cc02de3",
+  "packages/contracts/type-bindings.json":
+    "ce52b341e8d5f00d78f2248b8ff0ce2cd85f9c6be7f235c3c26e22ff9aad67bc",
+  "scripts/contracts/type-model.mjs":
+    "a4c46be864683ddacbee054af7253ac25fa8031a1111f8c1dc418416940e621c",
+  "scripts/contracts/generate-contract-types.mjs":
+    "0edf110259b53c63472bd67bf81066b155d00a5e7a849f0102c7485df3bdafee",
+  "packages/contracts/src/types.generated.ts":
+    "775bc5d44009716587803a46e78fa3b910a30acb17ce970468f1ed0c2e6d4b9d",
+};
 export const RESULT_EXAMPLES = [
   "packages/contracts/examples/persistence/valid/result-journal-append-batch.json",
   "packages/contracts/examples/persistence/valid/result-journal-scheduled-batch.json",

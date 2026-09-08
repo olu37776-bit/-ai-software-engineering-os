@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O02",
+  "evidenceType": "IndependentScopeDependencyRemediation",
+  "affectedPullRequest": 103,
+  "failedJobId": 102210947703,
+  "rootCause": "The dependency-free independent verifier called the normal generation CLI, whose type-model imports Prettier; the clean checkout has no node_modules and raised ERR_MODULE_NOT_FOUND.",
+  "remediation": "Independent O02 scope checks a non-parameterized exact LF-byte commitment to the qualified generator/type-model, package and lockfile, registry and bindings, all 53 registry schema files, and the generated TypeScript output. Any input or output mutation fails closed. No workflow or dependency installation changes.",
+  "liveRegenerationPreserved": "The unchanged required quality chain still runs contracts:generate-types and the real Prettier-backed byte-for-byte generation check. A regression also regenerates the real output and compares it with the fixed commitment.",
+  "qualification": "tests/qualification/toolchain/phase2-o02-dependency-free-scope.test.mjs covers no-dependency scope/M0, unchanged checkout, forged report, all input/output mutation classes and line-ending rules.",
+  "claimBoundary": "This fixes an independent-verifier dependency error; it does not claim new runtime behavior or completed remote qualification."
+}
