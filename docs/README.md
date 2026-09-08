@@ -126,9 +126,3 @@ Architecture Decision
 ## M0 remediation
 
 - [Phase 0 Schema / Phase 1 Governance Remediation Review](reviews/phase-0-schema-phase1-governance-review.md)
-
-## 独立 Coverage Loop 设计支线
-
-- [Coverage Loop 文档入口](engineering/coverage-loop/README.md)：针对本地 Java/Maven 测试资产建设，包含受限 Agent 指导、确定性循环、环境/度量契约和分阶段验收。
-
-该支线当前为 `DRAFT / DOCUMENTATION_ONLY`，不修改主框架 Phase 1 状态，不注册生产 Workflow/Node，不表示本地 Coverage Runner 已实施或云端流水线已验证。
