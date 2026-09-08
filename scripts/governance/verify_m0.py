@@ -689,7 +689,7 @@ def make_incomplete_receipt() -> dict[str, Any]:
         "independentVerificationRef": None,
     }
 
-def verify_receipt_guards(documents: dict[pathlib.Path, Any], registry: Registry) -> dict[str, int]:
+def verify_receipt_guards(documents: dict[pathlib.Path, Any], registry: Registry) -> dict[str, Any]:
     receipt_schema_path = ROOT / "operations/phase-1/receipt.schema.json"
     independent_schema_path = ROOT / "operations/phase-1/independent-verification-receipt.schema.json"
     Draft202012Validator.check_schema(documents[receipt_schema_path])
@@ -708,7 +708,74 @@ def verify_receipt_guards(documents: dict[pathlib.Path, Any], registry: Registry
         raise AssertionError("Independent verification role is not fixed")
     if documents[independent_schema_path]["properties"]["remediationPerformed"].get("const") is not False:
         raise AssertionError("Independent verifier is permitted to remediate")
-    return {"negativeErrors": len(errors), "schemas": 2}
+    receipt_path = ROOT / "operations/phase-1/implementation-receipt.json"
+    independent_id = documents[independent_schema_path]["$id"]
+    independent_receipts = {
+        path: value for path, value in documents.items()
+        if isinstance(value, dict) and value.get("$schema") == independent_id
+    }
+    if not receipt_path.exists():
+        if independent_receipts:
+            raise AssertionError("Independent receipt exists without implementation receipt")
+        return {"negativeErrors": len(errors), "schemas": 2, "implementationReceipt": "NOT_YET_CREATED"}
+
+    def require_valid(path: pathlib.Path, schema: dict[str, Any]) -> dict[str, Any]:
+        value = load_json(path)
+        instance_errors = validate_instance(schema, value, registry)
+        if instance_errors:
+            raise AssertionError(f"Invalid actual receipt {path.relative_to(ROOT)}: " + "; ".join(
+                f"{pointer(error.absolute_path)} {error.message}" for error in instance_errors
+            ))
+        return value
+
+    def require_local_reference(reference: str) -> pathlib.Path:
+        path = (ROOT / reference).resolve()
+        if not path.is_relative_to(ROOT.resolve()) or not path.is_file():
+            raise AssertionError(f"Receipt reference is missing or outside repository: {reference}")
+        return path
+
+    receipt = require_valid(receipt_path, documents[receipt_schema_path])
+    implementation = receipt["implementationCommit"]
+    run_git("cat-file", "-e", f"{implementation}^{{commit}}")
+    run_git("merge-base", "--is-ancestor", receipt["baselineCommit"], implementation)
+    run_git("merge-base", "--is-ancestor", implementation, "HEAD")
+    for field, relative_path in (
+        ("authorityLockHash", "operations/phase-1/authority-lock.json"),
+        ("planHash", "operations/phase-1/verification-plan.json"),
+    ):
+        contents = subprocess.check_output(["git", "show", f"{implementation}:{relative_path}"], cwd=ROOT)
+        expected = sha256(contents.decode("utf-8").replace("\r\n", "\n").encode("utf-8"))
+        actual = receipt[field] if field == "authorityLockHash" else receipt["verification"][field]
+        if actual != expected:
+            raise AssertionError(f"Actual receipt {field} does not bind its implementation commit")
+        if field == "planHash" and receipt["verification"]["planId"] != json.loads(contents)["planId"]:
+            raise AssertionError("Actual receipt verification plan ID mismatch")
+    for node in walk_dicts(receipt):
+        for reference in node.get("evidenceRefs", []):
+            if not reference.startswith("https://"):
+                require_local_reference(reference)
+    linked = receipt.get("independentVerificationRef")
+    if linked:
+        path = require_local_reference(linked)
+        independent_receipts[path] = load_json(path)
+    independent_gate_passes = 0
+    for path in independent_receipts:
+        independent = require_valid(path, documents[independent_schema_path])
+        if independent["implementationCommit"] != implementation:
+            raise AssertionError("Independent receipt implementation commit mismatch")
+        if independent["implementationReceiptHash"] != authority_text_sha256(receipt_path):
+            raise AssertionError("Independent receipt implementation receipt hash mismatch")
+        if independent["verifiedBy"]["actorId"] == receipt["declaredBy"]["actorId"]:
+            raise AssertionError("Implementation actor cannot independently verify its own receipt")
+        if independent["gateDecision"] == "PASS":
+            independent_gate_passes += 1
+    gate_pass_claimed = any(
+        execution["stepId"] == "P1-V10-INTEGRATED-GATE" and execution["result"] == "PASS"
+        for execution in receipt["verification"]["executions"]
+    )
+    if gate_pass_claimed and independent_gate_passes == 0:
+        raise AssertionError("P1-V10 PASS requires a matching independent PASS receipt")
+    return {"negativeErrors": len(errors), "schemas": 2, "implementationReceipt": "VALID", "independentReceipts": len(independent_receipts)}
 
 def verify_accepted_adrs(lock: dict[str, Any]) -> int:
     adr_entries = [

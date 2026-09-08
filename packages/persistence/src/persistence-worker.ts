@@ -1130,11 +1130,20 @@ try {
       { databasePath, quarantineMarkerPath, recoveryRequired: true },
     );
   }
-  if (databaseExisted && (await stat(databasePath)).size === 0) {
-    throw new InternalPersistenceError(
-      "PERSISTENCE_CORRUPTION",
-      "Existing authority database is empty and requires explicit recovery",
-    );
+  if (databaseExisted) {
+    const metadata = await stat(databasePath);
+    if (!metadata.isFile()) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_STORAGE_FAILURE",
+        "Authority database path must be a regular file",
+      );
+    }
+    if (metadata.size === 0) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_CORRUPTION",
+        "Existing authority database is empty and requires explicit recovery",
+      );
+    }
   }
   await initialize();
   port.postMessage({ kind: "ready", ok: true });
