@@ -1,43 +1,41 @@
 # LF-C1：独立纯核心建设开工包
 
 状态：`DRAFT / ENTRY_NOT_RELEASED`  
-日期：2026-09-08  
-观察main：`3c387f5f196ddfae8e8989710d5a55f9def472a7`  
+更新：2026-09-08  
+最新核对主线：`5577c2e8a9ef090b87924edddf6114dd75eb28a5`  
 [CURRENT](learning-feedback-branch-plan.md) · [Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) · [并行协议](../architecture/learning-feedback/parallel-development-protocol.md) · [Gate #85](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85)
 
-> 这是可以交给独立reviewer及主线集成owner裁决的开工包，不是已生效operation/WRITE_SCOPE。当前仍不创建代码。用户要求继续准备到可开工，不等于作者可以代替独立Gate批准自己。
+> 本包已给出第一任务的具体边界和验收，仍待独立review和合法scope。Markdown清单、用户希望推进、作者自检都不替代当前机器Authority。未创建任何下列源码/Schema文件。
 
-## 1. 第一包只交付什么
+## 1. 第一包
 
-LF-C1只交付两个纯用例：可信输入的Feedback投影、原纠偏义务的关闭条件评价；包含必要Contract、生成类型、确定性key及正反例。它们通过 `@aseos/learning` public entry 提供，不做文件/网络/数据库/Context/Agent调用，不接入Runtime启动。
+只做两个纯用例：Feedback投影、原纠偏义务的关闭条件评价；含必要Schema/生成类型、key/显式指纹比较、conformance/property/replay。唯一public entry为 `@aseos/learning`，只依赖public contracts。
 
-不包含：Repository、global service locator、cache、生产Facts Adapter、Context delivery、Router、NodeExecutionRecord assembler、LearningCase、因果实验、Proposal、学习效果或dogfooding。不要照搬旧本地F1–F4，只实现此包。
+不做数据库/网络/文件/Context/Agent调用，不接Runtime startup，不建Repository/cache/global，亦不做生产Facts Adapter、Router、NER assembler、LearningCase、Proposal或dogfooding。外层测试使用现有ContractRegistry验证边界；纯函数不调用文件型registry loader。
 
-## 2. 门禁与实际依赖
+## 2. E0–E4门禁
 
-| Gate | 开工需要什么 | 当前观察 |
+| Gate | 放行证据 | 当前 |
 | --- | --- | --- |
-| E0 文档/语义 | PR #84最终HEAD独立review，D01–D05被批准 | PENDING_INDEPENDENT_REVIEW |
-| E1 合法scope | 主线接受提前纯核心边界；有效LF-C1 operation/authority/write-scope及scope checker | BLOCKED_BY_AUTHORITY；现行P1禁止learning且resolver只识别P1-Oxx |
-| E2 公共基础 | 所依赖Contracts、generated类型、日期、hash和实际门禁已修复并证明 | WAITING_DEPENDENCY_EVIDENCE；#82 R01/R02/R06/R08/R09/R10/R16 |
-| E3 共享集成 | 明确单写者、文件集合、集成形式/窗口与最新main | PENDING_MAINLINE_AGREEMENT |
-| E4 exact subject | 上述批准落在可用protected-main baseline；工具链、public entry及Schema重新绑定 | ENTRY时重新计算，不绑定永久旧HEAD |
+| E0 | PR84最终HEAD独立Contract/owner/语义review | PENDING |
+| E1 | 正式LF-C1 operation、authority、精确WRITE_SCOPE及实际scope checker | BLOCKED_BY_AUTHORITY；现行P1仍禁止learning |
+| E2 | 直接依赖修复及独立/合并证据 | #82相关finding未确认关闭 |
+| E3 | 共享文件单写者、集成形式/窗口、最新base | PENDING_MAINLINE_AGREEMENT |
+| E4 | 真实开工protected-main SHA/tree、toolchain/Schema/public hashes | ENTRY时重绑定 |
 
-E2的最小关联：R06影响input hash/idempotency；R09影响类型与Schema一致性；R10影响时间边界；R08影响依赖隔离；R01/R02/R16影响能否相信scope/验证/回执的subject。不能在LF里复制validator或修改Gate绕开这些finding。正式批准的等价依赖处置必须提供实际证据且不降低门禁，不能只写“与我无关”。
+直接依赖：R06 canonical JSON影响hash；R09生成类型；R10日期；R08架构隔离；R01/R02/R16影响真实Gate/回执/subject。不在LF里写替代serializer/validator或降低门禁绕过。需要替代处置时由正式owner基于证据批准，不能只口头称无关。
 
-纯C1不要求所有Kernel/Context/Verification/Policy/Persistence能力完成。主线R03/R04/R05/R07/R11–R15/WR01在实际I/E阶段依赖时分别检查；P1整体完成不自动等于C1获授权，反之也不应把无关功能当作C1前置。正式实现时以最新依赖分析更新，不把此快照当永久阻塞清单。
+C1不使用完整Kernel/Context/Verification/Persistence生产能力，不一概等待所有未来功能或主线全部finding；I/E阶段才检查其实际依赖。#83合并只发布问题与计划，不表示E2通过。
 
-## 3. 授权路径
+## 3. 合法授权与集成
 
-当前只提出LF-C1工作包，不伪造 `P1-O02` implementation，也不解除 `packages/learning/**` 全局禁止。
+不将LF-C1伪装P1-O02，不修改resolver regex偷偷支持LF，不删除packages/learning全局禁令。由主线治理owner正式选择合法parallel/phase operation或提前建设amendment；如需上位计划/ADR变更，按原流程独立批准。
 
-主线治理owner需选择并正式批准：在合适的Phase/parallel operation治理中增加LF-C1及其最小scope，或在现有完整治理过程下做受控提前建设amendment。若无法在不降低Phase 1不变量的前提下授权，等待相应阶段入口；继续保留准备材料，不自行改resolver regex或required check。
+未来机器operation目录候选 `operations/learning-feedback/core-1/` 需连同validator/登记获准，不是放一个operation.json就拥有授权。准确execution/evidence路径由E1冻结，批准前保持NOT_RELEASED。
 
-未来建议operation资产目录为 `operations/learning-feedback/core-1/`，必须与相应validator/schema/登记机制一并获准后使用。不能仅创建operation.json便声称已有机器门禁。入口Gate需记录最终精确路径集合和authority hashes，不由执行提示词临时扩权。
+共享Schema/生成物/workspace/build/test/架构由一个集成人在同一完整subject完成，与真实consumer一起发布；或消费已经获准且完整的主线接线。E3选定一种，不先创建空包。C1不改platform/Runtime/Policy/Persistence实现。
 
-## 4. 代码文件清单提案
-
-下列是第一包待授权的完整生产/测试落点，均尚未创建。每条允许追加细节必须先修订scope，不能将清单视为整个packages写授权。
+## 4. 精确源码和测试清单提案
 
 ```text
 packages/learning/package.json
@@ -51,13 +49,14 @@ packages/learning/test/project-feedback.test.mjs
 packages/learning/test/evaluate-feedback-resolution.test.mjs
 packages/learning/test/feedback-replay.test.mjs
 packages/learning/test/feedback-input-validation.test.mjs
+packages/learning/test/feedback-idempotency.test.mjs
 tests/contract/learning-feedback/feedback-conformance.test.mjs
 tests/architecture/learning-feedback-boundaries.test.mjs
 ```
 
-业务类型由唯一Schema生成并从 `@aseos/contracts` 导入，不再手写一份持久化 DTO。C1不创建ports空接口或platform/persistence/adapter代码；没有真实I/O用例就不为形式建立Repository。
+生成的public/persisted类型从contracts导入，不手写平行DTO。compareFeedbackFingerprint与deriveFeedbackKey共用key模块，不新增存储；测试覆盖显式priorFingerprint。暂不创建没有真实用例的ports空接口。
 
-### 共享Contract精确增量提案
+### 共享Contract与真实实例
 
 ```text
 packages/contracts/schemas/learning/execution-feedback.schema.json
@@ -67,6 +66,18 @@ packages/contracts/schemas/learning/feedback-projection-result.schema.json
 packages/contracts/schemas/learning/feedback-resolution-input.schema.json
 packages/contracts/schemas/learning/feedback-resolution-result.schema.json
 packages/contracts/examples/learning/example-suite.json
+packages/contracts/examples/learning/execution-feedback.valid.json
+packages/contracts/examples/learning/execution-feedback.invalid.json
+packages/contracts/examples/learning/feedback-resolution.valid.json
+packages/contracts/examples/learning/feedback-resolution.invalid.json
+packages/contracts/examples/learning/feedback-projection-input.valid.json
+packages/contracts/examples/learning/feedback-projection-input.invalid.json
+packages/contracts/examples/learning/feedback-projection-result.valid.json
+packages/contracts/examples/learning/feedback-projection-result.invalid.json
+packages/contracts/examples/learning/feedback-resolution-input.valid.json
+packages/contracts/examples/learning/feedback-resolution-input.invalid.json
+packages/contracts/examples/learning/feedback-resolution-result.valid.json
+packages/contracts/examples/learning/feedback-resolution-result.invalid.json
 packages/contracts/README.md
 packages/contracts/planned-contracts.json
 packages/contracts/schema-inventory.json
@@ -75,9 +86,11 @@ packages/contracts/type-bindings.json
 packages/contracts/src/types.generated.ts
 ```
 
-前六项的公共边界由Contract提案定义；example-suite包含当前机制支持的valid/invalid/boundary案例。六份Schema立即有C1 consumer和tests，不激活Phase 7其他计划Contract。registry/hash/generated文件只由现有工具生成，不能手改生成结果让测试通过。
+现有example-suite.schema要求caseId/schemaId/instancePath/expected，INVALID还需expectedError(keyword/instancePath)。suite索引以上真实文件，不能把JSON实例嵌在未支持的字段或引用未授权路径。每个Schema至少valid/invalid各一份，边界/性质输入可在测试中构造。全部Schema立即有真实C1 consumer，不激活其余Phase7对象。
 
-### 共享构建/架构精确增量提案
+registry/hash/类型按现有工具产出，不能改生成结果规避失败。若现行generator不能表达必要条件，由主线修复/正式设计处理，不在LF新建generator。
+
+### 共享构建/架构
 
 ```text
 package.json
@@ -88,53 +101,51 @@ vitest.config.mjs
 tests/architecture/architecture-policy.json
 ```
 
-仅为真实新package注册依赖/reference/test discovery及允许边。基线architecture policy目前没有learning；需要批准新增 `@aseos/learning -> @aseos/contracts`，根测试入口按实际需要登记。C1不加platform -> learning，因为本轮不接Runtime。不扩大其他package权限。若main已提供动态discovery使某文件不需修改，则实际scope可缩小并记录；不能额外增加脚本/workflow而不先授权。
+仅新增真实package的依赖/reference/test discovery，新增learning->contracts和必要root测试边；不加platform->learning。主线新discovery已覆盖的文件可从实际scope缩减，不额外增加workflow或通用脚本。新增包测试必须进入正常root入口，不只手工调用。
 
-### 文档与记录
+### 同步文档与证据
 
-本包实施时同步更新分支CURRENT、Contract提案的批准/实际映射部分与本开工计划状态，新增 `docs/implementation/learning-feedback/lf-c1-implementation.md`。独立报告固定 `docs/reviews/learning-feedback/lf-c1-independent-verification.md`。机器execution/evidence路径须在E1正式批准，不用本Markdown代替。
+实现时更新本包状态、分支CURRENT、Contract实际映射；实施报告 `docs/implementation/learning-feedback/lf-c1-implementation.md`，独立报告 `docs/reviews/learning-feedback/lf-c1-independent-verification.md`。机器记录由E1先冻结。实现与普通文档同步一次完成，独立报告不冒充作者自检。
 
-## 5. 实施顺序
+## 5. 实施步骤
 
-1. 确认E0–E4全部有证据，读取最新main和独立gate；建立唯一短分支/工作树。
-2. 由已指定单写者在获准范围落实Schema/生成类型/构建接线，与真实consumer同一完整subject发布；避免半成品被当完成。
-3. 从契约案例实现两个纯用例与key推导，边界校验直接使用public contracts入口。
-4. 运行局部、Contract、property/replay、架构、根build/quality，并提交implementation evidence和文档更新。
-5. 冻结immutable HEAD交独立verifier。出现finding后另一次受控修复生成新HEAD重验，不在验证pass内补代码。
+1. E0–E4实际放行后，固定最新main与scope，建立唯一工作树/短分支。
+2. 单写者落实Schema/真实实例/生成物/构建接线，与consumer原子发布。
+3. 实现纯用例和key/指纹比较；遵守Contract§7的来源hash字段、元数据排除和集合/序列区分。
+4. 跑局部、正常root build/test/Contract/架构与适用quality，记录命令、subject、环境与限制。
+5. 冻结HEAD给独立verifier；发现缺陷后新修复轮，不同一验证pass改代码。
 
-开发过程中source修改和普通文档同步是同一任务；不为更新状态另拆角色。共享文件的作者只有一个，不由两个Agent各自覆盖registry/lock。
+## 6. VerificationPlan
 
-## 6. VerificationPlan（组件级，不是生产E2E）
+| ID | 行为与明确预期 |
+| --- | --- |
+| C1-V01 | 六Schema、十二实例、suite实际路径可解析；生成类型保留条件与未知版本拒绝 |
+| C1-V02 | 七Gate outcome完整，approval/terminal/risk acceptance/unknown不降级 |
+| C1-V03 | criterion/Evidence缺失、冲突、错subject -> gap/typed拒绝，无rootCause推测 |
+| C1-V04 | 全部满足/部分明确不满足/均不满足 -> 三种正确disposition |
+| C1-V05 | 必要条件UNKNOWN、缺依赖、非法输入 -> 不伪装EVALUATED |
+| C1-V06 | 错run/attempt/criterion版本，无合法消费关系 -> 不关闭 |
+| C1-V07 | 风险接受、Claim fixed、过期或反证 -> 不冒充MET |
+| C1-V08 | 完整固定输入/context重放稳定；仅换分配ID/time不改变来源语义key/hash |
+| C1-V09 | 显式prior同key同hash -> REUSE_EXISTING；同key异hash -> CONFLICT；未提供 -> 候选，不虚称存储查重 |
+| C1-V10 | 集合顺序、重复ref、sourceBoundary/版本变化按Contract处理；有序输入不乱sort |
+| C1-V11 | 核心不读时钟/UUID/global/I/O，不改输入；边界validator来自contracts而非复制 |
+| C1-V12 | 干净root构建/测试包含新包；真实import负例拒绝reverse/deep import/cycle |
+| C1-V13 | 修复后contracts的非JSON/稀疏数组、非法日期、条件类型负例仍被拒绝 |
+| C1-V14 | 实际回执/subject/scope校验，非法claim和旧SHA不通过 |
 
-| ID | 必须验证的行为 | 明确预期 |
-| --- | --- | --- |
-| C1-V01 | 六个Schema的valid/invalid/boundary和生成类型 | 格式/条件均一致；错误版本/引用结构拒绝 |
-| C1-V02 | 七Gate outcome逐项映射 | REWORK有依据才投影；INCONCLUSIVE/approval/terminal/risk acceptance不误处理 |
-| C1-V03 | criterion/Evidence缺失、冲突或错subject | gap或typed rejection；不推测RootCause |
-| C1-V04 | 原关闭义务全满足/部分明确不满足/全部不满足 | RESOLVED / PARTIALLY_RESOLVED / UNRESOLVED分别正确 |
-| C1-V05 | 必要条件UNKNOWN、缺依赖、非法输入 | INCONCLUSIVE/BLOCKED/ERROR；不伪造EVALUATED |
-| C1-V06 | 错run/attempt/criterion version、无合法consumption证明 | 不能关闭；没有模糊字符串匹配 |
-| C1-V07 | PASS_WITH_RISK_ACCEPTANCE、Claim fixed、过期证据/反证 | 风险接受/声明不冒充MET；反证不能被忽略 |
-| C1-V08 | 相同固定输入/时间/ID/evaluator重放 | 字节级语义输出和key稳定 |
-| C1-V09 | 相同语义key不同inputHash | 返回冲突，不覆盖；不宣称数据库并发幂等已验证 |
-| C1-V10 | 改变输入顺序、重复ref、额外Evidence、版本差异 | 按Contract的集合/序列规则确定处理；不任意sort有序输入 |
-| C1-V11 | 数据纯度、无隐式时间/随机/global/I/O、输入不变 | Pure API不读环境、cache、file/db/network，也不修改输入 |
-| C1-V12 | public entry/build/DAG/negative import | 干净构建真实包含新包；禁止reverse/deep import/cycle |
-| C1-V13 | 修复后contracts负例回归 | sparse/non-JSON输入、错误日期、类型条件不能绕过canonical validator |
-| C1-V14 | 回执与SHA/WRITE_SCOPE | 非法claim、缺必需证据、旧subject不得放行 |
+显式priorFingerprint比较不证明来源真实、事务或数据库唯一性；这些必须由I1并发/重启测试完成。schema-conformant输入标记CONFORMANCE_FIXTURE，不宣称由生产Node/CCP/Verification生成。假context、手工global/cache不能算I/E生产证明。
 
-测试允许合成schema-conformant输入，但必须标记来源CONFORMANCE_FIXTURE；不能声称这些输入由生产Node/CCP/Verification自动生成。后续I1/I2再独立证明bootstrap/query/消费真实性。
+通用命令在entry时核对；当前已有入口：`pnpm install --frozen-lockfile`、`pnpm run verify:versions`、`pnpm run contracts:generate-types`、`pnpm run build`、`pnpm run test`、`pnpm run contracts:qualify`、`pnpm run architecture:qualify`、`pnpm run quality`。LF scope命令须E1真正支持后使用，不传未知operation制造PASS。所需Windows/独立检查按实际risk/authority，不靠Linux skip替代。
 
-命令使用entry时仓库实际脚本。基线中可确认的通用入口为 `pnpm install --frozen-lockfile`、`pnpm run verify:versions`、`pnpm run contracts:generate-types`、`pnpm run build`、`pnpm run test`、`pnpm run contracts:qualify`、`pnpm run architecture:qualify`、`pnpm run quality`。scope命令须由E1真正支持LF-C1后使用，不能现在传一个未知operation伪造PASS。新包测试入口必须在root test真实discovery中覆盖，而不是只手工运行。
+## 7. 完成和停止
 
-## 7. 完成与声明
+实现者最多IMPLEMENTED_PENDING_INDEPENDENT_VERIFICATION。独立通过可记 LF-C1/CORE_CONFORMANCE VERIFIED @ exact SHA；生产Feedback V1仍NOT_READY。I1/I2/E1另验真实query/持久化/Context使用/完整workflow，不自动启动。
 
-实现者最多 `IMPLEMENTED_PENDING_INDEPENDENT_VERIFICATION`。独立验证通过可声明 `LF-C1 / CORE_CONFORMANCE = VERIFIED @ exact SHA`；Feedback V1仍未生产集成，不可标为VERIFIED。
+未授权写入、shared竞写、相关依赖失效、Contract歧义或必须绕过正式路径才过测时停止，保存diff，不revert别人变更。回滚用受控PR，已被其他consumer使用的公共Schema不能无迁移删除。
 
-生产Adapter、已提交facts、实际Context使用、数据库唯一约束/恢复、public CLI/API完整闭环分别属于I1/I2/E1。C1退出后先看对应provider gate是否满足，不自动开始全套Runtime集成。
+## 8. 独立文档review完成要求
 
-## 8. 回滚与停止
+只读审查最终PR #84 SHA，覆盖D01–D05、真实例子路径、纯函数hash/幂等、七outcome、owner/scope边界及主线并行影响。须给出subject、覆盖范围、finding证据和明确结论；仅eyes/thumbs-up、无高危自动摘要、签名verified或CI绿不能关闭E0。
 
-源码修复阶段仅修改获准文件；越界、related upstream失效、shared-file竞写、Contract歧义时停止保存diff，不自行revert他人修改。回滚通过受控PR撤回该package/Schema消费者整套变更；若公共Schema已被其他任务消费，不得无迁移删除。
-
-当前尚未创建代码，撤回本提案不会改运行时。**当前下一动作是完成#85门禁，不是让执行Agent直接照清单开工。**
+Review不能批准尚不存在的E1 scope或关闭#82 finding。E0通过后仍按#85核对其余条件；未满足不写“可以开工”。若自动review通道不可用，保留PENDING并使用同一固定subject交给独立执行环境，不再重新起草整套设计。

@@ -2,97 +2,88 @@
 
 状态：`DRAFT — coordination proposal, not a scope override`  
 日期：2026-09-08  
-主线观察SHA：`3c387f5f196ddfae8e8989710d5a55f9def472a7`  
-[分支入口](../../roadmap/learning-feedback-branch-plan.md) · [Contract提案](contract-and-seam-proposal.md) · [C1开工计划](../../roadmap/learning-feedback-core-entry-plan.md)
+本轮主线：`5577c2e8a9ef090b87924edddf6114dd75eb28a5`  
+[CURRENT](../../roadmap/learning-feedback-branch-plan.md) · [Contract](contract-and-seam-proposal.md) · [开工包](../../roadmap/learning-feedback-core-entry-plan.md)
 
-## 1. 当前协调对象
+## 1. 并行任务与当前同步
 
-主线跟踪 [#82](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/82)，review/plan PR为 [#83](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/83)，观察head为 `27e8d92012f88b30fa20b3febec7b3b5098a6289`。Learning文档为 #81 / PR #84；核心开工门禁为 #85。
+主线 #82 负责 R01–R16/WR01 与 P1-O09/V10；其审查/计划 PR #83 已合并为上述main。这里只确认文档/计划进入main，没有确认其修复已完成。LF文档为 #81 / PR #84，代码entry为 #85。以GitHub每次实时读取为准，CURRENT记录最新观察，不把活动PR当作已合并实现。
 
-PR #83中的review已报告R01–R16/WR01；本分支将其作为已发布审查输入，不将未合并PR内容当作main已实施。主线继续自己的修复，本分支不关闭其finding、不代替其独立验证。没有观察到新main commit不等于主线停止工作。
+本轮对比 #83 六文件与 LF 八文档，交集为空。可将 main 作为第二父合入LF分支：以 main tree 为底仅叠加已授权LF文档，保护main字节，保留LF旧HEAD，不force-push。同步结果需远端diff复核，不因tree拼接成功便声明check通过。
 
-## 2. 四种独立性
+## 2. 独立性
 
-- 任务独立：短生命周期分支/工作树、单个明确operation、不同产物与回执。
-- 代码独立：C1仅contracts -> learning，不依赖Runtime/Context/Persistence实现；不拆新服务。
-- 状态独立：纯核心conformance、运行集成、Feedback V1、Learning readiness分别记录。
-- 裁决独立：实现者同步文档但最多IMPLEMENTED；独立reviewer对exact subject裁决，不边审边修。
+任务/工作树独立，代码package与纯核心独立，组件/集成/生产readiness独立，实施与独立裁决分离。不是另建Runtime、工具链、lockfile、事实库或Policy权威。
 
-独立不意味着永远不合并主线、复制公共类型、单独lockfile/工具链或自行制定新的Gate。严禁把另开分支当作避开WRITE_SCOPE的方法。
+C1只依赖public contracts，不依赖platform/context/persistence具体实现。主线未来通过其公开边界装配LF；C1尚不登记platform->learning，也不批量创建空Repository/Adapter。
 
-## 3. 文件所有权与并发写入
+## 3. 单写者与共享范围
 
-| 区域 | 当前写入原则 |
+| 区域 | 原则 |
 | --- | --- |
-| `docs/architecture/learning-feedback/`、LF专属roadmap/reviews | 本分支在#81授权范围内维护；历史review不改写 |
-| 主线 `docs/roadmap/progress-status.md`、Phase 1 review/operations | #82主线owner写；LF只读并链接 |
-| `packages/learning/**` | 开工Gate通过后才由LF-C1实现者写；当前不存在/禁止写 |
-| `packages/contracts` Schema/inventory/registry/type-bindings/generated | 共享区；由批准的Contract集成operation单写者处理 |
-| package.json、workspace、lock、tsconfig、test discovery、architecture-policy | 共享集成区；串行窗口和独立scope，不准双方同时整文件覆盖 |
-| policy/persistence/platform/Runtime/CCP/worker | 对应主线owner；LF-C1不写 |
-| .github/workflows、scope verifier、accepted ADR | 治理/主线owner；不能为LF任务方便而修改 |
+| LF专属架构/roadmap/reviews | #81范围内LF写；不改写历史review |
+| progress-status、Phase1 review/operations | #82主线owner写，LF只读/链接 |
+| packages/learning | #85实际放行后LF-C1写，当前不写 |
+| contracts Schema/inventory/registry/generated | 指定Contract集成operation单写者 |
+| workspace/lock/build/test/architecture-policy | 串行集成窗口与精确scope，禁止两方覆盖整个文件 |
+| policy/persistence/platform/Runtime/CCP/worker | 对应主线owner，LF-C1不写 |
+| workflow/scope verifier/accepted ADR | 治理owner，不为LF方便改门禁 |
 
-只读共享不需要排他锁。写共享文件前在Gate/PR记录 exact base、操作者/任务、文件集合及未合并PR检查；没有明确承接就不写。此协议不假称GitHub已提供自动锁。发生竞写，暂停受影响任务，保存diff，不自行revert他人变更。
+共享只读不要求锁。共享写入前必须在Gate/PR记录task、操作者、exact base、文件集合和活动PR核对；没有承接不写。此文不声称GitHub已经提供自动文件锁。竞写时暂停受影响操作，保存diff，不自行revert他人改动。
 
-## 4. 操作启动协议
+## 4. 启动与subject绑定
 
-每轮从GitHub读取main、目标branch HEAD、相关PR/Issue、当前authority及独立证据。记录：repository、mainSHA/tree、taskHead、operation/scope、watchlist的blob/schema hashes、工具链/lock身份、已知upstream findings、dirty worktree基线。
+每轮读取main、task HEAD、相关PR/Issue、authority、独立Evidence。记录repository、mainSHA/tree、taskHead、operation/scope、watchlist blob/schema hashes、toolchain/lock、未关闭依赖finding和dirty worktree基线。
 
-从唯一受保护main（或Gate明确授权的docs/集成前置已合并基线）建立工作树；不要把正在开发的主线工作树共享给另一个Agent。分支名在正式operation中唯一绑定，禁止复用旧失败generation作新事实。
+代码任务从Gate指定的protected-main建立单独工作树，不与其他Agent共享可写工作树。分支名按正式operation唯一绑定，不复用旧失败generation伪装新证据。
 
-写入后核对新增/修改/删除/未跟踪文件相对起始baseline的集合，而不是把用户已有dirty files算成执行者新越界。未被Git跟踪的本地文档也要核对hash；不得通过ignore隐藏改动。
+完成时核对相对起始基线的新增/修改/删除/未跟踪文件；不要把用户原有dirty文件算成新增越界，也不得借ignore藏变更。
 
-## 5. 依赖观察表
+## 5. Watchlist
 
-以下均以观察SHA读取；每次任务开始、发布前和主线相关PR合并后重新读取，不用此表固定旧版本阻止主线演进。
-
-| 类别 | 观察路径/对象 | 变化后动作 |
+| 类别 | 路径/对象 | 变化后的工作 |
 | --- | --- | --- |
-| 不变量/owner | docs/README.md、CONTRIBUTING.md、repository-blueprint、ADR-0002/0003/0007/0008/0011 | 检查语义影响；owner/authority改变须设计review |
-| 技术栈 | toolchain/toolchain.json、package.json、pnpm-lock.yaml、tsconfig.base/build | 重新build/conformance；不手抄版本另建配置 |
-| 公共输入 | contracts/src/index.ts、type-bindings、schema-registry/inventory/planned-contracts、identity/SubjectRef/SchemaRef/Gate/Evidence schemas | 重新映射和compatibility验证；不能强制as旧类型 |
-| 校验实现 | contracts canonical-json、registry、generated types、date-time、generator | 追踪#82 R06/R09/R10及consumer回归 |
-| 架构/Gate | tests/architecture/architecture-policy.json、scripts/architecture、scope-policy/verify-scope、workflows、receipt validators | 追踪R01/R02/R08/R16；新HEAD重新证明 |
-| 后续生产依赖 | node-runtime/context/workflow/verification public entries、platform装配、persistence query/worker | provider出现后才开启对应I阶段；不deep import |
-| 协调进度 | #82/#83及后续相关PR、#85 entry gate、LF CURRENT | 检查shared writer和未解决dependency findings |
+| authority/owner | docs/README、CONTRIBUTING、repository-blueprint、ADR-0002/0003/0007/0008/0011 | 语义impact及owner review |
+| 技术栈 | toolchain/toolchain.json、package.json、pnpm-lock、tsconfig | 绑定真实版本，重build，不手建平行配置 |
+| 输入Contract | contracts public entry、bindings、inventory/registry、identity/ref/Gate/Evidence schemas | compatibility与consumer回归，不能as旧类型 |
+| 校验实现 | canonical-json、registry、generated types、date-time、generator | 追踪#82 R06/R09/R10 |
+| 架构/门禁 | architecture-policy、scripts/architecture、scope/verifier、workflows、receipt validator | 追踪R01/R02/R08/R16与新HEAD证据 |
+| 生产provider | node-runtime/context/workflow/verification public entries、platform/persistence | provider就绪才开对应I阶段 |
+| 任务协调 | #82后续PR、#85、LF CURRENT | shared writer、依赖finding与同步窗口 |
 
-初始定位用的已读取blob：contracts public entry `794268d44184f099ac71e0a10e4cc496facbb812`；type-bindings `ae6db87ea4b58eab9f8c16fea73526248d22e944`；architecture policy `21b4f389b64e6f818df5aa86571857758916476b`；SubjectRef `7732a3aa9fcae3ba232e1d4ad54cbdfff2402a1a`。这些Git blob用于定位，不替代Schema内的SHA256语义。
+初始public-entry blob `794268d44184f099ac71e0a10e4cc496facbb812`、bindings `ae6db87ea4b58eab9f8c16fea73526248d22e944`、architecture policy `21b4f389b64e6f818df5aa86571857758916476b` 是定位记录，不替代Schema SHA256，也不永久锁住主线演进。
 
-## 6. 主线变化的处理
+## 6. 主线变化分类
 
-A. 不影响依赖/共享文件：继续固定当前task subject；合并前仍需strict up-to-date和最新head检查。旧结果只属于旧subject。
-B. 兼容的公共实现/修复变化：在授权同步窗口合入/重建基线，更新watch bindings，重跑该consumer与通用build/架构/Contract验证。
-C. 新enum、required字段、identity/owner/持久化语义改变：暂停相关用例，提交最小Contract impact；由owner批准新版本或明确适配，不维护隐藏legacy alias。
-D. 开发中依赖被独立审查否定：失效对应readiness，不继续以旧绿色CI为依据；不把所有无关纯逻辑成果一并删除。
+A 无依赖影响：可继续固定task subject；合并前仍up-to-date和最新检查，旧结果只属于旧SHA。
+B 兼容修复：在授权窗口同步，更新watch绑定，重跑consumer、build、架构和Contract验证。
+C enum/required/identity/owner/持久化语义改变：暂停对应用例，由owner批准版本/适配，不隐藏legacy alias。
+D 依赖被独立审查否定：回退对应readiness，不凭旧green CI继续；无关纯核心成果不删除。
 
-发布后需同步时保留旧审查SHA；按主线已有治理允许的方法做普通merge或新generation分支。默认不rebase/force-push受审查历史。branch HEAD若被他人推进，停止发布、重新读diff；`force:false` fast-forward，不能覆盖别人commit。
+受审查历史默认不rebase/force-push。Git同步使用普通merge或正式批准的新generation；发布前再读branch ref，他人推进后停止并重新检查，update_ref force=false。新main一旦影响内容或base，重新qualify。
 
-## 7. 共享接线如何合并
+## 7. 共享接线集成形式
 
-C1请求的新增Schema与package/build/test/architecture接线先作为明确integration delta评审。不能仅批准source目录却漏掉root workspace/lock/generated类型的scope。
+不得先批量创建空Schema/package。新增Schema需要真实consumer/examples，新package需要实现/public entry。优先在一个原子完整subject中由唯一集成人负责共享文件，LF实现者负责不重叠source；或者主线已经有完整可用接线时，消费其protected-main结果。entry Gate必须选定一种形式，不能同时做。
 
-建议先由共享集成owner基于最新main完成允许的登记/接线，LF实现依赖其受保护main结果；若必须一个原子PR才能通过构建，则该PR指定唯一集成人负责共享文件，其他Agent只能提交不重叠的受控内容。两种形式必须由entry Gate选定，不能同时执行。
+C1增加learning->contracts及必要root测试/构建登记，不给platform增加Runtime接线。无法通过现行scope合法登记就保持BLOCKED_BY_AUTHORITY，不修改allowlist/skip断言换绿。
 
-集成不能只放空package以制造进度：新Schema要有真实consumer/examples，新package要有可验证实现/公开入口。不得为让分支先绿而弱化架构allowlist、skip测试或返回伪成功。
+## 8. 验证与独立审查
 
-## 8. 验证绑定和审查者边界
+实施报告绑定HEAD/tree、命令/环境、输入/制品hash、scope和限制；独立verifier另一个checkout只读运行批准VerificationPlan。发现缺陷时另起修复轮和新HEAD，不能同一pass边修边VERIFIED。
 
-Implementation report绑定source HEAD/tree、命令/环境、输入及生成物hash、scope差异和已知限制。Verifier在独立checkout按已批准VerificationPlan运行；不能为修复测试在同一pass改source或fixture预期。
+报告本身写入造成新commit，旧verdict仍仅指被测SHA。report-only差异与新head机器检查另记录，merge后对protected-main merge SHA做适用qualification。Git签名verified、CI success、作者自检、Code Review无高危意见，都不自动等于完整语义Gate PASS。
 
-独立verdict固定被审查SHA。其报告写入后如产生新commit，不能宣称该新SHA也已被原报告独立验证；另记录report-only差异及适用机器检查，合并仍需最新head检查。保护main合并后再对merge SHA执行适用验证。
+可通过已有PR review通道请求独立意见；请求/eyes反应/任务启动不是审查完成。只有可追踪reviewer、确切subject、实际覆盖与结论可用才记录相应证据。不支持自动审查时保持PENDING，不自造角色或批准。
 
-CI成功不自动等于独立语义review；尤其#82 R01指出required verify汇总不完整时，需要读取所有适用quality/Windows结果，不凭单个绿色图标放行。
+## 9. 文档对齐节奏
 
-## 9. 文档同步与定期对齐
+操作完成同时更新实现路径、Contract、状态和Evidence，不单独拆普通文档写手。独立角色负责校验一致性，计划/review可单独产出。
 
-执行操作同时更新其真实路径、Contract、状态和Evidence，不再拆“专门写文档Agent”。独立角色校验文档与代码/Contract/测试/运行证据的一致性。
+每工作包结束局部对齐；公共接口变化、共享集成、首次生产wiring、阶段放行前完整对齐。长期任务每工作日首次恢复读watchlist；不承诺无工具支撑的后台自动监控。
 
-每工作包结束做局部检查；任意公共接口变更、共享文件integration、首次生产接线和阶段放行前做全量分支对齐。长期任务每个工作日首次恢复读取watchlist；没有定时工具时不声称后台已自动监控。
-
-分支当前任务只在 `docs/roadmap/learning-feedback-branch-plan.md` 记录；架构入口只导航，review是历史快照，不再平行维护多个CURRENT。根main progress由主线owner维护。
+CURRENT仅在branch-plan；架构定义边界，review/readiness保留原SHA快照。全局progress由主线owner维护，不创建竞争状态源。
 
 ## 10. 停止与恢复
 
-需停：未授权文件、共享竞写、authority冲突、相关依赖已失效、source/consumer无法可靠关联、必须绕过真实生产路径才能过验收。
-
-恢复需要更新后的scope/owner决定或可验证依赖证据，再建立新subject重验。停止不意味着放弃分支；允许继续未受影响的设计与案例准备。不得让待修模块同时修改自己的验证规则或本实验的Gate。
+未授权文件、共享竞写、authority冲突、相关依赖失效、来源不可关联或测试需绕过生产路径才通过时停止。保留diff并记录最小缺口，取得新scope/owner决定/依赖证据后建立新subject。可继续未受影响的设计和案例准备；待修模块不得修改同一实验的裁判/Gate。

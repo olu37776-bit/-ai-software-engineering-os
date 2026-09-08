@@ -1,149 +1,148 @@
 # LF-D1：Feedback Contract 与主线接口提案
 
 状态：`DRAFT / NOT_APPROVED / NO_CODE_AUTHORIZATION`  
-观察基线：`3c387f5f196ddfae8e8989710d5a55f9def472a7`，2026-09-08  
-入口：[分支当前计划](../../roadmap/learning-feedback-branch-plan.md) · [总体设计](branch-design.md) · [开工计划](../../roadmap/learning-feedback-core-entry-plan.md) · [并行协议](parallel-development-protocol.md)
+设计起点：`3c387f5f196ddfae8e8989710d5a55f9def472a7`  
+本轮接口复核主线：`5577c2e8a9ef090b87924edddf6114dd75eb28a5`，2026-09-08  
+[CURRENT](../../roadmap/learning-feedback-branch-plan.md) · [总体设计](branch-design.md) · [开工计划](../../roadmap/learning-feedback-core-entry-plan.md) · [并行协议](parallel-development-protocol.md)
 
-## 1. 这份提案解决什么
+## 1. 范围与 owner
 
-把总体设计收敛成第一包可以实现和验证的输入、输出、规则及主线交界需求。拟新增的长期业务语义只有 ExecutionFeedback 和 FeedbackResolution；输入/输出 Schema 是这两个用例的边界，不另建 Runtime facts、业务 Gate、Context 状态或知识库。
+第一包仅定义 ExecutionFeedback、FeedbackResolution 两项业务语义及实际使用的用例入出边界，不新增 Runtime facts、Oracle/Gate、Context 状态或知识库。业务 owner 提案为 packages/learning；公共/持久化 Schema 唯一保存在 contracts。下述内容待独立 review，不是已激活 Schema。
 
-下述字段是待独立评审的候选 Contract，不是已激活 Schema。没有把上游尚未实现的 producer 写成已存在 API。批准后 Schema/type/consumer 必须在同一受授权变更中落盘。
+GateDecision 是本次执行裁决；Feedback 是尚待满足的具体义务；Resolution 是后续已裁决事实是否覆盖该历史义务。它们不能互相替代。本次不新增 LearningCase、EvidenceGraph、NodeResult、FeedbackConsumption、Approval 或原 Phase 7 的六项 Learning Schema。
 
-## 2. 已有权威与不可复制项
+## 2. 直接复用的 Contract
 
-| 已有 Contract | 当前真实定义 | 对本分支的约束 |
-| --- | --- | --- |
-| NodeExecutionIdentity | `packages/contracts/schemas/node/node-execution-identity.schema.json`；runId/nodeId/executionId/attempt，attempt >= 1 | 直接复用，不能只按 Node 名字分组 |
-| SubjectRef | `packages/contracts/schemas/common/subject-ref.schema.json`；subjectType/subjectId，subjectVersion 可选 | 本分支引用版本化 definition/criterion/assessment 时额外要求固定版本；不改变原 Schema 的可选规则 |
-| SchemaRef | `packages/contracts/schemas/common/schema-ref.schema.json` | 使用 schemaId/version/hash 等真实定义，不维护第二种 Schema identity |
-| EvidenceMetadata | `packages/contracts/schemas/evidence/evidence-metadata.schema.json` | executionRef 在上游是可选；缺少来源关联时不能推断本次执行身份 |
-| GateDecision | `packages/contracts/schemas/verification/gate-decision.schema.json` | 固定 subject/plan/policy/assessment/Evidence，完整处理七种 outcome |
-| ProjectionCheckpoint | 现有 type-bindings 中的 canonical Contract | 不等于已存在能查询任意主线 facts 的 provider |
-| NodeExecutionRecord / ContextSnapshot / VerificationAssessment | planned inventory 中的主线 Contract | LF 不实现这些 owner；不得导入尚不存在的类 |
+| Contract | 实际来源与限制 |
+| --- | --- |
+| NodeExecutionIdentity | `packages/contracts/schemas/node/node-execution-identity.schema.json`：runId/nodeId/executionId/attempt；attempt >= 1，不按 Node 名称猜身份 |
+| SubjectRef | `packages/contracts/schemas/common/subject-ref.schema.json`：subjectType/subjectId，subjectVersion 可选；LF 对版本化 criterion/definition 的消费要求更严，缺失即 gap，不修改原 Schema |
+| SchemaRef | `packages/contracts/schemas/common/schema-ref.schema.json`：精确为 schemaId/schemaVersion/schemaHash |
+| EvidenceMetadata | `packages/contracts/schemas/evidence/evidence-metadata.schema.json`：executionRef 可选；缺对应执行来源不能自行补造 |
+| GateDecision | `packages/contracts/schemas/verification/gate-decision.schema.json`：subject/plan/policy/assessment/Evidence 与七种 outcome |
+| ProjectionCheckpoint | 现有 canonical 类型；不能据此假定任意 facts query provider 已存在 |
+| NodeExecutionRecord/ContextSnapshot/VerificationAssessment | planned 主线 Contract；LF 不实现其 owner，不导入假想 Repository |
 
-当前公开入口为 `@aseos/contracts`，由 `packages/contracts/src/index.ts` 导出。generated type 绑定来自 `type-bindings.json`，禁止从另一个 package 的 src/dist/internal deep import。active Schema/Type 的存在不证明数据可信或 committed。
+公开入口为 `@aseos/contracts`，`src/index.ts` 导出；类型绑定来自 type-bindings.json。禁止 deep import、平行身份类型或把存在 Schema 当作来源真实/已提交的证明。
 
-## 3. 语义归属决策
+## 3. 输入和信任边界
 
-| 候选 | 为什么不是已有对象换名 | owner 提案 |
-| --- | --- | --- |
-| ExecutionFeedback | GateDecision 表达裁决；Feedback 表达尚需满足的具体义务、保留约束和关闭依据 | packages/learning；Schema 存 contracts |
-| FeedbackResolution | 后续 Gate 表达该次执行结果；Resolution 表达它是否覆盖某条历史纠偏义务 | packages/learning；不重做业务正确性裁决 |
-| FeedbackProjectionInput / FeedbackResolutionInput | 有边界的用例输入，引用原主线 Contract，供纯核心与后续 Adapter 共用 | 应用边界；不是持久化运行历史 |
-| FeedbackProjectionResult / FeedbackResolutionResult | 区分结果、输入不足和错误，不把异常吞成正常业务结果 | 应用结果；不拥有主线状态 |
+### FeedbackProjectionInput
 
-本次不新增 LearningCase、EvidenceGraph、NodeResult、FeedbackConsumption、Approval 或 LearningGate Schema。消费关系先使用主线 provenance；未来不足时另行批准最小补充。
-
-## 4. 输入模型和信任前提
-
-### ProjectionInput（候选边界）
-
-| 字段/组 | 来源 | 缺失或不一致时 |
+| 组 | 内容与来源 | 不满足时 |
 | --- | --- | --- |
 | execution | NodeExecutionIdentity | INVALID_INPUT |
-| sourceGate | 原 GateDecision，按现有 Schema 验证 | INVALID_INPUT；不把未知 enum 当成功 |
-| sourceContractRef / criterionRefs | 固定版本的 Contract/criterion 引用与 hash | INCONCLUSIVE，不按当前最新 Contract 追认历史 |
-| criterionAssessments | 主线 Verification 的逐条件裁决投影；每项带 assessmentRef、criterionRef、outcome、evidenceRefs | 不从日志/退出码自由推断；尚无主线 producer 时只可 fixture conformance |
-| constraints / closureRequirements | 原 Contract/Verification 要求的必要投影，每项保留 sourceRef | 不编造新约束；无法映射就 gap |
-| evidence | 相关 EvidenceMetadata，内容通过引用获取，不传整份运行历史 | 缺失、错 subject、错 execution、hash/信任不符不能用于确定结论 |
-| sourceBoundary | 主线 snapshot/checkpoint/commit-receipt 的引用 | 由真实 Adapter 验证一致读取；调用方布尔值 committed=true 不构成证明 |
-| evaluationContext | 显式传入 capturedTime、allocatedId、projectionVersion、inputHash | 纯函数不读当前时间、UUID、环境变量 |
+| sourceGate | 按现有 Schema 校验的 GateDecision | 未知版本/outcome拒绝 |
+| sourceContractRef / criterionRefs | 固定版本与 hash；可恢复历史语义 | INCONCLUSIVE，不读取最新版本替代旧义务 |
+| criterionAssessments | 主线 Verification 已作出的逐项裁决投影，含 assessmentRef、criterionRef、outcome、evidenceRefs | 不从退出码/日志自由推断；无 producer 时仅 fixture |
+| constraints / closureRequirements | 原 Contract/Verification 必要要求，每项保留来源 | 不发明新要求，无法映射为 gap |
+| evidence | 所需 EvidenceMetadata/ref，不复制运行历史 | subject/execution/hash/trust不符不可作支撑 |
+| sourceBoundary | 主线 snapshot/checkpoint/commit-receipt 引用 | 生产 Adapter 验证一致读取；committed=true不是证明 |
+| evaluationContext | 显式 capturedTime、allocatedId、projectionVersion | 核心不读当前时钟/随机UUID |
+| priorFingerprint（可选） | 既有反馈的 feedbackId、idempotencyKey、inputHash；由调用者显式提供 | 未提供只能生成候选，不宣称持久化去重 |
 
-逐条件 outcome 只表达上游已经产生的 MET / NOT_MET / UNKNOWN / CONFLICT 映射；它不是本分支从实际输出重新计算预期结果的 Oracle。这个映射待 Verification owner 接受，未接受前不当作生产接口。
+criterionAssessments 的 MET/NOT_MET/UNKNOWN/CONFLICT 仅为上游裁决的消费映射，不是LF自行计算业务正确性的Oracle。该映射须 Verification owner 接受，未接受前只用于组件 conformance。
 
-### ResolutionInput（候选边界）
+### FeedbackResolutionInput
 
-输入包括原 ExecutionFeedback、consumer 的 NodeExecutionIdentity、来源到 consumer 的有效 lineage/provenance、原关闭条件版本、后续主线 criterion assessments、GateDecision/Evidence refs 和一致 sourceBoundary。需要一条能够证明 Attempt 实际使用对应 ContextSnapshot 的事实关系，单独传 feedbackId 或手工写 consumed=true 不够。
+原 ExecutionFeedback、consumer 的 NodeExecutionIdentity、合法 source-to-consumer lineage、ContextSnapshot 被该 Attempt 实际使用的事实关系、原关闭条件版本、后续 authoritative assessments/Gate/Evidence、一致 sourceBoundary、显式 evaluator/time/ID。
 
-核心校验结构、引用一致性与业务规则，不宣称能仅凭一个 DTO 证明源数据真实性。生产 Adapter 负责通过受授权 query/registry/事实来源建立可信输入；conformance fixture 明确不拥有这一信任能力。
+单独 feedbackId、consumed=true 或提供者被调用成功，均不能证明反馈被执行使用。生产 Adapter 从受授权主线查询建立可信输入；纯核心只校验已提供结构、关系一致性和义务规则，不独立证明来源真实性。
 
-## 5. ExecutionFeedback 候选字段
+### Schema validation 与纯函数分界
+
+C1 的 fixture/应用边界使用现有 ContractRegistry 验证六份 Schema；通过现有公开 loader 构造 registry 的 I/O 只在测试/外层，不在纯用例执行中。核心复用 canonical 类型和无I/O的canonical/hash能力，做语义约束，不复制JSON Schema validator、不调用 loadContractRegistry 读取文件。未来生产装配负责边界校验；类型断言不能替代真实校验。
+
+## 4. ExecutionFeedback 字段
 
 | 字段 | 规则 |
 | --- | --- |
-| schemaVersion / feedbackId | 按当前 canonical identity；ID 显式分配，不把 hash 冒充 UUID |
-| execution / sourceDecisionRef / assessmentRefs | 稳定主线身份和来源；不复制 NodeResult |
-| sourceContractRef / criterionRefs | 必须能恢复原版本语义；原子义务一个反馈，组合义务须原 Contract 明确定义 |
-| evidenceRefs | 支撑观测差距的真实引用；未知 Evidence 不伪装支撑 |
-| observedGap | 由已裁决差距确定性投影，不推测 root cause |
-| requiredOutcome | 原 criterion 要求的结果，不指定新的代码修法 |
-| retainedConstraints | 相关约束及其来源引用，不复制整个 Contract |
-| closureRequirements | 逐条件目标、需要的 assessment/Evidence 类别、Gate requirement 及原版本 |
-| applicability | 可用 lineage/definition version/权限范围；不是 nextNode |
-| projectionVersion / inputHash / idempotencyKey / createdAt | 固定投影算法与输入；历史不可变，可重放 |
+| schemaVersion / feedbackId | canonical identity；显式分配，hash不是UUID |
+| execution / sourceDecisionRef / assessmentRefs | 原始稳定引用，不复制NodeResult |
+| sourceContractRef / criterionRefs | 版本、hash与原子义务；组合需原Contract明确 |
+| evidenceRefs | 有来源的支撑证据；缺失不伪装确定结论 |
+| observedGap | 已裁决差距的确定性表达，不推测rootCause |
+| requiredOutcome | 原criterion要求的结果，不新造实现方案 |
+| retainedConstraints | 相关约束和来源，不复制整个Contract |
+| closureRequirements | criterion/version、需要的assessment/Evidence类型和Gate要求 |
+| applicability | 合法lineage/definition version/权限边界；不是nextNode |
+| projectionVersion / inputHash / idempotencyKey / createdAt | 可重放的版本化派生身份；不可变历史 |
 
-禁止字段：nextNode、routeDecision、rootCause、自由 recommendedImplementation、可变 workflowStatus、模型 reward。Feedback 本身不通过 mutable status 表达消费/关闭。
+禁止 nextNode、routeDecision、rootCause、任意 recommendedImplementation、可变 workflowStatus、reward。消费与关闭通过后续事实/派生视图表达，不修改原反馈状态。
 
-## 6. FeedbackResolution 和结果判定
+## 5. Resolution 规则
 
-Resolution 记录原反馈、consumer execution/attempt、逐关闭条件结果、后续 assessment/Gate/Evidence refs、剩余差距、evaluatorVersion、sourceBoundary、evaluationTime。它是 append-only 评价记录，不覆盖原 Feedback，也不改变主线终态。
+FeedbackResolution 保留 feedbackRef、consumer execution/attempt、逐关闭条件结果、后续assessment/Gate/Evidence refs、remainingGaps、evaluatorVersion、sourceBoundary、evaluatedAt。append-only，不覆盖原Feedback或主线终态。
 
-两个结果层必须分开：
+评价能否完成与业务结果分开：
 
-| evaluation status | 能否产生业务 Resolution | 含义 |
-| --- | --- | --- |
-| EVALUATED | 可以 | 所需事实已足够，才返回 RESOLVED / PARTIALLY_RESOLVED / UNRESOLVED |
-| INCONCLUSIVE | 不得假装完整评价 | 缺必要覆盖、身份/版本关系不完整或事实不可判定 |
-| BLOCKED | 不得关闭 | 权限/必要上游能力/依赖尚不具备 |
-| ERROR / INVALID_INPUT | 不得伪装正常未解决 | schema、wiring、完整性或内部处理错误；使用 typed error |
+| evaluation status | 结果 |
+| --- | --- |
+| EVALUATED | 事实足够后才产生 RESOLVED / PARTIALLY_RESOLVED / UNRESOLVED |
+| INCONCLUSIVE | 必要覆盖、身份、版本或事实不完整；可给已知逐项结果，但不能伪装完整评价 |
+| BLOCKED | 权限/必要能力/依赖不足；不得关闭 |
+| ERROR / INVALID_INPUT | wiring、Schema、完整性等typed error；不伪装正常UNRESOLVED |
 
-完整评价下：全部必要义务由对应可信 MET 与要求的 Gate 结果支撑、无未处理反证，才 RESOLVED；部分明确满足、其余明确不满足为 PARTIALLY_RESOLVED；没有满足或阻断性反证为 UNRESOLVED。必要条件 UNKNOWN 时整体 INCONCLUSIVE，可返回已知逐项结果，但不得将未知塞成普通 NOT_MET。
+所有必要义务获对应可信MET与原Gate要求支撑、无未处理反证，才RESOLVED。部分明确满足、剩余明确不满足为PARTIALLY_RESOLVED；无满足项或阻断性反证为UNRESOLVED。必要条件UNKNOWN则整体INCONCLUSIVE，不能当普通NOT_MET。
 
-风险接受/豁免/取消保留独立 disposition 与审批 provenance；不能视为 criterion 已实际修复。后续 Gate PASS 不能批量关闭没有精确关联的历史反馈。
+风险接受、豁免、取消单独记录disposition/审批provenance，不等于已修复。一次Node PASS不批量关闭未精确关联的历史反馈。F3式的“依赖为undefined所以全部正常未解决”必须成为可见错误。
 
-## 7. 七种 Gate outcome 的可执行边界
+## 6. Gate outcome 全映射
 
-| Gate outcome | 新反馈投影 | 对旧反馈关闭 |
-| --- | --- | --- |
-| PASS | NO_FEEDBACK_REQUIRED，除非存在矛盾输入则拒绝 | 必须匹配原 closureRequirements，不是万能关闭信号 |
-| PASS_WITH_RISK_ACCEPTANCE | 有明确未满足义务可保留风险处置引用 | 风险接受本身不满足 MET，未修复项不能 RESOLVED |
-| REWORK | 有已裁决 NOT_MET 和来源则 PROJECTED | 根据逐项事实评价；不由LF触发Retry |
-| BLOCK | 有正式前置条件义务才可投影；不支持的缺口返回 INCONCLUSIVE | 不构造业务成功，不自行解锁 |
-| REQUIRE_HUMAN_APPROVAL | 表达已有审批需求/交接，不自动批准 | 等待合法审批与原关闭条件，不能当作已修复 |
-| FAIL_TERMINAL | 可保留有依据的差距作为历史/后续合法执行输入 | 不重开 terminal execution；跨执行关联须合法授权 |
-| INCONCLUSIVE | 返回证据缺口；不将未知变成失败原因 | INCONCLUSIVE，不误关闭 |
+| outcome | 投影与关闭约束 |
+| --- | --- |
+| PASS | 通常NO_FEEDBACK_REQUIRED；矛盾输入拒绝；关闭旧反馈仍要精确coverage/lineage |
+| PASS_WITH_RISK_ACCEPTANCE | 可保留明确未满足义务及风险处置；接受风险本身不是MET |
+| REWORK | 有已裁决NOT_MET和来源才PROJECTED；不由LF触发Retry |
+| BLOCK | 有正式前置义务才表达；否则INCONCLUSIVE；不编造执行失败/根因或自行解锁 |
+| REQUIRE_HUMAN_APPROVAL | 保留正式审批交接，不自动批准；审批未满足不关闭 |
+| FAIL_TERMINAL | 保留有依据历史差距；不得重开终态，后续合法执行另有lineage/授权 |
+| INCONCLUSIVE | 显式证据gap，不推断FAIL、不关闭 |
 
-未知 outcome/version 默认拒绝。Contract review 必须同时确认 PASS_WITH_RISK_ACCEPTANCE 的主线语义及“不满足却已获风险接受”的展示方式；不能修改既有 Gate Schema 来简化这张表。
+未知版本/outcome拒绝。最终Schema必须表达这些区分，不能为了缩减枚举修改上游Gate。前置条件/approval的正式来源尚无provider时，不在C1伪造生产能力。
 
-## 8. 纯核心调用、幂等与扩展
+## 7. 无状态调用、指纹与幂等
 
-目标 public entry：`@aseos/learning`。拟提供 `projectFeedback(input)` 和 `evaluateFeedbackResolution(input)` 两个无 I/O 用例，输入/输出由本提案的 Schema/生成类型校验；执行上下文已包含固定时间/ID。尚未创建任何函数或 package。
+拟公开 `projectFeedback(input)`、`evaluateFeedbackResolution(input)`，以及同一key模块中的纯 `deriveFeedbackKey` / `compareFeedbackFingerprint`。当前均未实现。核心每次只依赖输入；不存在跨调用的隐式记忆。
 
-幂等语义 key 绑定 execution identity、source decision/version、criterion/group/version、source Contract hash、projectionVersion；inputHash 单独记录。相同语义 key 不同 inputHash 必须冲突可见；算法版本变化产生新投影而非覆盖历史。相同固定输入与上下文重放得到相同结果。
+idempotencyKey 由 execution identity、source decision/version、criterion/group/version、sourceContract hash、projectionVersion确定。inputHash 对规范化的来源语义输入计算：execution、sourceGate/assessments、criterion/contract引用与hash、约束/关闭要求、evidence metadata及sourceBoundary。排除本次allocatedId/capturedTime/priorFingerprint和计算中的key/hash本身；事实自带的时间字段仍是来源内容。集合按Contract规范化，真正有序的输入不任意排序。调用者提供expected hash时必须核对，不能直接信任。
 
-C1 只证明 key 推导与纯规则；唯一索引、并发 insert、事务/checkpoint/restart 属 I1，不用纯测试假装生产幂等。序列化与 hash 复用修复后的 canonical contracts API，不为绕过主线 R06 自建 serializer。
+使用相同完整输入和evaluationContext重放，输出完全一致。新的分配ID或评价时间可以导致新候选元数据不同，但不能改变相同来源义务的语义key/hash。
 
-V1 固定一个有版本的规则集，不允许任意 LLM callback 改关闭规则。扩展按新 schema/evaluator version、conformance 与兼容 Gate 接入；无需现在建设 plugin registry。Feedback 不依赖 improvement 子域，后续 Learning 只读公共反馈历史接口。
+跨调用比较只能基于显式priorFingerprint：同key同inputHash -> REUSE_EXISTING（返回旧feedbackId，不要求存储生成第二份）；同key异inputHash -> IDEMPOTENCY_CONFLICT；不同key -> 不当作同一记录。未提供既有指纹时返回PROJECTED候选；不能声称已在存储中查重。纯比较不证明priorFingerprint来自真实存储，生产调用方负责权威来源。
 
-## 9. 主线接口需求登记（不是已存在 API）
+C1只证明规则与显式比较。数据库唯一约束、原子插入/比较、并发重试、checkpoint恢复属于I1，必须另有真实存储测试，禁止用先查再插或进程cache冒充正确性。
 
-| Seam ID | 主线 owner | 所需能力 | 当前状态 | 何时必需 |
-| --- | --- | --- | --- | --- |
-| LF-S01 | contracts | 现有 identity/ref/Gate/Evidence Schema 与 public validator/type | EXISTING；R06/R09/R10 修复与重验未在当前main确认 | C1 |
-| LF-S02 | node-runtime + persistence + platform | 有边界的 committed execution/facts query，snapshot/checkpoint、错误分类 | PLANNED_PROVIDER；没有承诺的方法名 | I1 |
-| LF-S03 | verification | criterion版本 -> authoritative assessment -> Evidence 的覆盖关系 | PLANNED_PROVIDER；本表请求review | I1/真实Resolution |
-| LF-S04 | context + node-runtime + platform | Context贡献、拒绝/裁剪结果、snapshot来源与Attempt实际使用证明 | PLANNED_PROVIDER | I2 |
-| LF-S05 | workflow/kernel | 已提交route/lineage、terminal/retry合法关系 | PLANNED_PROVIDER | I2/E1 |
-| LF-S06 | persistence | 派生数据唯一key、事务写入/checkpoint、恢复与权限边界 | QUALIFICATION_EXISTS；所需业务Port未提供 | I1 |
-| LF-S07 | policy/platform | Proposal提交、授权、版本变更/rollback审计 | FUTURE_CAPABILITY | Learning，不阻塞C1 |
+复用修复后的public canonicalJson/hash能力，不为绕过#82 R06自建serializer。V1固定一个版本化规则集，不支持任意LLM回调改变关闭语义；后续扩展通过Schema/evaluator新版本和conformance。
 
-协议可以先约定“需要证明什么”；生产方法签名由主线 owner 提供并通过 consumer-conformance。不得反过来让主线去适配本分支随意想出的 Repository/global singleton。主线暂缺 S02–S07 不阻止获授权后的 C1 纯核心。
+## 8. 主线接口需求（不是已存在 API）
 
-## 10. Schema 与示例落盘提案
+| Seam | owner | 需求 | 当前/阶段 |
+| --- | --- | --- | --- |
+| S01 | contracts | identity/ref/Gate/Evidence及validator/types/canonicalization | EXISTING，相关#82修复仍须证据；C1 |
+| S02 | node-runtime/persistence/platform | committed execution/facts一致查询、checkpoint、错误分类 | PLANNED_PROVIDER；I1 |
+| S03 | verification | criterion版本 -> authoritative assessment -> Evidence覆盖 | PLANNED_PROVIDER；I1/真实Resolution |
+| S04 | context/node-runtime/platform | contribution拒绝/裁剪、snapshot来源、Attempt实际使用 | PLANNED_PROVIDER；I2 |
+| S05 | workflow/kernel | 已提交route/lineage、terminal/retry合法关系 | PLANNED_PROVIDER；I2/E1 |
+| S06 | persistence | 派生记录唯一key、原子写/checkpoint、恢复与权限 | qualification存在，不等于业务Port；I1 |
+| S07 | policy/platform | Proposal授权、版本变更和rollback审计 | FUTURE；Learning，不阻塞C1 |
 
-授权后在 `packages/contracts/schemas/learning/` 建立 execution-feedback、feedback-resolution、feedback-projection-input/result、feedback-resolution-input/result 共六份 Schema。前两份为业务对象，后四份为立即使用的用例入出边界，不持久化第二份运行历史。不提前激活原 Phase 7 的其他 Schema。
+接口方法签名由主线owner提供并通过consumer-conformance，不让主线去适配LF临时global Repository。生产缺S02–S07只阻塞对应集成，不阻止获授权后的纯核心。
 
-每个 Schema 明确 required/optional/null、additionalProperties、版本、引用、敏感度；语义条件需额外 validator/property tests，不能只因 JSON 结构合法便宣称来源真实。字段详细含义以本文为候选，最终由独立 Contract review 一次冻结；实施者不能为通过测试自行改 expected results。
+## 9. Schema/实例及验证
 
-valid/invalid/boundary cases 包括：缺失必填引用、attempt=0、空必要集合、重复证据、未知版本、错执行/criterion版本、格式合法但来源不匹配、风险接受、未知事实、矛盾assessment与Gate、相同key异payload。生产读取/消费证明由 I1/I2 测试补足，不在 fixture 中自证。
+授权后在 contracts/schemas/learning 下建立 execution-feedback、feedback-resolution、feedback-projection-input/result、feedback-resolution-input/result 六份Schema。前二是业务对象，后四是立即有consumer的用例边界，不是第二运行历史。
 
-## 11. 需要独立裁决的决策
+每份Schema明确required/optional/null、additionalProperties、版本/引用/敏感度；inputHash/priorFingerprint/result discriminant按§7表达。valid/invalid最小实例各一份，具体十二文件见开工包；example-suite每个case使用真实instancePath，不能内嵌不存在的payload字段。边界/性质测试可在test中构造，无需批量空fixture。
 
-D01：两项业务语义由 packages/learning 拥有，六份必要边界Schema只由 contracts保存。
-D02：未知/缺失是评价不可完成，不是普通UNRESOLVED；已接受风险不等于已修复。
-D03：criterion assessment由Verification owner产生，LF只能映射关闭义务。
-D04：C1只依赖修复后的contracts与工具链，不读取数据库、YAML、global state或生产Context。
-D05：主线真实seam按I1/I2补齐；C1 conformance通过不宣称provider已实现。
+负例包括attempt=0、必需引用缺失、空必要集合、重复ref、未知版本、错执行/criterion、格式合法但来源不匹配、风险接受、未知/矛盾assessment、同key异hash。生产可信来源和并发幂等不得由fixture自证。
 
-这五项均为待批准提案，正式开工还需 [Issue #85](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85) 的scope与exact-baseline门禁。禁止作者把本文发布等价成独立设计批准。
+## 10. 独立裁决与变更记录
+
+D01：两项业务语义packages/learning拥有，六份必要边界Schema存contracts。
+D02：未知/缺依赖非普通UNRESOLVED，风险接受非已修复。
+D03：逐criterion裁决由Verification owner产生，LF只评价原义务覆盖。
+D04：C1无I/O；validator loader在外层；幂等比较需要显式既有指纹。
+D05：I阶段验证真实seam，C1 conformance不冒充provider。
+
+均待独立批准与 [Gate #85](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85) 放行。2026-09-08作者收口：精确SchemaRef字段、实例文件、无状态幂等/hash与校验边界，未修改任何已激活Schema或生产代码。
