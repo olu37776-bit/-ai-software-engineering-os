@@ -1,40 +1,44 @@
 # LF-C1：独立纯核心建设开工包
 
-状态：`DRAFT / REVIEW_FINDINGS_ADDRESSED_PENDING_REVIEW / ENTRY_NOT_RELEASED`  
+状态：`DRAFT / PLANNING_COMPLETE_PENDING_REVIEW / ENTRY_NOT_RELEASED`  
 更新：2026-09-08  
-核对主线：`5577c2e8a9ef090b87924edddf6114dd75eb28a5`  
-本轮独立审查 subject：`39cdb4b33cda6616f98ec67855e4e61ee60705b6`  
-[CURRENT](learning-feedback-branch-plan.md) · [Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) · [并行协议](../architecture/learning-feedback/parallel-development-protocol.md) · [Gate #85](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85)
+观察 main：`ed14d4179808621c8ffd5751ebbf7b6704f33b64`，不是获准开工基线  
+编辑前 LF subject：`7ead85be9c322057207fc0fef8fb0345aee1b39b`  
+[CURRENT](learning-feedback-branch-plan.md) · [Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) · [D01～D05定义](../architecture/learning-feedback/decision-register.md) · [并行协议](../architecture/learning-feedback/parallel-development-protocol.md) · [授权/checker实施规划](learning-feedback-authority-transition-plan.md)
 
-> 本包给出第一任务边界和验收，仍待独立复核及合法scope。下列源码、Schema和实例均未创建；本轮只修文档。
+> 本包只定义 LF-C1 业务实施范围和18项验收。正式控制面接线与授权步骤由上方专门规划定义，不得混入本包业务路径。当前仍无获准 base、未创建业务源码/Schema、未签发 Start Gate。
 
 ## 1. 第一包：单原子义务的纯核心
 
-只实现Feedback投影、历史纠偏义务关闭评价两个纯用例；包括必要Schema/生成类型、两类key/prior、消费视图规范化及conformance/property/replay。唯一public entry为@aseos/learning，只依赖public contracts。
+只实现 Feedback 投影、历史纠偏义务关闭评价两个纯用例，包括必要 Schema/生成类型、两类 key/prior、消费视图规范化及 conformance/property/replay。唯一 public entry 为 @aseos/learning，只依赖 public contracts。
 
-**每次投影一个原子criterion，输出至多一个候选；每次Resolution一个Feedback和一个consumer Attempt，输出至多一条评价。** criterionRefs恰一项；多closure要求必须归属同一criterion。单次allocatedId/priorFingerprint只服务一个key。V1拒绝组合group或批量调用，不通过新增batch DTO/manager扩大本包。详细规则以Contract§3.1/7.3为准。
+每次投影一个原子 criterion，至多一个候选；每次 Resolution 一个 feedback、一个 consumer Attempt，至多一条评价。criterionRefs 恰一项，同一 criterion 可有多个关闭要求。V1拒绝组合group/batch，不新增manager、调度或批量事务。详细字段、result、规范化和幂等只由 [Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) §3.1/§7 定义，本包不复制一套规则。
 
-不做数据库/网络/文件/Context/Agent调用，不接Runtime，不建Repository/cache/global/生产Adapter，也不做Router/NER/LearningCase/Proposal/dogfooding。外层用已有ContractRegistry验证Schema，纯核心不调用文件loader。
+不做数据库/网络/文件/Context/Agent调用，不接Runtime，不建Repository/cache/global/生产Adapter，不做Router/NER/LearningCase/Proposal/dogfooding。外层用现有ContractRegistry验证Schema，核心不调用文件loader。
 
-## 2. E0–E4门禁
+## 2. E0～E4门禁：设计材料与实际批准分开
 
-| Gate | 放行证据 | 当前 |
+| Gate | 明确验收依据 | 当前意义 |
 | --- | --- | --- |
-| E0 | 最终HEAD完整独立Contract/owner/语义review | 两轮共四项P1已作文档处置；待新HEAD复核，非PASS |
-| E1 | 正式LF-C1 operation、authority、精确scope及checker | BLOCKED_BY_AUTHORITY；P1仍禁止learning；受检suite的owner/hash需授权 |
-| E2 | 直接依赖修复及独立/合并证据 | #82相关finding未在main确认关闭 |
-| E3 | 共享文件单写者、形式/窗口、新base | PENDING_MAINLINE_AGREEMENT |
-| E4 | 开工main SHA/tree、工具链/Schema/public hashes | ENTRY时重绑定 |
+| E0 | [决策登记](../architecture/learning-feedback/decision-register.md)的D01～D05五行及LF-RV-01～04四行，最终HEAD完整独立结论 | 定义已恢复；新subject待独立接受，不沿用7ead85b的局部PASS |
+| E1 | [授权规划](learning-feedback-authority-transition-plan.md)§3～6：合法operation、四Authority、正常checker及先验Gate | 规划已具体化；实际实施和授权尚未完成 |
+| E2 | 授权规划§7：R01/R02/R16、R06/R09/R10、R08的实现/独立/merge/post-merge及基线适用性 | 逐项接受，不等待无关未来Runtime |
+| E3 | [并行协议](../architecture/learning-feedback/parallel-development-protocol.md)：单写者、54集合、治理刷新和有效RESERVED接受记录 | 方案固定；实际操作者和窗口接受待批准 |
+| E4 | 授权规划§8：获准main及文档/工具链/Contract/Authority/Evidence完整绑定 | 观察main不是approvedMain；签发须真实landing检查 |
 
-直接依赖为R06 canonical JSON/hash、R09生成类型、R10日期、R08架构、R01/R02/R16 Gate/回执/subject，不在LF写替代validator/serializer或降低Gate。C1不等待无关的完整Runtime/Context/Verification/Persistence；#83或修复PR的发布不表示依赖已关闭。
+直接依赖为R06 canonical/hash、R09生成类型、R10日期、R08架构、R01/R02/R16 Gate/回执/subject。不在LF复制validator/serializer或降低门禁。C1不要求完整Kernel、Context、验证系统、Persistence业务provider完成；I1/I2/E1运行集成届时按真实依赖验收。
 
-## 3. 合法授权与共享集成
+## 3. 已选定的授权与集成方式
 
-不能伪装P1-O02、私改resolver/全局禁令。主线治理owner按既有流程批准合法parallel/phase operation或受控提前amendment；必要上位计划/ADR变更需独立批准。候选operations/learning-feedback/core-1/须连同validator/登记获准，不是放一个JSON即授权。
+采用正常dispatcher中的精确LF-C1分支，缺先验授权默认关闭，业务单写者任务为LF-C1-INTEGRATION，在一个完整subject中提交真实consumer与Schema/实例/接线。不得伪装P1-O02、删除P1禁令或以单独诊断exit2替代正式checker。
 
-Schema/生成物/受检suite/workspace/build/test/architecture由单一集成人与真实consumer在完整subject发布，或消费已获准且完整的主线接线；E3只能选择一种。路径清单是授权请求，不允许现在改源码。复用first-slice suite无需改examples.ts或runner，但该suite现有authority owner/hash仍须E1授权最小增量，不能顺带解除其他锁。
+原受检suite及planned/inventory/registry的共享锁委托必须预先批准；LF实施者不写旧Authority lock。MAINLINE_GOVERNANCE只对被批准、实际变化的四个OPERATION_SCOPED条目做派生hash刷新，并由正常检查验证作者分区、原owners和所有无关字段未变。这个控制面变更属于授权规划的单独治理任务，不是扩大下面54条源码权限。
+
+#95/#97机器请求仍是REQUEST_NOT_AUTHORITY。请求原快照来自877eea8；本包更新后由G0刷新source的commit/tree/hash/snapshot，逐项证明54路径和18要求没有变成更多权限。不能用旧hash证明新文档已绑定。
 
 ## 4. 精确源码和测试清单提案
+
+下列三块分别为18 core、26 contracts、6 wiring，共50个路径；另4个实施文档列于本节末尾，合计54。它们是待授权文件集合，不代表每次必须修改所有既有文件。新必需产物须完整，已有文件可在不需要时保持不变。没有通配符，不包含治理脚本、Authority、独立报告或新规划文档。
 
 ```text
 packages/learning/package.json
@@ -57,7 +61,7 @@ tests/contract/learning-feedback/feedback-conformance.test.mjs
 tests/architecture/learning-feedback-boundaries.test.mjs
 ```
 
-两类key共用唯一normalizer，不复制JSON serializer。public/persisted类型由contracts生成，不手写平行DTO；不创建无实际I/O的ports/Repository。LF-RV-04的基数测试放已有project-feedback/input-validation/idempotency/conformance测试，不增加batch文件或包。
+两类key共用唯一normalizer，不复制JSON serializer。public/persisted类型由contracts生成，不手写平行DTO；不创建无实际I/O用例的ports/Repository。基数负例放已有测试，不新增batch文件。
 
 ### 共享Contract、标准受检suite与实例
 
@@ -90,11 +94,11 @@ packages/contracts/src/types.generated.ts
 tests/contract/example-suite.test.mjs
 ```
 
-不创建learning/example-suite.json。十二个caseId固定lf-c1.<schema-stem>.<valid|invalid>，追加原first-slice受检suite，实例放learning/；保留全部原case/expectation/semanticAssertions，不修改通用validator/runner绕过问题。
+不创建learning/example-suite.json。十二固定caseId为lf-c1.<schema-stem>.<valid|invalid>，追加原first-slice受检suite；保留全部原case/expectation/semanticAssertions。不修改通用validator/runner绕过问题。
 
-examples.ts固定读原suite；contracts:qualify调用该入口。example-suite.test.mjs有38/19/19/22统计，已纳入候选共享scope。未变基线且无新增semanticAssertions，追加十二个后为50/25/25/22；开工前冻结新main的实际案例，不用动态总数掩盖十二固定binding缺失。INVALID须expectedError(keyword/instancePath)。标准资格在隔离完整副本面对删新文件、错路径、invalid改valid、错误expectedError均必须失败；缺固定case由conformance拒绝。
+examples.ts固定读取原suite，contracts:qualify调用该入口。example-suite.test.mjs原统计38/19/19/22；基线不变且未加semanticAssertions，十二实例加入后应为50/25/25/22。开工时以实际新main冻结原案例清单，不能动态计算总数掩盖固定binding缺失。INVALID需expectedError(keyword/instancePath)。正常资格面对删实例、错路径、invalid改valid或错误预期必须失败，conformance需拒绝缺少十二固定case之一。
 
-基数约束必须进入Input/Result及持久化对象Schema和语义validator：一个criterion、一个allocatedId/prior、单个result；零/多criterion及另一criterion的assessment/closure均拒绝。正常同一criterion的多个关闭要求仍合法且仅一条反馈。全部Schema立即有consumer，不激活其余Phase7对象；registry/hash/type用现有工具生成。
+单criterion及结果基数约束同时进入Input/Result/持久化对象Schema和语义检查；同criterion多要求合法，跨criterion材料拒绝。Schema立即有consumer，不激活其余Phase7对象；registry/hash/type使用现有生成工具。
 
 ### 共享构建/架构
 
@@ -107,21 +111,26 @@ vitest.config.mjs
 tests/architecture/architecture-policy.json
 ```
 
-仅接入真实package的dependency/reference/test discovery、learning->contracts和必要根测试边，不加platform->learning。主线已覆盖的路径可缩减；额外workflow/脚本须另行授权。新测试必须进入正常root test。
+仅加入真实package的dependency/reference/test discovery、learning->contracts及必要根测试边，不加platform->learning。额外workflow/脚本或源码需先更新独立授权；实现者不能临时扩scope。新测试必须进入正常root test。
 
-### 文档与Evidence
+### 四条实施文档与独立Evidence
 
-实现时同步本包、CURRENT、Contract实际映射；实施报告固定docs/implementation/learning-feedback/lf-c1-implementation.md，独立报告固定docs/reviews/learning-feedback/lf-c1-independent-verification.md。机器记录由E1先冻结，普通文档同步随操作完成。
+实施者同时维护以下4个精确文件：`docs/architecture/learning-feedback/contract-and-seam-proposal.md`、`docs/implementation/learning-feedback/lf-c1-implementation.md`、`docs/roadmap/learning-feedback-branch-plan.md`、`docs/roadmap/learning-feedback-core-entry-plan.md`。普通状态、实际映射与Evidence引用随操作更新，已批准业务语义改变须另行review。
 
-## 5. 实施顺序
+独立报告固定 `docs/reviews/learning-feedback/lf-c1-independent-verification.md`，由独立Evidence任务写，不在54路径。decision-register、授权规划、并行协议和机器Authority对LF实施者只读。生成物不因“由工具生成”获得额外权限。
 
-1. 读取#85真实E0–E4证据，在获准新main建立独立工作树/短分支。
-2. 单写者落实Schema/十二实例/原suite binding/生成物/构建接线与真实consumer。
-3. 实现单义务用例、projection/resolution key、唯一normalizer与显式prior，不存历史，不添加批量外层编排。
-4. 跑局部、正常资格、root build/test/architecture和适用quality，记录subject/命令/环境/限制。
-5. 冻结HEAD给独立verifier；有问题另轮实施，新subject重验，不同pass边审边改。
+## 5. 业务实施步骤
+
+1. 从#85取得有效E0～E4、Start Gate和实际approvedMain，核对正式Authority，而非只读Issue状态文字。
+2. 在获准main上建立独立工作树/正式短分支；确认LF-C1-INTEGRATION和独立治理写者接受记录/窗口有效。
+3. 同一集成任务落实六Schema、十二实例、原suite登记、生成类型、构建和consumer；不预建空壳。
+4. 实现两个单义务用例、两类key/prior、唯一normalizer，不存历史、不加批量调度。
+5. 运行本节验证与正常入口；按批准过程交治理任务完成必要lock刷新。对实际完整subject核对分区scope、Evidence、文档一致性。
+6. 实施最多IMPLEMENTED；冻结HEAD交独立只读验证。发现缺陷另轮实施产生新subject，不在验证pass中改代码。
 
 ## 6. VerificationPlan
+
+以下18项与上一开工包保持同一要求，不新增控制面测试编号。控制面G-Vxx在独立授权规划中，不计入C1实现范围。
 
 | ID | 必须证明 |
 | --- | --- |
@@ -144,20 +153,20 @@ tests/architecture/architecture-policy.json
 | C1-V17 | 正常suite接入负例不能只跑LF专用检查；保留所有旧case，缺十二固定binding之一也被拒 |
 | C1-V18 | 投影0/2个criterion拒绝；assessment/closure跨criterion拒绝；单criterion多closure仅一候选；A/B分别调用key/ID不同且prior不交叉复用；Result拒绝批量/候选与错误并存；Resolution输入/输出也保持单条 |
 
-C1-V18需同时验证Schema入口和public pure-use-case语义约束，不通过as类型断言绕过。C1-V10覆盖每个表列路径，不只一个evidenceRefs例子。纯比较不证明prior真实、数据库事务/并发/restart；I1分别验证两类key。所有合成输入标CONFORMANCE_FIXTURE，不宣称生产Node/CCP事实。
+C1-V18同时检验Schema与public pure-use-case约束，不能as断言绕过。C1-V10覆盖每个规范路径，不只一份向量。所有合成输入标CONFORMANCE_FIXTURE；prior真实性、数据库事务/并发/restart仍由I1另验。
 
-通用命令在entry核对：pnpm install --frozen-lockfile；pnpm run verify:versions；pnpm run contracts:generate-types；pnpm run build；pnpm run test；pnpm run contracts:qualify；pnpm run architecture:qualify；pnpm run quality。LF scope命令须E1实际支持，不传未知operation制造PASS；Windows/独立检查依risk/authority，不以Linux skip替代。
+正常命令按entry实际工具链核对：pnpm install --frozen-lockfile；pnpm run verify:versions；pnpm run contracts:generate-types；pnpm run build；pnpm run test；pnpm run contracts:qualify；pnpm run architecture:qualify；pnpm run quality。正式LF scope命令必须由G1已实现并经验证的正常入口支持；诊断exit2不算scope PASS。Windows/独立要求按risk和Authority执行，不能以Linux skip替代。
 
-## 7. 完成与停止
+## 7. 验收与停止
 
-实施最多IMPLEMENTED_PENDING_INDEPENDENT_VERIFICATION；独立通过只记LF-C1/CORE_CONFORMANCE VERIFIED @ exact SHA，Feedback V1生产仍NOT_READY。I1/I2/E1另验真实query/persistence/Context/工作流。
+独立通过只可记LF-C1/CORE_CONFORMANCE VERIFIED @ exact SHA，生产Feedback仍NOT_READY。I1/I2/E1需另外证明真实query、persistence、Context使用和工作流；不因C1组件通过自动启动。
 
-未授权、共享竞写、相关依赖失效、Contract歧义、必须绕过正常路径才过测时停止并保留diff，不revert他人变更。受检suite/lock/生成物scope须E1批准；文档候选清单不等于实际写授权。
+未授权、共享竞写、相关依赖失效、语义歧义或必须绕过正常入口才过测时停止并保留diff；不revert他人变更。54范围不含修改裁判、历史review或独立Gate。文档编写完不等于开工获准。
 
-## 8. 独立review与开工交接
+## 8. 独立review与交接
 
-首轮08b701e发现suite接入、hash分类、Resolution幂等三个P1；39cdb4b复核又提出多义务调用基数P1（LF-RV-04）。本次选择收窄V1为单原子criterion，不加batch结构，更新三文档和C1-V18。所有四项仍ADDRESSED_PENDING_REVIEW；自动review未重复某项不等于已正式关闭。
+D01～D05的准确含义、原始commit来源、主线依据及通过/拒绝例在[决策登记](../architecture/learning-feedback/decision-register.md#d01)，依次至#d05；不得根据编号临时猜义。LF-RV-01～04在7ead85b已有文档层独立PASS，但本轮新subject必须重新接受其适用性和新增登记/治理规划，不能直接继承旧verdict。
 
-最终审查需绑定exact subject，覆盖四findings、D01–D05、单义务基数、owner与phase/scope/并行边界，给出明确结论。审查不能释放尚未批准的E1或关闭主线#82 finding。CI绿/emoji不替代完整覆盖证据。
+完整E0输出五决策+四finding逐项结果、subject/tree、对照main、reviewer和只读证据。接受设计不批准E1。E1实施者按照[授权规划](learning-feedback-authority-transition-plan.md)执行G0～G3；E2/E3/E4按其已定义记录收口，不再让实现者猜目录或另外设计一套授权系统。
 
-门禁接续不再重复总体设计：先读取#85及main最新状态；依据已有独立结果关闭E0；将E1的合法operation/scope和E3的共享写入承接交主线治理任务明确批准；逐项核对E2依赖证据，最后绑定E4。任一项无证据仍为BLOCKED，不能将评论请求当批准。E0–E4全满足，才发布正式开工回执并执行§5。
+本轮计划与导航变化会改变本文件hash；G0应刷新#97请求原文快照并保持三个路径块、4条实施文档、18要求与既有机器请求完全一致。历史快照无需删除。CURRENT及#85记录实际执行/批准状态，而不是在此复制多份实时进度。
