@@ -1,8 +1,8 @@
 # Learning & Feedback 分支建设计划与 CURRENT
 
-状态：`DRAFT — REVIEW_FINDINGS_ADDRESSED_PENDING_REVIEW / CODE_ENTRY_NOT_RELEASED`  
+状态：`DRAFT — BLOCKED / INDEPENDENT_E0_RECORDED / CODE_ENTRY_NOT_RELEASED`  
 更新：2026-09-08  
-核对主线：`5577c2e8a9ef090b87924edddf6114dd75eb28a5`  
+核对主线：`ed14d4179808621c8ffd5751ebbf7b6704f33b64`（观察基线；获准开工基线仍 NONE）  
 设计起点：`3c387f5f196ddfae8e8989710d5a55f9def472a7`  
 跟踪：[文档 #81](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/81) · [PR #84](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84) · [开工Gate #85](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85)
 
@@ -10,12 +10,12 @@
 
 | 维度 | 当前结论 |
 | --- | --- |
-| 文档 | 四个根因finding已修订；LF-RV-04后续复核要求同步上层设计，本轮已改，待最终复核 |
-| 当前动作 | 复核完整文档一致性及#85真实开工条件，不再局部修一份接口而遗漏概述 |
+| 文档 | 独立复核877eea8：LF-RV-01～04文档层PASS；完整E0因D01～D05未定义而BLOCKED，见下方Evidence |
+| 当前动作 | 同步当前main与独立Evidence，收口#85 BLOCKED；单独#95/#97准备治理请求和范围诊断 |
 | LF-C1代码 | NOT_IMPLEMENTED / ENTRY_NOT_RELEASED |
 | 生产Feedback集成 | NOT_IMPLEMENTED / WAITING_FOR_MAINLINE_CAPABILITY |
 | Learning runtime | NOT_IMPLEMENTED |
-| 并行主线 | #83已合并问题/计划；#82仍修复；未合并PR及旧绿色CI非依赖关闭证据 |
+| 并行主线 | #86已合并为ed14d41；#87/#88仍未合并，相关修复仍需独立及protected-main Evidence |
 | 下一代码包 | #85放行后，LF-C1单义务纯投影/关闭评价 |
 
 旧本地D1/F0/F1–F4/C-1不继承；Schema不等于provider。历史review/readiness保留原subject，动态状态在本文与exact-head Evidence。
@@ -58,35 +58,45 @@ LF不是P1-Oxx；CORE_CONFORMANCE VERIFIED不是生产Feedback VERIFIED。V1单�
 
 本次重点修复流程遗漏：原branch-design§6.2/7残留组合criteria许可，已同步§1/6.2/7；06入口同步单义务。现行详细技术定义集中到Contract，概述只链接，以降低未来文档漂移。原基线及初次readiness为历史SHA记录，不改写旧结论。
 
-## 5. 主线与实际写范围
+## 5. 本轮真实进展与写范围
 
-main5577c2e是#83审查/计划合并，不是#82修复完成。双方已有六主线文件与八LF文档不重叠；双父同步保留历史/字节，不force。每次恢复和发布重新核对main与相关PR，未合并修复不当E2证据。
+本轮恢复先核对main5577c2e、PR#84真实HEAD877eea8和#85，按PR HEAD读取未合并文档。独立审查完整八文档、主线职责/接口、suite实际入口和字节向量；不是作者自证。
 
-PR相对main仍仅八Markdown：
+[独立E0结论](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5578475306)绑定877eea857742a2458f2e5c42b3a7d9a261a5a28b/tree0c5b9be17f25e7ff63610c61f39f95e985ef32b9：四项LF-RV修订文档层PASS，D01～D05没有准确条目及来源映射，完整E0=UNPROVEN/BLOCKED。这些ID只被要求覆盖，不能由作者临时编号自然语言重点或删掉要求后自批。
+
+核对期间#86合并为ed14d4179808621c8ffd5751ebbf7b6704f33b64。本分支以该main的原字节为底，叠加原八Markdown并普通双父同步，保留877eea8历史，不force。除CURRENT状态/Evidence外七文档语义未改；Contract/entry/protocol中的旧main是其冻结观察，最新协调状态以本文为准。新subject需要独立复核；旧subject结果不自动继承。
+
+PR相对同步main仍为#81八文档：
 
 ```text
 docs/architecture/06-learning-and-feedback.md
 docs/architecture/learning-feedback/branch-design.md
-docs/roadmap/learning-feedback-branch-plan.md
-docs/reviews/learning-feedback/github-baseline-review-2026-09-08.md
 docs/architecture/learning-feedback/contract-and-seam-proposal.md
 docs/architecture/learning-feedback/parallel-development-protocol.md
+docs/roadmap/learning-feedback-branch-plan.md
 docs/roadmap/learning-feedback-core-entry-plan.md
+docs/reviews/learning-feedback/github-baseline-review-2026-09-08.md
 docs/reviews/learning-feedback/lf-d1-readiness-2026-09-08.md
 ```
 
-这次相对d3138f1只改06、branch-design、CURRENT；不改Contract或开工包规则，不新增代码/测试候选文件。没有实际源码、测试、Schema、suite、依赖、lock、build、CI、operations、ADR或.ai-local修改。
+另有独立主线治理准备[Issue#95](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/95)/[PR#97](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/97)，没有混入本八文档PR。其机器请求路径为 `operations/phase-1/evidence/o01/lf-c1-entry-request.json`，诊断为同目录 `lf-c1-entry-preflight.json`；正常P1-O01 execution为 `operations/phase-1/executions/p1-o01-lf-c1-entry-preparation.json`。材料在#97实际HEAD，不假定main已有；获准LF Authority仍不存在。
 
-作者用Python标准库核算过ASCII字节哈希，不是仓库库实现验证；本地git DNS实际失败，未执行repo build/E2E。远端checks与独立review分别绑定新HEAD，旧结果不继承。
+请求冻结54个逐文件路径和C1-V01～18，选择同一原子完整subject的LF-C1-INTEGRATION单写者方案，操作者/base尚无批准，窗口CLOSED；独立报告与治理锁写者分离。诊断脚本 `scripts/toolchain/check-lf-c1-scope-request.mjs` 仅校验请求与原文快照、重现现行拒绝，始终BLOCKED/exit2，不能替代正式dispatcher或发放开工。它复现LF-C1为UNKNOWN_OPERATION、P1-O02写learning为DENIED，未删P1禁令/改现行checker/Authority。
+
+#97准备包原a4deb7e独立review发现依赖未合并PR Git object、干净clone不可复现，现已在原六文件scope内附原文hash快照并增加正常clone回归；新远端HEAD8826c450fdbad3de5decb882c42d6a0c86af480b需独立重新验证。这里记录修复处置，不将作者声明当独立PASS。
+
+本轮实际可clone并运行本地工具；历史DNS失败记录仅属于旧轮次。所有命令结果分别绑定其实际HEAD，未运行的Windows/远端检查不写PASS；没有LF业务源码、Schema激活或生产集成。
 
 ## 6. 正式开工与下一动作
 
-E0：最终subject四项finding及D01–D05/owner/完整文档一致性的明确独立结论。
-E1：合法LF-C1 operation/authority/精确scope/checker，包括受检suite owner/hash授权。
-E2：实际依赖的#82 canonical JSON/类型/日期、Gate/receipt/subject和架构修复有独立/合并证据。
-E3：共享Schema/registry/type/suite/workspace/lock/build/test/architecture集成明确单写者/窗口。
-E4：开工从获准main重新绑定工具链、Schema、公有入口、Authority与适用Evidence。
+E0：BLOCKED。877eea8已有四项finding与owner/一致性独立文档结论；D01～D05准确定义/来源映射缺失，新subject须独立覆盖。
+E1：BLOCKED。#95/#97只是六文件请求/诊断准备；合法LF-C1 operation/Authority/正常checker及suite owner/hash增量仍须实际批准。
+E2：BLOCKED。R01/R02/R16对应#86已合并，需独立结论和ed14d41适用post-merge Evidence（run34182792727在核对时in_progress）；R06/R09/R10对应#87、R08对应#88仍未合并，不用PR绿替代。
+E3：BLOCKED。共享单写者任务和精确集合已入机器请求，获准操作者/接受记录/main/window尚缺；窗口CLOSED。suite当前只归P1-O02，不能用#82接线权限代替LF批准。
+E4：BLOCKED；approvedMain=null。ed14d41仅最新观察main，正式开工仍须获准SHA/tree/工具链/Schema/公有入口/Authority/适用Evidence全部重绑。
 
 证据统一#85，未满足仍NOT_RELEASED。当前可以修文档并发起独立review，不能代替主线owner授权或虚构其依赖修复。不等所有无关未来Runtime，但相关scope和依赖不能绕过。取得新subject完整独立结论后，剩余动作是正式主线交界/授权，而非继续新增大设计。
 
 执行者同步操作/测试/普通文档/Evidence，最多IMPLEMENTED；独立review只读不边审边改。接口变更/首次集成/收口做完整对齐，防止重演本次只修下层而遗漏上层。
+
+本次最终回执按#85逐项BLOCKED发布，未关闭Issue、未合并LF文档或治理准备PR，未标LF-C1 READY。后续独立结论记录到#85并绑定确切subject，不以CURRENT改写历史review。

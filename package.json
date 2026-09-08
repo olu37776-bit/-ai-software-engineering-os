@@ -9,8 +9,8 @@
     "pnpm": "11.24.0"
   },
   "scripts": {
-    "build": "tsc -b tsconfig.build.json --pretty false",
-    "clean": "tsc -b tsconfig.build.json --clean",
+    "build": "tsc -b tsconfig.build.json --pretty false && node scripts/toolchain/copy-runtime-assets.mjs",
+    "clean": "tsc -b tsconfig.build.json --clean && node scripts/toolchain/copy-runtime-assets.mjs --clean",
     "architecture:qualify": "pnpm exec tsc -b packages/contracts/tsconfig.json --pretty false && node scripts/architecture/qualify-architecture.mjs",
     "contracts:generate-types": "node scripts/contracts/generate-contract-types.mjs --check",
     "contracts:qualify": "pnpm exec tsc -b packages/contracts/tsconfig.json --pretty false && node scripts/contracts/qualify-contracts.mjs",
