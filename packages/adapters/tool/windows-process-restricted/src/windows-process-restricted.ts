@@ -58,6 +58,7 @@ const bridgeEnvironment = Object.fromEntries(
 );
 
 interface BridgeRequest {
+  readonly hostProcessId: number;
   readonly executable: string;
   readonly executableSha256: string;
   readonly arguments: readonly string[];
@@ -734,6 +735,7 @@ export async function runWindowsProcessRestricted(
       canonicalPaths.canonicalStagingRoot,
     );
     const bridgeRequest: BridgeRequest = {
+      hostProcessId: process.pid,
       executable: canonicalPaths.canonicalExecutable,
       executableSha256: tool.executableSha256,
       arguments: [...request.argv],
