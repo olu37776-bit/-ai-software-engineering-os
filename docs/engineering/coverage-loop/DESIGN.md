@@ -1,6 +1,6 @@
 # Coverage Loop 设计与局部决策
 
-状态：`DRAFT v1.1 / REVIEW_PENDING`。这是独立覆盖率工具的目标设计，不是本仓库生产框架已实现能力。来源编号见 [ACCEPTANCE_AND_INCIDENTS.md](ACCEPTANCE_AND_INCIDENTS.md)。
+状态：`DRAFT v1.2 / REVIEW_PENDING`。这是独立覆盖率工具的目标设计，不是本仓库生产框架已实现能力。来源编号见 [ACCEPTANCE_AND_INCIDENTS.md](ACCEPTANCE_AND_INCIDENTS.md)。
 
 ## 1. 本次文档 Operation / WRITE_SCOPE
 
@@ -52,13 +52,13 @@ OpenCode工具权限不是OS沙箱；bash、插件及测试代码本身都可能
 
 | 记录 | 最少语义 | 写入者 |
 | --- | --- | --- |
-| WorkItem | batchId、attempt、环境/Generation/父revision、目标、允许改动、before、预算 | 程序；主Agent建议目标 |
+| WorkItem | batchId、attempt、环境/Generation/父revision、目标及验收谓词、允许改动、before、预算 | 程序；主Agent建议目标 |
 | Analysis | 精确目标、入口及证据、条件、控制方式、层级、预期及来源、配方、PROCEED/ESCALATE/DEFER | 分析者提交，程序落盘 |
 | Patch | workItemHash、analysisHash、基准测试树及文件hash、改动、场景→测试→断言 | 实施者提交 |
 | Verification | 实际命令/测试、完整性、失败差分、同目标效果、补丁/测试树/报告/exec hash | 程序 |
 | Accepted revision | 可恢复测试树、补丁、有效数据贡献、报告/文档、父版本及提交键 | 程序 |
 
-Method身份为 `(module, binaryClassName, methodName, jvmDescriptor)`；module消除跨模块同名歧义，descriptor区分重载。行区间是有版本的导航，不是身份。沿用已有解析，不建第二套模型。
+Method身份为 `(module, binaryClassName, methodName, jvmDescriptor)`；module消除跨模块同名歧义，descriptor区分重载。行区间是有版本的导航，不是方法身份。沿用已有解析，不建第二套模型。
 
 PLAN→ANALYSIS→PATCH→VERIFY→ACCEPT绑定同一WorkItem内容hash、父revision、目标和环境。分析不完整/非PROCEED、身份或前置内容变化时，程序不发实施调用；验证时再复核。
 
@@ -76,8 +76,14 @@ PLAN→ANALYSIS→PATCH→VERIFY→ACCEPT绑定同一WorkItem内容hash、父rev
 
 1. **范围**：测试补丁合法，无生产配置漂移、既有测试删除或断言削弱。
 2. **健康**：编译成功，目标测试实际运行，报告完整，无新增失败；已批准历史失败单列，不变绿。
-3. **收益**：相同字节码/scope下精确目标改善，别的方法/重载/class+1不能代替。行任务要求方法missedLines下降；分支收益单列，不伪称行覆盖进度。
+3. **收益**：相同字节码/scope下，按工作包预先声明的目标类型执行下述谓词；不能在验收时降粒度。
 4. **断言**：预期可解释，覆盖主要输出/状态/异常。高风险样板在隔离副本做少量错误变体/PIT抽查，不修改主工作区生产代码，不要求全仓Mutation先达标。[S10]
+
+### 目标类型与收益谓词
+
+- **METHOD目标（METHOD_EXACT定位）**：比较同module/class/method/descriptor的counter。行缺口任务要求该方法missedLines下降；其他方法或overload增长不能替代。分支任务单独声明分支谓词，分支增长不能伪称行覆盖进度。
+- **LINE_BLOCK目标**：除完整方法身份外，还冻结source内容hash、build/scope、目标可执行行集合和区块验收谓词。必须证明**指定集合内**原先未覆盖的行达到预先声明的新增命中要求，默认至少一条；若计划要求多个区块各自命中，则逐块满足。只降低同方法其他区块的missedLines仍为未达标，不得PASS/CLOSE。
+- **LINE_HINT**：仅供导航，不是可验收目标身份。不具备可靠行归属能力时，实施前明确改发METHOD工作包、重新绑定Analysis和验收条件；禁止关闭时把LINE_BLOCK偷偷当METHOD。
 
 默认一个工作包一个声明目标。多目标按项给结论；只有可分离且独立验证的有效子补丁可另发工作包接受，否则整包返修。拆包必须重绑定analysis/patch/verify，不能关闭时偷偷改目标；延期不能记完成或降低分母。
 
