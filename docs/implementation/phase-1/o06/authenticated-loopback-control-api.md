@@ -44,6 +44,6 @@ or Command transport.
 - `scripts/qualification/control-api/qualify-control-api.mjs` emits the four Evidence result types
   required by `P1-V07-CONTROL-API` without including the token value.
 
-Windows token creation is fail-closed: if `icacls.exe` cannot remove inheritance, grant the current
-user full control, or verify a non-public ACL, Runtime startup fails before readiness and removes the
-token file. Linux qualification requires no group/other permission bits (`0600`).
+Windows token creation and validation use the fixed native security helper through an absolute System32 PowerShell path. The helper validates owner and protected user-only DACL through a live handle. Failure stops startup before readiness and removes discovery. Linux qualification requires no group/other permission bits (`0600`).
+
+Issue #82 remediation uses unique filesystem claims and bakery ordering for runtime ownership. A losing contender cannot unlink a successor, and release is idempotent. Request deadlines close unfinished-body connections and return the concurrency slot exactly once. Public reads require HTTP 200 and stop requires HTTP 202. The SSE client preserves split UTF-8 and rejects invalid or truncated input. Current regression results and remaining hosted checks are in `review-remediation-issue-82.md`.
