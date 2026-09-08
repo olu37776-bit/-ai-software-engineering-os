@@ -126,3 +126,10 @@ Architecture Decision
 ## M0 remediation
 
 - [Phase 0 Schema / Phase 1 Governance Remediation Review](reviews/phase-0-schema-phase1-governance-review.md)
+
+## 项目知识库重建支线（独立文档范围）
+
+- [GBrain / 项目知识库重建 Authority Index](knowledge-reconstruction/authority-index.md)
+- [总体设计与实施路线 V1](knowledge-reconstruction/architecture/overall-design-v1.md)
+
+当前为设计草案，具体状态与唯一允许动作以支线索引为准。本支线不改写主线 KnowledgeProviderPort、Context 或 Learning & Feedback 的 Authority；本地知识内容及私有 Evidence 不进入本仓库。
