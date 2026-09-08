@@ -1,6 +1,9 @@
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+import { promisify } from "node:util";
 
 import { expect, test } from "vitest";
 
@@ -29,8 +32,24 @@ test("logical mutation identity survives a different checkout directory and CRLF
       join(copy, "packages/policy/dist/index.js"),
       source.replace(/\r\n/g, "\n").replace(/\n/g, "\r\n"),
     );
-    const original = await qualifyPolicyMutations(root);
-    const relocated = await qualifyPolicyMutations(copy);
+    // Preserve the installed dependency graph of the copied, unbundled
+    // Contract package. A junction is available without Windows elevation.
+    await symlink(
+      join(root, "node_modules"),
+      join(copy, "node_modules"),
+      process.platform === "win32" ? "junction" : "dir",
+    );
+    // Use real Node resolution: Vitest aliases could otherwise hide a missing
+    // runtime dependency in the relocated checkout.
+    const script = pathToFileURL(
+      join(root, "scripts/verify-phase-1/qualify-policy-mutations.mjs"),
+    ).href;
+    const { stdout } = await promisify(execFile)(process.execPath, [
+      "--input-type=module",
+      "-e",
+      `import { qualifyPolicyMutations } from ${JSON.stringify(script)}; console.log(JSON.stringify([await qualifyPolicyMutations(${JSON.stringify(root)}), await qualifyPolicyMutations(${JSON.stringify(copy)})]));`,
+    ]);
+    const [original, relocated] = JSON.parse(stdout);
     expect(relocated.canonicalSourceSha256).toBe(original.canonicalSourceSha256);
     expect(relocated.cases).toEqual(original.cases);
   } finally {
