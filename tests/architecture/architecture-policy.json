@@ -15,9 +15,16 @@
     {
       "name": "@aseos/kernel",
       "root": "packages/kernel",
-      "required": false,
+      "required": true,
       "publicEntryRequired": true,
       "allowedWorkspaceDependencies": ["@aseos/contracts"]
+    },
+    {
+      "name": "@aseos/workflow",
+      "root": "packages/workflow",
+      "required": true,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/contracts", "@aseos/kernel"]
     },
     {
       "name": "@aseos/policy",
@@ -43,7 +50,8 @@
         "@aseos/kernel",
         "@aseos/observability",
         "@aseos/persistence",
-        "@aseos/policy"
+        "@aseos/policy",
+        "@aseos/workflow"
       ]
     },
     {
@@ -94,7 +102,8 @@
         "@aseos/platform",
         "@aseos/policy",
         "@aseos/windows-process-restricted",
-        "@aseos/worker"
+        "@aseos/worker",
+        "@aseos/workflow"
       ]
     }
   ],

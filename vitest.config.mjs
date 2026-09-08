@@ -5,6 +5,10 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      "@aseos/kernel": fileURLToPath(new URL("./packages/kernel/dist/index.js", import.meta.url)),
+      "@aseos/workflow": fileURLToPath(
+        new URL("./packages/workflow/dist/index.js", import.meta.url),
+      ),
       "@aseos/contracts": fileURLToPath(
         new URL("./packages/contracts/dist/index.js", import.meta.url),
       ),
@@ -30,6 +34,7 @@ export default defineConfig({
       "tests/qualification/toolchain/**/*.test.mjs",
       "tests/qualification/policy/**/*.test.mjs",
       "tests/qualification/persistence/**/*.test.mjs",
+      "tests/qualification/kernel/**/*.test.mjs",
       "tests/qualification/control-api/**/*.test.mjs",
       "tests/qualification/isolation/**/*.test.mjs",
       "tests/acceptance/control-api/**/*.test.mjs",

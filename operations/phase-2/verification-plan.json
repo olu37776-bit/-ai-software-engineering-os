@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O01",
+  "steps": [
+    {
+      "stepId": "P2-V01-SCOPE",
+      "command": "node scripts/toolchain/verify-scope.mjs",
+      "required": true
+    },
+    {
+      "stepId": "P2-V02-GOVERNANCE",
+      "command": "python scripts/governance/verify_m0.py",
+      "required": true
+    },
+    { "stepId": "P2-V03-QUALITY", "command": "pnpm quality", "required": true },
+    { "stepId": "P2-V04-DURABLE-KERNEL", "command": "pnpm kernel:qualify", "required": true },
+    {
+      "stepId": "P2-V05-HOSTED-QUALIFICATION",
+      "command": "Existing required Linux, Windows and real Windows packaging CI",
+      "required": true
+    },
+    {
+      "stepId": "P2-V06-MAIN-LANDING",
+      "command": "Exact protected-main merge qualification",
+      "required": true
+    }
+  ],
+  "behavioralRequirements": [
+    "CreateWorkflowRun commits exactly one WorkflowRunCreated event at version 1",
+    "Reopen real SQLite and replay identical workflow state",
+    "Identical command retry returns stored outcome without a second event, including after restart",
+    "Malformed commands, hashes and unsupported semantics reject without writes",
+    "Changed-payload identity conflicts and optimistic concurrency are explicit",
+    "Replay rejects corrupt hash, stream identity or noncontiguous versions",
+    "Failed transactions do not leave partial event or audit effects"
+  ],
+  "completionBoundary": "Do not claim this slice complete until all steps have exact-subject evidence; this slice never means the whole Phase 2 roadmap is complete."
+}

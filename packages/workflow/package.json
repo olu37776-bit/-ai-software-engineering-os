@@ -1,5 +1,5 @@
 {
-  "name": "@aseos/platform",
+  "name": "@aseos/workflow",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -15,14 +15,11 @@
   "scripts": {
     "build": "tsc -b tsconfig.json --pretty false",
     "clean": "tsc -b tsconfig.json --clean",
-    "test": "pnpm run build && node --test test/*.test.mjs",
     "typecheck": "tsc -b tsconfig.json --pretty false"
   },
   "dependencies": {
     "@aseos/contracts": "workspace:*",
-    "@aseos/kernel": "workspace:*",
-    "@aseos/workflow": "workspace:*",
-    "@aseos/persistence": "workspace:*"
+    "@aseos/kernel": "workspace:*"
   },
   "engines": {
     "node": "24.19.0"

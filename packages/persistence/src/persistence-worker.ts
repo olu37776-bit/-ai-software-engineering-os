@@ -524,7 +524,9 @@ function currentAggregateVersion(batch: JournalAppendBatch): number {
   return requiredSafeInteger(row, "version", "aggregate version");
 }
 
-function findCommandDuplicate(batch: JournalAppendBatch): JsonRecord | undefined {
+function findCommandDuplicate(
+  batch: Pick<JournalAppendBatch, "commandId" | "idempotencyKey" | "effectScope" | "payloadHash">,
+): JsonRecord | undefined {
   const matches = db()
     .prepare(
       "SELECT command_id, idempotency_key, effect_scope, payload_hash, receipt_json FROM command_receipts WHERE command_id = ? OR (idempotency_key = ? AND effect_scope = ?)",
@@ -1090,6 +1092,17 @@ async function handle(request: WorkerRequest): Promise<unknown> {
       return commitBatch(request.payload as JournalAppendBatch);
     case "get-command":
       return getCommand(requiredString(payload, "commandId", "get-command"));
+    case "lookup-command-receipt": {
+      const duplicate = findCommandDuplicate({
+        commandId: requiredString(payload, "commandId", "lookup-command-receipt"),
+        idempotencyKey: requiredString(payload, "idempotencyKey", "lookup-command-receipt"),
+        effectScope: requiredString(payload, "effectScope", "lookup-command-receipt"),
+        payloadHash: requiredString(payload, "payloadHash", "lookup-command-receipt"),
+      });
+      return duplicate === undefined
+        ? null
+        : parseJson(duplicate["receipt_json"], "command receipt");
+    }
     case "health":
       return health();
     case "hold-lock":

@@ -10,6 +10,9 @@ importers:
       "@aseos/contracts":
         specifier: workspace:*
         version: link:packages/contracts
+      "@aseos/kernel":
+        specifier: workspace:*
+        version: link:packages/kernel
       "@aseos/persistence":
         specifier: workspace:*
         version: link:packages/persistence
@@ -25,6 +28,9 @@ importers:
       "@aseos/worker":
         specifier: workspace:*
         version: link:apps/worker
+      "@aseos/workflow":
+        specifier: workspace:*
+        version: link:packages/workflow
     devDependencies:
       "@eslint/js":
         specifier: 10.0.1
@@ -98,6 +104,12 @@ importers:
         specifier: 8.20.0
         version: 8.20.0
 
+  packages/kernel:
+    dependencies:
+      "@aseos/contracts":
+        specifier: workspace:*
+        version: link:../contracts
+
   packages/persistence:
     dependencies:
       "@aseos/contracts":
@@ -109,12 +121,30 @@ importers:
       "@aseos/contracts":
         specifier: workspace:*
         version: link:../contracts
+      "@aseos/kernel":
+        specifier: workspace:*
+        version: link:../kernel
+      "@aseos/persistence":
+        specifier: workspace:*
+        version: link:../persistence
+      "@aseos/workflow":
+        specifier: workspace:*
+        version: link:../workflow
 
   packages/policy:
     dependencies:
       "@aseos/contracts":
         specifier: workspace:*
         version: link:../contracts
+
+  packages/workflow:
+    dependencies:
+      "@aseos/contracts":
+        specifier: workspace:*
+        version: link:../contracts
+      "@aseos/kernel":
+        specifier: workspace:*
+        version: link:../kernel
 
 packages:
   "@babel/code-frame@8.0.0":

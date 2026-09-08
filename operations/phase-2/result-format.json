@@ -1,0 +1,24 @@
+{
+  "formatVersion": "1.0.0",
+  "operationId": "P2-O01",
+  "description": "Evidence record format, not a PASS receipt or a runtime contract schema.",
+  "requiredFields": [
+    "schemaVersion",
+    "operationId",
+    "subjectCommit",
+    "acceptedP1MainCommit",
+    "result",
+    "steps",
+    "knownGaps",
+    "phase2Complete"
+  ],
+  "resultVocabulary": ["NOT_RUN", "PARTIAL", "PASS", "FAIL"],
+  "subjectCommitFormat": "Exact 40-character lowercase Git commit SHA",
+  "stepFields": ["stepId", "result", "evidenceRefs"],
+  "rules": [
+    "PASS requires every verification-plan step PASS with nonempty evidenceRefs",
+    "Evidence must bind the exact subject or explicitly document unchanged executable tree ancestry",
+    "phase2Complete must remain false: P2-O01 is only the first durable-kernel slice",
+    "No generated record may impersonate additional human acceptance"
+  ]
+}

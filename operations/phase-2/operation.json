@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O01",
+  "name": "Durable deterministic WorkflowRun creation and replay",
+  "acceptedP1Head": "ba6dfbc478e75d44f3c33b77aefb5452bc538637",
+  "acceptedP1MainCommit": "114f466e4de7cb2f698c2f4cde57fc90006e527f",
+  "authorization": {
+    "source": "EXPLICIT_USER_CONTINUATION",
+    "requiresP1AcceptedMain": true,
+    "userInstructions": [
+      "先完成 p1 不需要每次都审查 然后继续后续建设",
+      "通过本次 P1 最终验收",
+      "我要睡觉去了 你一直干下去推进下去"
+    ],
+    "boundary": "Authorizes this bounded next implementation slice after accepted P1 lands; does not authorize weakening frozen P1 contracts, ADRs, security boundaries or required CI."
+  },
+  "scopeRef": "operations/phase-2/write-scope.json",
+  "verificationRef": "operations/phase-2/verification-plan.json",
+  "resultFormatRef": "operations/phase-2/result-format.json",
+  "nonGoals": [
+    "Production workflow execution, model or GBrain integration",
+    "Complete OS sandbox",
+    "Atomic worker-result inbox/outbox integration",
+    "New or modified frozen contracts",
+    "Declaring all of Phase 2 complete"
+  ]
+}
