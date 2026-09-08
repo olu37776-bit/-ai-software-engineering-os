@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "policyId": "P1-PACKAGE-ARCHITECTURE-1",
   "dependencyCruiserVersion": "18.2.0",
-  "sourceRoots": ["packages", "scripts/architecture"],
+  "sourceRoots": ["apps", "packages", "scripts/architecture"],
   "excludedPaths": ["(^|/)dist/", "(^|/)node_modules/", "tests/architecture/fixtures/"],
   "packages": [
     {
@@ -61,6 +61,27 @@
       "allowedWorkspaceDependencies": ["@aseos/contracts", "@aseos/kernel", "@aseos/policy"]
     },
     {
+      "name": "@aseos/runtime",
+      "root": "apps/runtime",
+      "required": true,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/platform"]
+    },
+    {
+      "name": "@aseos/cli",
+      "root": "apps/cli",
+      "required": true,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/platform"]
+    },
+    {
+      "name": "@aseos/worker",
+      "root": "apps/worker",
+      "required": true,
+      "publicEntryRequired": true,
+      "allowedWorkspaceDependencies": ["@aseos/contracts", "@aseos/windows-process-restricted"]
+    },
+    {
       "name": "@aseos/repository",
       "root": ".",
       "required": true,
@@ -72,11 +93,17 @@
         "@aseos/persistence",
         "@aseos/platform",
         "@aseos/policy",
-        "@aseos/windows-process-restricted"
+        "@aseos/windows-process-restricted",
+        "@aseos/worker"
       ]
     }
   ],
-  "requiredEdges": [{ "from": "@aseos/repository", "to": "@aseos/contracts" }],
+  "requiredEdges": [
+    {
+      "from": "@aseos/repository",
+      "to": "@aseos/contracts"
+    }
+  ],
   "semanticOwnerAuthority": {
     "registryLoader": "@aseos/contracts#loadContractRegistry",
     "inventoryValidator": "@aseos/contracts#validateContractInventory"
