@@ -143,6 +143,13 @@ function serializeError(error: unknown): SerializedError {
       : { code: error.code, message: error.message, details: error.details };
   }
   const message = error instanceof Error ? error.message : String(error);
+  const sqliteCode =
+    typeof error === "object" && error !== null
+      ? (error as Record<string, unknown>)["errcode"]
+      : undefined;
+  if (typeof sqliteCode === "number" && [11, 26].includes(sqliteCode & 0xff)) {
+    return { code: "PERSISTENCE_CORRUPTION", message };
+  }
   const lower = message.toLowerCase();
   if (lower.includes("locked") || lower.includes("busy")) {
     return { code: "PERSISTENCE_BUSY", message };
@@ -156,14 +163,6 @@ function translateSqliteError(error: unknown): InternalPersistenceError {
   return new InternalPersistenceError(serialized.code, serialized.message, serialized.details);
 }
 
-async function fileExistsWithBytes(path: string): Promise<boolean> {
-  try {
-    return (await stat(path)).size > 0;
-  } catch {
-    return false;
-  }
-}
-
 async function fileExists(path: string): Promise<boolean> {
   try {
     await stat(path);
@@ -175,7 +174,7 @@ async function fileExists(path: string): Promise<boolean> {
 }
 
 async function quarantineDatabase(): Promise<string | undefined> {
-  if (!(await fileExistsWithBytes(databasePath))) return undefined;
+  if (!(await fileExists(databasePath))) return undefined;
   const suffix = new Date().toISOString().replaceAll(/[^0-9]/gu, "");
   const quarantinePath = `${databasePath}.corrupt-${suffix}`;
   await writeFile(
@@ -191,7 +190,7 @@ async function quarantineDatabase(): Promise<string | undefined> {
   await rename(databasePath, quarantinePath);
   for (const sidecar of ["-wal", "-shm"]) {
     const source = databasePath + sidecar;
-    if (await fileExistsWithBytes(source)) await rename(source, quarantinePath + sidecar);
+    if (await fileExists(source)) await rename(source, quarantinePath + sidecar);
   }
   return quarantinePath;
 }
@@ -1123,12 +1122,18 @@ let quarantineRequired = false;
 let databaseExisted = false;
 try {
   quarantineRequired = await fileExists(quarantineMarkerPath);
-  databaseExisted = await fileExistsWithBytes(databasePath);
+  databaseExisted = await fileExists(databasePath);
   if (quarantineRequired) {
     throw new InternalPersistenceError(
       "PERSISTENCE_CORRUPTION",
       "Authority database is quarantined and requires explicit recovery",
       { databasePath, quarantineMarkerPath, recoveryRequired: true },
+    );
+  }
+  if (databaseExisted && (await stat(databasePath)).size === 0) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_CORRUPTION",
+      "Existing authority database is empty and requires explicit recovery",
     );
   }
   await initialize();
@@ -1160,7 +1165,9 @@ try {
   database = undefined;
   const serialized = serializeError(error);
   const quarantinePath =
-    !quarantineRequired && databaseExisted ? await quarantineDatabase() : undefined;
+    !quarantineRequired && databaseExisted && serialized.code === "PERSISTENCE_CORRUPTION"
+      ? await quarantineDatabase()
+      : undefined;
   const details =
     quarantinePath === undefined
       ? serialized.details
