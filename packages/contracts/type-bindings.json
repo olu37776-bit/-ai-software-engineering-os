@@ -160,6 +160,10 @@
     {
       "schemaId": "urn:aseos:schema:workflow-run-created-payload:1.0.0",
       "exportName": "WorkflowRunCreatedPayload"
+    },
+    {
+      "schemaId": "urn:aseos:schema:result-journal-append-batch:1.0.0",
+      "exportName": "ResultJournalAppendBatch"
     }
   ]
 }

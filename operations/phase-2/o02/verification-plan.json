@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O02",
+  "requirements": [
+    "Pinned accepted O01 main ancestry and deny-by-default exact scope",
+    "Single additive ResultJournalAppendBatch activation with all old schemas and registry/inventory entries unchanged",
+    "Atomic SQLite result receipt, inbox, event, audit and outbox completion effects",
+    "Exact duplicate result recovery after restart and changed-payload conflict",
+    "Rollback leaves no partial result effects",
+    "Pending outbox tasks survive restart and completed results are excluded",
+    "Existing quality, contracts, persistence and required hosted Windows/Linux/packaging remain mandatory",
+    "Exact protected-main merge qualification before slice completion"
+  ],
+  "nonGoals": [
+    "Database migration",
+    "Workflow/node lifecycle",
+    "Worker dispatch",
+    "Full Phase 2 completion"
+  ],
+  "phase2Complete": false
+}

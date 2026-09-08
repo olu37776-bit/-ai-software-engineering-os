@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O02",
+  "subjectCommit": "318b943945c3badd6e7e89291465f43a9f835385",
+  "subjectTree": "7080f87005f53c0d522d2c3facf5e40dc8e04d05",
+  "subjectKind": "LOCAL_IMPLEMENTATION_SNAPSHOT",
+  "recordedAt": "2026-09-09T03:00:00+08:00",
+  "result": "PARTIAL",
+  "localQuality": {
+    "result": "PASS",
+    "note": "Full pnpm quality passed on the same runtime implementation before adding the separately qualified package probe and incorporating upstream test-only fixture isolation."
+  },
+  "localPersistenceRegression": { "result": "PASS", "testsPassed": 37 },
+  "localPackagedQualification": {
+    "result": "PASS",
+    "testsPassed": 7,
+    "testsSkipped": 0,
+    "manifestSha256": "947199c236912e35656a786668e4d951f173015b369323897ab7276bbdf5cbae",
+    "payloadFiles": 322,
+    "payloadSizeBytes": 94163789,
+    "packagedAtomicResultJournal": "PASS",
+    "restartReceipt": true,
+    "acceptedResultCount": 1,
+    "packagedDurableWorkflow": "PASS"
+  },
+  "hostedQualification": "NOT_RUN",
+  "mainLanding": "NOT_RUN",
+  "phase2Complete": false,
+  "knownGaps": [
+    "This local snapshot is not a hosted or protected-main qualification receipt.",
+    "The O02 executable gate remains unbound until the real O01 protected-main merge exists.",
+    "No worker dispatch, lease, Node terminal transition, external fencing or production model integration is claimed."
+  ]
+}

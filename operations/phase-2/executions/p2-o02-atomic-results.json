@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O02",
+  "implementationBranch": "phase-2/p2-o02-atomic-results",
+  "baseCommit": "449b740cdaf45e822ccc8e5fb256d5960fdbf206",
+  "status": "IN_PROGRESS",
+  "phase2Complete": false,
+  "note": "Bound to the actual PR #102 merge after its required head checks passed. O02 landing must also wait for the preceding exact protected-main qualification; this record does not claim O02 or Phase 2 complete."
+}

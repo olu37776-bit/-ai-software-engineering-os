@@ -355,6 +355,26 @@
         "keyword": "const",
         "instancePath": "/allowedSideEffects"
       }
+    },
+    {
+      "caseId": "p2-result-journal-valid",
+      "schemaId": "urn:aseos:schema:result-journal-append-batch:1.0.0",
+      "instancePath": "packages/contracts/examples/persistence/valid/result-journal-append-batch.json",
+      "expected": "VALID",
+      "semanticAssertions": [
+        "SCHEMA_HASH_MATCHES",
+        "ARTIFACT_HASH_MATCHES"
+      ]
+    },
+    {
+      "caseId": "p2-result-journal-missing-result",
+      "schemaId": "urn:aseos:schema:result-journal-append-batch:1.0.0",
+      "instancePath": "packages/contracts/examples/persistence/invalid/result-journal-missing-result.json",
+      "expected": "INVALID",
+      "expectedError": {
+        "keyword": "required",
+        "instancePath": ""
+      }
     }
   ]
 }
