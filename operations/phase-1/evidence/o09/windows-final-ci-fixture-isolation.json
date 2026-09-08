@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "QualificationHarnessRemediation",
+  "recordedAt": "2026-09-09T02:05:00+08:00",
+  "runId": 34257262443,
+  "subjectCommit": "ba6dfbc478e75d44f3c33b77aefb5452bc538637",
+  "attempts": [
+    {
+      "attempt": 1,
+      "windowsJobId": 102167026470,
+      "result": "FAIL",
+      "failures": ["Control API test harness 10000 ms timeout", "Windows security fixture beforeAll 60000 ms timeout"],
+      "assertionMismatch": false
+    },
+    {
+      "attempt": 2,
+      "windowsJobId": 102174174023,
+      "result": "FAIL",
+      "failures": ["Combined missing/duplicate/unknown-schema fixture test 10000 ms timeout"],
+      "priorTimeoutCases": "PASS",
+      "assertionMismatch": false
+    }
+  ],
+  "remediation": {
+    "path": "tests/contract/example-suite.test.mjs",
+    "change": "Split three independent malformed-binding cases into individually reported tests, each retaining its own unchanged default timeout and fresh repository fixture.",
+    "allNegativeAssertionsPreserved": true,
+    "timeoutsIncreased": false,
+    "runtimeCodeChanged": false,
+    "frozenAuthorityChanged": false,
+    "requiredChecksRemoved": false
+  },
+  "landing": "Wait for the new exact-head required qualification; failures above are not replaced with PASS. Final P1 human acceptance remains bound to unchanged runtime implementation 3777bda86f090ac75a3382b8b310da17737dc257."
+}

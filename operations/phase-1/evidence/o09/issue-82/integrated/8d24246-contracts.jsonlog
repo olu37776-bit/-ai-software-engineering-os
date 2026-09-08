@@ -1,0 +1,63 @@
+$ pnpm exec tsc -b packages/contracts/tsconfig.json --pretty false && node scripts/contracts/qualify-contracts.mjs
+{
+  "schemaVersion": "1.0.0",
+  "gateStepId": "P1-V03-CONTRACTS",
+  "result": "PASS",
+  "schemaMetaValidation": {
+    "evidenceType": "SchemaMetaValidationResult",
+    "result": "PASS",
+    "dialect": "https://json-schema.org/draft/2020-12/schema",
+    "registeredSchemas": 52,
+    "metaValidatedSchemas": 52,
+    "compiledSchemas": 52,
+    "unresolvedReferences": 0
+  },
+  "schemaRegistryValidation": {
+    "evidenceType": "SchemaRegistryValidationResult",
+    "result": "PASS",
+    "registryEntries": 52,
+    "uniqueSchemaIdentities": 52,
+    "uniqueAuthorityPaths": 52,
+    "verifiedHashes": 88,
+    "inventoryActiveContracts": 36,
+    "inventoryPlannedContracts": 37,
+    "uniqueCanonicalOwners": 73
+  },
+  "exampleSuite": {
+    "evidenceType": "ExampleSuiteResult",
+    "result": "PASS",
+    "totalCases": 38,
+    "validAccepted": 19,
+    "invalidRejected": 19,
+    "semanticAssertions": 22
+  },
+  "schemaTypeConsistency": {
+    "evidenceType": "SchemaTypeConsistencyResult",
+    "result": "PASS",
+    "bindings": 40,
+    "requiredOptionalChecks": 574,
+    "primitiveContainerChecks": 497,
+    "enumDiscriminantChecks": 122,
+    "readonlyExportChecks": 608
+  },
+  "compatibility": {
+    "evidenceType": "ContractCompatibilityResult",
+    "result": "PASS",
+    "probes": 4,
+    "compatible": 1,
+    "failClosed": 3
+  },
+  "runtimeValidation": {
+    "result": "PASS",
+    "validAccepted": true,
+    "unknownField": "SCHEMA_VALIDATION_FAILED",
+    "unknownSchema": "UNKNOWN_SCHEMA",
+    "futureVersion": "UNSUPPORTED_SCHEMA_VERSION",
+    "identityVersionMismatch": "UNSUPPORTED_SCHEMA_VERSION"
+  },
+  "inventory": {
+    "activeContracts": 36,
+    "plannedContracts": 37,
+    "publicOrPersistedBoundaries": 36
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "evidenceType": "PolicyMutationResult",
+  "result": "PASS",
+  "method": "ISOLATED_COMPILED_OWNER_BEHAVIORAL_MUTATION",
+  "sourceSha256": "080eb9d59a6b2772d7e54c745bd87ffa71e4abeb89d9e95b5da64fcae5fd2e1e",
+  "baselineProbes": 8,
+  "killedMutations": 8,
+  "survivingMutations": 0,
+  "cases": [
+    {
+      "id": "default-allow",
+      "result": "KILLED",
+      "mutationSha256": "b8200b636a0476b7964db886aec57166a39a143cf115f3d7eaab08a7e578b88f"
+    },
+    {
+      "id": "deny-override-removal",
+      "result": "KILLED",
+      "mutationSha256": "70eff85508b57b8c4dc11f0c1e1f0510e01fcb8189b301df34ecd978d3532d49"
+    },
+    {
+      "id": "hard-invariant-bypass",
+      "result": "KILLED",
+      "mutationSha256": "b174cf3c34b32d599bd7073b2623a613d3e6efa4f8393114c4b286a8edc1c94e"
+    },
+    {
+      "id": "requirement-conflict-coercion",
+      "result": "KILLED",
+      "mutationSha256": "e858b2ce1a226b14421b544a8584df30ce79c2231b6936b17c8a8bc4ad713436"
+    },
+    {
+      "id": "unknown-constant-acceptance",
+      "result": "KILLED",
+      "mutationSha256": "b7e22d5d8a85856e3fcd70c38dda7157916d3db14da517254630607031e76dcc"
+    },
+    {
+      "id": "incompatible-not-equal-acceptance",
+      "result": "KILLED",
+      "mutationSha256": "dd551dfb4ce563cda90c285d060299f529f1bfa74a0918728afa7d146dea4ee4"
+    },
+    {
+      "id": "invalid-deny-skipped",
+      "result": "KILLED",
+      "mutationSha256": "2736fdf460b11b99b30e114e0f6cc7fd6aa5f39ed508346e631576113bad9b48"
+    },
+    {
+      "id": "ambient-clock-substitution",
+      "result": "KILLED",
+      "mutationSha256": "b4057b9f03fdbdfb18314bd37653ccfc4fe11f78986f13d51352f656a6618bf5"
+    }
+  ]
+}

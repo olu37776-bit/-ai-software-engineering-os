@@ -1,0 +1,41 @@
+Scope: all 9 workspace projects
+✓ Lockfile passes supply-chain policies (verified 6h ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +382
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: /root/.local/share/pnpm/store/v11
+  Virtual store is at:             node_modules/.pnpm
+Progress: resolved 382, reused 382, downloaded 0, added 189
+Progress: resolved 382, reused 382, downloaded 0, added 382, done
+.../node_modules/protobufjs postinstall$ node scripts/postinstall
+.../node_modules/protobufjs postinstall: Done
+[WARN] Failed to create bin at /workspace/scratch/5fb93e787236/p1-o09-final-source/node_modules/.bin/aseos-worker. ENOENT: no such file or directory, open '/workspace/scratch/5fb93e787236/p1-o09-final-source/apps/worker/dist/main.js'
+
+dependencies:
++ @aseos/contracts 0.1.0 <- packages/contracts
++ @aseos/persistence 0.1.0 <- packages/persistence
++ @aseos/platform 0.1.0 <- packages/platform
++ @aseos/policy 0.1.0 <- packages/policy
++ @aseos/windows-process-restricted 0.1.0 <- packages/adapters/tool/windows-process-restricted
++ @aseos/worker 0.1.0 <- apps/worker
+
+devDependencies:
++ @eslint/js 10.0.1
++ @opentelemetry/sdk-node 0.221.0
++ @stryker-mutator/core 10.0.0
++ @stryker-mutator/typescript-checker 10.0.0
++ @stryker-mutator/vitest-runner 10.0.0
++ @types/node 24.13.3
++ ajv 8.20.0
++ dependency-cruiser 18.2.0
++ eslint 10.9.1
++ fast-check 4.9.0
++ prettier 3.9.6
++ typescript 6.0.3
++ typescript-eslint 8.68.0
++ vitest 4.1.11
+
+[WARN] Failed to create bin at /workspace/scratch/5fb93e787236/p1-o09-final-source/node_modules/.bin/aseos-worker. ENOENT: no such file or directory, open '/workspace/scratch/5fb93e787236/p1-o09-final-source/node_modules/@aseos/worker/dist/main.js'
+Done in 3.8s using pnpm v11.24.0

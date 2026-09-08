@@ -1,0 +1,418 @@
+{
+  "$schema": "urn:aseos:operation-schema:phase-1-receipt:1.1.0",
+  "schemaVersion": "1.1.0",
+  "operationId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+  "m0GateRef": "docs/reviews/m0-architecture-baseline-verified.md",
+  "authorityLockHash": "a4245c73ef80da2f3829853cb5a8c89a589f0e0486e43dab2cf9d3b2bda41ee4",
+  "baselineCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+  "implementationCommit": "3777bda86f090ac75a3382b8b310da17737dc257",
+  "implementationDeclaration": "IMPLEMENTED",
+  "declaredBy": {
+    "role": "IMPLEMENTATION_AGENT",
+    "actorId": "codex-local-p1-completion-20260909"
+  },
+  "startedAt": "2026-09-08T07:04:14Z",
+  "completedAt": "2026-09-09T01:22:00+08:00",
+  "writeScope": {
+    "scopeId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE",
+    "authorityLockVerified": true,
+    "compliant": true,
+    "changedPaths": [
+      "README.md",
+      "docs/README.md",
+      "docs/implementation/phase-1/o09/integrated-handoff-issue-82.md",
+      "docs/reviews/phase-1-integrated-verification-issue-82.md",
+      "docs/roadmap/progress-status.md",
+      "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-failed-job-101969108127.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-failed-job-101969108356.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-required-gate-failure.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-architecture.jsonlog",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-build.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-contracts.jsonlog",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-control-api.jsonlog",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-focused.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-install.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-local-verification.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-m0.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-mutation.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-persistence.jsonlog",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-scope.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-focused.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-local-verification.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-m0.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-policy-mutation.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-scope.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-downloaded-artifact-verification.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965794997.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965795416.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965795461.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965934689.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101970502483.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-local-quality-environment-failure.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-packaging.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-release-and-protection.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-required-jobs.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-focused.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-m0.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-policy-mutation.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-scope.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/independent-review-history.json",
+      "operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json",
+      "operations/phase-1/executions/p1-o09-integrated-handoff-issue-82.json",
+      "operations/phase-1/implementation-receipt.json",
+      "scripts/verify-phase-1/qualify-policy-mutations.mjs",
+      "tests/qualification/policy/integrated-mutation.test.mjs",
+      "tests/qualification/toolchain/review-remediation.test.mjs"
+    ],
+    "generatedPaths": [
+      "docs/implementation/phase-1/o09/integrated-handoff-issue-82.md",
+      "docs/reviews/phase-1-integrated-verification-issue-82.md",
+      "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-failed-job-101969108127.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-failed-job-101969108356.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-required-gate-failure.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-architecture.jsonlog",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-build.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-contracts.jsonlog",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-control-api.jsonlog",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-focused.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-install.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-local-verification.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-m0.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-mutation.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-persistence.jsonlog",
+      "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-scope.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-focused.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-local-verification.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-m0.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-policy-mutation.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-scope.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-downloaded-artifact-verification.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965794997.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965795416.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965795461.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965934689.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101970502483.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-local-quality-environment-failure.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-packaging.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-release-and-protection.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-required-jobs.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-focused.log",
+      "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-m0.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-policy-mutation.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-scope.json",
+      "operations/phase-1/evidence/o09/issue-82/integrated/independent-review-history.json",
+      "operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json",
+      "operations/phase-1/executions/p1-o09-integrated-handoff-issue-82.json",
+      "operations/phase-1/implementation-receipt.json",
+      "scripts/verify-phase-1/qualify-policy-mutations.mjs",
+      "tests/qualification/policy/integrated-mutation.test.mjs"
+    ],
+    "violations": []
+  },
+  "suboperations": [
+    {
+      "operationId": "P1-O01",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["ed14d4179808621c8ffd5751ebbf7b6704f33b64"],
+      "outputs": [
+        "Exact toolchain manifest and frozen lockfile",
+        "Strict ESM project-reference build",
+        "Windows and Linux clean-build Evidence"
+      ],
+      "findings": ["R01", "R02", "R14", "R16"]
+    },
+    {
+      "operationId": "P1-O02",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["eeb65baf9b0446a4b747eefdc7b7f8c1f965ea94"],
+      "outputs": [
+        "Schema registry and runtime validator",
+        "Inventory and example semantic validation",
+        "Schema and type consistency harness"
+      ],
+      "findings": ["R06", "R09", "R10"]
+    },
+    {
+      "operationId": "P1-O03",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["204bfbf1d3fe3f3da24eb3620461325e130b049c"],
+      "outputs": [
+        "Machine-checkable package DAG",
+        "Public-entry deep-import and cycle checks",
+        "Duplicate semantic-owner check"
+      ],
+      "findings": ["R08"]
+    },
+    {
+      "operationId": "P1-O04",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["66d9777c97f7ae6ce1a231b76c4bd78001a05ba4"],
+      "outputs": [
+        "Policy schemas and restricted compiler",
+        "Canonical JSON and hash fixtures",
+        "Fail-closed evaluator skeleton and Evidence"
+      ],
+      "findings": ["R03"]
+    },
+    {
+      "operationId": "P1-O05",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["772d44068dc23634fd9841e00d26ca647a6ecc38"],
+      "outputs": [
+        "PersistenceWorker qualification implementation",
+        "Crash transaction and recovery Evidence",
+        "Backup corruption and performance Evidence"
+      ],
+      "findings": ["R04", "R05", "R11"]
+    },
+    {
+      "operationId": "P1-O06",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["b18059b27e3a9fef089c974f8dd6195d8c17dcf9"],
+      "outputs": [
+        "OpenAPI 3.1.1 baseline",
+        "Runtime discovery and token lifecycle",
+        "CLI public-client acceptance"
+      ],
+      "findings": ["R07", "R12", "R13"]
+    },
+    {
+      "operationId": "P1-O07",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["96051e9aa26b80decb410a411dfb7fbd0981714d"],
+      "outputs": [
+        "Capability probe and IsolationEvidence",
+        "Job Object process-tree lifecycle",
+        "No-downgrade path and environment Evidence"
+      ],
+      "findings": ["WR01"]
+    },
+    {
+      "operationId": "P1-O08",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["db310b1d33324e72ba7767eb66760e4e54c8e1bd"],
+      "outputs": [
+        "Windows qualification artifact",
+        "Release manifest checksum SBOM and provenance",
+        "Clean-machine startup Evidence"
+      ],
+      "findings": ["R15"]
+    },
+    {
+      "operationId": "P1-O09",
+      "status": "IMPLEMENTED",
+      "commitRefs": ["3777bda86f090ac75a3382b8b310da17737dc257"],
+      "outputs": [
+        "Structured implementation receipt",
+        "Evidence index and known gaps",
+        "Independent-verification input bundle"
+      ],
+      "findings": []
+    }
+  ],
+  "verification": {
+    "planId": "0198e0a1-0000-7200-8000-000000000200",
+    "planHash": "8d0758be1fe9fe8555e7c317bfd5d06b8f1a78120883c9a650d6471782108188",
+    "executions": [
+      {
+        "stepId": "P1-V00-M0-AUTHORIZATION",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "python scripts/governance/verify_m0.py",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101987234566.log"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V01-PREFLIGHT",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "node scripts/toolchain/verify-scope.mjs",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V02-TOOLCHAIN",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "pnpm quality and clean authority rebuild on both platforms",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V03-CONTRACTS",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "pnpm contracts:qualify",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V04-ARCHITECTURE",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "pnpm architecture:qualify",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V05-POLICY",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "pnpm exec vitest run tests/qualification/policy && node scripts/verify-phase-1/qualify-policy-mutations.mjs",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-policy-mutations.json"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V06-PERSISTENCE",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "pnpm persistence:qualify",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V07-CONTROL-API",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "pnpm control-api:qualify",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V08-ISOLATION",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "pnpm isolation:qualify and Windows security/adapter/worker suites",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V09-PACKAGING",
+        "environment": "GitHub Actions exact checkout 3777bda86f090ac75a3382b8b310da17737dc257; Ubuntu 24.04 / Windows 2025; local Windows confirmation",
+        "command": "node scripts/toolchain/qualify-required-packaging.mjs",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+          "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-packaging.json"
+        ],
+        "notes": "Observed results bind this exact subject. Platform skips and the real-artifact startup pass are recorded separately in the summary.",
+        "exitCode": 0
+      },
+      {
+        "stepId": "P1-V10-INTEGRATED-GATE",
+        "environment": "Actual human user acceptance in the current conversation; qualified input subject 3777bda",
+        "command": "independent_phase1_review: HUMAN_REVIEW",
+        "result": "PASS",
+        "evidenceRefs": [
+          "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json",
+          "operations/phase-1/evidence/o09/p1-v10-independent-verification-issue-82.json"
+        ],
+        "notes": "User explicitly accepted the final P1/R4 boundaries. Automated implementation agent records this decision without impersonating the human."
+      }
+    ],
+    "overallResult": "PASS"
+  },
+  "qualificationObligations": [
+    {
+      "obligationId": "Q-ADR-0007",
+      "adrRef": "ADR-0007",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ]
+    },
+    {
+      "obligationId": "Q-ADR-0008",
+      "adrRef": "ADR-0008",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ]
+    },
+    {
+      "obligationId": "Q-ADR-0009",
+      "adrRef": "ADR-0009",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ]
+    },
+    {
+      "obligationId": "Q-ADR-0010",
+      "adrRef": "ADR-0010",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ]
+    },
+    {
+      "obligationId": "Q-ADR-0011",
+      "adrRef": "ADR-0011",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-policy-mutations.json"
+      ]
+    }
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json",
+    "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+    "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-packaging.json",
+    "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json",
+    "operations/phase-1/evidence/o09/p1-v10-independent-verification-issue-82.json"
+  ],
+  "knownGaps": [
+    "Non-production qualification build; no production installer/signing/auto-update.",
+    "PROCESS_RESTRICTED is not OS_SANDBOXED; production Workflow/Kernel and integrations belong to subsequent phases."
+  ],
+  "stopCondition": {
+    "triggered": false,
+    "condition": null,
+    "action": "Complete required CI and protected-main landing; then begin the authorized Phase 2 construction queue."
+  },
+  "unauthorizedFallbackUsed": false,
+  "documentationSynchronized": true,
+  "independentVerificationRef": "operations/phase-1/evidence/o09/p1-v10-independent-verification-issue-82.json"
+}

@@ -1,15 +1,18 @@
 # Current Progress Status
 
-Date: 2026-09-08. Status: ACTIVE / REWORK_IN_PROGRESS. Tracking: [Issue #82](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/82).
+Date: 2026-09-09. **P1 V00–V10 ACCEPTED / PROTECTED MAIN LANDING PENDING**. Tracking: [Issue #82](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/82), [PR #101](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101).
 
-Reviewed protected main: `3c387f5f196ddfae8e8989710d5a55f9def472a7`. P1-O01–P1-O08 foundations have implementation and historical qualification Evidence; current main's six hosted checks passed. Comprehensive independent review found 7 P1 / 9 P2 issues and one Windows owner-crash risk requiring qualification. P1-O09 integrated receipt and P1-V10 final Gate are absent. Phase 1 is not VERIFIED.
+Local main is synchronized to protected main `db310b1d33324e72ba7767eb66760e4e54c8e1bd`; current handoff implementation is `3777bda86f090ac75a3382b8b310da17737dc257`. O01–O08 remediation is merged. O09 implementation and executable mutation checks are complete in PR #101.
 
-Current operation: P1-O09 PARTIAL review/handoff preparation. Next implementation: P1-O01 required verification / actual receipt / Evidence subject / root runtime-asset fixes, followed by the per-operation remediation sequence.
+Required workflow [34200250486](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486) passed on the exact handoff subject: Linux quality, Windows quality, required packaging, aggregation and verify. Windows: 341 passed / 1 bash-specific skip; Linux: 333 passed / 9 Windows-specific skips; architecture: 14 passed on both. The separate real packaged startup suite passed 5/5, including payload integrity and cleanup. Local Windows full `pnpm quality` also passed, and all eight Policy behavioral mutations were killed.
 
-- [Review baseline](../reviews/phase-1-comprehensive-review-2026-09-08.md)
-- [Current remediation plan](../reviews/phase-1-remediation-plan-2026-09-08.md)
-- Preparation execution: `operations/phase-1/executions/p1-o09-review-plan-issue-82.json`
+The structured receipt records V00–V10 and ADR-0007–0011 qualifications PASS and declares IMPLEMENTED. The actual human user explicitly accepted the final P1/R4 boundaries: “通过本次 P1 最终验收”. The independent receipt binds the final implementation receipt and references this real decision; it does not attribute a human review to an automated agent. The user requested continued construction without repeated per-change reviews.
 
-Frozen `operation.json`, VerificationPlan, accepted ADRs and WRITE_SCOPE remain authority. Execution progress is recorded separately. main protection is active, no bypass, strict up-to-date; required check identity remains `verify` / GitHub Actions. The review found its current coverage insufficient; R01 remediation must enforce applicable quality results without weakening protection.
+- [Current machine evidence and source logs](../../operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json)
+- [Implementation receipt](../../operations/phase-1/implementation-receipt.json)
+- [Final acceptance input](../reviews/phase-1-integrated-verification-issue-82.md)
+- [Subsequent construction queue](../implementation/phase-1/o09/next-construction-queue.md)
 
-Production Kernel/Workflow/Node, Verification System, EvidenceGraph/Learning, real model/GBrain/private Workspace integration and production release remain later-phase work. Issue #81 documentation-only Learning review is separate.
+Next: merge the accepted P1 handoff through required checks and verify protected main. Then begin Phase 2 with the deterministic durable Kernel: command/event admission, reducers, transactional inbox/outbox, execution lifecycle and replay/recovery. Existing unmerged Learning, Coverage and GBrain proposals do not change this mainline order.
+
+This remains a non-production qualification foundation. PROCESS_RESTRICTED is not an OS security sandbox. Production Workflow/Node runtime, real models and private Workspace/GBrain integration remain later-phase work.

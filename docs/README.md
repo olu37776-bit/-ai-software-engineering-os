@@ -126,3 +126,13 @@ Architecture Decision
 ## M0 remediation
 
 - [Phase 0 Schema / Phase 1 Governance Remediation Review](reviews/phase-0-schema-phase1-governance-review.md)
+
+## Phase 1 integrated handoff
+
+- [Current progress and remaining Gate](roadmap/progress-status.md)
+- [P1-O09 implementation note](implementation/phase-1/o09/integrated-handoff-issue-82.md)
+- [Final independent review input](reviews/phase-1-integrated-verification-issue-82.md)
+- [Structured implementation receipt](../operations/phase-1/implementation-receipt.json)
+- [Exact-subject Evidence index](../operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json)
+
+These handoff files do not issue the pending P1-V10 HUMAN_REVIEW or change frozen Phase 1 Authority.

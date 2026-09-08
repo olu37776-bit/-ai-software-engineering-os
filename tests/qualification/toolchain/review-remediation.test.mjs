@@ -22,6 +22,43 @@ test("the unique required verify depends on all quality and packaging jobs, incl
   expect(source).not.toContain("head_commit.message");
 });
 
+// The required aggregation job runs on Ubuntu. Execute its actual checked-in
+// shell block with each possible dependency conclusion; do not reimplement it.
+test.skipIf(process.platform === "win32")(
+  "the actual required Gate shell rejects failed, cancelled, skipped and missing prerequisites",
+  async () => {
+    const source = await readFile(
+      resolve(root, ".github/workflows/m0-independent-verify.yml"),
+      "utf8",
+    );
+    const step = source.slice(
+      source.indexOf("      - name: Require every qualification before accepting the subject"),
+    );
+    const block = step.match(/ {8}run: \|\n((?: {10}.*\n)+)/u);
+    expect(block).not.toBeNull();
+    const command = block[1].replace(/^ {10}/gmu, "");
+    const execute = (quality, packaging) =>
+      spawnSync("bash", ["--noprofile", "--norc", "-e", "-o", "pipefail", "-c", command], {
+        encoding: "utf8",
+        env: { ...process.env, QUALITY_RESULT: quality, PACKAGING_RESULT: packaging },
+      });
+    const valid = execute("success", "success");
+    expect(valid.error).toBeUndefined();
+    expect(valid.status, valid.stderr).toBe(0);
+    for (const result of ["failure", "cancelled", "skipped", "", "unavailable", "pending"]) {
+      for (const values of [
+        [result, "success"],
+        ["success", result],
+      ]) {
+        const rejected = execute(...values);
+        expect(rejected.error).toBeUndefined();
+        expect(rejected.status).not.toBeNull();
+        expect(rejected.status).not.toBe(0);
+      }
+    }
+  },
+);
+
 test("the authority build restores runtime-loaded assets even with up-to-date TypeScript outputs", async () => {
   const asset = "packages/adapters/tool/windows-process-restricted";
   const output = resolve(root, asset, "dist/win32-bridge.ps1");
@@ -71,7 +108,7 @@ _, registry = m.build_registry([p for p in paths if p.name.endswith(".schema.jso
 original = m.ROOT
 with tempfile.TemporaryDirectory() as directory:
     m.ROOT = pathlib.Path(directory)
-    adapted = {m.ROOT / p.relative_to(original): v for p, v in documents.items()}
+    adapted = {m.ROOT / p.relative_to(original): v for p, v in documents.items() if p.name.endswith(".schema.json")}
     path = m.ROOT / "operations/phase-1/implementation-receipt.json"
     path.parent.mkdir(parents=True)
     assert m.verify_receipt_guards(adapted, registry)["implementationReceipt"] == "NOT_YET_CREATED"
@@ -102,7 +139,7 @@ with tempfile.TemporaryDirectory() as directory:
     subprocess.run(["git", "clone", "--shared", "--no-checkout", str(original), directory], check=True, capture_output=True)
     subprocess.run(["git", "-C", directory, "checkout", "--detach", head], check=True, capture_output=True)
     m.ROOT = pathlib.Path(directory)
-    adapted = {m.ROOT / p.relative_to(original): v for p, v in documents.items()}
+    adapted = {m.ROOT / p.relative_to(original): v for p, v in documents.items() if p.name.endswith(".schema.json")}
     path = m.ROOT / "operations/phase-1/implementation-receipt.json"
     value = m.make_incomplete_receipt()
     value["baselineCommit"] = value["implementationCommit"] = head

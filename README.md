@@ -91,10 +91,11 @@ AI Software Engineering OS
 ```text
 Phase 0 — Architecture Authority: VERIFIED / COMPLETE
 M0 / Phase 1 entry: PASS
-Phase 1: REWORK_IN_PROGRESS (Issue #82)
-Implemented foundation: P1-O01 through P1-O08
-Integrated P1-O09 / P1-V10: NOT_COMPLETE
+Phase 1: INTEGRATED_HANDOFF_PREPARED (Issue #82, PR #101)
+P1-O01 through P1-O08 remediation: MERGED / main qualification PASS
+P1-O09: PARTIAL receipt and Evidence index prepared
+P1-V10: INDEPENDENT HUMAN_REVIEW / final Gate pending
 Production Framework: NOT_IMPLEMENTED
 ```
 
-2026-09-08 independent review identified 7 P1 and 9 P2 findings. The user authorized fixing them and completing Phase 1. See [current status](docs/roadmap/progress-status.md), [review](docs/reviews/phase-1-comprehensive-review-2026-09-08.md) and [remediation plan](docs/reviews/phase-1-remediation-plan-2026-09-08.md). No Phase 2 runtime or local replacement readiness is claimed.
+2026-09-08 全面审查后的 O01–O08 修复已合入 main `db310b1`，其 Linux、Windows、打包与必需检查全部通过。P1-O09 补齐真实 Gate 拒绝测试、Policy mutation 验证、结构化回执与 Evidence 索引；最终独立 Gate 尚待实际完成，作者不自行声明 VERIFIED。见[当前状态](docs/roadmap/progress-status.md)、[综合审查输入](docs/reviews/phase-1-integrated-verification-issue-82.md)及[既有修复计划](docs/reviews/phase-1-remediation-plan-2026-09-08.md)。尚未进入 Phase 2，也未达到完整框架本地替换状态。
