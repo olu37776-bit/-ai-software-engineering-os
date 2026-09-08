@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O06-WINDOWS-CLAIM-LIVENESS-ISSUE-82",
+  "operationId": "P1-O06",
+  "writeScopeOperationId": "P1-O06",
+  "executionType": "P1_O06_WINDOWS_CLAIM_LIVENESS_REPAIR",
+  "status": "IMPLEMENTED",
+  "riskClass": "R4",
+  "title": "Boundedly rescan Windows delete-pending claim observations without ignoring live locks",
+  "startedAt": "2026-09-08T05:50:15.059546Z",
+  "trackingIssue": 82,
+  "implementationBranch": "phase-1/p1-o06-windows-claim-liveness-issue-82",
+  "baseCommit": "a16d8147dd38087fbc4e6d6ad09acb98b964551d",
+  "authorityRefs": [
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json"
+  ],
+  "documentRefs": ["docs/implementation/phase-1/o06/windows-claim-liveness-issue-82.md"],
+  "evidenceRefs": ["operations/phase-1/evidence/o06/p1-o06-windows-claim-liveness-issue-82.json"],
+  "claimBoundary": {
+    "maximumImplementationClaim": "IMPLEMENTED",
+    "phase1Verified": false,
+    "independentHumanGatePerformed": false
+  },
+  "remainingGaps": [
+    "Exact final HEAD and native Windows qualification",
+    "Protected-main postmerge qualification",
+    "P1-V10 independent human review"
+  ]
+}

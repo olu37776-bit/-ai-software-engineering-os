@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "executionId": "P1-O09-QUALIFICATION-FIXTURE-REPAIR-ISSUE-82",
+  "operationId": "P1-O09",
+  "writeScopeOperationId": "P1-O09",
+  "executionType": "P1_O09_QUALIFICATION_FIXTURE_REPAIR",
+  "status": "PARTIAL",
+  "riskClass": "R4",
+  "title": "Repair fixture publication and reduce unrelated contract fixture copying after actual Windows qualification failures",
+  "trackingIssue": 82,
+  "implementationBranch": "phase-1/p1-o09-qualification-fixture-repair-issue-82",
+  "baseCommit": "96051e9aa26b80decb410a411dfb7fbd0981714d",
+  "authorityRefs": [
+    "operations/phase-1/operation.json",
+    "operations/phase-1/write-scope.json",
+    "operations/phase-1/verification-plan.json"
+  ],
+  "claimBoundary": {
+    "independentHumanGatePerformed": false,
+    "phase1Verified": false,
+    "runtimeImplementationChanged": false
+  },
+  "documentRefs": ["docs/reviews/phase-1-qualification-fixture-repair-issue-82.md"],
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o09/p1-o09-qualification-fixture-repair-issue-82.json"
+  ],
+  "remainingGaps": [
+    "New exact HEAD and protected-main verification",
+    "P1-V10 independent human review"
+  ]
+}
