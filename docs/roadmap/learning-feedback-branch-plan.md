@@ -10,60 +10,59 @@
 
 | 维度 | 当前结论 |
 | --- | --- |
-| 设计材料 | LF-D0/D1 已形成草案；独立审查返回三个 P1，已修正文档，尚未复核通过 |
-| 当前动作 | 对新 HEAD 请求三个 finding 和整体边界的只读独立复核；协调 #85 |
-| LF-C1 代码 | NOT_IMPLEMENTED / ENTRY_NOT_RELEASED |
-| 生产 Feedback 集成 | NOT_IMPLEMENTED / WAITING_FOR_MAINLINE_CAPABILITY |
+| 设计材料 | 两轮独立自动审查共四项P1；已针对性修订，待新subject完整复核 |
+| 当前动作 | 收口单原子criterion调用基数并请求复核；核对#85真实授权与依赖证据 |
+| LF-C1代码 | NOT_IMPLEMENTED / ENTRY_NOT_RELEASED |
+| 生产Feedback集成 | NOT_IMPLEMENTED / WAITING_FOR_MAINLINE_CAPABILITY |
 | Learning runtime | NOT_IMPLEMENTED |
-| 并行主线 | #83已合并审查/计划；#82修复仍进行；#86未合并不作为依赖关闭证据 |
-| 下一代码任务 | #85放行后，LF-C1纯投影/关闭义务评价核心 |
+| 并行主线 | #83已合并审查/计划；#82仍修复，未合并PR不作为依赖关闭证据 |
+| 下一代码任务 | #85放行后，LF-C1单义务纯投影/关闭评价核心 |
 
-旧本地 D1/F0/F1–F4/C-1 属于另一 subject，不继承到新仓库。Schema 存在不等于生产 Workflow/Context/Verification provider 已存在。历史 review/readiness 保留各自原 SHA 的观察，本文件记录后续状态，不改写历史 verdict。
+旧本地D1/F0/F1–F4/C-1属另一subject，不继承。Schema不等于生产provider。历史review/readiness保留原SHA观察，当前状态只在本文及exact-head证据更新。
 
 ## 2. 文档入口
 
-- [架构入口](../architecture/06-learning-and-feedback.md)：定位与 canonical owners。
-- [总体设计](../architecture/learning-feedback/branch-design.md)：模块、所有权、生命周期。
-- [Contract 与接口提案](../architecture/learning-feedback/contract-and-seam-proposal.md)：字段、LF-HN-1规范化、两类幂等及结果规则。
-- [并行建设协议](../architecture/learning-feedback/parallel-development-protocol.md)：单写者、同步、失效与重验。
-- [LF-C1 开工包](learning-feedback-core-entry-plan.md)：源码/Schema/标准suite/构建scope请求与17项验证义务。
-- [初次准备自检](../reviews/learning-feedback/lf-d1-readiness-2026-09-08.md)及[原基线审查](../reviews/learning-feedback/github-baseline-review-2026-09-08.md)：历史证据和覆盖限制。
+- [架构入口](../architecture/06-learning-and-feedback.md)：定位与owner。
+- [总体设计](../architecture/learning-feedback/branch-design.md)：结构与生命周期。
+- [Contract/接口提案](../architecture/learning-feedback/contract-and-seam-proposal.md)：单义务基数、LF-HN-1、两类幂等及结果。
+- [并行协议](../architecture/learning-feedback/parallel-development-protocol.md)：单写者与基线重验。
+- [LF-C1开工包](learning-feedback-core-entry-plan.md)：精确scope请求、18项验证和开工步骤。
+- [初次准备自检](../reviews/learning-feedback/lf-d1-readiness-2026-09-08.md)及[原基线审查](../reviews/learning-feedback/github-baseline-review-2026-09-08.md)：历史证据/限制，不改写。
 
-Charter、accepted ADR、active Schema、机器 Authority 优先。候选接口和文件清单仍须独立 review/正式授权，不覆盖 Phase 1 禁令。
+Charter/accepted ADR/active Schema/机器Authority优先，候选接口和文件清单不解除P1禁令。
 
-## 3. 工作包与声明边界
+## 3. 工作包
 
-| 包 | 交付 | 前置 |
+| 包 | 交付 | 前置/声明边界 |
 | --- | --- | --- |
-| LF-D0/D1 | 总体设计、Contract/seam、开工包 | 原审查三个P1已作作者修订；等待新subject复核 |
-| LF-C1 | 两个纯用例、两类key/prior、必要Schema、conformance | #85放行；只依赖public contracts，不需完整Runtime |
-| LF-I1 | committed facts/query、正式装配、持久化/恢复 | 主线身份/assessment/query provider；两类key均需事务唯一性 |
-| LF-I2 | Context贡献、快照与Attempt消费证明 | 主线Context/Router/NodeExecution |
-| LF-E1 | public entry真实Feedback闭环及异常恢复 | I1/I2 + Verification/Gate；exact-SHA独立验证 |
-| LF-L1 | 准入、归因、因果、Proposal/Gate、效果 | Phase 7及对应能力门禁；不提前自动改框架 |
-| LF-X1 | 真实受控修复实验 | Workspace/worker/scope/独立裁判就绪，固定裁判基线 |
+| LF-D0/D1 | 设计、Contract/seam、开工包 | 4个P1待最终subject复核，不以作者修订自证 |
+| LF-C1 | 两个单义务纯用例、两类key/prior、必要Schema/conformance | #85放行，只依赖public contracts，不需要完整Runtime |
+| LF-I1 | committed facts/query、正式装配、持久化/恢复 | 主线provider；两类key均需真实事务唯一性 |
+| LF-I2 | Context贡献、快照/Attempt消费 | 主线Context/Router/NodeExecution |
+| LF-E1 | public entry真实Feedback闭环与恢复 | I1/I2+Verification/Gate独立exact-SHA证据 |
+| LF-L1 | 准入、归因、因果、Proposal/Gate、效果 | Phase7及对应能力，不提前自动改框架 |
+| LF-X1 | 受控修复实验 | Workspace/worker/scope/独立裁判就绪，裁判基线固定 |
 
-LF编号不是P1-Oxx。CORE_CONFORMANCE VERIFIED不等于Feedback V1生产VERIFIED。Feedback改善当前纠偏，Learning改善未来执行规则，项目知识由KnowledgeProvider负责。
+LF非P1-Oxx。CORE_CONFORMANCE VERIFIED非生产Feedback VERIFIED。本次收窄V1调用基数不改变总体反馈目标，不建设batch/调度器/第二Runtime；知识仍由KnowledgeProvider负责。
 
-## 4. 主线同步与审查处置
+## 4. 主线同步与Finding Ledger
 
-主线由3c387f5f前进到5577c2e，是#83审查/计划合并。其六个主线路径与LF八文档交集为空；上一双父同步保留主线原字节和双方历史，没有force-push。本次再次读取main仍为5577c2e。主线#86当前提供R01/R02/R14/R16修复提案，未合并/未完成其独立证据，不将其作为E2 PASS。
+同步主线5577c2e为#83审查/计划合并，不是修复完成。主线六个文件与LF八文档不重叠，双父同步保留字节与历史，无force-push。本轮只在现有LF分支改三文档，不写主线共享代码；依赖以最新独立/合并Evidence判定。
 
-独立review针对08b701e0ca2f497eafaaa71329666d371c72cf6e，2026-09-08 02:24Z返回：
-
-| ID | 发现与依据 | 本次处置 | 状态 |
+| ID | 独立来源 | 文档处置 | 当前 |
 | --- | --- | --- | --- |
-| LF-RV-01 | [标准资格漏掉新suite](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3953795058)；examples.ts硬编码first-slice | 不另建suite；十二case追加原受检suite，补共享scope、统计测试与正常入口负例 | ADDRESSED_PENDING_REVIEW |
-| LF-RV-02 | [hash集合/序列未冻结](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3953795060) | Contract§7.2逐路径SET/SEQUENCE表、排序与重复规则、版本策略及字节向量 | ADDRESSED_PENDING_REVIEW |
-| LF-RV-03 | [Resolution缺幂等身份](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3953795062) | 独立resolutionKey/inputHash/prior、重放/冲突规则、I1事务义务 | ADDRESSED_PENDING_REVIEW |
+| LF-RV-01 | [suite漏检](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3953795058)，08b701e | 原受检suite绑定十二case，补共享scope/统计/正常入口负例 | ADDRESSED_PENDING_REVIEW |
+| LF-RV-02 | [哈希集合语义](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3953795060)，08b701e | LF-HN-1逐路径SET/SEQUENCE规则、重复/版本/字节向量 | ADDRESSED_PENDING_REVIEW |
+| LF-RV-03 | [Resolution幂等](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3953795062)，08b701e | 独立resolutionKey/hash/prior与I1事务义务 | ADDRESSED_PENDING_REVIEW |
+| LF-RV-04 | [多义务配单ID/prior](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3953843051)，39cdb4b | Contract§3.1/7.3收窄单原子criterion；两接口最多单候选；C1-V18覆盖交叉prior/基数/错关联 | ADDRESSED_PENDING_REVIEW |
 
-此次实际复核了examples.ts、qualify-contracts.mjs、example-suite.test.mjs、helpers.mjs。发现原suite统计38/19/19/22，故同步补齐这一受影响共享测试的候选scope，不能只修一个路径后遗留确定失败。
+39cdb4b自动审查完成且新增LF-RV-04；前三项没有再次提出不等于正式CLOSED。本次不由作者resolve线程，不标E0 PASS。单criterion可含多closure要求，但不得带另一个criterion/group；多条独立义务留外层逐次调用，不在C1新增批处理接口。
 
-作者本地仅对ASCII字节向量用Python标准库计算SHA256并检查集合重排相等/序列反转不同/重复身份拒绝；这不是仓库canonical实现或LF-C1测试通过。当前执行环境git ls-remote仍因DNS失败；没有运行仓库build/E2E。远端机器检查和独立review状态在PR绑定新HEAD分别记录，旧green结果不复用。
+实际核对原examples.ts/qualify-contracts/example-suite.test/helpers及Schema；作者对ASCII哈希向量用Python标准库核算，结果与所列值一致，不宣称仓库canonical实现测试PASS。当前本地git ls-remote实际DNS失败，未运行repo build/E2E。远端quality/独立review以新HEAD分别记录，不继承旧green结论。
 
-## 5. 精确本轮写范围
+## 5. 实际WRITE_SCOPE
 
-本PR相对main仅允许原八Markdown：
+PR相对main仍为以下八Markdown：
 
 ```text
 docs/architecture/06-learning-and-feedback.md
@@ -76,22 +75,20 @@ docs/roadmap/learning-feedback-core-entry-plan.md
 docs/reviews/learning-feedback/lf-d1-readiness-2026-09-08.md
 ```
 
-这次相对上一HEAD只改Contract提案、core-entry-plan和本CURRENT三文件。不修改历史review、源码、测试、Schema、suite实例、依赖、lock、build、CI、operations、accepted ADR或.ai-local。开工包新列的源码/共享suite/测试是待授权清单，不是本轮实际改动。
+本轮相对39cdb4b仅改Contract提案、core-entry-plan、CURRENT三份。其他历史文档未重写；没有源码/测试/Schema/suite/依赖/lock/build/CI/operations/ADR/.ai-local改动。C1-V18使用既定测试文件，不扩大候选源码清单。
 
-## 6. 开工条件
+## 6. 正式开工条件
 
-E0：最终HEAD独立接受Contract/owner/边界，三个P1必须复核关闭；不是作者声称已修就PASS。
-E1：合法LF-C1 operation/authority/精确scope和可执行checker；包含受检first-slice suite及其锁定owner的正式接入。
-E2：相关#82 canonical JSON/类型/日期及Gate/回执/subject/架构问题有独立修复/合并证据。
-E3：Schema/registry/type/受检suite/workspace/lock/build/test/architecture共享集成明确单写者与窗口。
-E4：实际开工从获准protected-main重新绑定工具链、Schema、public entry和Authority。
+E0：最终文档subject完整独立review，四P1处理及D01–D05/owner/边界有明确裁决。
+E1：合法LF-C1 operation/authority/精确scope与checker，包含原受检suite的owner/hash接入；候选目录或评论不是批准。
+E2：直接使用的#82 canonical JSON/类型/日期以及Gate/回执/subject/架构修复有适用的独立/合并证据。
+E3：Schema/registry/type/suite/workspace/lock/build/test/architecture共享集成明确单写者和窗口。
+E4：开工从获准main重新绑定工具链、Schema、public entry及Authority。
 
-统一在#85收口，不等待未使用的未来Runtime功能，也不绕过实际依赖。上述schema、normalization、幂等修订仅改变本分支待审设计，不赋予修改共享基础权限。
+#85统一收口。不要求无关未来Runtime都完成，也不把“正在修复”“已发请求”写成放行。本分支可自行完成文档修订和发起复核；主线owner的授权/承接不能由作者虚构。
 
 ## 7. 执行维护与下一动作
 
-每次恢复、主线相关PR合并、共享集成前与发布前重新读watchlist；无关改动不抹掉成果，相关语义变化需consumer回归，新HEAD必须新证据。发生并发branch推进先停写重读，不force覆盖。
+每轮恢复、相关主线PR合并、共享集成前后核对watchlist，相关语义改变重验，新HEAD需新证据；并发推进停止覆盖，不force。实现时同步代码/测试/普通文档/Evidence，最多IMPLEMENTED；独立review只读、不边审边改。每包局部对齐、接口/首次集成/收口时完整对齐。
 
-实现者做操作时同步普通文档、测试和Evidence，最多IMPLEMENTED；独立verifier只读subject，不边审边修。每包局部对齐，接口变更/首次集成/闭环收口/进入Learning或Release时整体对齐。
-
-下一步：新HEAD对LF-RV-01/02/03复核并完成E0覆盖，同时保留E1/E2/E3/E4真实阻塞。当前没有代码实现，不合并main、不开始旧F2/F3或完整Learning，不为凑进度再创建一套大计划。
+下一动作是复核LF-RV-04及前述三项，并完成#85正式scope与依赖证据。开工短提示词只指向仓库CURRENT、core-entry-plan和#85；若Gate仍未放行，它必须停止并说明缺少的具体证据，不能作为绕过Gate的直接编码令。
