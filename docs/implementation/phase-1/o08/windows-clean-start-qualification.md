@@ -49,5 +49,11 @@ verification plan:
 - `ReleaseManifestConsistencyResult`;
 - `CleanWindowsStartupResult`.
 
+After all startup assertions pass, the clean Windows test writes the same complete JSON record
+to stdout as well as the configured Evidence file. The independent handoff can preserve the
+actual record from the job log even when an artifact download is unavailable. Both copies keep
+the qualified source commit, manifest identity and actual startup results; neither is a new
+Gate or an inferred replacement result.
+
 The result is a non-production qualification artifact. This operation does not create a GitHub
 Release, sign a production release, activate auto-update, or make a production-approval claim.

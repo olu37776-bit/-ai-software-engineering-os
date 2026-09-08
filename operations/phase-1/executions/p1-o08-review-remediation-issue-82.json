@@ -10,7 +10,7 @@
   "startedAt": "2026-09-08T02:00:00Z",
   "trackingIssue": 82,
   "implementationBranch": "phase-1/p1-o08-review-remediation-issue-82",
-  "baseCommit": "5577c2e8a9ef090b87924edddf6114dd75eb28a5",
+  "baseCommit": "96051e9aa26b80decb410a411dfb7fbd0981714d",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",

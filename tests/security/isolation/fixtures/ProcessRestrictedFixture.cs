@@ -33,6 +33,7 @@ internal static class ProcessRestrictedFixture
                 Console.Error.WriteLine("STDERR=controlled");
                 return 0;
             case "tree-root":
+            case "tree-root-host":
                 var child = StartSelf("tree-child");
                 Console.WriteLine("ROOT=" + Process.GetCurrentProcess().Id);
                 Console.WriteLine("CHILD=" + child.Id);
@@ -48,7 +49,12 @@ internal static class ProcessRestrictedFixture
                     Console.Out.Flush();
                     if (args.Length > 1)
                     {
-                        File.WriteAllText(args[1], "ready", Encoding.UTF8);
+                        var marker = args[0] == "tree-root-host"
+                            ? "{\"root\":" + Process.GetCurrentProcess().Id +
+                              ",\"child\":" + child.Id + ",\"grandchild\":" +
+                              File.ReadAllText(grandchildPath).Trim() + "}"
+                            : "ready";
+                        File.WriteAllText(args[1], marker, Encoding.UTF8);
                     }
                 }
                 Thread.Sleep(Timeout.Infinite);
