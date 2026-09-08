@@ -151,7 +151,7 @@ const cases = [
 
 export async function qualifyPolicyMutations(root = repositoryRoot) {
   const bytes = await readFile(join(root, "packages/policy/dist/index.js"));
-  const source = bytes.toString("utf8");
+  const source = bytes.toString("utf8").replace(/\r\n/g, "\n");
   const contractsUrl = pathToFileURL(join(root, "packages/contracts/dist/index.js")).href;
   assert.equal(source.split('from "@aseos/contracts"').length, 2);
   const portable = source
