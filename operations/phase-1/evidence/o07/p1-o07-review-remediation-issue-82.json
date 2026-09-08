@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "Phase1ReviewRemediationEvidence",
+  "operationId": "P1-O07",
+  "trackingIssue": 82,
+  "findings": ["WR01"],
+  "implementationDeclaration": "IMPLEMENTED",
+  "localResults": [
+    {
+      "check": "Bind tool Job lifetime to host and assign process containment at creation",
+      "result": "PASS",
+      "tests": 8
+    },
+    {
+      "check": "Native Windows host-death and Job assignment qualification",
+      "result": "PLATFORM_NOT_AVAILABLE",
+      "windowsOnlySkipped": 14
+    }
+  ],
+  "pending": [
+    "Real Windows host-only termination regression and existing Job security suite",
+    "Exact hosted Linux and Windows qualification",
+    "Protected-main post-merge checks",
+    "P1-V10 independent human review"
+  ],
+  "phase1Verified": false
+}

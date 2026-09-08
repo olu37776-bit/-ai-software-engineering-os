@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "Phase1ReviewRemediationEvidence",
+  "operationId": "P1-O04",
+  "trackingIssue": 82,
+  "findings": ["R03"],
+  "implementationDeclaration": "IMPLEMENTED",
+  "localResults": [
+    {
+      "check": "Fail closed on unresolved constants and incompatible equality",
+      "result": "PASS",
+      "tests": 16
+    }
+  ],
+  "pending": [
+    "Exact hosted Linux and Windows qualification",
+    "Protected-main post-merge checks",
+    "P1-V10 independent human review"
+  ],
+  "phase1Verified": false
+}

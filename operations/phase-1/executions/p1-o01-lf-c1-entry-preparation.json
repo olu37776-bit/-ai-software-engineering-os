@@ -9,7 +9,7 @@
   "status": "IMPLEMENTED",
   "trackingIssue": 95,
   "implementationBranch": "phase-1/p1-o01-lf-c1-entry-preparation-issue-95",
-  "baseCommit": "ed14d4179808621c8ffd5751ebbf7b6704f33b64",
+  "baseCommit": "b18059b27e3a9fef089c974f8dd6195d8c17dcf9",
   "authorityRefs": [
     "operations/phase-1/operation.json",
     "operations/phase-1/write-scope.json",
@@ -30,7 +30,7 @@
     "operations/phase-1/evidence/o01/lf-c1-entry-preflight.json"
   ],
   "remainingGaps": [
-    "Independent preparation review and exact hosted checks pending",
-    "LF E0-E4 BLOCKED as enumerated in request"
+    "G0 refreshed c2001aa snapshot; 54 paths/18 requirements unchanged; new subject requires fresh independent preparation review",
+    "LF E0-E4 BLOCKED; G1 prior ADR and upper P1 delegation findings remain open"
   ]
 }
