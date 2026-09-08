@@ -8,6 +8,6 @@ The packaging job uses the existing release assembler, manifest verifier, pinned
 
 The authority build now copies the adapter's canonical PowerShell runtime asset after TypeScript emits, including incremental builds. Cleaning removes that asset. No alternate source owner is introduced.
 
-M0 validates the actual implementation receipt whenever present, including schema, ancestry, authority/plan bindings and referenced local evidence. Linked independent receipts must bind the same implementation and exact receipt bytes and cannot reuse the implementing actor. A missing O09 receipt is explicitly reported as not yet created; this is not a Phase 1 completion verdict.
+M0 validates the actual implementation receipt whenever present, including schema, ancestry, authority/plan bindings and referenced local evidence. Linked independent receipts must bind the same implementation and exact receipt bytes and cannot reuse the implementing actor. A claimed P1-V10 PASS additionally requires a matching independent PASS receipt; a schema-valid self-declaration cannot satisfy this requirement. A missing O09 receipt is explicitly reported as not yet created; this is not a Phase 1 completion verdict.
 
 Focused tests passed locally. Full exact-head hosted qualification remains required. The frozen verification plan requires an independent HUMAN_REVIEW at P1-V10; this implementation does not declare VERIFIED.

@@ -87,3 +87,48 @@ with tempfile.TemporaryDirectory() as directory:
   const result = spawnSync("python", ["-c", code], { cwd: root, encoding: "utf8" });
   expect(result.status, result.stdout + result.stderr).toBe(0);
 });
+
+test("M0 rejects a schema-valid self-declared integrated PASS without independent evidence", () => {
+  const code = `
+import importlib.util, json, pathlib, subprocess, tempfile
+spec = importlib.util.spec_from_file_location("verifier", "scripts/governance/verify_m0.py")
+m = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+paths, documents = m.collect_documents()
+_, registry = m.build_registry([p for p in paths if p.name.endswith(".schema.json")], documents)
+original = m.ROOT
+head = m.run_git("rev-parse", "HEAD")
+with tempfile.TemporaryDirectory() as directory:
+    subprocess.run(["git", "clone", "--shared", "--no-checkout", str(original), directory], check=True, capture_output=True)
+    subprocess.run(["git", "-C", directory, "checkout", "--detach", head], check=True, capture_output=True)
+    m.ROOT = pathlib.Path(directory)
+    adapted = {m.ROOT / p.relative_to(original): v for p, v in documents.items()}
+    path = m.ROOT / "operations/phase-1/implementation-receipt.json"
+    value = m.make_incomplete_receipt()
+    value["baselineCommit"] = value["implementationCommit"] = head
+    value["authorityLockHash"] = m.authority_text_sha256(m.ROOT / "operations/phase-1/authority-lock.json")
+    value["verification"]["planHash"] = m.authority_text_sha256(m.ROOT / "operations/phase-1/verification-plan.json")
+    value["verification"]["planId"] = m.load_json(m.ROOT / "operations/phase-1/verification-plan.json")["planId"]
+    value["implementationDeclaration"] = "PARTIAL"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    assert m.verify_receipt_guards(adapted, registry)["implementationReceipt"] == "VALID"
+    value["implementationDeclaration"] = "IMPLEMENTED"
+    value["evidenceRefs"] = ["README.md"]
+    for operation in value["suboperations"]:
+        operation.update(status="IMPLEMENTED", commitRefs=[head], outputs=["README.md"])
+    for execution in value["verification"]["executions"]:
+        execution.update(result="PASS", evidenceRefs=["README.md"])
+    value["verification"]["overallResult"] = "PASS"
+    for obligation in value["qualificationObligations"]:
+        obligation.update(result="PASS", evidenceRefs=["README.md"])
+    path.write_text(json.dumps(value), encoding="utf-8")
+    try:
+        m.verify_receipt_guards(adapted, registry)
+    except AssertionError as error:
+        assert "P1-V10 PASS requires a matching independent PASS receipt" in str(error), str(error)
+    else:
+        raise AssertionError("Self-declared integrated PASS accepted")
+`;
+  const result = spawnSync("python", ["-c", code], { cwd: root, encoding: "utf8" });
+  expect(result.status, result.stdout + result.stderr).toBe(0);
+}, 30_000);

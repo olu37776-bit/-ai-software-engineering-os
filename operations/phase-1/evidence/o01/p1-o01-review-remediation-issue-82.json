@@ -30,6 +30,11 @@
       "skippedWindows": 8,
       "failed": 1,
       "limitation": "LAN address enumeration is denied in this container (uv_interface_addresses EPERM); exact hosted Linux and Windows checks remain required."
+    },
+    {
+      "check": "Actual well-formed receipt cannot self-declare P1-V10 PASS without a matching independent PASS receipt",
+      "result": "PASS",
+      "regressionFileTests": 5
     }
   ],
   "pending": [

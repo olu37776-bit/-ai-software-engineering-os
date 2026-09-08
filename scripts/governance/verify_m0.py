@@ -758,6 +758,7 @@ def verify_receipt_guards(documents: dict[pathlib.Path, Any], registry: Registry
     if linked:
         path = require_local_reference(linked)
         independent_receipts[path] = load_json(path)
+    independent_gate_passes = 0
     for path in independent_receipts:
         independent = require_valid(path, documents[independent_schema_path])
         if independent["implementationCommit"] != implementation:
@@ -766,6 +767,14 @@ def verify_receipt_guards(documents: dict[pathlib.Path, Any], registry: Registry
             raise AssertionError("Independent receipt implementation receipt hash mismatch")
         if independent["verifiedBy"]["actorId"] == receipt["declaredBy"]["actorId"]:
             raise AssertionError("Implementation actor cannot independently verify its own receipt")
+        if independent["gateDecision"] == "PASS":
+            independent_gate_passes += 1
+    gate_pass_claimed = any(
+        execution["stepId"] == "P1-V10-INTEGRATED-GATE" and execution["result"] == "PASS"
+        for execution in receipt["verification"]["executions"]
+    )
+    if gate_pass_claimed and independent_gate_passes == 0:
+        raise AssertionError("P1-V10 PASS requires a matching independent PASS receipt")
     return {"negativeErrors": len(errors), "schemas": 2, "implementationReceipt": "VALID", "independentReceipts": len(independent_receipts)}
 
 def verify_accepted_adrs(lock: dict[str, Any]) -> int:
