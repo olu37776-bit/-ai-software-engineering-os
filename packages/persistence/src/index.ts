@@ -3,6 +3,7 @@ import { Worker } from "node:worker_threads";
 
 import {
   canonicalJson,
+  canonicalJsonSha256,
   loadContractRegistry,
   type CommandDedupRecord,
   type ContractRegistry,
@@ -12,6 +13,8 @@ import {
   type OutboxRecord,
   type PersistenceCommitReceipt,
   type ProjectionCheckpoint,
+  type ResultJournalAppendBatch,
+  type SideEffectTaskEnvelope,
   type StateSchemaManifest,
 } from "@aseos/contracts";
 
@@ -96,14 +99,17 @@ export type PersistenceSecurityQualification = Readonly<{
 
 type WorkerRequestKind =
   | "arm-crash"
+  | "arm-result-crash"
   | "backup"
   | "close"
   | "commit"
+  | "commit-result"
   | "get-command"
   | "lookup-command-receipt"
   | "health"
   | "hold-lock"
   | "list-outbox"
+  | "list-pending-outbox-tasks"
   | "read-events"
   | "record-inbox"
   | "recover"
@@ -271,6 +277,100 @@ export class PersistenceWorker {
     return this.#validate<PersistenceCommitReceipt>(
       "urn:aseos:schema:persistence-commit-receipt:1.0.0",
       receipt,
+    );
+  }
+
+  #validateResultBatch(input: ResultJournalAppendBatch): ResultJournalAppendBatch {
+    let snapshot: ResultJournalAppendBatch;
+    try {
+      snapshot = JSON.parse(canonicalJson(input)) as ResultJournalAppendBatch;
+    } catch {
+      throw new PersistenceError(
+        "PERSISTENCE_CONTRACT_INVALID",
+        "Result append is not canonical JSON",
+      );
+    }
+    const validated = this.#validate<ResultJournalAppendBatch>(
+      "urn:aseos:schema:result-journal-append-batch:1.0.0",
+      snapshot,
+    );
+    this.#validateBatch(validated.batch);
+    const { result, batch } = validated;
+    const entry = this.#registry.resolve(result.payloadSchema);
+    if (
+      "ok" in entry ||
+      entry.sha256 !== result.payloadSchema.schemaHash ||
+      !this.#registry.validate(result.payloadSchema, result.payload).ok ||
+      canonicalJsonSha256(result.payload) !== result.payloadHash ||
+      !Number.isSafeInteger(result.attempt) ||
+      Date.parse(result.startedAt) > Date.parse(result.completedAt) ||
+      Date.parse(result.completedAt) > Date.parse(batch.capturedAt)
+    ) {
+      throw new PersistenceError(
+        "PERSISTENCE_CONTRACT_INVALID",
+        "Result schema, hash, attempt or time is invalid",
+      );
+    }
+    const event = batch.events[0];
+    if (
+      batch.commandId !== result.resultId ||
+      batch.idempotencyKey !== `worker-result:${result.taskId}` ||
+      batch.effectScope !== `WorkerResult:${result.taskId}` ||
+      batch.payloadHash !==
+        canonicalJsonSha256({
+          commandType: "RecordSideEffectResult",
+          result,
+          stream: batch.stream,
+          outbox: batch.outbox,
+          checkpoint: validated.checkpoint ?? null,
+        }) ||
+      batch.events.length !== 1 ||
+      event?.eventType !== "SideEffectResultRecorded" ||
+      event.aggregateType !== batch.stream.aggregateType ||
+      event.aggregateId !== batch.stream.aggregateId ||
+      !Number.isSafeInteger(batch.stream.expectedVersion + 1) ||
+      event.aggregateVersion !== batch.stream.expectedVersion + 1 ||
+      Date.parse(event.occurredAt) < Date.parse(result.completedAt) ||
+      Date.parse(event.occurredAt) > Date.parse(batch.capturedAt) ||
+      event.payloadSchema.schemaId !== "urn:aseos:schema:side-effect-result-envelope:1.0.0" ||
+      canonicalJson(event.payload) !== canonicalJson(result) ||
+      event.payloadHash !== canonicalJsonSha256(result) ||
+      event.causationId !== batch.commandId ||
+      event.correlationId !== result.correlationId
+    ) {
+      throw new PersistenceError(
+        "PERSISTENCE_CONTRACT_INVALID",
+        "Result command and event binding is invalid",
+      );
+    }
+    return validated;
+  }
+
+  public async commitResult(input: ResultJournalAppendBatch): Promise<PersistenceCommitReceipt> {
+    const validated = this.#validateResultBatch(input);
+    const receipt = await this.#request<PersistenceCommitReceipt>("commit-result", validated);
+    return this.#validate<PersistenceCommitReceipt>(
+      "urn:aseos:schema:persistence-commit-receipt:1.0.0",
+      receipt,
+    );
+  }
+
+  public async armResultCrashBeforeCommitForQualification(
+    input: ResultJournalAppendBatch,
+  ): Promise<void> {
+    await this.#request<"ARMED">("arm-result-crash", this.#validateResultBatch(input));
+  }
+
+  public async listPendingOutboxTasks(): Promise<readonly SideEffectTaskEnvelope[]> {
+    const tasks = await this.#request<readonly SideEffectTaskEnvelope[]>(
+      "list-pending-outbox-tasks",
+      {},
+    );
+    return tasks.map((task) =>
+      this.#validate<SideEffectTaskEnvelope>(
+        "urn:aseos:schema:side-effect-task-envelope:1.0.0",
+        task,
+      ),
     );
   }
 

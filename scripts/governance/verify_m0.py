@@ -583,6 +583,7 @@ def verify_authority_lock(documents: dict[pathlib.Path, Any], registry: Registry
     }
     seen: set[str] = set()
     immutable = scoped = 0
+    additive_authority_hashes: dict[str, str] | None = None
     for entry in lock["authorityFiles"]:
         rel = entry["path"]
         if rel in seen:
@@ -592,7 +593,31 @@ def verify_authority_lock(documents: dict[pathlib.Path, Any], registry: Registry
         if not path.is_file():
             raise AssertionError(f"Authority lock missing path: {rel}")
         if entry["sha256"] != authority_text_sha256(path):
-            raise AssertionError(f"Authority lock hash mismatch: {rel}")
+            additive_paths = {
+                "packages/contracts/schema-registry.json",
+                "packages/contracts/schema-inventory.json",
+                "packages/contracts/examples/first-slice/example-suite.json",
+            }
+            if entry["mutationPolicy"] != "OPERATION_SCOPED" or rel not in additive_paths:
+                raise AssertionError(f"Authority lock hash mismatch: {rel}")
+            if additive_authority_hashes is None:
+                # Preserve the original P1 lock and prove a precise additive
+                # activation from the pinned accepted O01 main. This does not
+                # exempt a path from validation or refresh historical hashes.
+                result = subprocess.run(
+                    ["node", "scripts/toolchain/phase2-scope-o02.mjs", "--authority-check"],
+                    cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=False,
+                )
+                if result.returncode != 0:
+                    raise AssertionError("Authority lock hash mismatch; Phase 2 additive transition rejected: " + result.stderr)
+                report = json.loads(result.stdout)
+                if report.get("result") != "PASS" or report.get("operationId") != "P2-O02":
+                    raise AssertionError("Invalid Phase 2 additive authority verification")
+                additive_authority_hashes = report.get("validatedAuthorityHashes", {})
+                if set(additive_authority_hashes) != additive_paths:
+                    raise AssertionError("Incomplete Phase 2 additive authority verification")
+            if additive_authority_hashes.get(rel) != authority_text_sha256(path):
+                raise AssertionError(f"Unvalidated additive authority hash: {rel}")
         allowed_ops = set(entry["allowedOperationIds"])
         covering_ops = {
             oid for oid, patterns in op_patterns.items()
