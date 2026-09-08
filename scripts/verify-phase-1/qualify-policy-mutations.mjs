@@ -172,6 +172,11 @@ export async function qualifyPolicyMutations(root = repositoryRoot) {
       );
       const mutantPath = join(directory, `${mutation.id}.mjs`);
       const mutated = portable.replace(mutation.before, mutation.after);
+      // Identity is independent of checkout paths and platform emit newlines.
+      // The public import stays canonical in the hashed logical mutation.
+      const logicalMutation = source
+        .replace(/^\/\/# sourceMappingURL=.*$/gmu, "")
+        .replace(mutation.before, mutation.after);
       await writeFile(mutantPath, mutated);
       const mutant = await import(pathToFileURL(mutantPath).href);
       // All mutants must retain the ordinary valid-ALLOW behavior.
@@ -187,7 +192,7 @@ export async function qualifyPolicyMutations(root = repositoryRoot) {
       results.push({
         id: mutation.id,
         result: "KILLED",
-        mutationSha256: createHash("sha256").update(mutated).digest("hex"),
+        mutationSha256: createHash("sha256").update(logicalMutation).digest("hex"),
       });
     }
     return {
@@ -195,6 +200,7 @@ export async function qualifyPolicyMutations(root = repositoryRoot) {
       result: "PASS",
       method: "ISOLATED_COMPILED_OWNER_BEHAVIORAL_MUTATION",
       sourceSha256: createHash("sha256").update(bytes).digest("hex"),
+      canonicalSourceSha256: createHash("sha256").update(source).digest("hex"),
       baselineProbes: cases.length,
       killedMutations: results.length,
       survivingMutations: 0,
