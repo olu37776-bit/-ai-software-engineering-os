@@ -90,13 +90,11 @@ AI Software Engineering OS
 
 ```text
 Phase 0 — Architecture Authority: VERIFIED / COMPLETE
-M0 — Architecture Baseline Verified: PASS
-Phase 1 entry: BLOCKED_PENDING_REPOSITORY_PROTECTION
-Phase 1: NOT_STARTED
-Production runtime capability: NOT_IMPLEMENTED
+M0 / Phase 1 entry: PASS
+Phase 1: REWORK_IN_PROGRESS (Issue #82)
+Implemented foundation: P1-O01 through P1-O08
+Integrated P1-O09 / P1-V10: NOT_COMPLETE
+Production Framework: NOT_IMPLEMENTED
 ```
 
-M0 已确认完整重建架构和 Phase 1 治理基线可实施；它不表示 Framework Runtime 已实现。下一步必须先启用并核验 `main` branch protection 与 required check，之后才能单独授权进入 `P1-O01`。
-
-本文档状态：`BASELINE v0.3`  
-基线日期：`2026-08-27`
+2026-09-08 independent review identified 7 P1 and 9 P2 findings. The user authorized fixing them and completing Phase 1. See [current status](docs/roadmap/progress-status.md), [review](docs/reviews/phase-1-comprehensive-review-2026-09-08.md) and [remediation plan](docs/reviews/phase-1-remediation-plan-2026-09-08.md). No Phase 2 runtime or local replacement readiness is claimed.
