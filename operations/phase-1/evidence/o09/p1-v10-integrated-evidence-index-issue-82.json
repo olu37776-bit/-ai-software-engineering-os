@@ -1,0 +1,485 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "Phase1IntegratedEvidenceIndex",
+  "operationId": "P1-O09",
+  "trackingIssue": 82,
+  "implementationCommit": "8d24246aea2ece10ff5793bd7647ca222638b6e3",
+  "baselineCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+  "status": "PREPARED_INDEPENDENT_GATE_PENDING",
+  "declaration": "Author assembly; historical and automated qualification are not independent P1-V10 acceptance.",
+  "subjects": {
+    "protectedMain": {
+      "commit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+      "requiredRunId": 34196663191,
+      "releaseRunId": 34196662898,
+      "automatedResult": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-required-jobs.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-packaging.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-downloaded-artifact-verification.json"
+      ]
+    },
+    "implementation": {
+      "commit": "8d24246aea2ece10ff5793bd7647ca222638b6e3",
+      "localResult": "LOCAL_APPLICABLE_CHECKS_PASS",
+      "automatedHostedResult": "NOT_RUN",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-local-verification.json"
+      ],
+      "localFocusedTests": 68
+    },
+    "previousImplementation": {
+      "commit": "f34dc154ec2521327635831edec3b03b5aa7d17e",
+      "localFocusedTests": 68,
+      "localScope": "PASS",
+      "localM0": "PASS",
+      "policyMutationsKilled": 8,
+      "automatedHostedResult": "NOT_RUN",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-focused.log",
+        "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-scope.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-m0.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-policy-mutation.json"
+      ]
+    }
+  },
+  "findings": [
+    {
+      "findingId": "R01",
+      "operationId": "P1-O01",
+      "implementationPath": ".github/workflows/m0-independent-verify.yml",
+      "verificationPath": "tests/qualification/toolchain/review-remediation.test.mjs",
+      "acceptanceCriterion": "Actual dependency shell rejects 12 non-success combinations; hosted 455ae22 lint failure propagated to required verify.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R02",
+      "operationId": "P1-O01",
+      "implementationPath": "scripts/governance/verify_m0.py",
+      "verificationPath": "tests/qualification/toolchain/review-remediation.test.mjs",
+      "acceptanceCriterion": "Actual receipt validation; incomplete/VERIFIED/self-declared integrated PASS rejected.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R03",
+      "operationId": "P1-O04",
+      "implementationPath": "packages/policy/src/index.ts",
+      "verificationPath": "tests/qualification/policy/p1-v05-policy.test.mjs",
+      "acceptanceCriterion": "Missing constants and incompatible operands fail closed, including invalid DENY beside valid ALLOW.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R04",
+      "operationId": "P1-O05",
+      "implementationPath": "packages/persistence/src/index.ts",
+      "verificationPath": "tests/qualification/persistence/review-remediation.test.mjs",
+      "acceptanceCriterion": "Canonical registry validates every journal/outbox payload before writes; zero fact mutation on rejection.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R05",
+      "operationId": "P1-O05",
+      "implementationPath": "packages/persistence/src/persistence-worker.ts",
+      "verificationPath": "tests/qualification/persistence/review-remediation.test.mjs",
+      "acceptanceCriterion": "Invalid busy timeout preserves healthy bytes and permits reopening; operational failures do not quarantine.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R06",
+      "operationId": "P1-O02",
+      "implementationPath": "packages/contracts/src/canonical-json.ts",
+      "verificationPath": "tests/contract/phase-1-integration.test.mjs",
+      "acceptanceCriterion": "Sparse arrays rejected; public persistence remains zero-write and accepts subsequent valid batch.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R07",
+      "operationId": "P1-O06",
+      "implementationPath": "packages/platform/src/filesystem.ts",
+      "verificationPath": "tests/qualification/control-api/review-remediation.test.mjs",
+      "acceptanceCriterion": "Multi-process election, stale recovery and loser non-interference; Windows transient claim errors separately qualified.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R08",
+      "operationId": "P1-O03",
+      "implementationPath": "scripts/architecture/architecture-policy.mjs",
+      "verificationPath": "tests/architecture/review-remediation.test.mjs",
+      "acceptanceCriterion": "Normal entry governs every workspace app and rejects deep imports, cycles, forbidden dependencies and unknown owners.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R09",
+      "operationId": "P1-O02",
+      "implementationPath": "scripts/contracts/type-model.mjs",
+      "verificationPath": "tests/contract/review-remediation.test.mjs",
+      "acceptanceCriterion": "allOf/local-reference operator mutation produces type consistency failure.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R10",
+      "operationId": "P1-O02",
+      "implementationPath": "packages/contracts/src/json-schema.ts",
+      "verificationPath": "tests/contract/review-remediation.test.mjs",
+      "acceptanceCriterion": "Calendar-aware timestamp rejection and valid leap-year/offset fixtures.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R11",
+      "operationId": "P1-O05",
+      "implementationPath": "packages/persistence/src/persistence-worker.ts",
+      "verificationPath": "tests/qualification/persistence/review-remediation.test.mjs",
+      "acceptanceCriterion": "Existing truncated authority is quarantined and cannot silently become an empty database.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R12",
+      "operationId": "P1-O06",
+      "implementationPath": "packages/platform/src/server.ts",
+      "verificationPath": "tests/qualification/control-api/review-remediation.test.mjs",
+      "acceptanceCriterion": "Unfinished request deadline closes socket and releases capacity exactly once.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R13",
+      "operationId": "P1-O06",
+      "implementationPath": "packages/platform/src/client.ts",
+      "verificationPath": "tests/qualification/control-api/review-remediation.test.mjs",
+      "acceptanceCriterion": "Streaming Unicode survives split UTF-8 bytes; client success statuses bind their route.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R14",
+      "operationId": "P1-O01",
+      "implementationPath": "scripts/toolchain/copy-runtime-assets.mjs",
+      "verificationPath": "tests/qualification/toolchain/review-remediation.test.mjs",
+      "acceptanceCriterion": "Authoritative root build restores the byte-identical required Win32 bridge.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R15",
+      "operationId": "P1-O08",
+      "implementationPath": "scripts/release/qualify-windows-x64.mjs",
+      "verificationPath": "tests/qualification/packaging/network-guard.test.mjs",
+      "acceptanceCriterion": "Actual preload rejects loopback-looking DNS/invalid literals before network/DNS; six valid forms accepted.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "R16",
+      "operationId": "P1-O01",
+      "implementationPath": "scripts/toolchain/emit-ci-evidence.mjs",
+      "verificationPath": "tests/qualification/toolchain/review-remediation.test.mjs",
+      "acceptanceCriterion": "Evidence uses actual checkout and rejects target mismatch; controller provenance remains separate.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    },
+    {
+      "findingId": "WR01",
+      "operationId": "P1-O07",
+      "implementationPath": "packages/adapters/tool/windows-process-restricted/src/win32-bridge.ps1",
+      "verificationPath": "tests/security/isolation/host-death.security.test.mjs",
+      "acceptanceCriterion": "Creation-time Job membership removes pre-assignment window; hosted Windows kills only Node host then observes bridge/root/child/grandchild exit.",
+      "status": "IMPLEMENTED_FINAL_INDEPENDENT_ACCEPTANCE_PENDING"
+    }
+  ],
+  "steps": [
+    {
+      "stepId": "P1-V00-M0-AUTHORIZATION",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "M0GateEvidence",
+        "AuthorityLockEvidence"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V01-PREFLIGHT",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "BaselineIdentityEvidence",
+        "WriteScopeValidationResult"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V02-TOOLCHAIN",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "FrozenLockfileInstallResult",
+        "TypeScriptBuildResult",
+        "CrossPlatformBuildEvidence"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V03-CONTRACTS",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "SchemaMetaValidationResult",
+        "SchemaRegistryValidationResult",
+        "ExampleSuiteResult",
+        "SchemaTypeConsistencyResult"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V04-ARCHITECTURE",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "DependencyGraphResult",
+        "DeepImportDenialResult",
+        "DuplicateSemanticOwnerDenialResult"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V05-POLICY",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "CanonicalizationDeterminismResult",
+        "FailClosedPropertyResult",
+        "PolicyMutationResult"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V06-PERSISTENCE",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "PersistenceAtomicityResult",
+        "CrashRecoveryResult",
+        "BackupRestoreResult",
+        "CorruptionQuarantineResult"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V07-CONTROL-API",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "OpenApiValidationResult",
+        "LoopbackExposureResult",
+        "TokenAclRedactionResult",
+        "CliPublicApiAcceptanceResult"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V08-ISOLATION",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "JobObjectLifecycleResult",
+        "ProcessTreeTerminationResult",
+        "NoDowngradePropertyResult"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V09-PACKAGING",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "SelfContainedArtifactResult",
+        "ReleaseManifestConsistencyResult",
+        "CleanWindowsStartupResult"
+      ],
+      "independentResult": "NOT_RUN"
+    },
+    {
+      "stepId": "P1-V10-INTEGRATED-GATE",
+      "required": true,
+      "expectedEvidenceTypes": [
+        "StructuredReceiptValidationResult",
+        "WriteScopeComplianceResult",
+        "IndependentGateDecision"
+      ],
+      "independentResult": "BLOCKED"
+    }
+  ],
+  "artifact": {
+    "subjectCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+    "artifactId": 10044161568,
+    "downloadUrl": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34196662898/artifacts/10044161568",
+    "transportSha256": "3fd80ee883a3979b659ba5aad55ff034669fea0d8e6722216421a23a4cc63dc7",
+    "downloadedAndVerified": true,
+    "manifestSha256": "ca0432eae19f8a5e86d632cfbeddf38fe43fd29d93ac92d36af8cf949aad127b",
+    "payloadFiles": 245,
+    "classification": "PHASE1_QUALIFICATION_NOT_PRODUCTION_RELEASE",
+    "retentionMetadataRef": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-release-and-protection.json"
+  },
+  "knownGaps": [
+    "Final immutable handoff HEAD hosted qualification and exact-head independent review.",
+    "P1-V10 HUMAN_REVIEW and a matching schema-valid independent verification receipt.",
+    "Protected-main post-merge acceptance for the final handoff; new HEADs require new Evidence."
+  ],
+  "files": [
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-failed-job-101969108127.log",
+      "sha256": "a88fcb7d2ff2710a2a0afe076fd839096a80b026d981ae625349fd56b6b596e2",
+      "sizeBytes": 39509
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-failed-job-101969108356.log",
+      "sha256": "88b397e62befc9b59cb6bc910dcecaba02818c12a38ba6919fe9f0434ccf5bc2",
+      "sizeBytes": 38930
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/455ae22-required-gate-failure.json",
+      "sha256": "1aa32f6da05a74a827079ead94ce2142eb95ccee1e59160a93fe9560794f848c",
+      "sizeBytes": 10888
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-architecture.jsonlog",
+      "sha256": "f927635a32877828693de067ccaad8a13930b873e5f086496b4a9f0c6ffd7080",
+      "sizeBytes": 1135
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-build.log",
+      "sha256": "f7658354dd8418a356a81974b043cacbebb67b6e83a32a4ac6dde8d0b44af580",
+      "sizeBytes": 94
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-contracts.jsonlog",
+      "sha256": "242cfbecb4f4b8f31a96d03308867b7d5361f216b0e72488a523557444dafd49",
+      "sizeBytes": 1832
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-control-api.jsonlog",
+      "sha256": "ad81fd9e8f21ed15fad9d0a972249d09bb0d5d6cf20fa304f5aa767404918ea9",
+      "sizeBytes": 1202
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-focused.log",
+      "sha256": "27be0b50e87a7fac747b251522fa8f59b5505a3f15b5778728ab0ee5ad14cee8",
+      "sizeBytes": 2547
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-install.log",
+      "sha256": "08c09c02726de67847620ba5b7858924087ddbbb1213360f6c38dd7a08e31a72",
+      "sizeBytes": 1949
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-local-verification.json",
+      "sha256": "b6dceec24ab54247efbd01f288d7b96c60d72077974ed0bc5be33e5faac75f98",
+      "sizeBytes": 2226
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-m0.json",
+      "sha256": "b1d1e9549bc0aded917fefe13bdf3796003eb9cb2ebe7fac5c94dc975c2f3283",
+      "sizeBytes": 3141
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-mutation.json",
+      "sha256": "92591bf2dd5cc8b2dfd6c5c19fbfb85b7600a7dd0b207bbff2026ff4ec9bc273",
+      "sizeBytes": 1754
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-persistence.jsonlog",
+      "sha256": "2305555709322b30c74fb67ce2b97f485cb7664131f8fb2bb05b5a872b87a2b8",
+      "sizeBytes": 1543
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-scope.json",
+      "sha256": "b602b2e4faea1e6b4d83dd1b71e8e4931aa1d79c5481f2e2fd6e9e17cb7d1c31",
+      "sizeBytes": 1032
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-focused.log",
+      "sha256": "ed2543780ba5f8a8639155a80d5aad234bd6638ab58b325551ebb5b7177022d2",
+      "sizeBytes": 2441
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-local-verification.json",
+      "sha256": "42ae79c73fe1fee84018528b6722950690c679b8e93c336c2a2ddc33eea4f2eb",
+      "sizeBytes": 2023
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-m0.json",
+      "sha256": "ef2a0c8faa46780bdff7cda20b361ea8921c0dbcf9194ece88d70cb7790cdef1",
+      "sizeBytes": 3141
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-policy-mutation.json",
+      "sha256": "5e51112fdb6cb00c099346cceb0f9bfad888a0a9171bc398ba7b9b4b8dd238d0",
+      "sizeBytes": 1659
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-scope.json",
+      "sha256": "a7ebec21922c84393062cd17177a2d78d40beec196d36dc066a505fcf7de7ecd",
+      "sizeBytes": 1032
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-downloaded-artifact-verification.json",
+      "sha256": "f4359e6931e3bba8c60eee1c07fb06cd202bf4278014dd33f80d25742d83387d",
+      "sizeBytes": 283
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965794997.log",
+      "sha256": "085d9722b763d2e692caf6a02bdf71b7c1abfdaeb56f6c69c34ac436c8c3f433",
+      "sizeBytes": 38974
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965795416.log",
+      "sha256": "ce40606890900f0a41cd1f8b91c3a13fc5cdbda8e11ca9717e41340c342b87d9",
+      "sizeBytes": 78890
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965795461.log",
+      "sha256": "69d1ea967f675fb1b7e0d9e03d3424e2b4b95a4131b28f7ead7a9ca67107f2be",
+      "sizeBytes": 89722
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101965934689.log",
+      "sha256": "3eb6858370785b41c0eaff7848024de94efb4c90cf5df665f2f242ad5bf7a5c1",
+      "sizeBytes": 27886
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-job-101970502483.log",
+      "sha256": "7d88abaaf17c9658791bf9ff5bfdaee24ad5b742a8dc28eef552806c67626a32",
+      "sizeBytes": 19411
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-local-quality-environment-failure.log",
+      "sha256": "55e83a2e8ecf78ab6c739564c7b7800680517e076b61c132993667324c619391",
+      "sizeBytes": 16140
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-packaging.json",
+      "sha256": "3ebee19ac5dabb5a5d42c022e30553dd4fb55dad3dad7f5300b456680aa0dc06",
+      "sizeBytes": 5397
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-release-and-protection.json",
+      "sha256": "905ebbaf487cdd38c8e8dfba87d7c7719b560d8cec375864fecefbe9b28fd3ea",
+      "sizeBytes": 3772
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/db310b1-required-jobs.json",
+      "sha256": "4d5543407eba16b19ab85bb66f976680b703ec699cb3eddbec86d22c8ad8ed82",
+      "sizeBytes": 10879
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-focused.log",
+      "sha256": "342ce323f0c22771573047ba7c7c1cad55b3214bc5d9a00a6e32c2e4b3c90cd9",
+      "sizeBytes": 3636
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-m0.json",
+      "sha256": "2d29d04aa10f2ff7141d7b3c9dc8deeea9bbdb1b271b401207a210ecc6f6c1f0",
+      "sizeBytes": 3141
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-policy-mutation.json",
+      "sha256": "92591bf2dd5cc8b2dfd6c5c19fbfb85b7600a7dd0b207bbff2026ff4ec9bc273",
+      "sizeBytes": 1754
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/f34dc15-scope.json",
+      "sha256": "6f58f4e61a49362ae9add430483fdcbe84593abe6018331369464c00ac68814f",
+      "sizeBytes": 1032
+    },
+    {
+      "path": "operations/phase-1/evidence/o09/issue-82/integrated/independent-review-history.json",
+      "sha256": "1e41b5f8107d826defca724c471ccc6a983c5113922dd5dd68cb2109bb028ec0",
+      "sizeBytes": 4837
+    }
+  ]
+}

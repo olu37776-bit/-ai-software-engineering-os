@@ -1,0 +1,55 @@
+$ pnpm exec tsc -b packages/contracts/tsconfig.json packages/persistence/tsconfig.json --pretty false && node scripts/qualification/persistence/qualify-node-sqlite.mjs
+{
+  "evidenceType": "PersistencePerformanceQualificationResult",
+  "result": "PASS",
+  "totalEvents": 100000,
+  "batchSize": 1000,
+  "appendDurationMs": 11409,
+  "replay": {
+    "events": 10000,
+    "durationMs": 149
+  },
+  "recovery": {
+    "events": 100000,
+    "durationMs": 194
+  },
+  "eventLoopIsolation": "DEDICATED_WORKER_THREAD",
+  "health": {
+    "databasePath": "/tmp/aseos-p1-v06-nfr-HRjzwG/state/aseos.db",
+    "sqliteVersion": "3.53.3",
+    "journalMode": "wal",
+    "synchronous": 2,
+    "foreignKeys": 1,
+    "trustedSchema": 0,
+    "busyTimeoutMs": 5000,
+    "defensive": true,
+    "extensionLoading": false,
+    "doubleQuotedStringLiterals": false,
+    "integrity": "ok"
+  },
+  "stateManifest": {
+    "schemaVersion": "1.0.0",
+    "databaseSchemaVersion": 1,
+    "migrations": [
+      {
+        "version": 1,
+        "name": "initial-authority-storage",
+        "sha256": "0684ff34039eb2cb1aab856fcfccde1f20ce8b0050018b61f6c93bfefc3ee324"
+      }
+    ],
+    "sqliteVersion": "3.53.3",
+    "compatibility": "COMPATIBLE"
+  },
+  "security": {
+    "attachDenied": true,
+    "schemaMutationDenied": true,
+    "extensionLoadingDenied": true,
+    "parameterBindingPreservedJournal": true
+  },
+  "backup": {
+    "sha256": "f76f4ac765da4ff2a781e2cbf5bf841d08ba5241fce950a90239e391ae3c8e30",
+    "sizeBytes": 152207360,
+    "pages": 37160,
+    "integrity": "ok"
+  }
+}

@@ -1,0 +1,179 @@
+$ pnpm run format && pnpm run lint && pnpm run contracts:generate-types && pnpm run typecheck && pnpm run isolation:build && pnpm run test && pnpm --filter @aseos/platform test && pnpm --filter @aseos/windows-process-restricted test && pnpm --filter @aseos/worker test && pnpm run contracts:qualify && pnpm run architecture:qualify && pnpm run persistence:qualify && pnpm run control-api:qualify && pnpm run isolation:qualify && pnpm run build && pnpm run verify:config && pnpm run verify:versions && pnpm run verify:frozen-install
+$ prettier --check --no-error-on-unmatched-pattern package.json pnpm-workspace.yaml "tsconfig*.json" "*.config.mjs" .github/workflows/quality.yml "toolchain/**/*.json" "scripts/toolchain/**/*.mjs" "scripts/contracts/**/*.mjs" "scripts/architecture/**/*.mjs" "tests/qualification/toolchain/**/*.{json,mjs,ts}" "tests/contract/**/*.mjs" "tests/architecture/**/*.{json,mjs}" packages/contracts/package.json packages/contracts/tsconfig.json packages/contracts/type-bindings.json packages/contracts/README.md "packages/contracts/src/**/*.ts" "docs/implementation/phase-1/o01/**/*.md" "docs/implementation/phase-1/o02/**/*.md" "docs/implementation/phase-1/o03/**/*.md" "operations/phase-1/evidence/o01/**/*.json" "operations/phase-1/evidence/o02/**/*.json" "operations/phase-1/evidence/o03/**/*.json" "operations/phase-1/executions/p1-o01-*.json" "operations/phase-1/executions/p1-o02-*.json" "operations/phase-1/executions/p1-o03-*.json" "packages/policy/**/*.{json,ts}" "tests/qualification/policy/**/*.mjs" "docs/implementation/phase-1/o04/**/*.md" "operations/phase-1/evidence/o04/**/*.json" "operations/phase-1/executions/p1-o04-*.json" "packages/persistence/**/*.{json,ts}" "scripts/qualification/persistence/**/*.mjs" "tests/qualification/persistence/**/*.mjs" "tests/fault-injection/persistence/**/*.mjs" "docs/implementation/phase-1/o05/**/*.md" "operations/phase-1/evidence/o05/**/*.json" "operations/phase-1/executions/p1-o05-*.json" "packages/platform/**/*.{json,ts}" "apps/{runtime,cli}/**/*.{json,ts}" "scripts/qualification/control-api/**/*.mjs" "tests/qualification/control-api/**/*.mjs" "tests/acceptance/control-api/**/*.mjs" "tests/contract/control-api/**/*.mjs" "docs/implementation/phase-1/o06/**/*.md" "operations/phase-1/evidence/o06/**/*.json" "operations/phase-1/executions/p1-o06-*.json" "packages/adapters/tool/windows-process-restricted/**/*.{json,mjs,ts}" "apps/worker/**/*.{json,ts}" "scripts/qualification/isolation/**/*.mjs" "tests/qualification/isolation/**/*.mjs" "tests/security/isolation/**/*.mjs" "docs/implementation/phase-1/o07/**/*.md" "operations/phase-1/evidence/o07/**/*.json" "operations/phase-1/executions/p1-o07-*.json"
+Checking formatting...
+All matched files use Prettier code style!
+$ eslint . --ignore-pattern "**/dist/**"
+$ node scripts/contracts/generate-contract-types.mjs --check
+Schema-generated TypeScript declarations are current.
+$ tsc -b tsconfig.build.json --pretty false
+$ pnpm --filter @aseos/windows-process-restricted build && pnpm --filter @aseos/worker build
+$ tsc -b tsconfig.json --pretty false && node scripts/copy-assets.mjs
+$ tsc -b tsconfig.json --pretty false
+$ vitest run --maxWorkers=1 && vitest run --config tests/architecture/vitest.config.mjs
+
+ RUN  v4.1.11 /workspace/scratch/5fb93e787236/ai-software-engineering-os
+
+ ✓ tests/qualification/toolchain/transition-enforcement-integration.test.mjs (6 tests) 19576ms
+     ✓ performs an exact transactional SHA refresh with real files  2152ms
+     ✓ fails P1-O04 closed without or with an invalid Gate, then passes exact Gate ancestry  11069ms
+     ✓ rejects raw adversarial Git paths before scope classification  3363ms
+     ✓ keeps governed source paths visible for a real Git rename  1496ms
+     ✓ keeps governed source paths visible for a real Git delete  1483ms
+ ❯ tests/qualification/control-api/p1-v07-control-api.test.mjs (17 tests | 1 failed | 2 skipped) 1341ms
+     × binds only to the IPv4 loopback endpoint and rejects Host, Origin and unauthenticated access 663ms
+     ✓ allows only registered and bounded unauthenticated CORS preflight 39ms
+     ✓ rotates a 256-bit token, enforces user-only ACL and never leaks the secret 61ms
+     ↓ uses the absolute System32 security helper when cwd and PATH contain hostile executables
+     ↓ fails closed when token inheritance is enabled after secure creation
+     ✓ validates discovery identity and exposes bounded status metadata through the public client 80ms
+     ✓ rejects stale PID and authenticated instance identity mismatches 24ms
+     ✓ rejects non-canonical descriptor fields before any client request 26ms
+     ✓ fails closed for malformed, oversized, query-bearing and unknown requests 48ms
+     ✓ enforces the configured response byte limit without emitting a non-canonical fallback 17ms
+     ✓ bounds authentication failures and idempotency state with replay and conflict semantics 178ms
+     ✓ streams bounded read-only SSE metadata and supports replay and gap detection 53ms
+     ✓ rejects notification kinds outside the read-only public metadata enum 11ms
+     ✓ ControlApiError never retains raw causes or sensitive absolute paths 0ms
+     ✓ closes replay streams when retained metadata exceeds the backpressure budget 12ms
+     ✓ bounds retention-gap and heartbeat SSE frames with the same byte budget 30ms
+     ✓ keeps an established SSE stream beyond the ordinary request timeout 94ms
+ ✓ tests/qualification/toolchain/scope-policy.test.mjs (28 tests) 48ms
+ ✓ tests/qualification/policy/p1-v05-policy.test.mjs (16 tests) 167ms
+ ✓ tests/qualification/toolchain/transition-enforcement-policy.test.mjs (17 tests) 23ms
+ ✓ tests/qualification/toolchain/p1-o07-start-gate.test.mjs (31 tests) 20ms
+ ✓ tests/qualification/control-api/review-remediation.test.mjs (8 tests) 7224ms
+   ✓ concurrent lock losers cannot remove a live owner's claim or metadata  3350ms
+   ✓ separate processes elect one owner and recover a killed owner's unique claim  2918ms
+   ✓ timed-out unfinished bodies close their socket and release capacity exactly once  750ms
+ ✓ tests/qualification/persistence/p1-v06-persistence.test.mjs (6 tests) 5154ms
+     ✓ attests the fixed engine and fail-closed SQLite controls  1220ms
+     ✓ commits Event receipt outbox and audit atomically with exact idempotency  722ms
+     ✓ deduplicates inbox and enforces monotonic projection checkpoints  569ms
+     ✓ creates an integrity-checked online backup that restores independently  1202ms
+     ✓ keeps the Runtime event loop responsive while the dedicated worker writes  750ms
+     ✓ rejects unknown public fields through the canonical runtime Contract  686ms
+ ↓ tests/security/isolation/process-restricted.security.test.mjs (6 tests | 6 skipped)
+ ✓ tests/contract/isolation/isolation-contracts.test.mjs (11 tests) 1021ms
+ ✓ tests/qualification/toolchain/p1-o06-start-gate.test.mjs (19 tests) 26ms
+ ✓ tests/qualification/toolchain/configuration-consistency.test.mjs (17 tests) 4635ms
+     ✓ scripts/toolchain/verify-config.mjs  396ms
+     ✓ scripts/toolchain/verify-versions.mjs  4210ms
+ ✓ tests/qualification/toolchain/review-remediation.test.mjs (5 tests) 8883ms
+   ✓ the authority build restores runtime-loaded assets even with up-to-date TypeScript outputs  1379ms
+   ✓ CI evidence binds the checked-out subject and rejects a mismatching requested target  4224ms
+   ✓ M0 rejects an actual invalid implementation receipt instead of checking only its schema  1490ms
+   ✓ M0 rejects a schema-valid self-declared integrated PASS without independent evidence  1775ms
+ ✓ tests/fault-injection/persistence/p1-o05-faults.test.mjs (6 tests) 7550ms
+     ✓ rejects future migration history before declaring schema compatibility  1971ms
+     ✓ rejects incompatible existing schema before applying the authority migration  595ms
+     ✓ rolls back a worker-terminated pre-commit transaction  1459ms
+     ✓ recovers committed authority after worker termination without graceful drain  1178ms
+     ✓ fails with a typed busy result and succeeds after the authority lock is released  1340ms
+     ✓ quarantines corruption and never replaces it with an empty authority database  998ms
+ ✓ tests/qualification/isolation/p1-v08-isolation.test.mjs (4 tests) 934ms
+ ✓ tests/qualification/toolchain/post-merge-target.test.mjs (10 tests) 7935ms
+     ✓ derives the target first parent and exact scope bindings  1043ms
+     ✓ rejects malformed target SHA ""  847ms
+     ✓ rejects malformed target SHA "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"  886ms
+     ✓ rejects malformed target SHA "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  823ms
+     ✓ rejects dispatch from a non-main ref  843ms
+     ✓ rejects a checkout that differs from the exact target  858ms
+     ✓ rejects a claimed current main that differs from origin/main  848ms
+     ✓ rejects a target outside the protected-main first-parent chain  885ms
+     ✓ rejects a first-parent commit that is not a two-parent merge  890ms
+ ✓ tests/contract/registry-integrity.test.mjs (8 tests) 2862ms
+     ✓ meta-validates, hashes and compiles every canonical entry  813ms
+     ✓ accepts a consistent CRLF authority checkout and rejects content drift  637ms
+     ✓ rejects duplicate paths, missing files and repository traversal  402ms
+     ✓ rejects unresolved references and schema metadata/version mismatches  526ms
+ ✓ tests/contract/control-api/control-api-contracts.test.mjs (12 tests) 777ms
+ ✓ tests/qualification/toolchain/p1-o07-start-gate-integration.test.mjs (2 tests) 3381ms
+     ✓ fails closed without a legal P1-O07 operation context  903ms
+     ✓ fails the real operation-aware preflight closed for an absent or malformed Gate  2475ms
+ ✓ tests/qualification/toolchain/p1-o06-start-gate-integration.test.mjs (2 tests) 3088ms
+     ✓ fails closed without a legal P1-O06 operation context  1012ms
+     ✓ fails the real operation-aware preflight closed for an absent or malformed Gate  2073ms
+ ✓ tests/qualification/toolchain/p1-o05-start-gate-integration.test.mjs (1 test) 1957ms
+     ✓ fails the real operation-aware preflight closed for an absent or malformed Gate  1955ms
+ ✓ tests/qualification/persistence/review-remediation.test.mjs (6 tests) 6155ms
+   ✓ rejects events payload schema identity, hash and content before any durable write  1275ms
+   ✓ rejects outbox payload schema identity, hash and content before any durable write  576ms
+   ✓ caller mutation after commit starts cannot replace a validated payload  633ms
+   ✓ invalid busy timeout leaves a healthy database byte-identical and immediately reopenable  1683ms
+   ✓ an existing truncated database is quarantined instead of initialized as an empty authority  1452ms
+   ✓ an operational open failure preserves the original path without a corruption marker  533ms
+ ✓ tests/qualification/toolchain/p1-o05-start-gate.test.mjs (13 tests) 16ms
+ ✓ tests/acceptance/control-api/cli-public-api.acceptance.test.mjs (3 tests) 3402ms
+     ✓ runs start, version, doctor, status and stop through the built entrypoints  3246ms
+ ✓ tests/contract/inventory-integrity.test.mjs (5 tests) 2990ms
+     ✓ bind every active contract to one registry identity and canonical owner  770ms
+     ✓ rejects active/planned ownership collisions  591ms
+     ✓ rejects inventory identities missing from the canonical registry  553ms
+     ✓ rejects a public payload schema that permits unknown root fields  438ms
+     ✓ rejects inconsistent active/planned status linkage  634ms
+ ✓ tests/qualification/persistence/migration-git-attributes.test.mjs (4 tests) 184ms
+ ✓ tests/qualification/control-api/openapi-structure.test.mjs (1 test) 14ms
+ ✓ tests/contract/review-remediation.test.mjs (29 tests) 3895ms
+   ✓ type consistency detects operator drift below allOf and multiple local references  3133ms
+ ↓ tests/security/isolation/host-death.security.test.mjs (1 test | 1 skipped)
+ ✓ tests/contract/example-suite.test.mjs (4 tests) 3542ms
+     ✓ accepts every valid fixture and rejects every invalid fixture  813ms
+     ✓ does not infer invalidity from a fixture filename  706ms
+     ✓ fails closed for missing, duplicate and unknown-schema fixture bindings  1495ms
+     ✓ requires invalid cases to prove their declared boundary violation  525ms
+ ✓ tests/contract/artifact-git-attributes.test.mjs (2 tests) 516ms
+     ✓ marks every tracked artifact as binary and preserves its canonical bytes  445ms
+ ✓ tests/contract/schema-type-consistency.test.mjs (4 tests) 10458ms
+     ✓ checks semantic shape, enums, optionality and readonly exports  3666ms
+     ✓ detects a required schema field deletion  2135ms
+     ✓ detects primitive and enum drift in TypeScript  3246ms
+     ✓ detects a mutable public field  1407ms
+ ✓ tests/contract/policy/policy-contracts.test.mjs (6 tests) 2182ms
+     ✓ urn:aseos:schema:capability-manifest:1.0.0 accepts its canonical example and rejects its fail-closed example  654ms
+     ✓ urn:aseos:schema:policy-evaluation-input:1.0.0 accepts its canonical example and rejects its fail-closed example  370ms
+     ✓ urn:aseos:schema:policy-set:1.0.0 accepts its canonical example and rejects its fail-closed example  302ms
+     ✓ registers exactly the Phase 1 policy authorities  311ms
+ ✓ tests/contract/runtime-validator.test.mjs (4 tests) 675ms
+ ✓ tests/qualification/toolchain/scope-event-policy.test.mjs (7 tests) 15ms
+ ✓ tests/qualification/toolchain/toolchain-manifest.test.mjs (2 tests) 185ms
+ ✓ tests/qualification/toolchain/dependency-build-policy.test.mjs (1 test) 1837ms
+     ✓ does not execute an unallowlisted dependency install script  1834ms
+ ✓ tests/contract/compatibility.test.mjs (3 tests) 658ms
+ ✓ tests/contract/phase-1-integration.test.mjs (1 test) 997ms
+   ✓ canonical JSON rejection reaches the durable journal boundary without partial writes  995ms
+ ✓ tests/contract/package-integration.test.mjs (1 test) 381ms
+     ✓ is ESM-only, composite and exposed through its package public entry  377ms
+ ✓ tests/contract/generated-types.test.mjs (4 tests) 9ms
+ ✓ tests/qualification/control-api/windows-claim-race.test.mjs (4 tests) 2325ms
+   ✓ a departing Windows claim reporting EPERM does not prevent an uncontested owner  326ms
+   ✓ a departing Windows claim reporting EACCES does not prevent an uncontested owner  358ms
+   ✓ a departing Windows claim reporting EBUSY does not prevent an uncontested owner  326ms
+   ✓ a persistently unreadable live claim remains fail closed and is never removed  1307ms
+ ✓ tests/contract/p1-v03-contracts.test.mjs (1 test) 3486ms
+     ✓ produces all four required Evidence result types  3483ms
+ ✓ tests/qualification/toolchain/esm-project-reference.test.mjs (1 test) 48ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/qualification/control-api/p1-v07-control-api.test.mjs > P1-V07 authenticated loopback Control API > binds only to the IPv4 loopback endpoint and rejects Host, Origin and unauthenticated access
+SystemError: A system error occurred: uv_interface_addresses returned Unknown system error 1 (Unknown system error 1)
+ ❯ tests/qualification/control-api/p1-v07-control-api.test.mjs:57:40
+     55|         }),
+     56|       ).rejects.toThrow();
+     57|       const lanAddress = Object.values(networkInterfaces())
+       |                                        ^
+     58|         .flat()
+     59|         .find((entry) => entry?.family === "IPv4" && !entry.internal)?…
+ ❯ withControlApi tests/qualification/control-api/helpers.mjs:18:12
+ ❯ tests/qualification/control-api/p1-v07-control-api.test.mjs:30:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 41 passed | 2 skipped (44)
+      Tests  1 failed | 329 passed | 9 skipped (339)
+   Start at  16:56:35
+   Duration  152.70s (transform 2.41s, setup 0ms, import 8.05s, tests 120.57s, environment 8ms)
+
+[ELIFECYCLE] Test failed. See above for more details.
+[ELIFECYCLE] Command failed with exit code 1.

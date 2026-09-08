@@ -1,0 +1,377 @@
+﻿2026-09-08T07:06:40.8427755Z Current runner version: '2.337.0'
+2026-09-08T07:06:40.8453208Z ##[group]Runner Image Provisioner
+2026-09-08T07:06:40.8453995Z Hosted Compute Agent
+2026-09-08T07:06:40.8454521Z Version: 20260819.586
+2026-09-08T07:06:40.8455129Z Commit: 3cc4a88dfa507ef76119ad1bb3eccc6378bb2b76
+2026-09-08T07:06:40.8455906Z Build Date: 2026-08-18T23:20:18Z
+2026-09-08T07:06:40.8456998Z Worker ID: {2159c809-aedb-4a20-b98c-55b932b61926}
+2026-09-08T07:06:40.8457686Z Azure Region: westus
+2026-09-08T07:06:40.8458198Z ##[endgroup]
+2026-09-08T07:06:40.8459579Z ##[group]Operating System
+2026-09-08T07:06:40.8460205Z Microsoft Windows Server 2025
+2026-09-08T07:06:40.8460791Z 10.0.26100
+2026-09-08T07:06:40.8461282Z Datacenter
+2026-09-08T07:06:40.8461762Z ##[endgroup]
+2026-09-08T07:06:40.8462325Z ##[group]Runner Image
+2026-09-08T07:06:40.8462882Z Image: windows-2025-vs2026
+2026-09-08T07:06:40.8463483Z Version: 20260824.214.3
+2026-09-08T07:06:40.8464953Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20260824.214/images/windows/Windows2025-VS2026-Readme.md
+2026-09-08T07:06:40.8466634Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20260824.214
+2026-09-08T07:06:40.8467640Z ##[endgroup]
+2026-09-08T07:06:40.8468667Z ##[group]GITHUB_TOKEN Permissions
+2026-09-08T07:06:40.8470471Z Contents: read
+2026-09-08T07:06:40.8471048Z Metadata: read
+2026-09-08T07:06:40.8471568Z ##[endgroup]
+2026-09-08T07:06:40.8473565Z Secret source: Actions
+2026-09-08T07:06:40.8474576Z Prepare workflow directory
+2026-09-08T07:06:40.8862607Z Prepare all required actions
+2026-09-08T07:06:40.8928201Z Getting action download info
+2026-09-08T07:06:41.2149359Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+2026-09-08T07:06:41.3475700Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-09-08T07:06:41.6497104Z Uses: olu37776-bit/-ai-software-engineering-os/.github/workflows/quality.yml@refs/pull/101/merge (6c3ada548c127a304e12e5834f493b56d0bece5c)
+2026-09-08T07:06:41.6502459Z ##[group] Inputs
+2026-09-08T07:06:41.6503042Z   target_sha: 455ae2251749c3b4cade96792c66988b1c55e673
+2026-09-08T07:06:41.6503640Z ##[endgroup]
+2026-09-08T07:06:41.6504162Z Complete job name: required-quality / qualify (windows-x64)
+2026-09-08T07:06:41.7946318Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T07:06:41.7956094Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+2026-09-08T07:06:41.7956965Z with:
+2026-09-08T07:06:41.7957396Z   ref: 455ae2251749c3b4cade96792c66988b1c55e673
+2026-09-08T07:06:41.7957944Z   fetch-depth: 0
+2026-09-08T07:06:41.7958469Z   repository: olu37776-bit/-ai-software-engineering-os
+2026-09-08T07:06:41.7962250Z   token: ***
+2026-09-08T07:06:41.7962641Z   ssh-strict: true
+2026-09-08T07:06:41.7963044Z   ssh-user: git
+2026-09-08T07:06:41.7963451Z   persist-credentials: true
+2026-09-08T07:06:41.7963895Z   clean: true
+2026-09-08T07:06:41.7964294Z   sparse-checkout-cone-mode: true
+2026-09-08T07:06:41.7964809Z   fetch-tags: false
+2026-09-08T07:06:41.7965212Z   show-progress: true
+2026-09-08T07:06:41.7965615Z   lfs: false
+2026-09-08T07:06:41.7965985Z   submodules: false
+2026-09-08T07:06:41.7966396Z   set-safe-directory: true
+2026-09-08T07:06:41.7967040Z ##[endgroup]
+2026-09-08T07:06:41.9535221Z Syncing repository: olu37776-bit/-ai-software-engineering-os
+2026-09-08T07:06:41.9538431Z ##[group]Getting Git version info
+2026-09-08T07:06:41.9540304Z Working directory is 'D:\a\-ai-software-engineering-os\-ai-software-engineering-os'
+2026-09-08T07:06:42.0557980Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-09-08T07:06:42.4323792Z git version 2.55.0.windows.5
+2026-09-08T07:06:42.4376221Z ##[endgroup]
+2026-09-08T07:06:42.4396894Z Temporarily overriding HOME='D:\a\_temp\a45f1de3-cdc7-4367-b193-727eaba4c337' before making global git config changes
+2026-09-08T07:06:42.4399161Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-08T07:06:42.4410401Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\-ai-software-engineering-os\-ai-software-engineering-os
+2026-09-08T07:06:42.5042755Z Deleting the contents of 'D:\a\-ai-software-engineering-os\-ai-software-engineering-os'
+2026-09-08T07:06:42.5048638Z ##[group]Initializing the repository
+2026-09-08T07:06:42.5057281Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\-ai-software-engineering-os\-ai-software-engineering-os
+2026-09-08T07:06:42.5895316Z Initialized empty Git repository in D:/a/-ai-software-engineering-os/-ai-software-engineering-os/.git/
+2026-09-08T07:06:42.5938256Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/olu37776-bit/-ai-software-engineering-os
+2026-09-08T07:06:42.6501511Z ##[endgroup]
+2026-09-08T07:06:42.6502305Z ##[group]Disabling automatic garbage collection
+2026-09-08T07:06:42.6511082Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-09-08T07:06:42.6798307Z ##[endgroup]
+2026-09-08T07:06:42.6799056Z ##[group]Setting up auth
+2026-09-08T07:06:42.6811119Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-09-08T07:06:42.7112574Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-09-08T07:06:44.0970751Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-08T07:06:44.1306083Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-09-08T07:06:44.6774258Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-09-08T07:06:44.7138031Z ##[endgroup]
+2026-09-08T07:06:44.7138875Z ##[group]Fetching the repository
+2026-09-08T07:06:44.7139762Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-09-08T07:06:46.1478510Z From https://github.com/olu37776-bit/-ai-software-engineering-os
+2026-09-08T07:06:46.1479964Z  * [new branch]      diagnostic/issue-53-prettier-output -> origin/diagnostic/issue-53-prettier-output
+2026-09-08T07:06:46.1481344Z  * [new branch]      docs/coverage-loop-redesign-20260908 -> origin/docs/coverage-loop-redesign-20260908
+2026-09-08T07:06:46.1483002Z  * [new branch]      docs/knowledge-reconstruction-design-v1-20260908 -> origin/docs/knowledge-reconstruction-design-v1-20260908
+2026-09-08T07:06:46.1484551Z  * [new branch]      docs/learning-feedback-rebaseline-20260908 -> origin/docs/learning-feedback-rebaseline-20260908
+2026-09-08T07:06:46.1486280Z  * [new branch]      gate/p1-o04-final-scope-authority-amendment-issue-41 -> origin/gate/p1-o04-final-scope-authority-amendment-issue-41
+2026-09-08T07:06:46.1488175Z  * [new branch]      gate/p1-o04-final-scope-authority-amendment-issue-44 -> origin/gate/p1-o04-final-scope-authority-amendment-issue-44
+2026-09-08T07:06:46.1490538Z  * [new branch]      gate/p1-o04-final-scope-authority-amendment-issue-48 -> origin/gate/p1-o04-final-scope-authority-amendment-issue-48
+2026-09-08T07:06:46.1492821Z  * [new branch]      gate/p1-o04-resume-after-issue-29-final-amendment-issue-48 -> origin/gate/p1-o04-resume-after-issue-29-final-amendment-issue-48
+2026-09-08T07:06:46.1494964Z  * [new branch]      gate/p1-o04-transition-enforcement-issue-29 -> origin/gate/p1-o04-transition-enforcement-issue-29
+2026-09-08T07:06:46.1496042Z  * [new branch]      gate/p1-o05-start-after-issue-53-independent -> origin/gate/p1-o05-start-after-issue-53-independent
+2026-09-08T07:06:46.1497141Z  * [new branch]      gate/p1-o05-transition-authorization-issue-53 -> origin/gate/p1-o05-transition-authorization-issue-53
+2026-09-08T07:06:46.1498355Z  * [new branch]      gate/p1-o06-governance-amendment-authorization-issue-64 -> origin/gate/p1-o06-governance-amendment-authorization-issue-64
+2026-09-08T07:06:46.1499644Z  * [new branch]      gate/p1-o06-start-after-issue-64-independent -> origin/gate/p1-o06-start-after-issue-64-independent
+2026-09-08T07:06:46.1500822Z  * [new branch]      gate/p1-o07-governance-amendment-authorization-issue-71 -> origin/gate/p1-o07-governance-amendment-authorization-issue-71
+2026-09-08T07:06:46.1501983Z  * [new branch]      gate/p1-o07-start-after-issue-71-independent -> origin/gate/p1-o07-start-after-issue-71-independent
+2026-09-08T07:06:46.1503202Z  * [new branch]      governance/issue-11-independent-gate -> origin/governance/issue-11-independent-gate
+2026-09-08T07:06:46.1504568Z  * [new branch]      governance/issue-14-authorization-gate -> origin/governance/issue-14-authorization-gate
+2026-09-08T07:06:46.1505404Z  * [new branch]      governance/m0-final-gate -> origin/governance/m0-final-gate
+2026-09-08T07:06:46.1506384Z  * [new branch]      governance/p1-execution-scope-amendment -> origin/governance/p1-execution-scope-amendment
+2026-09-08T07:06:46.1507500Z  * [new branch]      governance/p1-o01-independent-gate -> origin/governance/p1-o01-independent-gate
+2026-09-08T07:06:46.1508416Z  * [new branch]      governance/p1-o02-resume-after-issue-14 -> origin/governance/p1-o02-resume-after-issue-14
+2026-09-08T07:06:46.1509460Z  * [new branch]      governance/p1-o02-resume-after-issue-21 -> origin/governance/p1-o02-resume-after-issue-21
+2026-09-08T07:06:46.1510379Z  * [new branch]      governance/p1-o02-resume-after-issue-24 -> origin/governance/p1-o02-resume-after-issue-24
+2026-09-08T07:06:46.1511290Z  * [new branch]      governance/p1-o02-root-integration-scope-amendment -> origin/governance/p1-o02-root-integration-scope-amendment
+2026-09-08T07:06:46.1513005Z  * [new branch]      governance/p1-o04-final-scope-authority-amendment-issue-41 -> origin/governance/p1-o04-final-scope-authority-amendment-issue-41
+2026-09-08T07:06:46.1514296Z  * [new branch]      governance/p1-o04-final-scope-authority-amendment-issue-44 -> origin/governance/p1-o04-final-scope-authority-amendment-issue-44
+2026-09-08T07:06:46.1515644Z  * [new branch]      governance/p1-o04-final-scope-authority-amendment-issue-48 -> origin/governance/p1-o04-final-scope-authority-amendment-issue-48
+2026-09-08T07:06:46.1517178Z  * [new branch]      governance/p1-o04-transition-enforcement-issue-29 -> origin/governance/p1-o04-transition-enforcement-issue-29
+2026-09-08T07:06:46.1518441Z  * [new branch]      governance/p1-o04-transition-enforcement-scope-amendment -> origin/governance/p1-o04-transition-enforcement-scope-amendment
+2026-09-08T07:06:46.1519493Z  * [new branch]      governance/p1-o05-scope-authority-amendment-issue-53 -> origin/governance/p1-o05-scope-authority-amendment-issue-53
+2026-09-08T07:06:46.1520502Z  * [new branch]      governance/p1-o06-scope-authority-amendment-issue-64 -> origin/governance/p1-o06-scope-authority-amendment-issue-64
+2026-09-08T07:06:46.1521508Z  * [new branch]      governance/p1-o07-scope-authority-amendment-issue-71 -> origin/governance/p1-o07-scope-authority-amendment-issue-71
+2026-09-08T07:06:46.1522370Z  * [new branch]      governance/phase-1-entry-gate -> origin/governance/phase-1-entry-gate
+2026-09-08T07:06:46.1523073Z  * [new branch]      main       -> origin/main
+2026-09-08T07:06:46.1523684Z  * [new branch]      phase-1/issue-11-transition-remediation -> origin/phase-1/issue-11-transition-remediation
+2026-09-08T07:06:46.1524898Z  * [new branch]      phase-1/p1-o01-authority-owner-test-remediation-issue-44 -> origin/phase-1/p1-o01-authority-owner-test-remediation-issue-44
+2026-09-08T07:06:46.1526311Z  * [new branch]      phase-1/p1-o01-base-exact-merge-execution-issue-37 -> origin/phase-1/p1-o01-base-exact-merge-execution-issue-37
+2026-09-08T07:06:46.1527559Z  * [new branch]      phase-1/p1-o01-governance-amendment-mode -> origin/phase-1/p1-o01-governance-amendment-mode
+2026-09-08T07:06:46.1528483Z  * [new branch]      phase-1/p1-o01-issue29-final-gate-recovery-issue-39 -> origin/phase-1/p1-o01-issue29-final-gate-recovery-issue-39
+2026-09-08T07:06:46.1529473Z  * [new branch]      phase-1/p1-o01-issue33-evidence-correction-issue-35 -> origin/phase-1/p1-o01-issue33-evidence-correction-issue-35
+2026-09-08T07:06:46.1530424Z  * [new branch]      phase-1/p1-o01-lf-c1-entry-preparation-issue-95 -> origin/phase-1/p1-o01-lf-c1-entry-preparation-issue-95
+2026-09-08T07:06:46.1531408Z  * [new branch]      phase-1/p1-o01-p1-o04-transition-enforcement-issue-29 -> origin/phase-1/p1-o01-p1-o04-transition-enforcement-issue-29
+2026-09-08T07:06:46.1532431Z  * [new branch]      phase-1/p1-o01-p1-o05-start-gate-enforcement-issue-53 -> origin/phase-1/p1-o01-p1-o05-start-gate-enforcement-issue-53
+2026-09-08T07:06:46.1533440Z  * [new branch]      phase-1/p1-o01-p1-o05-transition-enforcement-issue-53 -> origin/phase-1/p1-o01-p1-o05-transition-enforcement-issue-53
+2026-09-08T07:06:46.1534455Z  * [new branch]      phase-1/p1-o01-p1-o06-start-gate-enforcement-issue-64 -> origin/phase-1/p1-o01-p1-o06-start-gate-enforcement-issue-64
+2026-09-08T07:06:46.1535458Z  * [new branch]      phase-1/p1-o01-p1-o07-start-gate-enforcement-issue-71 -> origin/phase-1/p1-o01-p1-o07-start-gate-enforcement-issue-71
+2026-09-08T07:06:46.1536511Z  * [new branch]      phase-1/p1-o01-post-merge-qualification-dispatch-issue-33 -> origin/phase-1/p1-o01-post-merge-qualification-dispatch-issue-33
+2026-09-08T07:06:46.1538014Z  * [new branch]      phase-1/p1-o01-review-remediation-issue-82 -> origin/phase-1/p1-o01-review-remediation-issue-82
+2026-09-08T07:06:46.1538872Z  * [new branch]      phase-1/p1-o01-toolchain-foundation -> origin/phase-1/p1-o01-toolchain-foundation
+2026-09-08T07:06:46.1539670Z  * [new branch]      phase-1/p1-o01-toolchain-topology-verifier -> origin/phase-1/p1-o01-toolchain-topology-verifier
+2026-09-08T07:06:46.1540792Z  * [new branch]      phase-1/p1-o01-toolchain-transition-remediation-issue-24 -> origin/phase-1/p1-o01-toolchain-transition-remediation-issue-24
+2026-09-08T07:06:46.1541707Z  * [new branch]      phase-1/p1-o02-contract-foundation -> origin/phase-1/p1-o02-contract-foundation
+2026-09-08T07:06:46.1542494Z  * [new branch]      phase-1/p1-o02-contract-foundation-resume-3 -> origin/phase-1/p1-o02-contract-foundation-resume-3
+2026-09-08T07:06:46.1543355Z  * [new branch]      phase-1/p1-o02-review-remediation-issue-82 -> origin/phase-1/p1-o02-review-remediation-issue-82
+2026-09-08T07:06:46.1544397Z  * [new branch]      phase-1/p1-o02-windows-example-suite-copy-remediation-issue-64 -> origin/phase-1/p1-o02-windows-example-suite-copy-remediation-issue-64
+2026-09-08T07:06:46.1545404Z  * [new branch]      phase-1/p1-o03-architecture-enforcement -> origin/phase-1/p1-o03-architecture-enforcement
+2026-09-08T07:06:46.1546223Z  * [new branch]      phase-1/p1-o03-review-remediation-issue-82 -> origin/phase-1/p1-o03-review-remediation-issue-82
+2026-09-08T07:06:46.1547412Z  * [new branch]      phase-1/p1-o04-deterministic-policy -> origin/phase-1/p1-o04-deterministic-policy
+2026-09-08T07:06:46.1548216Z  * [new branch]      phase-1/p1-o04-review-remediation-issue-82 -> origin/phase-1/p1-o04-review-remediation-issue-82
+2026-09-08T07:06:46.1549311Z  * [new branch]      phase-1/p1-o05-node-sqlite-qualification -> origin/phase-1/p1-o05-node-sqlite-qualification
+2026-09-08T07:06:46.1550289Z  * [new branch]      phase-1/p1-o05-node-sqlite-qualification-resume-issue-60 -> origin/phase-1/p1-o05-node-sqlite-qualification-resume-issue-60
+2026-09-08T07:06:46.1551271Z  * [new branch]      phase-1/p1-o05-review-remediation-issue-82 -> origin/phase-1/p1-o05-review-remediation-issue-82
+2026-09-08T07:06:46.1552419Z  * [new branch]      phase-1/p1-o06-authenticated-loopback-control-api-issue-64 -> origin/phase-1/p1-o06-authenticated-loopback-control-api-issue-64
+2026-09-08T07:06:46.1553412Z  * [new branch]      phase-1/p1-o06-review-remediation-issue-82 -> origin/phase-1/p1-o06-review-remediation-issue-82
+2026-09-08T07:06:46.1554325Z  * [new branch]      phase-1/p1-o06-windows-claim-liveness-issue-82 -> origin/phase-1/p1-o06-windows-claim-liveness-issue-82
+2026-09-08T07:06:46.1555414Z  * [new branch]      phase-1/p1-o07-review-remediation-issue-82 -> origin/phase-1/p1-o07-review-remediation-issue-82
+2026-09-08T07:06:46.1556466Z  * [new branch]      phase-1/p1-o07-windows-process-restricted-qualification-issue-71 -> origin/phase-1/p1-o07-windows-process-restricted-qualification-issue-71
+2026-09-08T07:06:46.1557365Z  * [new branch]      phase-1/p1-o08-packaging -> origin/phase-1/p1-o08-packaging
+2026-09-08T07:06:46.1558853Z  * [new branch]      phase-1/p1-o08-review-remediation-issue-82 -> origin/phase-1/p1-o08-review-remediation-issue-82
+2026-09-08T07:06:46.1560185Z  * [new branch]      phase-1/p1-o09-integrated-gate -> origin/phase-1/p1-o09-integrated-gate
+2026-09-08T07:06:46.1561535Z  * [new branch]      phase-1/p1-o09-integrated-handoff-issue-82 -> origin/phase-1/p1-o09-integrated-handoff-issue-82
+2026-09-08T07:06:46.1563163Z  * [new branch]      phase-1/p1-o09-qualification-fixture-repair-issue-82 -> origin/phase-1/p1-o09-qualification-fixture-repair-issue-82
+2026-09-08T07:06:46.1564731Z  * [new branch]      phase-1/p1-o09-review-plan-issue-82 -> origin/phase-1/p1-o09-review-plan-issue-82
+2026-09-08T07:06:46.1566090Z  * [new branch]      remediation/m0-governance-hardening -> origin/remediation/m0-governance-hardening
+2026-09-08T07:06:46.1567923Z  * [new branch]      remediation/m0-preimplementation-governance -> origin/remediation/m0-preimplementation-governance
+2026-09-08T07:06:46.1569422Z  * [new branch]      remediation/p1-o06-windows-acl-native -> origin/remediation/p1-o06-windows-acl-native
+2026-09-08T07:06:46.1571038Z  * [new branch]      transition/p1-o02-dynamic-contract-qualification-issue-60 -> origin/transition/p1-o02-dynamic-contract-qualification-issue-60
+2026-09-08T07:06:46.1573957Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse --verify --quiet 455ae2251749c3b4cade96792c66988b1c55e673^{object}
+2026-09-08T07:06:46.1927123Z 455ae2251749c3b4cade96792c66988b1c55e673
+2026-09-08T07:06:46.1962614Z ##[endgroup]
+2026-09-08T07:06:46.1963900Z ##[group]Determining the checkout info
+2026-09-08T07:06:46.1965641Z ##[endgroup]
+2026-09-08T07:06:46.1974393Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-09-08T07:06:46.2381608Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-09-08T07:06:46.2673844Z ##[group]Checking out the ref
+2026-09-08T07:06:46.2686844Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force 455ae2251749c3b4cade96792c66988b1c55e673
+2026-09-08T07:06:46.4608967Z Note: switching to '455ae2251749c3b4cade96792c66988b1c55e673'.
+2026-09-08T07:06:46.4609950Z 
+2026-09-08T07:06:46.4610398Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-08T07:06:46.4611202Z changes and commit them, and you can discard any commits you make in this
+2026-09-08T07:06:46.4611829Z state without impacting any branches by switching back to a branch.
+2026-09-08T07:06:46.4612172Z 
+2026-09-08T07:06:46.4612404Z If you want to create a new branch to retain commits you create, you may
+2026-09-08T07:06:46.4612920Z do so (now or later) by using -c with the switch command. Example:
+2026-09-08T07:06:46.4613221Z 
+2026-09-08T07:06:46.4613390Z   git switch -c <new-branch-name>
+2026-09-08T07:06:46.4613609Z 
+2026-09-08T07:06:46.4613748Z Or undo this operation with:
+2026-09-08T07:06:46.4613956Z 
+2026-09-08T07:06:46.4614081Z   git switch -
+2026-09-08T07:06:46.4614256Z 
+2026-09-08T07:06:46.4615474Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-08T07:06:46.4615890Z 
+2026-09-08T07:06:46.4616292Z HEAD is now at 455ae22 P1-O09: normalize mutation copies across Windows and Linux emit newlines
+2026-09-08T07:06:46.4717332Z ##[endgroup]
+2026-09-08T07:06:46.5090032Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-09-08T07:06:46.5349759Z 455ae2251749c3b4cade96792c66988b1c55e673
+2026-09-08T07:06:46.5816263Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T07:06:46.5818355Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+2026-09-08T07:06:46.5818755Z with:
+2026-09-08T07:06:46.5818980Z   node-version: 24.19.0
+2026-09-08T07:06:46.5819249Z   check-latest: false
+2026-09-08T07:06:46.5819478Z   always-auth: false
+2026-09-08T07:06:46.5821869Z   token: ***
+2026-09-08T07:06:46.5822104Z ##[endgroup]
+2026-09-08T07:06:46.7628800Z Found in cache @ C:\hostedtoolcache\windows\node\24.19.0\x64
+2026-09-08T07:06:46.7637177Z (node:5112) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-09-08T07:06:46.7638832Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-09-08T07:06:46.7640904Z ##[group]Environment details
+2026-09-08T07:06:51.5682463Z node: v24.19.0
+2026-09-08T07:06:51.5682844Z npm: 11.17.0
+2026-09-08T07:06:51.5683142Z yarn: 1.22.22
+2026-09-08T07:06:51.5684505Z ##[endgroup]
+2026-09-08T07:06:51.6005959Z ##[group]Run python -m pip install --disable-pip-version-check --no-input "jsonschema==4.25.1" "referencing==0.36.2"
+2026-09-08T07:06:51.6006881Z [36;1mpython -m pip install --disable-pip-version-check --no-input "jsonschema==4.25.1" "referencing==0.36.2"[0m
+2026-09-08T07:06:51.7708487Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T07:06:51.7708978Z ##[endgroup]
+2026-09-08T07:06:56.4239787Z Collecting jsonschema==4.25.1
+2026-09-08T07:06:56.6783621Z   Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+2026-09-08T07:06:56.7618401Z Collecting referencing==0.36.2
+2026-09-08T07:06:56.7845843Z   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
+2026-09-08T07:06:56.8555600Z Collecting attrs>=22.2.0 (from jsonschema==4.25.1)
+2026-09-08T07:06:56.8774556Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-09-08T07:06:56.9425695Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.25.1)
+2026-09-08T07:06:56.9655060Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+2026-09-08T07:06:57.3259551Z Collecting rpds-py>=0.7.1 (from jsonschema==4.25.1)
+2026-09-08T07:06:57.3488278Z   Downloading rpds_py-2026.6.3-cp312-cp312-win_amd64.whl.metadata (4.2 kB)
+2026-09-08T07:06:57.4235063Z Collecting typing-extensions>=4.4.0 (from referencing==0.36.2)
+2026-09-08T07:06:57.4458757Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-09-08T07:06:57.4974829Z Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+2026-09-08T07:06:57.5738238Z Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
+2026-09-08T07:06:57.6153492Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-09-08T07:06:57.6574350Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+2026-09-08T07:06:57.6979082Z Downloading rpds_py-2026.6.3-cp312-cp312-win_amd64.whl (220 kB)
+2026-09-08T07:06:57.7609104Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-09-08T07:06:58.0585551Z Installing collected packages: typing-extensions, rpds-py, attrs, referencing, jsonschema-specifications, jsonschema
+2026-09-08T07:06:58.6336538Z 
+2026-09-08T07:06:58.6357615Z Successfully installed attrs-26.1.0 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 referencing-0.36.2 rpds-py-2026.6.3 typing-extensions-4.16.0
+2026-09-08T07:06:58.8382970Z ##[group]Run corepack enable
+2026-09-08T07:06:58.8383325Z [36;1mcorepack enable[0m
+2026-09-08T07:06:58.8383595Z [36;1mcorepack install --global pnpm@11.24.0[0m
+2026-09-08T07:06:58.8485336Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T07:06:58.8485675Z ##[endgroup]
+2026-09-08T07:06:59.3999043Z Installing pnpm@11.24.0...
+2026-09-08T07:07:04.4216937Z ##[group]Run pnpm install --frozen-lockfile
+2026-09-08T07:07:04.4217339Z [36;1mpnpm install --frozen-lockfile[0m
+2026-09-08T07:07:04.4313805Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T07:07:04.4314169Z ##[endgroup]
+2026-09-08T07:07:05.7934793Z Scope: all 9 workspace projects
+2026-09-08T07:07:05.9755599Z ? Verifying lockfile against supply-chain policies (407 entries)...
+2026-09-08T07:07:05.9919954Z Lockfile is up to date, resolution step is skipped
+2026-09-08T07:07:06.1464280Z Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-09-08T07:07:06.2581820Z Packages: +382
+2026-09-08T07:07:06.2584549Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-09-08T07:07:07.1530189Z Progress: resolved 382, reused 0, downloaded 0, added 0
+2026-09-08T07:07:08.1577535Z Progress: resolved 382, reused 0, downloaded 18, added 0
+2026-09-08T07:07:09.0164361Z Packages are hard linked from the content-addressable store to the virtual store.
+2026-09-08T07:07:09.0165967Z   Content-addressable store is at: D:\.pnpm-store\v11
+2026-09-08T07:07:09.0191260Z   Virtual store is at:             node_modules/.pnpm
+2026-09-08T07:07:09.1662080Z Progress: resolved 382, reused 0, downloaded 75, added 4
+2026-09-08T07:07:10.1688766Z Progress: resolved 382, reused 0, downloaded 130, added 5
+2026-09-08T07:07:10.6016366Z ✓ Lockfile passes supply-chain policies (407 entries in 4.6s)
+2026-09-08T07:07:11.1673301Z Progress: resolved 382, reused 0, downloaded 221, added 12
+2026-09-08T07:07:12.1716669Z Progress: resolved 382, reused 0, downloaded 381, added 30
+2026-09-08T07:07:13.1735049Z Progress: resolved 382, reused 0, downloaded 382, added 201
+2026-09-08T07:07:13.7339847Z Progress: resolved 382, reused 0, downloaded 382, added 382, done
+2026-09-08T07:07:14.1895751Z .../node_modules/protobufjs postinstall$ node scripts/postinstall
+2026-09-08T07:07:14.2611171Z .../node_modules/protobufjs postinstall: Done
+2026-09-08T07:07:14.3045095Z [WARN] Failed to create bin at D:\a\-ai-software-engineering-os\-ai-software-engineering-os\node_modules\.bin\aseos-worker. ENOENT: no such file or directory, stat 'D:\a\-ai-software-engineering-os\-ai-software-engineering-os\apps\worker\dist\main.js.EXE'
+2026-09-08T07:07:14.3603400Z 
+2026-09-08T07:07:14.3603770Z dependencies:
+2026-09-08T07:07:14.3604293Z + @aseos/contracts 0.1.0 <- packages\contracts
+2026-09-08T07:07:14.3604936Z + @aseos/persistence 0.1.0 <- packages\persistence
+2026-09-08T07:07:14.3605535Z + @aseos/platform 0.1.0 <- packages\platform
+2026-09-08T07:07:14.3606099Z + @aseos/policy 0.1.0 <- packages\policy
+2026-09-08T07:07:14.3607044Z + @aseos/windows-process-restricted 0.1.0 <- packages\adapters\tool\windows-process-restricted
+2026-09-08T07:07:14.3607930Z + @aseos/worker 0.1.0 <- apps\worker
+2026-09-08T07:07:14.3608210Z 
+2026-09-08T07:07:14.3608343Z devDependencies:
+2026-09-08T07:07:14.3608676Z + @eslint/js 10.0.1
+2026-09-08T07:07:14.3609074Z + @opentelemetry/sdk-node 0.221.0
+2026-09-08T07:07:14.3609552Z + @stryker-mutator/core 10.0.0
+2026-09-08T07:07:14.3610057Z + @stryker-mutator/typescript-checker 10.0.0
+2026-09-08T07:07:14.3610601Z + @stryker-mutator/vitest-runner 10.0.0
+2026-09-08T07:07:14.3611038Z + @types/node 24.13.3
+2026-09-08T07:07:14.3611572Z + ajv 8.20.0
+2026-09-08T07:07:14.3611897Z + dependency-cruiser 18.2.0
+2026-09-08T07:07:14.3613610Z + eslint 10.9.1
+2026-09-08T07:07:14.3613966Z + fast-check 4.9.0
+2026-09-08T07:07:14.3614300Z + prettier 3.9.6
+2026-09-08T07:07:14.3614718Z + typescript 6.0.3
+2026-09-08T07:07:14.3615573Z + typescript-eslint 8.68.0
+2026-09-08T07:07:14.3615960Z + vitest 4.1.11
+2026-09-08T07:07:14.3616157Z 
+2026-09-08T07:07:14.3783980Z [WARN] Failed to create bin at D:\a\-ai-software-engineering-os\-ai-software-engineering-os\node_modules\.bin\aseos-worker. ENOENT: no such file or directory, stat 'D:\a\-ai-software-engineering-os\-ai-software-engineering-os\node_modules\@aseos\worker\dist\main.js.EXE'
+2026-09-08T07:07:14.4209078Z Done in 9.5s using pnpm v11.24.0
+2026-09-08T07:07:14.5514030Z ##[group]Run pnpm run verify:versions
+2026-09-08T07:07:14.5514558Z [36;1mpnpm run verify:versions[0m
+2026-09-08T07:07:14.5622258Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T07:07:14.5622603Z ##[endgroup]
+2026-09-08T07:07:15.5831818Z $ node scripts/toolchain/verify-versions.mjs
+2026-09-08T07:07:16.8627904Z {
+2026-09-08T07:07:16.8628439Z   "schemaVersion": "1.0.0",
+2026-09-08T07:07:16.8628899Z   "check": "BUILD_VERSION_CONSISTENCY",
+2026-09-08T07:07:16.8629351Z   "result": "PASS",
+2026-09-08T07:07:16.8629663Z   "actual": {
+2026-09-08T07:07:16.8629934Z     "node": "24.19.0",
+2026-09-08T07:07:16.8630243Z     "pnpm": "11.24.0",
+2026-09-08T07:07:16.8630603Z     "typescript": "6.0.3"
+2026-09-08T07:07:16.8630818Z   },
+2026-09-08T07:07:16.8631224Z   "lockfileSha256": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
+2026-09-08T07:07:16.8631722Z   "packageManager": "pnpm@11.24.0"
+2026-09-08T07:07:16.8631970Z }
+2026-09-08T07:07:16.9519824Z ##[group]Run pnpm run verify:scope
+2026-09-08T07:07:16.9520179Z [36;1mpnpm run verify:scope[0m
+2026-09-08T07:07:16.9618307Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T07:07:16.9618651Z env:
+2026-09-08T07:07:16.9618901Z   PHASE1_SCOPE_BASE: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T07:07:16.9619310Z   PHASE1_SCOPE_BRANCH: phase-1/p1-o09-integrated-handoff-issue-82
+2026-09-08T07:07:16.9619653Z   PHASE1_SCOPE_EVENT: pull_request
+2026-09-08T07:07:16.9619980Z   PHASE1_SCOPE_HEAD: 455ae2251749c3b4cade96792c66988b1c55e673
+2026-09-08T07:07:16.9620280Z ##[endgroup]
+2026-09-08T07:07:17.8484056Z $ node scripts/toolchain/verify-scope.mjs
+2026-09-08T07:07:18.3009263Z {
+2026-09-08T07:07:18.3009755Z   "schemaVersion": "1.0.0",
+2026-09-08T07:07:18.3010424Z   "check": "PHASE1_OPERATION_AWARE_WRITE_SCOPE",
+2026-09-08T07:07:18.3011053Z   "result": "PASS",
+2026-09-08T07:07:18.3011811Z   "mode": "OPERATION_EXECUTION",
+2026-09-08T07:07:18.3012341Z   "operationId": "P1-O09",
+2026-09-08T07:07:18.3013163Z   "executionRecord": "operations/phase-1/executions/p1-o09-integrated-handoff-issue-82.json",
+2026-09-08T07:07:18.3014042Z   "baseCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+2026-09-08T07:07:18.3014494Z   "headCommit": "455ae2251749c3b4cade96792c66988b1c55e673",
+2026-09-08T07:07:18.3014952Z   "branch": "phase-1/p1-o09-integrated-handoff-issue-82",
+2026-09-08T07:07:18.3015359Z   "enforcementMode": "DENY_BY_DEFAULT",
+2026-09-08T07:07:18.3015659Z   "operationStartGate": {
+2026-09-08T07:07:18.3015918Z     "required": false
+2026-09-08T07:07:18.3016131Z   },
+2026-09-08T07:07:18.3016323Z   "authorityLockRefresh": {
+2026-09-08T07:07:18.3016573Z     "lockChanged": false,
+2026-09-08T07:07:18.3016810Z     "changedLockedPaths": []
+2026-09-08T07:07:18.3017039Z   },
+2026-09-08T07:07:18.3017269Z   "immutableAuthorityFilesVerified": 25,
+2026-09-08T07:07:18.3017562Z   "changedPaths": [
+2026-09-08T07:07:18.3017931Z     "docs/implementation/phase-1/o09/integrated-handoff-issue-82.md",
+2026-09-08T07:07:18.3018530Z     "operations/phase-1/executions/p1-o09-integrated-handoff-issue-82.json",
+2026-09-08T07:07:18.3019064Z     "scripts/verify-phase-1/qualify-policy-mutations.mjs",
+2026-09-08T07:07:18.3019531Z     "tests/qualification/policy/integrated-mutation.test.mjs",
+2026-09-08T07:07:18.3020027Z     "tests/qualification/toolchain/review-remediation.test.mjs"
+2026-09-08T07:07:18.3020382Z   ],
+2026-09-08T07:07:18.3020563Z   "violations": []
+2026-09-08T07:07:18.3021036Z }
+2026-09-08T07:07:18.3918640Z ##[group]Run pnpm run quality
+2026-09-08T07:07:18.3918974Z [36;1mpnpm run quality[0m
+2026-09-08T07:07:18.4018355Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T07:07:18.4018695Z ##[endgroup]
+2026-09-08T07:07:19.2698865Z $ pnpm run format && pnpm run lint && pnpm run contracts:generate-types && pnpm run typecheck && pnpm run isolation:build && pnpm run test && pnpm --filter @aseos/platform test && pnpm --filter @aseos/windows-process-restricted test && pnpm --filter @aseos/worker test && pnpm run contracts:qualify && pnpm run architecture:qualify && pnpm run persistence:qualify && pnpm run control-api:qualify && pnpm run isolation:qualify && pnpm run build && pnpm run verify:config && pnpm run verify:versions && pnpm run verify:frozen-install
+2026-09-08T07:07:19.7986627Z $ prettier --check --no-error-on-unmatched-pattern package.json pnpm-workspace.yaml "tsconfig*.json" "*.config.mjs" .github/workflows/quality.yml "toolchain/**/*.json" "scripts/toolchain/**/*.mjs" "scripts/contracts/**/*.mjs" "scripts/architecture/**/*.mjs" "tests/qualification/toolchain/**/*.{json,mjs,ts}" "tests/contract/**/*.mjs" "tests/architecture/**/*.{json,mjs}" packages/contracts/package.json packages/contracts/tsconfig.json packages/contracts/type-bindings.json packages/contracts/README.md "packages/contracts/src/**/*.ts" "docs/implementation/phase-1/o01/**/*.md" "docs/implementation/phase-1/o02/**/*.md" "docs/implementation/phase-1/o03/**/*.md" "operations/phase-1/evidence/o01/**/*.json" "operations/phase-1/evidence/o02/**/*.json" "operations/phase-1/evidence/o03/**/*.json" "operations/phase-1/executions/p1-o01-*.json" "operations/phase-1/executions/p1-o02-*.json" "operations/phase-1/executions/p1-o03-*.json" "packages/policy/**/*.{json,ts}" "tests/qualification/policy/**/*.mjs" "docs/implementation/phase-1/o04/**/*.md" "operations/phase-1/evidence/o04/**/*.json" "operations/phase-1/executions/p1-o04-*.json" "packages/persistence/**/*.{json,ts}" "scripts/qualification/persistence/**/*.mjs" "tests/qualification/persistence/**/*.mjs" "tests/fault-injection/persistence/**/*.mjs" "docs/implementation/phase-1/o05/**/*.md" "operations/phase-1/evidence/o05/**/*.json" "operations/phase-1/executions/p1-o05-*.json" "packages/platform/**/*.{json,ts}" "apps/{runtime,cli}/**/*.{json,ts}" "scripts/qualification/control-api/**/*.mjs" "tests/qualification/control-api/**/*.mjs" "tests/acceptance/control-api/**/*.mjs" "tests/contract/control-api/**/*.mjs" "docs/implementation/phase-1/o06/**/*.md" "operations/phase-1/evidence/o06/**/*.json" "operations/phase-1/executions/p1-o06-*.json" "packages/adapters/tool/windows-process-restricted/**/*.{json,mjs,ts}" "apps/worker/**/*.{json,ts}" "scripts/qualification/isolation/**/*.mjs" "tests/qualification/isolation/**/*.mjs" "tests/security/isolation/**/*.mjs" "docs/implementation/phase-1/o07/**/*.md" "operations/phase-1/evidence/o07/**/*.json" "operations/phase-1/executions/p1-o07-*.json"
+2026-09-08T07:07:19.9196977Z Checking formatting...
+2026-09-08T07:07:23.0012605Z All matched files use Prettier code style!
+2026-09-08T07:07:23.5863317Z $ eslint . --ignore-pattern "**/dist/**"
+2026-09-08T07:07:31.0440526Z 
+2026-09-08T07:07:31.0442113Z D:\a\-ai-software-engineering-os\-ai-software-engineering-os\tests\qualification\toolchain\review-remediation.test.mjs
+2026-09-08T07:07:31.0475611Z ##[error]  37:30  error  Spaces are hard to count. Use {8}   no-regex-spaces
+2026-09-08T07:07:31.0484485Z ##[error]  39:38  error  Spaces are hard to count. Use {10}  no-regex-spaces
+2026-09-08T07:07:31.0485513Z 
+2026-09-08T07:07:31.0485887Z ✖ 2 problems (2 errors, 0 warnings)
+2026-09-08T07:07:31.0486330Z   2 errors and 0 warnings potentially fixable with the `--fix` option.
+2026-09-08T07:07:31.0486623Z 
+2026-09-08T07:07:34.0828962Z [ELIFECYCLE] Command failed with exit code 1.
+2026-09-08T07:07:34.1163508Z [ELIFECYCLE] Command failed with exit code 1.
+2026-09-08T07:07:34.1550720Z ##[error]Process completed with exit code 1.
+2026-09-08T07:07:34.1832309Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T07:07:34.1833650Z Post job cleanup.
+2026-09-08T07:07:34.4064144Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-09-08T07:07:34.4367638Z git version 2.55.0.windows.5
+2026-09-08T07:07:34.4443130Z Temporarily overriding HOME='D:\a\_temp\dbe65f5f-ecd8-47e9-9580-f8245513b2ac' before making global git config changes
+2026-09-08T07:07:34.4444501Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-08T07:07:34.4455972Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\-ai-software-engineering-os\-ai-software-engineering-os
+2026-09-08T07:07:34.4819586Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-09-08T07:07:34.5174460Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-09-08T07:07:35.1101026Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-08T07:07:35.1378858Z http.https://github.com/.extraheader
+2026-09-08T07:07:35.1428664Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-09-08T07:07:35.1777784Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-09-08T07:07:35.7590093Z Cleaning up orphan processes
+2026-09-08T07:07:35.7624997Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "Phase1LocalVerification",
+  "subjectCommit": "8d24246aea2ece10ff5793bd7647ca222638b6e3",
+  "actorId": "codex-work-5fb93e787236",
+  "independent": false,
+  "result": "LOCAL_APPLICABLE_CHECKS_PASS",
+  "focusedTestsPassed": 68,
+  "policyMutationsKilled": 8,
+  "policyMutationsSurvived": 0,
+  "environment": {
+    "platform": "linux-x64",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3"
+  },
+  "commands": [
+    {
+      "command": "install",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-install.log"
+    },
+    {
+      "command": "build",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-build.log"
+    },
+    {
+      "command": "scope",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-scope.json"
+    },
+    {
+      "command": "m0",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-m0.json"
+    },
+    {
+      "command": "focused",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-focused.log"
+    },
+    {
+      "command": "mutation",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-mutation.json"
+    },
+    {
+      "command": "contracts",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-contracts.jsonlog"
+    },
+    {
+      "command": "architecture",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-architecture.jsonlog"
+    },
+    {
+      "command": "persistence",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-persistence.jsonlog"
+    },
+    {
+      "command": "control-api",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-control-api.jsonlog"
+    }
+  ],
+  "limitations": [
+    "No local Windows execution",
+    "Full hosted exact-subject qualification remains separate",
+    "No P1-V10 independent human Gate"
+  ]
+}

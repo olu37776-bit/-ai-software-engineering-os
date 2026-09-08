@@ -23,10 +23,17 @@
     "productionImplementationChanged": false,
     "independentHumanGatePerformed": false
   },
-  "documentRefs": ["docs/implementation/phase-1/o09/integrated-handoff-issue-82.md"],
+  "documentRefs": [
+    "docs/implementation/phase-1/o09/integrated-handoff-issue-82.md",
+    "docs/reviews/phase-1-integrated-verification-issue-82.md"
+  ],
   "remainingGaps": [
     "Final immutable handoff subject must receive its own hosted qualification and independent review",
     "P1-V10 HUMAN_REVIEW and schema-valid independent receipt",
     "Protected-main post-merge acceptance of the handoff"
+  ],
+  "evidenceRefs": [
+    "operations/phase-1/implementation-receipt.json",
+    "operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json"
   ]
 }
