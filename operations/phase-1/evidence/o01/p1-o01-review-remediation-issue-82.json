@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "Phase1ReviewRemediationEvidence",
+  "operationId": "P1-O01",
+  "trackingIssue": 82,
+  "findings": ["R01", "R02", "R14", "R16"],
+  "implementationDeclaration": "IMPLEMENTED",
+  "localResults": [
+    {
+      "check": "Focused remediation and exact historical target regression tests",
+      "result": "PASS",
+      "tests": 14
+    },
+    {
+      "check": "Root authority build restores byte-identical runtime bridge",
+      "result": "PASS"
+    },
+    {
+      "check": "Actual invalid receipt and evidence target mismatch rejection",
+      "result": "PASS"
+    },
+    {
+      "check": "Format, lint, toolchain configuration, scope and M0 baseline",
+      "result": "PASS"
+    },
+    {
+      "check": "Full root test run",
+      "result": "ENVIRONMENT_BLOCKED",
+      "passed": 274,
+      "skippedWindows": 8,
+      "failed": 1,
+      "limitation": "LAN address enumeration is denied in this container (uv_interface_addresses EPERM); exact hosted Linux and Windows checks remain required."
+    },
+    {
+      "check": "Actual well-formed receipt cannot self-declare P1-V10 PASS without a matching independent PASS receipt",
+      "result": "PASS",
+      "regressionFileTests": 5
+    }
+  ],
+  "pending": [
+    "Exact remote SHA Linux and Windows CI",
+    "Self-contained Windows artifact qualification",
+    "Independent final P1 Gate"
+  ],
+  "phase1Verified": false
+}

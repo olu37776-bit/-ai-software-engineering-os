@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "Phase1ReviewRemediationEvidence",
+  "operationId": "P1-O06",
+  "trackingIssue": 82,
+  "findings": ["R07", "R12", "R13"],
+  "implementationDeclaration": "IMPLEMENTED",
+  "localResults": [
+    {
+      "check": "Exclusive runtime leases, cancellable deadlines and exact client wire bindings",
+      "result": "PASS",
+      "tests": 8
+    },
+    {
+      "check": "Control API, contracts and CLI acceptance suite",
+      "result": "ENVIRONMENT_BLOCKED",
+      "passed": 38,
+      "windowsOnlySkipped": 2,
+      "blocked": 1,
+      "reason": "uv_interface_addresses permission denied in this container; the hosted LAN assertion is retained"
+    }
+  ],
+  "pending": [
+    "Exact hosted Linux and Windows qualification",
+    "Protected-main post-merge checks",
+    "P1-V10 independent human review"
+  ],
+  "phase1Verified": false
+}

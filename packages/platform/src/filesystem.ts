@@ -1,8 +1,19 @@
 import { execFile } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
-import { chmod, mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
+import {
+  chmod,
+  mkdir,
+  open,
+  readFile,
+  readdir,
+  rename,
+  rm,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { basename, dirname, isAbsolute, join, parse, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
+import { setTimeout as delay } from "node:timers/promises";
 
 import { ControlApiError } from "./errors.js";
 import type { ControlEndpointDescriptor } from "./types.js";
@@ -89,8 +100,50 @@ function processExists(pid: number): boolean {
     process.kill(pid, 0);
     return true;
   } catch (error) {
-    return (error as NodeJS.ErrnoException).code === "EPERM";
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ESRCH") return false;
+    if (code === "EPERM") return true;
+    throw error;
   }
+}
+
+type RuntimeClaim = Readonly<{ name: string; ticket: number | null }>;
+
+async function runtimeClaims(directory: string): Promise<readonly RuntimeClaim[]> {
+  const claims: RuntimeClaim[] = [];
+  for (const name of await readdir(directory)) {
+    const match = /^([1-9][0-9]*)-[0-9a-f]{32}$/u.exec(name);
+    const pid = Number(match?.[1]);
+    if (!match || !Number.isSafeInteger(pid) || pid > 2_147_483_647) {
+      throw new ControlApiError("CONTROL_RUNTIME_LOCK_FAILED", "Runtime claim identity is invalid");
+    }
+    if (!processExists(pid)) {
+      // This path belongs to one immutable nonce, so reclamation cannot unlink
+      // a successor's claim even if a PID is later reused.
+      await rm(join(directory, name), { recursive: true, force: true });
+      continue;
+    }
+    let ticket: unknown;
+    try {
+      ticket = JSON.parse(await readFile(join(directory, name, "ticket.json"), "utf8")) as unknown;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      // An atomically created directory with no published ticket is choosing.
+      // It must be waited for, never reclaimed as malformed or empty.
+      try {
+        await stat(join(directory, name));
+      } catch (missing) {
+        if ((missing as NodeJS.ErrnoException).code === "ENOENT") continue;
+        throw missing;
+      }
+      ticket = null;
+    }
+    if (ticket !== null && (!Number.isSafeInteger(ticket) || Number(ticket) < 1)) {
+      throw new ControlApiError("CONTROL_RUNTIME_LOCK_FAILED", "Runtime claim ticket is invalid");
+    }
+    claims.push({ name, ticket: ticket as number | null });
+  }
+  return claims;
 }
 
 export async function acquireRuntimeLock(
@@ -100,41 +153,87 @@ export async function acquireRuntimeLock(
   const { lockFilePath } = controlPaths(dataRoot);
   await mkdir(dirname(lockFilePath), { recursive: true, mode: 0o700 });
   const content = `${JSON.stringify({ instanceId, pid: process.pid })}\n`;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  const directory = `${lockFilePath}.claims`;
+  await mkdir(directory, { recursive: true, mode: 0o700 });
+  const name = `${String(process.pid)}-${randomBytes(16).toString("hex")}`;
+  const claimPath = join(directory, name);
+  await mkdir(claimPath, { mode: 0o700 });
+  try {
+    // Bakery ordering: publish choosing before reading tickets, then wait for
+    // every earlier chooser. Shared metadata is touched only while elected.
+    const ticket =
+      1 + Math.max(0, ...(await runtimeClaims(directory)).map((claim) => claim.ticket ?? 0));
+    if (!Number.isSafeInteger(ticket)) throw new Error("Runtime claim ticket exhausted");
+    await replaceAtomically(join(claimPath, "ticket.json"), `${String(ticket)}\n`, 0o600);
+    const deadline = Date.now() + 5_000;
+    for (;;) {
+      const others = (await runtimeClaims(directory)).filter((claim) => claim.name !== name);
+      if (
+        others.some(
+          (claim) =>
+            claim.ticket !== null &&
+            (claim.ticket < ticket || (claim.ticket === ticket && claim.name < name)),
+        )
+      ) {
+        throw new ControlApiError(
+          "CONTROL_RUNTIME_ALREADY_ACTIVE",
+          "A control runtime is already active",
+        );
+      }
+      if (!others.some((claim) => claim.ticket === null)) break;
+      if (Date.now() >= deadline) {
+        throw new ControlApiError(
+          "CONTROL_RUNTIME_LOCK_FAILED",
+          "Runtime lock chooser did not finish within its budget",
+        );
+      }
+      await delay(5);
+    }
     try {
-      await writeFile(lockFilePath, content, { encoding: "utf8", flag: "wx", mode: 0o600 });
-      return async (): Promise<void> => {
+      const current = JSON.parse(await readFile(lockFilePath, "utf8")) as unknown;
+      const pid =
+        typeof current === "object" && current !== null
+          ? (current as Record<string, unknown>)["pid"]
+          : undefined;
+      if (!Number.isSafeInteger(pid) || Number(pid) < 1 || Number(pid) > 2_147_483_647) {
+        throw new ControlApiError(
+          "CONTROL_RUNTIME_LOCK_FAILED",
+          "Existing runtime lock identity is invalid",
+        );
+      }
+      if (processExists(Number(pid))) {
+        throw new ControlApiError(
+          "CONTROL_RUNTIME_ALREADY_ACTIVE",
+          "A control runtime is already active",
+        );
+      }
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+    await replaceAtomically(lockFilePath, content, 0o600);
+    let released: Promise<void> | undefined;
+    return (): Promise<void> => {
+      released ??= (async (): Promise<void> => {
         try {
           if ((await readFile(lockFilePath, "utf8")) === content)
             await rm(lockFilePath, { force: true });
-        } catch {
-          // A missing or replaced lock is never removed by an older runtime.
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        } finally {
+          await rm(claimPath, { recursive: true, force: true });
         }
-      };
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
-      try {
-        const current = JSON.parse(await readFile(lockFilePath, "utf8")) as unknown;
-        const pid =
-          typeof current === "object" && current !== null
-            ? (current as Record<string, unknown>)["pid"]
-            : undefined;
-        if (typeof pid === "number" && Number.isSafeInteger(pid) && processExists(pid)) {
-          throw new ControlApiError(
-            "CONTROL_RUNTIME_ALREADY_ACTIVE",
-            "A control runtime is already active",
-          );
-        }
-      } catch (readError) {
-        if (readError instanceof ControlApiError) throw readError;
-      }
-      await rm(lockFilePath, { force: true });
-    }
+      })();
+      return released;
+    };
+  } catch (error) {
+    await rm(claimPath, { recursive: true, force: true });
+    if (error instanceof ControlApiError) throw error;
+    throw new ControlApiError(
+      "CONTROL_RUNTIME_LOCK_FAILED",
+      "Runtime lock could not be acquired safely",
+      { cause: error },
+    );
   }
-  throw new ControlApiError(
-    "CONTROL_RUNTIME_LOCK_FAILED",
-    "Runtime instance lock could not be acquired",
-  );
 }
 
 function isWithin(root: string, candidate: string): boolean {

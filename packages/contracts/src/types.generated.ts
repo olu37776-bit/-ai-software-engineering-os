@@ -451,7 +451,647 @@ export type PolicyRule = Readonly<{
   readonly ruleId: string;
   readonly schemaVersion: "1.0.0";
   readonly subjectSelector: Readonly<{ readonly subjectTypes: readonly string[] }>;
-  readonly when: Readonly<Record<string, unknown>>;
+  readonly when: Readonly<Record<string, unknown>> &
+    (
+      | Readonly<{
+          readonly operand?: unknown;
+          readonly operator:
+            | "eq"
+            | "notEq"
+            | "in"
+            | "contains"
+            | "lt"
+            | "lte"
+            | "gt"
+            | "gte"
+            | "exists"
+            | "startsWith"
+            | "setSubset"
+            | "setIntersects";
+          readonly reference: string;
+        }>
+      | Readonly<{
+          readonly conditions: readonly (
+            | Readonly<{
+                readonly operand?: unknown;
+                readonly operator:
+                  | "eq"
+                  | "notEq"
+                  | "in"
+                  | "contains"
+                  | "lt"
+                  | "lte"
+                  | "gt"
+                  | "gte"
+                  | "exists"
+                  | "startsWith"
+                  | "setSubset"
+                  | "setIntersects";
+                readonly reference: string;
+              }>
+            | Readonly<{
+                readonly conditions: readonly (
+                  | Readonly<{
+                      readonly operand?: unknown;
+                      readonly operator:
+                        | "eq"
+                        | "notEq"
+                        | "in"
+                        | "contains"
+                        | "lt"
+                        | "lte"
+                        | "gt"
+                        | "gte"
+                        | "exists"
+                        | "startsWith"
+                        | "setSubset"
+                        | "setIntersects";
+                      readonly reference: string;
+                    }>
+                  | Readonly<{
+                      readonly conditions: readonly (
+                        | Readonly<{
+                            readonly operand?: unknown;
+                            readonly operator:
+                              | "eq"
+                              | "notEq"
+                              | "in"
+                              | "contains"
+                              | "lt"
+                              | "lte"
+                              | "gt"
+                              | "gte"
+                              | "exists"
+                              | "startsWith"
+                              | "setSubset"
+                              | "setIntersects";
+                            readonly reference: string;
+                          }>
+                        | Readonly<{
+                            readonly conditions: readonly Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>[];
+                            readonly operator: "all" | "any";
+                          }>
+                        | Readonly<{
+                            readonly condition: Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>;
+                            readonly operator: "not";
+                          }>
+                      )[];
+                      readonly operator: "all" | "any";
+                    }>
+                  | Readonly<{
+                      readonly condition:
+                        | Readonly<{
+                            readonly operand?: unknown;
+                            readonly operator:
+                              | "eq"
+                              | "notEq"
+                              | "in"
+                              | "contains"
+                              | "lt"
+                              | "lte"
+                              | "gt"
+                              | "gte"
+                              | "exists"
+                              | "startsWith"
+                              | "setSubset"
+                              | "setIntersects";
+                            readonly reference: string;
+                          }>
+                        | Readonly<{
+                            readonly conditions: readonly Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>[];
+                            readonly operator: "all" | "any";
+                          }>
+                        | Readonly<{
+                            readonly condition: Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>;
+                            readonly operator: "not";
+                          }>;
+                      readonly operator: "not";
+                    }>
+                )[];
+                readonly operator: "all" | "any";
+              }>
+            | Readonly<{
+                readonly condition:
+                  | Readonly<{
+                      readonly operand?: unknown;
+                      readonly operator:
+                        | "eq"
+                        | "notEq"
+                        | "in"
+                        | "contains"
+                        | "lt"
+                        | "lte"
+                        | "gt"
+                        | "gte"
+                        | "exists"
+                        | "startsWith"
+                        | "setSubset"
+                        | "setIntersects";
+                      readonly reference: string;
+                    }>
+                  | Readonly<{
+                      readonly conditions: readonly (
+                        | Readonly<{
+                            readonly operand?: unknown;
+                            readonly operator:
+                              | "eq"
+                              | "notEq"
+                              | "in"
+                              | "contains"
+                              | "lt"
+                              | "lte"
+                              | "gt"
+                              | "gte"
+                              | "exists"
+                              | "startsWith"
+                              | "setSubset"
+                              | "setIntersects";
+                            readonly reference: string;
+                          }>
+                        | Readonly<{
+                            readonly conditions: readonly Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>[];
+                            readonly operator: "all" | "any";
+                          }>
+                        | Readonly<{
+                            readonly condition: Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>;
+                            readonly operator: "not";
+                          }>
+                      )[];
+                      readonly operator: "all" | "any";
+                    }>
+                  | Readonly<{
+                      readonly condition:
+                        | Readonly<{
+                            readonly operand?: unknown;
+                            readonly operator:
+                              | "eq"
+                              | "notEq"
+                              | "in"
+                              | "contains"
+                              | "lt"
+                              | "lte"
+                              | "gt"
+                              | "gte"
+                              | "exists"
+                              | "startsWith"
+                              | "setSubset"
+                              | "setIntersects";
+                            readonly reference: string;
+                          }>
+                        | Readonly<{
+                            readonly conditions: readonly Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>[];
+                            readonly operator: "all" | "any";
+                          }>
+                        | Readonly<{
+                            readonly condition: Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>;
+                            readonly operator: "not";
+                          }>;
+                      readonly operator: "not";
+                    }>;
+                readonly operator: "not";
+              }>
+          )[];
+          readonly operator: "all" | "any";
+        }>
+      | Readonly<{
+          readonly condition:
+            | Readonly<{
+                readonly operand?: unknown;
+                readonly operator:
+                  | "eq"
+                  | "notEq"
+                  | "in"
+                  | "contains"
+                  | "lt"
+                  | "lte"
+                  | "gt"
+                  | "gte"
+                  | "exists"
+                  | "startsWith"
+                  | "setSubset"
+                  | "setIntersects";
+                readonly reference: string;
+              }>
+            | Readonly<{
+                readonly conditions: readonly (
+                  | Readonly<{
+                      readonly operand?: unknown;
+                      readonly operator:
+                        | "eq"
+                        | "notEq"
+                        | "in"
+                        | "contains"
+                        | "lt"
+                        | "lte"
+                        | "gt"
+                        | "gte"
+                        | "exists"
+                        | "startsWith"
+                        | "setSubset"
+                        | "setIntersects";
+                      readonly reference: string;
+                    }>
+                  | Readonly<{
+                      readonly conditions: readonly (
+                        | Readonly<{
+                            readonly operand?: unknown;
+                            readonly operator:
+                              | "eq"
+                              | "notEq"
+                              | "in"
+                              | "contains"
+                              | "lt"
+                              | "lte"
+                              | "gt"
+                              | "gte"
+                              | "exists"
+                              | "startsWith"
+                              | "setSubset"
+                              | "setIntersects";
+                            readonly reference: string;
+                          }>
+                        | Readonly<{
+                            readonly conditions: readonly Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>[];
+                            readonly operator: "all" | "any";
+                          }>
+                        | Readonly<{
+                            readonly condition: Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>;
+                            readonly operator: "not";
+                          }>
+                      )[];
+                      readonly operator: "all" | "any";
+                    }>
+                  | Readonly<{
+                      readonly condition:
+                        | Readonly<{
+                            readonly operand?: unknown;
+                            readonly operator:
+                              | "eq"
+                              | "notEq"
+                              | "in"
+                              | "contains"
+                              | "lt"
+                              | "lte"
+                              | "gt"
+                              | "gte"
+                              | "exists"
+                              | "startsWith"
+                              | "setSubset"
+                              | "setIntersects";
+                            readonly reference: string;
+                          }>
+                        | Readonly<{
+                            readonly conditions: readonly Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>[];
+                            readonly operator: "all" | "any";
+                          }>
+                        | Readonly<{
+                            readonly condition: Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>;
+                            readonly operator: "not";
+                          }>;
+                      readonly operator: "not";
+                    }>
+                )[];
+                readonly operator: "all" | "any";
+              }>
+            | Readonly<{
+                readonly condition:
+                  | Readonly<{
+                      readonly operand?: unknown;
+                      readonly operator:
+                        | "eq"
+                        | "notEq"
+                        | "in"
+                        | "contains"
+                        | "lt"
+                        | "lte"
+                        | "gt"
+                        | "gte"
+                        | "exists"
+                        | "startsWith"
+                        | "setSubset"
+                        | "setIntersects";
+                      readonly reference: string;
+                    }>
+                  | Readonly<{
+                      readonly conditions: readonly (
+                        | Readonly<{
+                            readonly operand?: unknown;
+                            readonly operator:
+                              | "eq"
+                              | "notEq"
+                              | "in"
+                              | "contains"
+                              | "lt"
+                              | "lte"
+                              | "gt"
+                              | "gte"
+                              | "exists"
+                              | "startsWith"
+                              | "setSubset"
+                              | "setIntersects";
+                            readonly reference: string;
+                          }>
+                        | Readonly<{
+                            readonly conditions: readonly Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>[];
+                            readonly operator: "all" | "any";
+                          }>
+                        | Readonly<{
+                            readonly condition: Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>;
+                            readonly operator: "not";
+                          }>
+                      )[];
+                      readonly operator: "all" | "any";
+                    }>
+                  | Readonly<{
+                      readonly condition:
+                        | Readonly<{
+                            readonly operand?: unknown;
+                            readonly operator:
+                              | "eq"
+                              | "notEq"
+                              | "in"
+                              | "contains"
+                              | "lt"
+                              | "lte"
+                              | "gt"
+                              | "gte"
+                              | "exists"
+                              | "startsWith"
+                              | "setSubset"
+                              | "setIntersects";
+                            readonly reference: string;
+                          }>
+                        | Readonly<{
+                            readonly conditions: readonly Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>[];
+                            readonly operator: "all" | "any";
+                          }>
+                        | Readonly<{
+                            readonly condition: Readonly<{
+                              readonly operand?: unknown;
+                              readonly operator:
+                                | "eq"
+                                | "notEq"
+                                | "in"
+                                | "contains"
+                                | "lt"
+                                | "lte"
+                                | "gt"
+                                | "gte"
+                                | "exists"
+                                | "startsWith"
+                                | "setSubset"
+                                | "setIntersects";
+                              readonly reference: string;
+                            }>;
+                            readonly operator: "not";
+                          }>;
+                      readonly operator: "not";
+                    }>;
+                readonly operator: "not";
+              }>;
+          readonly operator: "not";
+        }>
+    );
 }>;
 export type PolicySet = Readonly<{
   readonly constants: Readonly<Record<string, unknown>>;
