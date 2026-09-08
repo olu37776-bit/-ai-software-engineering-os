@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O01",
+  "subjectCommit": "06d344ba716f885087099420c8a521bb3dee4c51",
+  "subjectTree": "86cea6cb26f4524699b3f37057366e4e2daff41d",
+  "subjectKind": "LOCAL_IMPLEMENTATION_SNAPSHOT",
+  "acceptedP1MainCommit": "114f466e4de7cb2f698c2f4cde57fc90006e527f",
+  "recordedAt": "2026-09-09T02:35:00+08:00",
+  "result": "PARTIAL",
+  "steps": [
+    {
+      "stepId": "P2-V03-QUALITY",
+      "result": "PASS",
+      "evidenceRefs": [
+        "Local Windows pnpm quality exited 0 on the same executable implementation; subsequent lockfile formatting was separately frozen-install verified."
+      ]
+    },
+    {
+      "stepId": "P2-V04-DURABLE-KERNEL",
+      "result": "PASS",
+      "evidenceRefs": [
+        "27 compiled-public-package real SQLite kernel/service tests passed; 15 architecture tests passed."
+      ]
+    },
+    { "stepId": "P2-V05-HOSTED-QUALIFICATION", "result": "NOT_RUN", "evidenceRefs": [] },
+    { "stepId": "P2-V06-MAIN-LANDING", "result": "NOT_RUN", "evidenceRefs": [] }
+  ],
+  "localPackagedQualification": {
+    "result": "PASS",
+    "testsPassed": 6,
+    "testsSkipped": 0,
+    "manifestSha256": "c11db299b6de77bdac09d761fd9bf93338332001ea4190f464e263a925b1cfcb",
+    "payloadFiles": 321,
+    "payloadSizeBytes": 94143436,
+    "packagedWorkflowRestartReplay": true,
+    "duplicateEventCount": 0
+  },
+  "knownGaps": [
+    "This is a local source snapshot, not a hosted qualification receipt. The final PR head and protected-main merge must qualify independently.",
+    "Later source changes only bind the real accepted P1 main and incorporate its test-only fixture isolation; runtime packages match the local qualified implementation.",
+    "Internal creation-only service; no scheduling, worker endpoint, production model or complete OS sandbox."
+  ],
+  "phase2Complete": false
+}

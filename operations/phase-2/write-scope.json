@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O01",
+  "enforcementMode": "DENY_BY_DEFAULT",
+  "exactPaths": [
+    "package.json",
+    "pnpm-workspace.yaml",
+    "pnpm-lock.yaml",
+    "tsconfig.build.json",
+    "vitest.config.mjs",
+    "tests/architecture/architecture-policy.json",
+    "scripts/toolchain/verify-scope.mjs",
+    "scripts/toolchain/phase2-scope.mjs",
+    "scripts/toolchain/phase2-scope-policy.mjs",
+    "scripts/governance/verify_m0.py",
+    "scripts/release/assemble-windows-x64.mjs",
+    "tests/qualification/packaging/clean-windows-startup.test.mjs",
+    "packages/persistence/src/index.ts",
+    "packages/persistence/src/persistence-worker.ts",
+    "packages/platform/package.json",
+    "packages/platform/tsconfig.json",
+    "packages/platform/src/index.ts",
+    "packages/platform/src/workflow-service.ts",
+    "docs/roadmap/progress-status.md",
+    "operations/phase-2/operation.json",
+    "operations/phase-2/write-scope.json",
+    "operations/phase-2/executions/p2-o01-durable-kernel.json",
+    "operations/phase-2/verification-plan.json",
+    "operations/phase-2/result-format.json"
+  ],
+  "prefixes": [
+    "packages/kernel/",
+    "packages/workflow/",
+    "scripts/qualification/kernel/",
+    "tests/qualification/kernel/",
+    "tests/replay/kernel/",
+    "tests/fault-injection/kernel/",
+    "operations/phase-2/evidence/p2-o01/",
+    "docs/implementation/phase-2/"
+  ],
+  "additionalTestPatterns": [
+    "tests/qualification/toolchain/phase2-*.test.mjs",
+    "tests/architecture/p2-*.test.mjs"
+  ]
+}

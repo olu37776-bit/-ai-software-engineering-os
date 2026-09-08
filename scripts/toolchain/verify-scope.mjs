@@ -1330,6 +1330,32 @@ async function verifyGovernanceAmendment({
 
 async function main() {
   const args = parseArguments(process.argv.slice(2));
+  // Dispatch only explicit Phase 2 context or a changed Phase 2 execution.
+  // Lazy loading keeps historical P1 fixture checkouts self-contained.
+  const phase2Branch =
+    args.branch ?? process.env.PHASE1_SCOPE_BRANCH ?? gitOutput(["branch", "--show-current"]);
+  const phase2Base = args.base ?? process.env.PHASE1_SCOPE_BASE;
+  const phase2Head = args.head ?? process.env.PHASE1_SCOPE_HEAD ?? gitOutput(["rev-parse", "HEAD"]);
+  const phase2Operation = args.operation ?? process.env.PHASE1_OPERATION_ID;
+  const phase2Paths =
+    phase2Base && !/^0{40}$/.test(phase2Base) ? changedPathsFrom(phase2Base, phase2Head) : [];
+  if (
+    phase2Branch?.startsWith("phase-2/") ||
+    phase2Operation?.startsWith("P2-") ||
+    phase2Paths.some((path) => path.startsWith("operations/phase-2/"))
+  ) {
+    const { verifyPhase2Scope } = await import("./phase2-scope.mjs");
+    reportAndExit(
+      await verifyPhase2Scope({
+        branch: phase2Branch,
+        event: args.event ?? process.env.PHASE1_SCOPE_EVENT ?? "local",
+        eventBase: phase2Base,
+        headCommit: phase2Head,
+        explicitOperation: phase2Operation,
+      }),
+    );
+    return;
+  }
   const operationManifest = await readJson("operations/phase-1/operation.json");
   const writeScope = await readJson("operations/phase-1/write-scope.json");
   const authorityLock = await readJson("operations/phase-1/authority-lock.json");

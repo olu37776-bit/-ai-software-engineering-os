@@ -1,18 +1,18 @@
 # Current Progress Status
 
-Date: 2026-09-09. **P1 V00–V10 ACCEPTED / PROTECTED MAIN LANDING PENDING**. Tracking: [Issue #82](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/82), [PR #101](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101).
+Date: 2026-09-09. **P1 ACCEPTED AND MERGED; P2-O01 LOCAL QUALIFICATION PASS**.
 
-Local main is synchronized to protected main `db310b1d33324e72ba7767eb66760e4e54c8e1bd`; current handoff implementation is `3777bda86f090ac75a3382b8b310da17737dc257`. O01–O08 remediation is merged. O09 implementation and executable mutation checks are complete in PR #101.
+P1 [PR #101](https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101) merged to protected main `114f466e4de7cb2f698c2f4cde57fc90006e527f`. Final-head [required checks](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34261305149) passed: Linux, Windows, real Windows packaging, aggregation and M0. The real human user's final acceptance remains bound to the qualified runtime implementation `3777bda86f090ac75a3382b8b310da17737dc257`. Later test-harness isolation changed no runtime code, assertion or timeout.
 
-Required workflow [34200250486](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34200250486) passed on the exact handoff subject: Linux quality, Windows quality, required packaging, aggregation and verify. Windows: 341 passed / 1 bash-specific skip; Linux: 333 passed / 9 Windows-specific skips; architecture: 14 passed on both. The separate real packaged startup suite passed 5/5, including payload integrity and cleanup. Local Windows full `pnpm quality` also passed, and all eight Policy behavioral mutations were killed.
+Exact-main scope and M0 passed locally. The [post-merge workflow](https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34263398644) is the landing qualification record; it must pass before final P1 landing is reported complete. Earlier two Windows timeout attempts remain recorded and are not rewritten as successes.
 
-The structured receipt records V00–V10 and ADR-0007–0011 qualifications PASS and declares IMPLEMENTED. The actual human user explicitly accepted the final P1/R4 boundaries: “通过本次 P1 最终验收”. The independent receipt binds the final implementation receipt and references this real decision; it does not attribute a human review to an automated agent. The user requested continued construction without repeated per-change reviews.
+P2-O01 implements deterministic CreateWorkflowRun admission and event replay with real SQLite, restart-safe original receipts, full-command identity conflicts and atomic event/audit/dedup writes. Local full quality, 27 focused kernel/service tests, 15 architecture tests and 6 actual Windows packaged-startup/workflow tests passed. Its scope pins the accepted P1 main and preserves frozen P1 authority. Required hosted qualification and P2-O01 main landing are still separate steps; local success is not a complete Phase 2 claim.
 
-- [Current machine evidence and source logs](../../operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json)
-- [Implementation receipt](../../operations/phase-1/implementation-receipt.json)
-- [Final acceptance input](../reviews/phase-1-integrated-verification-issue-82.md)
-- [Subsequent construction queue](../implementation/phase-1/o09/next-construction-queue.md)
+- [P1 implementation receipt](../../operations/phase-1/implementation-receipt.json)
+- [P1 final human acceptance](../../operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json)
+- [P2-O01 implementation and boundaries](../implementation/phase-2/p2-o01-durable-workflow.md)
+- [P2-O01 local qualification snapshot](../../operations/phase-2/evidence/p2-o01/local-qualification.json)
 
-Next: merge the accepted P1 handoff through required checks and verify protected main. Then begin Phase 2 with the deterministic durable Kernel: command/event admission, reducers, transactional inbox/outbox, execution lifecycle and replay/recovery. Existing unmerged Learning, Coverage and GBrain proposals do not change this mainline order.
+The next isolated construction slice is P2-O02 atomic result-journal/inbox/outbox integration. No unrelated Learning, Coverage or GBrain proposal is merged as part of this mainline.
 
-This remains a non-production qualification foundation. PROCESS_RESTRICTED is not an OS security sandbox. Production Workflow/Node runtime, real models and private Workspace/GBrain integration remain later-phase work.
+This remains a non-production foundation. PROCESS_RESTRICTED is not a complete OS security sandbox. The new internal Workflow service supports only CREATED state; production Node execution, real models and private Workspace/GBrain integration remain later work.

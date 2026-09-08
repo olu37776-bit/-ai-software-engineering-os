@@ -51,6 +51,10 @@ export type PersistenceWorkerOptions = Readonly<{
   repositoryRoot?: string;
 }>;
 
+export type PersistenceCommandIdentity = Readonly<
+  Pick<JournalAppendBatch, "commandId" | "idempotencyKey" | "effectScope" | "payloadHash">
+>;
+
 export type PersistenceHealth = Readonly<{
   databasePath: string;
   sqliteVersion: string;
@@ -96,6 +100,7 @@ type WorkerRequestKind =
   | "close"
   | "commit"
   | "get-command"
+  | "lookup-command-receipt"
   | "health"
   | "hold-lock"
   | "list-outbox"
@@ -294,6 +299,34 @@ export class PersistenceWorker {
     return record === null
       ? null
       : this.#validate<CommandDedupRecord>("urn:aseos:schema:command-dedup-record:1.0.0", record);
+  }
+
+  /** Reads the durable outcome with exactly the same identity rules as commit. */
+  public async lookupCommandReceipt(
+    identity: PersistenceCommandIdentity,
+  ): Promise<PersistenceCommitReceipt | null> {
+    const snapshot: PersistenceCommandIdentity = {
+      commandId: identity.commandId,
+      idempotencyKey: identity.idempotencyKey,
+      effectScope: identity.effectScope,
+      payloadHash: identity.payloadHash,
+    };
+    if (
+      Object.values(snapshot).some((value) => typeof value !== "string" || value.length === 0) ||
+      !/^[a-f0-9]{64}$/u.test(snapshot.payloadHash)
+    ) {
+      throw new PersistenceError("PERSISTENCE_CONTRACT_INVALID", "Invalid command lookup identity");
+    }
+    const receipt = await this.#request<PersistenceCommitReceipt | null>(
+      "lookup-command-receipt",
+      snapshot,
+    );
+    return receipt === null
+      ? null
+      : this.#validate<PersistenceCommitReceipt>(
+          "urn:aseos:schema:persistence-commit-receipt:1.0.0",
+          receipt,
+        );
   }
 
   public async listOutbox(): Promise<readonly OutboxRecord[]> {

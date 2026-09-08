@@ -29,6 +29,9 @@ const packageCopies = Object.freeze([
   ["apps/runtime", "app/apps/runtime"],
   ["packages/platform", "app/node_modules/@aseos/platform"],
   ["packages/contracts", "app/node_modules/@aseos/contracts"],
+  ["packages/kernel", "app/node_modules/@aseos/kernel"],
+  ["packages/workflow", "app/node_modules/@aseos/workflow"],
+  ["packages/persistence", "app/node_modules/@aseos/persistence"],
 ]);
 const externalPackages = Object.freeze([
   "ajv",
@@ -456,6 +459,36 @@ export async function assembleWindowsX64(options) {
 
     for (const [source, destination] of packageCopies) {
       await copyWorkspacePackage(sourceRoot, source, staging, destination);
+    }
+    // The durable workflow slice loads migrations and canonical schemas at runtime.
+    // Preserve authority bytes and paths; callers select this explicit read-only root.
+    await copyDirectoryFiles(
+      join(sourceRoot, "packages", "persistence", "migrations"),
+      join(staging, "app", "node_modules", "@aseos", "persistence", "migrations"),
+    );
+    const registryPath = "packages/contracts/schema-registry.json";
+    const registry = JSON.parse(await readFile(join(sourceRoot, registryPath), "utf8"));
+    const authorityRoot = join(staging, "app", "authority");
+    for (const authorityPath of [
+      registryPath,
+      ...registry.schemas.map((entry) => entry.authorityPath),
+    ]) {
+      if (
+        typeof authorityPath !== "string" ||
+        authorityPath.startsWith("/") ||
+        /^[A-Za-z]:/u.test(authorityPath) ||
+        authorityPath.includes("\\") ||
+        authorityPath.split("/").some((part) => part === ".." || part === "." || part === "")
+      )
+        fail("RELEASE_AUTHORITY_PATH_UNSAFE", String(authorityPath));
+      const source = await realpath(join(sourceRoot, authorityPath));
+      const sourceRelative = relative(await realpath(sourceRoot), source);
+      if (sourceRelative.startsWith("..") || /^[A-Za-z]:/u.test(sourceRelative)) {
+        fail("RELEASE_AUTHORITY_PATH_ESCAPE", authorityPath);
+      }
+      const destination = join(authorityRoot, authorityPath);
+      await mkdir(dirname(destination), { recursive: true });
+      await cp(source, destination, { force: false });
     }
     const ajvSource = await realpath(join(sourceRoot, "node_modules", "ajv")).catch(() =>
       fail("RELEASE_DEPENDENCY_MISSING", "ajv"),

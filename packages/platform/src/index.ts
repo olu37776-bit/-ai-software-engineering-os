@@ -5,6 +5,12 @@ export { BoundedIdempotencyRegistry, type IdempotencyLookup } from "./idempotenc
 export { createUuidV7 } from "./identity.js";
 export { startControlApi, startControlApiServer } from "./server.js";
 export {
+  WorkflowService,
+  type WorkflowCommandResult,
+  type WorkflowPersistence,
+  type WorkflowServiceOptions,
+} from "./workflow-service.js";
+export {
   CONTROL_API_VERSION,
   CONTROL_ENDPOINT_SCHEMA_VERSION,
   type BoundedControlMetadata,

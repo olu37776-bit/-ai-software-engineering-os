@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import {
   expectManifestFailure,
@@ -152,5 +155,38 @@ test(
     assert.equal(startup.tokenRemoved, true);
     // Preserve the exact qualified record in both the artifact and the public job log.
     process.stdout.write(`${JSON.stringify(evidence)}\n`);
+  },
+);
+
+test(
+  "P2 packaged workflow executes and recovers with only the bundled Node and authority assets",
+  { skip: process.platform !== "win32" || process.env.ASEOS_QUALIFICATION_ARTIFACT === undefined },
+  () => {
+    const artifactRoot = process.env.ASEOS_QUALIFICATION_ARTIFACT;
+    const output = execFileSync(
+      join(artifactRoot, "node", "node.exe"),
+      [
+        fileURLToPath(
+          new URL(
+            "../../../scripts/qualification/kernel/packaged-workflow-probe.mjs",
+            import.meta.url,
+          ),
+        ),
+        artifactRoot,
+      ],
+      {
+        cwd: artifactRoot,
+        env: sanitizedWindowsEnvironment(process.env),
+        windowsHide: true,
+        encoding: "utf8",
+        timeout: 30_000,
+      },
+    );
+    const result = JSON.parse(output.trim());
+    assert.equal(result.evidenceType, "PackagedDurableWorkflowResult");
+    assert.equal(result.result, "PASS");
+    assert.equal(result.restartReplay, true);
+    assert.equal(result.duplicateEventCount, 0);
+    process.stdout.write(output);
   },
 );

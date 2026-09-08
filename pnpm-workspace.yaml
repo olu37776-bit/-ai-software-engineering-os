@@ -1,5 +1,7 @@
 packages:
   - packages/contracts
+  - packages/kernel
+  - packages/workflow
   - packages/policy
   - packages/persistence
   - packages/platform
