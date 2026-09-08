@@ -4,17 +4,17 @@ Date: 2026-09-08. **P1-O01–O08 REMEDIATION MERGED / P1-O09 HANDOFF PREPARED / 
 
 Protected-main foundation `db310b1d33324e72ba7767eb66760e4e54c8e1bd` passed its own post-merge Linux, Windows, packaging and unique required verify checks. P1-O08 PR #92 is merged after independent read-only review. The downloaded Windows qualification artifact's SHA-256 and all 245 payload files were verified. This supersedes the old page's unstarted O01-remediation status; the original comprehensive review retains its historical subject.
 
-| Operation | Current implementation state |
-| --- | --- |
-| O01 | Required quality/packaging Gate, actual receipt checks, checkout identity and runtime-asset repair merged. |
-| O02 | Canonical JSON, generated composition types and timestamp repair merged. |
-| O03 | Normal architecture enforcement for every workspace app merged. |
-| O04 | Missing-reference/type-mismatch fail-closed Policy repair merged. |
-| O05 | Payload admission, configuration/corruption distinction and truncated-database repair merged. |
-| O06 | Single-instance election, Windows claim liveness, request deadlines, streaming UTF-8 and route-status repair merged. |
-| O07 | Creation-time Job membership and host-only-death lifecycle repair merged; real Windows test passed. |
-| O08 | Parsed loopback qualification and exact-source packaging merged; Windows startup and artifact integrity passed. |
-| O09 | Executable Gate/Policy mutation checks, PARTIAL receipt, Evidence index and independent input prepared in PR #101. |
+| Operation | Current implementation state                                                                                         |
+| --------- | -------------------------------------------------------------------------------------------------------------------- |
+| O01       | Required quality/packaging Gate, actual receipt checks, checkout identity and runtime-asset repair merged.           |
+| O02       | Canonical JSON, generated composition types and timestamp repair merged.                                             |
+| O03       | Normal architecture enforcement for every workspace app merged.                                                      |
+| O04       | Missing-reference/type-mismatch fail-closed Policy repair merged.                                                    |
+| O05       | Payload admission, configuration/corruption distinction and truncated-database repair merged.                        |
+| O06       | Single-instance election, Windows claim liveness, request deadlines, streaming UTF-8 and route-status repair merged. |
+| O07       | Creation-time Job membership and host-only-death lifecycle repair merged; real Windows test passed.                  |
+| O08       | Parsed loopback qualification and exact-source packaging merged; Windows startup and artifact integrity passed.      |
+| O09       | Executable Gate/Policy mutation checks, PARTIAL receipt, Evidence index and independent input prepared in PR #101.   |
 
 Executable handoff source: `8d24246aea2ece10ff5793bd7647ca222638b6e3`. Its preceding f34dc15 source had 68 focused tests; the latest source fixes actual Node dependency resolution in the relocation fixture. Fresh final-source results are recorded in the index. Its own hosted checks and the final receipt-containing HEAD must be read separately; db310b1 results are not inherited as new HEAD verdicts.
 

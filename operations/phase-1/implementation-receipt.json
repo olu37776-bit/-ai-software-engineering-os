@@ -11,7 +11,7 @@
     "role": "IMPLEMENTATION_AGENT",
     "actorId": "codex-work-5fb93e787236"
   },
-  "startedAt": "2026-09-08T16:48:00Z",
+  "startedAt": "2026-09-08T07:04:14Z",
   "completedAt": "2026-09-08T07:29:38.601526Z",
   "writeScope": {
     "scopeId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION-WRITE-SCOPE",
@@ -71,138 +71,95 @@
     {
       "operationId": "P1-O01",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "ed14d4179808621c8ffd5751ebbf7b6704f33b64"
-      ],
+      "commitRefs": ["ed14d4179808621c8ffd5751ebbf7b6704f33b64"],
       "outputs": [
         "Exact toolchain manifest and frozen lockfile",
         "Strict ESM project-reference build",
         "Windows and Linux clean-build Evidence"
       ],
-      "findings": [
-        "R01",
-        "R02",
-        "R14",
-        "R16"
-      ]
+      "findings": ["R01", "R02", "R14", "R16"]
     },
     {
       "operationId": "P1-O02",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "eeb65baf9b0446a4b747eefdc7b7f8c1f965ea94"
-      ],
+      "commitRefs": ["eeb65baf9b0446a4b747eefdc7b7f8c1f965ea94"],
       "outputs": [
         "Schema registry and runtime validator",
         "Inventory and example semantic validation",
         "Schema and type consistency harness"
       ],
-      "findings": [
-        "R06",
-        "R09",
-        "R10"
-      ]
+      "findings": ["R06", "R09", "R10"]
     },
     {
       "operationId": "P1-O03",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "204bfbf1d3fe3f3da24eb3620461325e130b049c"
-      ],
+      "commitRefs": ["204bfbf1d3fe3f3da24eb3620461325e130b049c"],
       "outputs": [
         "Machine-checkable package DAG",
         "Public-entry deep-import and cycle checks",
         "Duplicate semantic-owner check"
       ],
-      "findings": [
-        "R08"
-      ]
+      "findings": ["R08"]
     },
     {
       "operationId": "P1-O04",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "66d9777c97f7ae6ce1a231b76c4bd78001a05ba4"
-      ],
+      "commitRefs": ["66d9777c97f7ae6ce1a231b76c4bd78001a05ba4"],
       "outputs": [
         "Policy schemas and restricted compiler",
         "Canonical JSON and hash fixtures",
         "Fail-closed evaluator skeleton and Evidence"
       ],
-      "findings": [
-        "R03"
-      ]
+      "findings": ["R03"]
     },
     {
       "operationId": "P1-O05",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "772d44068dc23634fd9841e00d26ca647a6ecc38"
-      ],
+      "commitRefs": ["772d44068dc23634fd9841e00d26ca647a6ecc38"],
       "outputs": [
         "PersistenceWorker qualification implementation",
         "Crash transaction and recovery Evidence",
         "Backup corruption and performance Evidence"
       ],
-      "findings": [
-        "R04",
-        "R05",
-        "R11"
-      ]
+      "findings": ["R04", "R05", "R11"]
     },
     {
       "operationId": "P1-O06",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "b18059b27e3a9fef089c974f8dd6195d8c17dcf9"
-      ],
+      "commitRefs": ["b18059b27e3a9fef089c974f8dd6195d8c17dcf9"],
       "outputs": [
         "OpenAPI 3.1.1 baseline",
         "Runtime discovery and token lifecycle",
         "CLI public-client acceptance"
       ],
-      "findings": [
-        "R07",
-        "R12",
-        "R13"
-      ]
+      "findings": ["R07", "R12", "R13"]
     },
     {
       "operationId": "P1-O07",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "96051e9aa26b80decb410a411dfb7fbd0981714d"
-      ],
+      "commitRefs": ["96051e9aa26b80decb410a411dfb7fbd0981714d"],
       "outputs": [
         "Capability probe and IsolationEvidence",
         "Job Object process-tree lifecycle",
         "No-downgrade path and environment Evidence"
       ],
-      "findings": [
-        "WR01"
-      ]
+      "findings": ["WR01"]
     },
     {
       "operationId": "P1-O08",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "db310b1d33324e72ba7767eb66760e4e54c8e1bd"
-      ],
+      "commitRefs": ["db310b1d33324e72ba7767eb66760e4e54c8e1bd"],
       "outputs": [
         "Windows qualification artifact",
         "Release manifest checksum SBOM and provenance",
         "Clean-machine startup Evidence"
       ],
-      "findings": [
-        "R15"
-      ]
+      "findings": ["R15"]
     },
     {
       "operationId": "P1-O09",
       "status": "IMPLEMENTED",
-      "commitRefs": [
-        "8d24246aea2ece10ff5793bd7647ca222638b6e3"
-      ],
+      "commitRefs": ["8d24246aea2ece10ff5793bd7647ca222638b6e3"],
       "outputs": [
         "Structured implementation receipt",
         "Evidence index and known gaps",
@@ -220,9 +177,7 @@
         "environment": "Exact source 8d24246aea2ece10ff5793bd7647ca222638b6e3; author Linux checks / hosted Windows as individually recorded",
         "command": "python scripts/governance/verify_m0.py",
         "result": "PASS",
-        "evidenceRefs": [
-          "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-m0.json"
-        ],
+        "evidenceRefs": ["operations/phase-1/evidence/o09/issue-82/integrated/8d24246-m0.json"],
         "notes": "Actual Linux author execution at the implementation commit; independent and Windows results are separate."
       },
       {
@@ -230,9 +185,7 @@
         "environment": "Exact source 8d24246aea2ece10ff5793bd7647ca222638b6e3; author Linux checks / hosted Windows as individually recorded",
         "command": "node scripts/toolchain/verify-scope.mjs",
         "result": "PASS",
-        "evidenceRefs": [
-          "operations/phase-1/evidence/o09/issue-82/integrated/8d24246-scope.json"
-        ],
+        "evidenceRefs": ["operations/phase-1/evidence/o09/issue-82/integrated/8d24246-scope.json"],
         "notes": "Actual Linux author execution at the implementation commit; independent and Windows results are separate."
       },
       {

@@ -185,19 +185,13 @@
     {
       "stepId": "P1-V00-M0-AUTHORIZATION",
       "required": true,
-      "expectedEvidenceTypes": [
-        "M0GateEvidence",
-        "AuthorityLockEvidence"
-      ],
+      "expectedEvidenceTypes": ["M0GateEvidence", "AuthorityLockEvidence"],
       "independentResult": "NOT_RUN"
     },
     {
       "stepId": "P1-V01-PREFLIGHT",
       "required": true,
-      "expectedEvidenceTypes": [
-        "BaselineIdentityEvidence",
-        "WriteScopeValidationResult"
-      ],
+      "expectedEvidenceTypes": ["BaselineIdentityEvidence", "WriteScopeValidationResult"],
       "independentResult": "NOT_RUN"
     },
     {
