@@ -1,6 +1,6 @@
 # Coverage Loop 分阶段实施与本地交接
 
-状态：`DRAFT v1.1 / REVIEW_PENDING`。当前交付为设计和实施指导，不是新Runner。实现者只声明IMPLEMENTED；独立审查与本地实测分别记录。
+状态：`DRAFT v1.2 / REVIEW_PENDING`。当前交付为设计和实施指导，不是新Runner。实现者只声明IMPLEMENTED；独立审查与本地实测分别记录。
 
 ## 1. 实施原则
 
@@ -55,6 +55,8 @@ WRITE_SCOPE为现有工具内部模块、受控状态迁移和工具测试；不
 
 落实：精确module/class/method/descriptor、METHOD_EXACT与LINE_HINT；report直接counter与build/scope/test/report hash；ACCUMULATED_SEARCH和FRESH_FULL分离、旧测试贡献失效；测试发现/完整性门禁；accepted测试树与结果通过不可变revision+单current指针提交。
 
+METHOD与LINE_BLOCK使用DESIGN第6节不同谓词：同方法其他区块命中不能替代指定区块。LINE_HINT不能作为验收身份。加入此错误区块假通过反例，不能只测wrong-overload。
+
 幂等键(batchId,attempt)与payloadHash分离，同键换内容拒绝。恢复同时校验测试树与结果，不能只恢复manifest而留下另一份已修改测试文件。
 
 旧manifest迁移保留历史；未知版本拒绝，不手改accepted/FP。验收矩阵对应用例须可重放；fixture通过不替代现场命令证明。
@@ -77,11 +79,17 @@ Analysis先于Implementation由程序发出两个调用；无合法分析时实�
 
 WRITE_SCOPE为明确目标测试/fixture、本地状态和P4记录；Loop中不顺手修工具/POM。
 
-最多3个真实批次，一次新鲜全量checkpoint，一次冷恢复。故障注入可在fixture验证，不在业务生产代码故意制造错误。确认分析、身份、断言、merge、提交、超时清理和状态视图全链有效。
+最多3个真实批次，一次冷恢复，并在**最后一次accepted测试/fixture变更之后**执行新鲜完整checkpoint。故障注入可在fixture验证，不在业务生产代码故意制造错误。确认分析、身份、断言、merge、提交、超时清理和状态视图全链有效。
+
+### 切换前门禁
+
+切换Authority/旧loop入口之前，在单写锁下确认：无未解决active attempt；checkpoint绑定的`testAssetDigest`、accepted测试树内容及revision与当前最终接受状态一致，build/scope/执行上下文未变化，required测试全部通过。checkpoint之后若有任何测试/fixture接受变更或digest/revision不符，checkpoint立即过期，必须重新执行后才能切换；不能以“P4期间曾跑过一次全量”放行。
+
+增加反例：先checkpoint，再接受一个修改fixture的批次→禁止切换；对最终accepted树重跑且上述绑定一致→才允许切换。当前Coverage仍可低于90%，此门禁认证循环能力，不冒充90%终点。
 
 通过后一次性切换本地Authority与旧loop入口。不要无故重复“再跑一轮READY、再改文档”的基建循环；非阻塞优化进入待办。
 
-产物：`.ai-local/coverage/reconstruction/P4_LOOP_ACCEPTANCE.md`。独立审查和必要本地验收通过后，才运行无人值守loop。
+产物：`.ai-local/coverage/reconstruction/P4_LOOP_ACCEPTANCE.md`，必须保存最终accepted revision/testAssetDigest及对应checkpoint引用。独立审查和必要本地验收通过后，才运行无人值守loop。
 
 ## 8. 长期运行与终点
 
