@@ -30,8 +30,8 @@ canonical ownership declarations.
 
 ## Downstream fail-closed behavior
 
-The source root is `packages`, so newly added Phase 1 package source is automatically cruised. The
-policy contains fixed optional entries for the Phase 1 packages that P1-O03 WRITE_SCOPE names:
+The source roots include `apps`, `packages`, and the architecture scripts. Runtime, CLI and Worker have explicit governed entries and dependency directions. Every package path in the authoritative workspace topology must have a policy entry and a scanned source root; an omitted application or newly declared workspace fails qualification. The
+policy also contains fixed optional entries for the Phase 1 packages that P1-O03 WRITE_SCOPE names:
 kernel, policy, persistence, platform, observability, and the Windows process-restricted adapter.
 Absence is allowed and creates no placeholder package. Once one exists, its manifest, public entry,
 workspace edges, source imports, cycles, and direction are enforced without a P1-O03 config edit.
@@ -107,3 +107,5 @@ Implementation Evidence is recorded in
 `operations/phase-1/evidence/o03/p1-v04-architecture.json`. The implementation claim remains
 `IMPLEMENTED`; independent verification, GitHub Linux/Windows qualification, protected-main merge,
 and post-merge verification are orchestrator responsibilities.
+
+The Issue #82 application coverage regressions and current remediation state are recorded in `review-remediation-issue-82.md`. Earlier commit-bound qualification records above remain historical.
