@@ -1,0 +1,487 @@
+{
+  "schemaVersion": "1.0.0",
+  "recordType": "LF_C1_ENTRY_REQUEST_NOT_AUTHORITY",
+  "trackingIssue": 95,
+  "entryIssue": 85,
+  "status": "BLOCKED",
+  "codeStartAuthorized": false,
+  "observedMain": {
+    "commit": "b18059b27e3a9fef089c974f8dd6195d8c17dcf9",
+    "tree": "307a79feeeeaec83780657fd24a238f604d37792",
+    "protectedStatus": "OBSERVED_ACTIVE_NO_BYPASS_STRICT_REQUIRED_VERIFY",
+    "ruleset": "https://github.com/olu37776-bit/-ai-software-engineering-os/rules/21648824"
+  },
+  "source": {
+    "commit": "a5279ab7a11f023133994b98f7caf86426c69e8c",
+    "tree": "94a6534ecf04cc680a4afc85572e3ba31d772cf1",
+    "path": "docs/roadmap/learning-feedback-core-entry-plan.md",
+    "sha256": "948fe784f82699733ae5189119e056877aecb641d4dd371bf97452ee36f9a099",
+    "pullRequest": 84,
+    "merged": false,
+    "snapshotUtf8": "# LF-C1：独立纯核心建设开工包\n\n状态：`DRAFT / PLANNING_COMPLETE_PENDING_REVIEW / ENTRY_NOT_RELEASED`  \n更新：2026-09-08  \n观察 main：`ed14d4179808621c8ffd5751ebbf7b6704f33b64`，不是获准开工基线  \n编辑前 LF subject：`7ead85be9c322057207fc0fef8fb0345aee1b39b`  \n[CURRENT](learning-feedback-branch-plan.md) · [Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) · [D01～D05定义](../architecture/learning-feedback/decision-register.md) · [并行协议](../architecture/learning-feedback/parallel-development-protocol.md) · [授权/checker实施规划](learning-feedback-authority-transition-plan.md)\n\n> 本包只定义 LF-C1 业务实施范围和18项验收。正式控制面接线与授权步骤由上方专门规划定义，不得混入本包业务路径。当前仍无获准 base、未创建业务源码/Schema、未签发 Start Gate。\n\n## 1. 第一包：单原子义务的纯核心\n\n只实现 Feedback 投影、历史纠偏义务关闭评价两个纯用例，包括必要 Schema/生成类型、两类 key/prior、消费视图规范化及 conformance/property/replay。唯一 public entry 为 @aseos/learning，只依赖 public contracts。\n\n每次投影一个原子 criterion，至多一个候选；每次 Resolution 一个 feedback、一个 consumer Attempt，至多一条评价。criterionRefs 恰一项，同一 criterion 可有多个关闭要求。V1拒绝组合group/batch，不新增manager、调度或批量事务。详细字段、result、规范化和幂等只由 [Contract](../architecture/learning-feedback/contract-and-seam-proposal.md) §3.1/§7 定义，本包不复制一套规则。\n\n不做数据库/网络/文件/Context/Agent调用，不接Runtime，不建Repository/cache/global/生产Adapter，不做Router/NER/LearningCase/Proposal/dogfooding。外层用现有ContractRegistry验证Schema，核心不调用文件loader。\n\n## 2. E0～E4门禁：设计材料与实际批准分开\n\n| Gate | 明确验收依据 | 当前意义 |\n| --- | --- | --- |\n| E0 | [决策登记](../architecture/learning-feedback/decision-register.md)的D01～D05五行及LF-RV-01～04四行，最终HEAD完整独立结论 | 定义已恢复；新subject待独立接受，不沿用7ead85b的局部PASS |\n| E1 | [授权规划](learning-feedback-authority-transition-plan.md)§3～6：合法operation、四Authority、正常checker及先验Gate | 规划已具体化；实际实施和授权尚未完成 |\n| E2 | 授权规划§7：R01/R02/R16、R06/R09/R10、R08的实现/独立/merge/post-merge及基线适用性 | 逐项接受，不等待无关未来Runtime |\n| E3 | [并行协议](../architecture/learning-feedback/parallel-development-protocol.md)：单写者、54集合、治理刷新和有效RESERVED接受记录 | 方案固定；实际操作者和窗口接受待批准 |\n| E4 | 授权规划§8：获准main及文档/工具链/Contract/Authority/Evidence完整绑定 | 观察main不是approvedMain；签发须真实landing检查 |\n\n直接依赖为R06 canonical/hash、R09生成类型、R10日期、R08架构、R01/R02/R16 Gate/回执/subject。不在LF复制validator/serializer或降低门禁。C1不要求完整Kernel、Context、验证系统、Persistence业务provider完成；I1/I2/E1运行集成届时按真实依赖验收。\n\n## 3. 已选定的授权与集成方式\n\n采用正常dispatcher中的精确LF-C1分支，缺先验授权默认关闭，业务单写者任务为LF-C1-INTEGRATION，在一个完整subject中提交真实consumer与Schema/实例/接线。不得伪装P1-O02、删除P1禁令或以单独诊断exit2替代正式checker。\n\n原受检suite及planned/inventory/registry的共享锁委托必须预先批准；LF实施者不写旧Authority lock。MAINLINE_GOVERNANCE只对被批准、实际变化的四个OPERATION_SCOPED条目做派生hash刷新，并由正常检查验证作者分区、原owners和所有无关字段未变。这个控制面变更属于授权规划的单独治理任务，不是扩大下面54条源码权限。\n\n#95/#97机器请求仍是REQUEST_NOT_AUTHORITY。请求原快照来自877eea8；本包更新后由G0刷新source的commit/tree/hash/snapshot，逐项证明54路径和18要求没有变成更多权限。不能用旧hash证明新文档已绑定。\n\n## 4. 精确源码和测试清单提案\n\n下列三块分别为18 core、26 contracts、6 wiring，共50个路径；另4个实施文档列于本节末尾，合计54。它们是待授权文件集合，不代表每次必须修改所有既有文件。新必需产物须完整，已有文件可在不需要时保持不变。没有通配符，不包含治理脚本、Authority、独立报告或新规划文档。\n\n```text\npackages/learning/package.json\npackages/learning/tsconfig.json\npackages/learning/src/index.ts\npackages/learning/src/feedback/domain/feedback-rules.ts\npackages/learning/src/feedback/application/project-feedback.ts\npackages/learning/src/feedback/application/evaluate-feedback-resolution.ts\npackages/learning/src/feedback/application/normalize-feedback-semantic-input.ts\npackages/learning/src/feedback/application/derive-feedback-key.ts\npackages/learning/src/feedback/application/derive-resolution-key.ts\npackages/learning/test/project-feedback.test.mjs\npackages/learning/test/evaluate-feedback-resolution.test.mjs\npackages/learning/test/feedback-replay.test.mjs\npackages/learning/test/feedback-input-validation.test.mjs\npackages/learning/test/feedback-idempotency.test.mjs\npackages/learning/test/feedback-normalization.test.mjs\npackages/learning/test/resolution-idempotency.test.mjs\ntests/contract/learning-feedback/feedback-conformance.test.mjs\ntests/architecture/learning-feedback-boundaries.test.mjs\n```\n\n两类key共用唯一normalizer，不复制JSON serializer。public/persisted类型由contracts生成，不手写平行DTO；不创建无实际I/O用例的ports/Repository。基数负例放已有测试，不新增batch文件。\n\n### 共享Contract、标准受检suite与实例\n\n```text\npackages/contracts/schemas/learning/execution-feedback.schema.json\npackages/contracts/schemas/learning/feedback-resolution.schema.json\npackages/contracts/schemas/learning/feedback-projection-input.schema.json\npackages/contracts/schemas/learning/feedback-projection-result.schema.json\npackages/contracts/schemas/learning/feedback-resolution-input.schema.json\npackages/contracts/schemas/learning/feedback-resolution-result.schema.json\npackages/contracts/examples/first-slice/example-suite.json\npackages/contracts/examples/learning/execution-feedback.valid.json\npackages/contracts/examples/learning/execution-feedback.invalid.json\npackages/contracts/examples/learning/feedback-resolution.valid.json\npackages/contracts/examples/learning/feedback-resolution.invalid.json\npackages/contracts/examples/learning/feedback-projection-input.valid.json\npackages/contracts/examples/learning/feedback-projection-input.invalid.json\npackages/contracts/examples/learning/feedback-projection-result.valid.json\npackages/contracts/examples/learning/feedback-projection-result.invalid.json\npackages/contracts/examples/learning/feedback-resolution-input.valid.json\npackages/contracts/examples/learning/feedback-resolution-input.invalid.json\npackages/contracts/examples/learning/feedback-resolution-result.valid.json\npackages/contracts/examples/learning/feedback-resolution-result.invalid.json\npackages/contracts/README.md\npackages/contracts/planned-contracts.json\npackages/contracts/schema-inventory.json\npackages/contracts/schema-registry.json\npackages/contracts/type-bindings.json\npackages/contracts/src/types.generated.ts\ntests/contract/example-suite.test.mjs\n```\n\n不创建learning/example-suite.json。十二固定caseId为lf-c1.<schema-stem>.<valid|invalid>，追加原first-slice受检suite；保留全部原case/expectation/semanticAssertions。不修改通用validator/runner绕过问题。\n\nexamples.ts固定读取原suite，contracts:qualify调用该入口。example-suite.test.mjs原统计38/19/19/22；基线不变且未加semanticAssertions，十二实例加入后应为50/25/25/22。开工时以实际新main冻结原案例清单，不能动态计算总数掩盖固定binding缺失。INVALID需expectedError(keyword/instancePath)。正常资格面对删实例、错路径、invalid改valid或错误预期必须失败，conformance需拒绝缺少十二固定case之一。\n\n单criterion及结果基数约束同时进入Input/Result/持久化对象Schema和语义检查；同criterion多要求合法，跨criterion材料拒绝。Schema立即有consumer，不激活其余Phase7对象；registry/hash/type使用现有生成工具。\n\n### 共享构建/架构\n\n```text\npackage.json\npnpm-workspace.yaml\npnpm-lock.yaml\ntsconfig.build.json\nvitest.config.mjs\ntests/architecture/architecture-policy.json\n```\n\n仅加入真实package的dependency/reference/test discovery、learning->contracts及必要根测试边，不加platform->learning。额外workflow/脚本或源码需先更新独立授权；实现者不能临时扩scope。新测试必须进入正常root test。\n\n### 四条实施文档与独立Evidence\n\n实施者同时维护以下4个精确文件：`docs/architecture/learning-feedback/contract-and-seam-proposal.md`、`docs/implementation/learning-feedback/lf-c1-implementation.md`、`docs/roadmap/learning-feedback-branch-plan.md`、`docs/roadmap/learning-feedback-core-entry-plan.md`。普通状态、实际映射与Evidence引用随操作更新，已批准业务语义改变须另行review。\n\n独立报告固定 `docs/reviews/learning-feedback/lf-c1-independent-verification.md`，由独立Evidence任务写，不在54路径。decision-register、授权规划、并行协议和机器Authority对LF实施者只读。生成物不因“由工具生成”获得额外权限。\n\n## 5. 业务实施步骤\n\n1. 从#85取得有效E0～E4、Start Gate和实际approvedMain，核对正式Authority，而非只读Issue状态文字。\n2. 在获准main上建立独立工作树/正式短分支；确认LF-C1-INTEGRATION和独立治理写者接受记录/窗口有效。\n3. 同一集成任务落实六Schema、十二实例、原suite登记、生成类型、构建和consumer；不预建空壳。\n4. 实现两个单义务用例、两类key/prior、唯一normalizer，不存历史、不加批量调度。\n5. 运行本节验证与正常入口；按批准过程交治理任务完成必要lock刷新。对实际完整subject核对分区scope、Evidence、文档一致性。\n6. 实施最多IMPLEMENTED；冻结HEAD交独立只读验证。发现缺陷另轮实施产生新subject，不在验证pass中改代码。\n\n## 6. VerificationPlan\n\n以下18项与上一开工包保持同一要求，不新增控制面测试编号。控制面G-Vxx在独立授权规划中，不计入C1实现范围。\n\n| ID | 必须证明 |\n| --- | --- |\n| C1-V01 | 六Schema/十二实例在原suite登记；固定ID断言；标准资格对删文件/错路径/错误invalid/expectedError均失败，新旧正常案例均通过 |\n| C1-V02 | 七Gate outcome完整，approval/terminal/risk/unknown不降级；汇总Gate不得代替选定criterion证据 |\n| C1-V03 | criterion/Evidence缺失、冲突、错subject ->gap/typed拒绝，不推测rootCause |\n| C1-V04 | 同一反馈义务全满足/部分明确不满足/均不满足 ->正确三种disposition |\n| C1-V05 | 必要条件UNKNOWN、依赖不足、非法输入不冒充EVALUATED，不写completed Resolution |\n| C1-V06 | 错run/attempt/criterion版本、无合法消费关系不关闭 |\n| C1-V07 | 风险接受/Claim fixed/过期或反证不冒充MET；capturedTime仅报告，时间判定材料固定 |\n| C1-V08 | 两用例固定材料/context重放一致；本次ID/time不改key/hash，不误删历史fingerprint |\n| C1-V09 | 单义务Projection prior同key/hash/version复用旧ID；异hash冲突；无匹配prior只返回本义务单候选 |\n| C1-V10 | LF-HN-1逐路径参数化：SET重排不变、SEQUENCE反转改变、SINGLETON基数错误拒绝、重复/未知/版本规则及HN字节向量通过public canonical API |\n| C1-V11 | 核心无时钟/UUID/global/I/O，不改输入/Evidence；validator/serializer复用contracts |\n| C1-V12 | 干净root构建/正常测试包含新包，reverse/deep import/cycle负例被拒 |\n| C1-V13 | 修复后contracts非JSON/稀疏数组/非法日期/条件类型负例仍被拒 |\n| C1-V14 | 实际回执/subject/scope校验，非法claim/旧SHA不得放行 |\n| C1-V15 | Resolution prior同key/hash/version复用旧resolutionId，异内容冲突，错误类型prior拒绝 |\n| C1-V16 | 新attempt/合法Gate-assessment/evaluator-normalization版本产生新Resolution key；改旧observation内容冲突；INCONCLUSIVE无业务记录 |\n| C1-V17 | 正常suite接入负例不能只跑LF专用检查；保留所有旧case，缺十二固定binding之一也被拒 |\n| C1-V18 | 投影0/2个criterion拒绝；assessment/closure跨criterion拒绝；单criterion多closure仅一候选；A/B分别调用key/ID不同且prior不交叉复用；Result拒绝批量/候选与错误并存；Resolution输入/输出也保持单条 |\n\nC1-V18同时检验Schema与public pure-use-case约束，不能as断言绕过。C1-V10覆盖每个规范路径，不只一份向量。所有合成输入标CONFORMANCE_FIXTURE；prior真实性、数据库事务/并发/restart仍由I1另验。\n\n正常命令按entry实际工具链核对：pnpm install --frozen-lockfile；pnpm run verify:versions；pnpm run contracts:generate-types；pnpm run build；pnpm run test；pnpm run contracts:qualify；pnpm run architecture:qualify；pnpm run quality。正式LF scope命令必须由G1已实现并经验证的正常入口支持；诊断exit2不算scope PASS。Windows/独立要求按risk和Authority执行，不能以Linux skip替代。\n\n## 7. 验收与停止\n\n独立通过只可记LF-C1/CORE_CONFORMANCE VERIFIED @ exact SHA，生产Feedback仍NOT_READY。I1/I2/E1需另外证明真实query、persistence、Context使用和工作流；不因C1组件通过自动启动。\n\n未授权、共享竞写、相关依赖失效、语义歧义或必须绕过正常入口才过测时停止并保留diff；不revert他人变更。54范围不含修改裁判、历史review或独立Gate。文档编写完不等于开工获准。\n\n## 8. 独立review与交接\n\nD01～D05的准确含义、原始commit来源、主线依据及通过/拒绝例在[决策登记](../architecture/learning-feedback/decision-register.md#d01)，依次至#d05；不得根据编号临时猜义。LF-RV-01～04在7ead85b已有文档层独立PASS，但本轮新subject必须重新接受其适用性和新增登记/治理规划，不能直接继承旧verdict。\n\n完整E0输出五决策+四finding逐项结果、subject/tree、对照main、reviewer和只读证据。接受设计不批准E1。E1实施者按照[授权规划](learning-feedback-authority-transition-plan.md)执行G0～G3；E2/E3/E4按其已定义记录收口，不再让实现者猜目录或另外设计一套授权系统。\n\n本轮计划与导航变化会改变本文件hash；G0应刷新#97请求原文快照并保持三个路径块、4条实施文档、18要求与既有机器请求完全一致。历史快照无需删除。CURRENT及#85记录实际执行/批准状态，而不是在此复制多份实时进度。\n"
+  },
+  "requestedOperation": {
+    "operationId": "LF-C1",
+    "status": "REQUESTED_NOT_AUTHORIZED",
+    "branch": "learning-feedback/lf-c1-core-1",
+    "riskClass": "R3",
+    "canonicalOwner": "packages/learning",
+    "publicEntry": "@aseos/learning",
+    "dependencies": ["@aseos/contracts"],
+    "atomicity": "ONE_CRITERION_ONE_RESULT",
+    "productionRuntime": false,
+    "implementationClaimMaximum": "IMPLEMENTED",
+    "approvedMain": null
+  },
+  "requestedAuthorityTargets": [
+    "operations/learning-feedback/core-1/operation.json",
+    "operations/learning-feedback/core-1/write-scope.json",
+    "operations/learning-feedback/core-1/verification-plan.json",
+    "operations/learning-feedback/core-1/authority-lock.json"
+  ],
+  "writeScope": {
+    "enforcementMode": "DENY_BY_DEFAULT",
+    "allowedChangedPaths": [
+      "docs/architecture/learning-feedback/contract-and-seam-proposal.md",
+      "docs/implementation/learning-feedback/lf-c1-implementation.md",
+      "docs/roadmap/learning-feedback-branch-plan.md",
+      "docs/roadmap/learning-feedback-core-entry-plan.md",
+      "package.json",
+      "packages/contracts/README.md",
+      "packages/contracts/examples/first-slice/example-suite.json",
+      "packages/contracts/examples/learning/execution-feedback.invalid.json",
+      "packages/contracts/examples/learning/execution-feedback.valid.json",
+      "packages/contracts/examples/learning/feedback-projection-input.invalid.json",
+      "packages/contracts/examples/learning/feedback-projection-input.valid.json",
+      "packages/contracts/examples/learning/feedback-projection-result.invalid.json",
+      "packages/contracts/examples/learning/feedback-projection-result.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution-input.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution-input.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution-result.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution-result.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution.valid.json",
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json",
+      "packages/contracts/schemas/learning/execution-feedback.schema.json",
+      "packages/contracts/schemas/learning/feedback-projection-input.schema.json",
+      "packages/contracts/schemas/learning/feedback-projection-result.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution-input.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution-result.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution.schema.json",
+      "packages/contracts/src/types.generated.ts",
+      "packages/contracts/type-bindings.json",
+      "packages/learning/package.json",
+      "packages/learning/src/feedback/application/derive-feedback-key.ts",
+      "packages/learning/src/feedback/application/derive-resolution-key.ts",
+      "packages/learning/src/feedback/application/evaluate-feedback-resolution.ts",
+      "packages/learning/src/feedback/application/normalize-feedback-semantic-input.ts",
+      "packages/learning/src/feedback/application/project-feedback.ts",
+      "packages/learning/src/feedback/domain/feedback-rules.ts",
+      "packages/learning/src/index.ts",
+      "packages/learning/test/evaluate-feedback-resolution.test.mjs",
+      "packages/learning/test/feedback-idempotency.test.mjs",
+      "packages/learning/test/feedback-input-validation.test.mjs",
+      "packages/learning/test/feedback-normalization.test.mjs",
+      "packages/learning/test/feedback-replay.test.mjs",
+      "packages/learning/test/project-feedback.test.mjs",
+      "packages/learning/test/resolution-idempotency.test.mjs",
+      "packages/learning/tsconfig.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tests/architecture/architecture-policy.json",
+      "tests/architecture/learning-feedback-boundaries.test.mjs",
+      "tests/contract/example-suite.test.mjs",
+      "tests/contract/learning-feedback/feedback-conformance.test.mjs",
+      "tsconfig.build.json",
+      "vitest.config.mjs"
+    ],
+    "groups": {
+      "core": [
+        "packages/learning/package.json",
+        "packages/learning/src/feedback/application/derive-feedback-key.ts",
+        "packages/learning/src/feedback/application/derive-resolution-key.ts",
+        "packages/learning/src/feedback/application/evaluate-feedback-resolution.ts",
+        "packages/learning/src/feedback/application/normalize-feedback-semantic-input.ts",
+        "packages/learning/src/feedback/application/project-feedback.ts",
+        "packages/learning/src/feedback/domain/feedback-rules.ts",
+        "packages/learning/src/index.ts",
+        "packages/learning/test/evaluate-feedback-resolution.test.mjs",
+        "packages/learning/test/feedback-idempotency.test.mjs",
+        "packages/learning/test/feedback-input-validation.test.mjs",
+        "packages/learning/test/feedback-normalization.test.mjs",
+        "packages/learning/test/feedback-replay.test.mjs",
+        "packages/learning/test/project-feedback.test.mjs",
+        "packages/learning/test/resolution-idempotency.test.mjs",
+        "packages/learning/tsconfig.json",
+        "tests/architecture/learning-feedback-boundaries.test.mjs",
+        "tests/contract/learning-feedback/feedback-conformance.test.mjs"
+      ],
+      "contracts": [
+        "packages/contracts/README.md",
+        "packages/contracts/examples/first-slice/example-suite.json",
+        "packages/contracts/examples/learning/execution-feedback.invalid.json",
+        "packages/contracts/examples/learning/execution-feedback.valid.json",
+        "packages/contracts/examples/learning/feedback-projection-input.invalid.json",
+        "packages/contracts/examples/learning/feedback-projection-input.valid.json",
+        "packages/contracts/examples/learning/feedback-projection-result.invalid.json",
+        "packages/contracts/examples/learning/feedback-projection-result.valid.json",
+        "packages/contracts/examples/learning/feedback-resolution-input.invalid.json",
+        "packages/contracts/examples/learning/feedback-resolution-input.valid.json",
+        "packages/contracts/examples/learning/feedback-resolution-result.invalid.json",
+        "packages/contracts/examples/learning/feedback-resolution-result.valid.json",
+        "packages/contracts/examples/learning/feedback-resolution.invalid.json",
+        "packages/contracts/examples/learning/feedback-resolution.valid.json",
+        "packages/contracts/planned-contracts.json",
+        "packages/contracts/schema-inventory.json",
+        "packages/contracts/schema-registry.json",
+        "packages/contracts/schemas/learning/execution-feedback.schema.json",
+        "packages/contracts/schemas/learning/feedback-projection-input.schema.json",
+        "packages/contracts/schemas/learning/feedback-projection-result.schema.json",
+        "packages/contracts/schemas/learning/feedback-resolution-input.schema.json",
+        "packages/contracts/schemas/learning/feedback-resolution-result.schema.json",
+        "packages/contracts/schemas/learning/feedback-resolution.schema.json",
+        "packages/contracts/src/types.generated.ts",
+        "packages/contracts/type-bindings.json",
+        "tests/contract/example-suite.test.mjs"
+      ],
+      "wiring": [
+        "package.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "tests/architecture/architecture-policy.json",
+        "tsconfig.build.json",
+        "vitest.config.mjs"
+      ]
+    },
+    "implementationDocumentation": [
+      "docs/architecture/learning-feedback/contract-and-seam-proposal.md",
+      "docs/implementation/learning-feedback/lf-c1-implementation.md",
+      "docs/roadmap/learning-feedback-branch-plan.md",
+      "docs/roadmap/learning-feedback-core-entry-plan.md"
+    ],
+    "unlistedPaths": "DENIED",
+    "authorityLockHashRefresh": "SEPARATE_PRIOR_AUTHORIZED_TRANSITION_REQUIRED",
+    "independentReport": "docs/reviews/learning-feedback/lf-c1-independent-verification.md",
+    "independentReportWriter": "INDEPENDENT_VERIFIER_SEPARATE_EVIDENCE_SUBJECT"
+  },
+  "singleWriter": {
+    "form": "ONE_ATOMIC_COMPLETE_SUBJECT",
+    "task": "LF-C1-INTEGRATION",
+    "operator": null,
+    "acceptance": "PENDING_INDEPENDENT_AUTHORITY",
+    "exclusivePaths": [
+      "docs/architecture/learning-feedback/contract-and-seam-proposal.md",
+      "docs/implementation/learning-feedback/lf-c1-implementation.md",
+      "docs/roadmap/learning-feedback-branch-plan.md",
+      "docs/roadmap/learning-feedback-core-entry-plan.md",
+      "package.json",
+      "packages/contracts/README.md",
+      "packages/contracts/examples/first-slice/example-suite.json",
+      "packages/contracts/examples/learning/execution-feedback.invalid.json",
+      "packages/contracts/examples/learning/execution-feedback.valid.json",
+      "packages/contracts/examples/learning/feedback-projection-input.invalid.json",
+      "packages/contracts/examples/learning/feedback-projection-input.valid.json",
+      "packages/contracts/examples/learning/feedback-projection-result.invalid.json",
+      "packages/contracts/examples/learning/feedback-projection-result.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution-input.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution-input.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution-result.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution-result.valid.json",
+      "packages/contracts/examples/learning/feedback-resolution.invalid.json",
+      "packages/contracts/examples/learning/feedback-resolution.valid.json",
+      "packages/contracts/planned-contracts.json",
+      "packages/contracts/schema-inventory.json",
+      "packages/contracts/schema-registry.json",
+      "packages/contracts/schemas/learning/execution-feedback.schema.json",
+      "packages/contracts/schemas/learning/feedback-projection-input.schema.json",
+      "packages/contracts/schemas/learning/feedback-projection-result.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution-input.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution-result.schema.json",
+      "packages/contracts/schemas/learning/feedback-resolution.schema.json",
+      "packages/contracts/src/types.generated.ts",
+      "packages/contracts/type-bindings.json",
+      "packages/learning/package.json",
+      "packages/learning/src/feedback/application/derive-feedback-key.ts",
+      "packages/learning/src/feedback/application/derive-resolution-key.ts",
+      "packages/learning/src/feedback/application/evaluate-feedback-resolution.ts",
+      "packages/learning/src/feedback/application/normalize-feedback-semantic-input.ts",
+      "packages/learning/src/feedback/application/project-feedback.ts",
+      "packages/learning/src/feedback/domain/feedback-rules.ts",
+      "packages/learning/src/index.ts",
+      "packages/learning/test/evaluate-feedback-resolution.test.mjs",
+      "packages/learning/test/feedback-idempotency.test.mjs",
+      "packages/learning/test/feedback-input-validation.test.mjs",
+      "packages/learning/test/feedback-normalization.test.mjs",
+      "packages/learning/test/feedback-replay.test.mjs",
+      "packages/learning/test/project-feedback.test.mjs",
+      "packages/learning/test/resolution-idempotency.test.mjs",
+      "packages/learning/tsconfig.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tests/architecture/architecture-policy.json",
+      "tests/architecture/learning-feedback-boundaries.test.mjs",
+      "tests/contract/example-suite.test.mjs",
+      "tests/contract/learning-feedback/feedback-conformance.test.mjs",
+      "tsconfig.build.json",
+      "vitest.config.mjs"
+    ],
+    "window": {
+      "state": "CLOSED",
+      "base": null,
+      "openOnlyAfter": ["E0", "E1", "E2", "E3", "E4"],
+      "closesOn": [
+        "MAIN_OR_SUBJECT_DRIFT",
+        "SHARED_PATH_COMPETING_WRITE",
+        "AUTHORITY_CHANGE",
+        "DEPENDENCY_EVIDENCE_INVALIDATION"
+      ]
+    },
+    "governanceWriter": {
+      "task": "MAINLINE_GOVERNANCE",
+      "operator": null,
+      "exclusivePaths": ["operations/phase-1/authority-lock.json"]
+    },
+    "overlappingActivePullRequests": [],
+    "overlapObservation": {
+      "status": "RECHECK_BEFORE_RESERVATION",
+      "openPullRequests": [84, 92, 94, 97, 98],
+      "sharedWindowReserved": false
+    }
+  },
+  "lockedSharedAssets": [
+    {
+      "path": "packages/contracts/examples/first-slice/example-suite.json",
+      "sha256": "fada428e90bd4e8507a3911a8248582f31654dba6f9325363ca14fd3a35b8306",
+      "role": "EXAMPLE_SUITE",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": ["P1-O02"]
+    },
+    {
+      "path": "packages/contracts/planned-contracts.json",
+      "sha256": "69d2e9f1c89deaa35f4fb7f718cf34d348d05a5e6a6c544385abd39bf85d9a57",
+      "role": "CONTRACT_INVENTORY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
+    },
+    {
+      "path": "packages/contracts/schema-inventory.json",
+      "sha256": "093786be4f26d1701e4e3a2d24aff3709dec795ad60de1a8b18fd2e6d295c29b",
+      "role": "CONTRACT_INVENTORY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
+    },
+    {
+      "path": "packages/contracts/schema-registry.json",
+      "sha256": "94bfd7bfe6dbf4ac91f22ad2ff9993b6776789da294aac8e1910de3883590414",
+      "role": "SCHEMA_REGISTRY",
+      "mutationPolicy": "OPERATION_SCOPED",
+      "allowedOperationIds": ["P1-O02", "P1-O04", "P1-O05", "P1-O06", "P1-O07"]
+    }
+  ],
+  "verificationPlan": {
+    "status": "REQUESTED",
+    "sourceSection": "6",
+    "steps": [
+      {
+        "id": "C1-V01",
+        "requirement": "六Schema/十二实例在原suite登记；固定ID断言；标准资格对删文件/错路径/错误invalid/expectedError均失败，新旧正常案例均通过"
+      },
+      {
+        "id": "C1-V02",
+        "requirement": "七Gate outcome完整，approval/terminal/risk/unknown不降级；汇总Gate不得代替选定criterion证据"
+      },
+      {
+        "id": "C1-V03",
+        "requirement": "criterion/Evidence缺失、冲突、错subject ->gap/typed拒绝，不推测rootCause"
+      },
+      {
+        "id": "C1-V04",
+        "requirement": "同一反馈义务全满足/部分明确不满足/均不满足 ->正确三种disposition"
+      },
+      {
+        "id": "C1-V05",
+        "requirement": "必要条件UNKNOWN、依赖不足、非法输入不冒充EVALUATED，不写completed Resolution"
+      },
+      {
+        "id": "C1-V06",
+        "requirement": "错run/attempt/criterion版本、无合法消费关系不关闭"
+      },
+      {
+        "id": "C1-V07",
+        "requirement": "风险接受/Claim fixed/过期或反证不冒充MET；capturedTime仅报告，时间判定材料固定"
+      },
+      {
+        "id": "C1-V08",
+        "requirement": "两用例固定材料/context重放一致；本次ID/time不改key/hash，不误删历史fingerprint"
+      },
+      {
+        "id": "C1-V09",
+        "requirement": "单义务Projection prior同key/hash/version复用旧ID；异hash冲突；无匹配prior只返回本义务单候选"
+      },
+      {
+        "id": "C1-V10",
+        "requirement": "LF-HN-1逐路径参数化：SET重排不变、SEQUENCE反转改变、SINGLETON基数错误拒绝、重复/未知/版本规则及HN字节向量通过public canonical API"
+      },
+      {
+        "id": "C1-V11",
+        "requirement": "核心无时钟/UUID/global/I/O，不改输入/Evidence；validator/serializer复用contracts"
+      },
+      {
+        "id": "C1-V12",
+        "requirement": "干净root构建/正常测试包含新包，reverse/deep import/cycle负例被拒"
+      },
+      {
+        "id": "C1-V13",
+        "requirement": "修复后contracts非JSON/稀疏数组/非法日期/条件类型负例仍被拒"
+      },
+      {
+        "id": "C1-V14",
+        "requirement": "实际回执/subject/scope校验，非法claim/旧SHA不得放行"
+      },
+      {
+        "id": "C1-V15",
+        "requirement": "Resolution prior同key/hash/version复用旧resolutionId，异内容冲突，错误类型prior拒绝"
+      },
+      {
+        "id": "C1-V16",
+        "requirement": "新attempt/合法Gate-assessment/evaluator-normalization版本产生新Resolution key；改旧observation内容冲突；INCONCLUSIVE无业务记录"
+      },
+      {
+        "id": "C1-V17",
+        "requirement": "正常suite接入负例不能只跑LF专用检查；保留所有旧case，缺十二固定binding之一也被拒"
+      },
+      {
+        "id": "C1-V18",
+        "requirement": "投影0/2个criterion拒绝；assessment/closure跨criterion拒绝；单criterion多closure仅一候选；A/B分别调用key/ID不同且prior不交叉复用；Result拒绝批量/候选与错误并存；Resolution输入/输出也保持单条"
+      }
+    ],
+    "commands": [
+      "pnpm install --frozen-lockfile",
+      "pnpm run verify:versions",
+      "pnpm run contracts:generate-types",
+      "pnpm run build",
+      "pnpm run test",
+      "pnpm run contracts:qualify",
+      "pnpm run architecture:qualify",
+      "pnpm run quality"
+    ],
+    "actualLFDispatcherSupport": "ABSENT",
+    "newHeadRequiresFreshVerification": true
+  },
+  "gates": {
+    "E0": {
+      "status": "BLOCKED",
+      "reason": "D01-D05 and LF-RV01-04 independently pass as business documents; complete E0 blocked by ADR ordering and upper P1 lock delegation P1 findings, retained in final CURRENT",
+      "evidence": [
+        "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3954170418",
+        "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3954170420",
+        "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5580684532"
+      ]
+    },
+    "E1": {
+      "status": "BLOCKED",
+      "reason": "LF-C1 unknown; formal Authority/checker absent; G1 blocked on accepted prior ADR and lawful upper P1 shared-lock transition, not permission granted by G0"
+    },
+    "E2": {
+      "status": "BLOCKED",
+      "dependencies": [
+        {
+          "findings": ["R01", "R02", "R16"],
+          "pullRequest": 86,
+          "head": "a763f581f765e4612293abe8dc5d4dccb3bd76dd",
+          "merged": true,
+          "mergeCommit": "ed14d4179808621c8ffd5751ebbf7b6704f33b64",
+          "independentClosure": "R01_R16_PASS_R02_BLOCKED",
+          "protectedMainQualification": {
+            "status": "SUCCESS_AT_EXACT_MERGE_NOT_CURRENT_MAIN_APPROVAL",
+            "run": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34182792727",
+            "packagingRun": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34182792657",
+            "packagingConclusion": "success"
+          }
+        },
+        {
+          "findings": ["R06", "R09", "R10"],
+          "pullRequest": 87,
+          "head": "6e1a98b6979ab4f3a761438658256f9fab6184a5",
+          "merged": true,
+          "mergeCommit": "eeb65baf9b0446a4b747eefdc7b7f8c1f965ea94",
+          "independentClosure": "PASS_AT_B180_WITH_REPORTED_LIMITATIONS"
+        },
+        {
+          "findings": ["R08"],
+          "pullRequest": 88,
+          "head": "e08ad49b667957fabe139d4033c008ca850dfa9f",
+          "merged": true,
+          "mergeCommit": "204bfbf1d3fe3f3da24eb3620461325e130b049c",
+          "independentClosure": "PASS_AT_B180_WITH_REPORTED_LIMITATIONS"
+        }
+      ],
+      "reason": "Independent exact b18059b applicability: R01/R16/R06/R09/R10/R08 PASS within reported coverage; R02 BLOCKED because normal M0 accepts missing local independent-receipt evidenceRefs; not a claimed PR-scope bypass",
+      "evidence": "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5580724172"
+    },
+    "E3": {
+      "status": "BLOCKED",
+      "reason": "LF-C1-INTEGRATION proposed sole 54-path writer; actual operator/session/acceptance actor/base/expiry and lawful shared delegation absent; CLOSED, not RESERVED"
+    },
+    "E4": {
+      "status": "BLOCKED",
+      "approvedMain": null,
+      "reason": "Observed SHA is not an approved entry baseline"
+    }
+  },
+  "observedAuthoritySha256": {
+    "operations/phase-1/operation.json": "157d1c83a798fc433b4bfb6a8b6ed12471c52e5a652e61dfb9532088f01f48dc",
+    "operations/phase-1/write-scope.json": "2934912a0c5d9794061fd856dac761dee104a0f2fb8a080e743adbbb86e149f2",
+    "operations/phase-1/verification-plan.json": "8d0758be1fe9fe8555e7c317bfd5d06b8f1a78120883c9a650d6471782108188",
+    "operations/phase-1/authority-lock.json": "a4245c73ef80da2f3829853cb5a8c89a589f0e0486e43dab2cf9d3b2bda41ee4",
+    "scripts/toolchain/scope-policy.mjs": "f3c7bd567e649cc6fe6c3643d73b7d07e95d47aba4ff7da7521be1dca8fd5c83",
+    "scripts/toolchain/verify-scope.mjs": "9018ede7a6f9631ecc117aa4b5a418abcd4f0e864f929cd76bc8ab4a9a42f9cd",
+    "toolchain/toolchain.json": "10b64a8757e0a368bbb05d5ee29a3e70409f95b05274b54bf79c3d99b9f817e0",
+    "pnpm-lock.yaml": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
+    "packages/contracts/src/index.ts": "dd46149610e3a6e7cc3642be17fd53f1ae8c6f248f094a7ec608082092105d5d",
+    "packages/contracts/schema-registry.json": "94bfd7bfe6dbf4ac91f22ad2ff9993b6776789da294aac8e1910de3883590414",
+    "packages/contracts/schema-inventory.json": "093786be4f26d1701e4e3a2d24aff3709dec795ad60de1a8b18fd2e6d295c29b",
+    "packages/contracts/type-bindings.json": "dea5dcef2c019037a55ae4842a5428595872bb8b3a85582733a3d9f757ca0fcf"
+  },
+  "claimBoundary": {
+    "requestIsAuthority": false,
+    "requestRangeCheckIsEntryGate": false,
+    "mainlineFindingClosed": false,
+    "independentlyVerifiedImplementation": false,
+    "phase1GlobalDenialRemoved": false,
+    "futureUnusedRuntimeRequired": false
+  },
+  "readOnlyPlanningSources": [
+    {
+      "commit": "a5279ab7a11f023133994b98f7caf86426c69e8c",
+      "path": "docs/architecture/learning-feedback/decision-register.md",
+      "sha256": "cb05813d6b610cd0629692d407a85b785c78e50eb47e7929cb7590a854a6856b",
+      "authority": false
+    },
+    {
+      "commit": "a5279ab7a11f023133994b98f7caf86426c69e8c",
+      "path": "docs/roadmap/learning-feedback-authority-transition-plan.md",
+      "sha256": "97e26b50452425d38469d6dcbcabe769911810e3408c371e98c7a7652f5dacf9",
+      "authority": false
+    },
+    {
+      "commit": "a5279ab7a11f023133994b98f7caf86426c69e8c",
+      "path": "docs/architecture/learning-feedback/parallel-development-protocol.md",
+      "sha256": "e48b65ed5a64551f7fff5a5406dfd1b12151890cec8af5a16aa3488a17aa05ba",
+      "authority": false
+    }
+  ],
+  "sourceRefresh": {
+    "previousRequestHead": "8826c450fdbad3de5decb882c42d6a0c86af480b",
+    "previousSourceCommit": "877eea857742a2458f2e5c42b3a7d9a261a5a28b",
+    "pathCount": 54,
+    "verificationCount": 18,
+    "pathSetUnchanged": true,
+    "verificationRequirementsUnchanged": true,
+    "scopeOrAuthorityExpanded": false,
+    "intermediateSourceCommit": "c2001aad0aa8d17ad9f3cf57df4dd15967ab4da2",
+    "finalCurrentOnlyDeltaVerified": true
+  }
+}
