@@ -1,20 +1,25 @@
-# 本地拉取 Authority：固定仓库、ref 与执行版本
+# 本地拉取 Authority：只取 Authority 子树并固定执行版本
 
-状态：`CURRENT DELIVERY GUIDE`。这里只下载设计，不执行业务建设，不上传本地文件。
+状态：`CURRENT DELIVERY GUIDE`。这里只下载公开 Authority，不执行业务建设，不上传本地文件。
 
 ## 1. 固定位置
 
 - 远程：`https://github.com/olu37776-bit/-ai-software-engineering-os.git`
-- 本地只读 Authority checkout：`D:\ai-authority\ai-software-engineering-os`
+- 本地只读 Authority checkout：`D:\\ai-authority\\ai-software-engineering-os`
+- 默认稀疏目录：`docs/knowledge-reconstruction/`
 - 入口：`docs/knowledge-reconstruction/authority-index.md`
 
-这不是本地 Swap 工程、正式知识仓或私有报告目录。旧 `D:\ai-authority\excel-arrival-tool` 保留但不再作为本支线任务入口；无需删除、迁移或改 remote。
+Authority checkout 不是本地 Swap 工程、正式知识仓或私有报告目录。旧 `D:\\ai-authority\\excel-arrival-tool` 保留历史即可，不改 remote、不搬内容。
+
+**本地 Agent 不应为了读取 Authority 拉取或 checkout 整个 Framework 项目。** 默认使用 Git partial clone + sparse checkout；CURRENT Task 需要的少量仓库外 Authority/Contract 文件，使用固定 SHA 的 `git show` 按文件读取，不扩大工作树。
 
 ## 2. 本次未合并设计的读取方式
 
-当前设计分支：`docs/knowledge-reconstruction-design-v1-20260908`。
+当前设计 ref：
 
-本次只供审查；未合并前不能要求从 main 读取尚不存在的文件。后续合并且正式发布 CURRENT Task 后，才将下面 `$Ref` 改成 `main`。长任务开始后固定打印出的 SHA，不在任务中途继续更新。
+`docs/knowledge-reconstruction-design-v1-20260908`
+
+未合并前不能从 `main` 假定这些文件存在。后续设计合并并正式发布新的 CURRENT Task 后，再由新任务把 `$Ref` 改成 `main` 或固定批准 SHA。
 
 PowerShell：
 
@@ -23,41 +28,104 @@ $ErrorActionPreference = 'Stop'
 $Repo = 'https://github.com/olu37776-bit/-ai-software-engineering-os.git'
 $A = 'D:\ai-authority\ai-software-engineering-os'
 $Ref = 'docs/knowledge-reconstruction-design-v1-20260908'
+
 function Invoke-CheckedGit {
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Arguments)
     & git @Arguments
-    if ($LASTEXITCODE -ne 0) { throw "git failed (exit=$LASTEXITCODE); stop, do not reset or clean." }
+    if ($LASTEXITCODE -ne 0) {
+        throw "git failed (exit=$LASTEXITCODE); stop without reset/clean."
+    }
 }
+
 if (-not (Test-Path -LiteralPath $A)) {
     New-Item -ItemType Directory -Path (Split-Path $A -Parent) -Force | Out-Null
-    Invoke-CheckedGit clone --no-checkout $Repo $A
+    Invoke-CheckedGit clone --filter=blob:none --no-checkout --single-branch --branch $Ref $Repo $A
+    Invoke-CheckedGit -C $A sparse-checkout init --cone
+    Invoke-CheckedGit -C $A sparse-checkout set docs/knowledge-reconstruction
 } else {
-    if (-not (Test-Path -LiteralPath (Join-Path $A '.git'))) { throw 'Target exists but is not the expected checkout.' }
+    if (-not (Test-Path -LiteralPath (Join-Path $A '.git'))) {
+        throw 'Target exists but is not the expected Authority checkout.'
+    }
     $Top = (Invoke-CheckedGit -C $A rev-parse --show-toplevel).Trim()
-    if ([IO.Path]::GetFullPath($Top).TrimEnd('\') -ne [IO.Path]::GetFullPath($A).TrimEnd('\')) { throw 'Wrong Git root.' }
+    if ([IO.Path]::GetFullPath($Top).TrimEnd('\') -ne [IO.Path]::GetFullPath($A).TrimEnd('\')) {
+        throw 'Wrong Git root.'
+    }
     $Remote = (Invoke-CheckedGit -C $A remote get-url origin).Trim()
-    if ($Remote -ne $Repo) { throw 'Origin does not match; do not rewrite it.' }
+    if ($Remote -ne $Repo) {
+        throw 'Origin does not match; do not rewrite it.'
+    }
     $Dirty = @(Invoke-CheckedGit -C $A status --porcelain)
-    if ($Dirty.Count -ne 0) { throw 'Checkout is dirty; preserve files and stop.' }
+    if ($Dirty.Count -ne 0) {
+        throw 'Authority checkout is dirty; preserve files and stop.'
+    }
+    Invoke-CheckedGit -C $A sparse-checkout init --cone
+    Invoke-CheckedGit -C $A sparse-checkout set docs/knowledge-reconstruction
 }
-Invoke-CheckedGit -C $A fetch --no-tags origin "refs/heads/${Ref}:refs/remotes/origin/${Ref}"
+
+Invoke-CheckedGit -C $A fetch --filter=blob:none --depth=1 --no-tags origin "refs/heads/${Ref}:refs/remotes/origin/${Ref}"
 Invoke-CheckedGit -C $A switch --detach "refs/remotes/origin/$Ref"
-Invoke-CheckedGit -C $A rev-parse HEAD
+Invoke-CheckedGit -C $A sparse-checkout reapply
+
+$AuthoritySha = (Invoke-CheckedGit -C $A rev-parse HEAD).Trim()
+Write-Host "AUTHORITY_SHA=$AuthoritySha"
 Get-Content -LiteralPath (Join-Path $A 'docs\knowledge-reconstruction\authority-index.md') -Encoding UTF8
 ```
 
-本段使用 fetch + detached checkout 固定本次版本，而非在未知工作分支直接 pull。执行前查看远端新任务通知的 ref；网络或权限失败时停止，不清理用户改动、不自动选镜像、不改代理配置。作者未在用户 Windows 机器执行本命令，首次本地使用需记录实际结果。
+任务开始后固定打印出的 `AUTHORITY_SHA`。同一个实施/审查记录中不得中途 pull/fetch 另一个 Authority 版本。
 
-## 3. 安全与恢复
+## 3. CURRENT Task 需要少量主线文件时
 
-只在专用 Authority checkout 下载；禁止把知识仓挂到此 remote，禁止 `git push`。下载不需要上传单位源码/日志。不要 `reset --hard`、`clean`、覆盖未知目录或携带内部资料到 GitHub Issue/PR。
+默认**不要把 `docs/architecture`、`docs/roadmap` 或源码目录加入 sparse checkout**。
 
-读取索引后，只执行其中 CURRENT Task；把 Authority SHA 记入该任务规定的本地报告。当前任务只允许设计审查，不能从设计中的未来路线自行开工。
+CURRENT Task 若列出必须核对的公开仓库文件，按固定 `AUTHORITY_SHA` 精确读取，例如：
 
-如果原本已处于一个批准 task 的执行/审查中，先完成或停止该 task，再同步新 Authority；不同 SHA 不能混在一个执行记录里。
+```powershell
+git -C $A show "$AuthoritySha`:CONTRIBUTING.md"
+git -C $A show "$AuthoritySha`:docs/README.md"
+git -C $A show "$AuthoritySha`:docs/architecture/07-local-integrations.md"
+git -C $A show "$AuthoritySha`:docs/architecture/04-context-contract-policy.md"
+git -C $A show "$AuthoritySha`:docs/roadmap/progress-status.md"
+```
 
-## 4. 后续聊天只保留什么
+partial clone 会只按需取这些 blob，不把对应目录完整 checkout。
 
-后续短提示词只给：专用 checkout、确切 ref 或已批准 SHA、上述拉取命令/本文件、Authority Index、当前 task 路径和短回执要求。完整设计、写范围、门禁都在仓库，不复制到聊天。
+如果任务要求比较另一个明确 commit/base，先只获取该 commit，再用 `git show <SHA>:<path>`：
 
-独立 Reviewer 可对当前 PR HEAD 审查；本地正常实施只按已发布 CURRENT Task。没有新任务文档时，读到设计并不意味着获得下一阶段写权限。
+```powershell
+$Base = '<TASK_DECLARED_SHA>'
+Invoke-CheckedGit -C $A fetch --filter=blob:none --depth=1 --no-tags origin $Base
+git -C $A show "$Base`:docs/architecture/07-local-integrations.md"
+```
+
+任务未声明的目录/源码不能因为“可能有用”就加入 checkout。确实需要新增公开文件时，先按 CURRENT Task 的 scope 处理；需要内部源码/资料则从本机既有事实源读取，绝不上传到 Authority checkout。
+
+## 4. 明确禁止的同步方式
+
+Authority checkout 不执行：
+
+- 普通 `git clone <repo>` 后完整 checkout；
+- `git pull` 让未知工作树自动前进；
+- `git fetch --all`；
+- `git sparse-checkout disable`；
+- `git checkout .` / `reset --hard` / `clean`；
+- 将本地 Swap 源码、Knowledge Repo、Raw Sources 或 Evidence 复制到本 checkout；
+- `git push`。
+
+网络、ref、权限或 partial clone 不受支持时停止并返回 blocker；不要自动退化为整仓 clone。
+
+## 5. 安全、恢复与后续聊天
+
+只在专用 Authority checkout 下载公开设计。读取索引后，只执行其中唯一 CURRENT Task；将 `AUTHORITY_SHA` 写入该任务规定的本地报告。
+
+如果已有批准任务正在执行/审查，先完成或停止该 subject，再同步新 Authority。不同 SHA 不得混入同一执行记录。
+
+后续聊天只需要给：
+
+- Authority repo；
+- 当前 ref/批准 SHA；
+- 本文件或短版 sparse/partial 拉取命令；
+- Authority Index；
+- CURRENT Task；
+- 文档规定的短回执。
+
+完整设计、WRITE_SCOPE、门禁、Evidence 要求继续只维护在仓库 Authority 中。
