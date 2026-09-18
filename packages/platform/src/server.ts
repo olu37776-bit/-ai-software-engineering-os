@@ -411,8 +411,22 @@ function createRequestHandler(
     const ids = identity(request);
     response.setHeader("x-request-id", ids.requestId);
     response.setHeader("x-correlation-id", ids.correlationId);
+    let timedOut = false;
+    let slotOwned = false;
+    const releaseSlot = (): void => {
+      if (slotOwned) {
+        slotOwned = false;
+        state.activeRequests -= 1;
+      }
+    };
+    response.once("finish", () => {
+      if (timedOut) request.destroy();
+    });
     const timer = setTimeout(() => {
-      if (!response.writableEnded)
+      timedOut = true;
+      releaseSlot();
+      if (!response.writableEnded && !response.headersSent) {
+        response.setHeader("connection", "close");
         sendJson(
           response,
           504,
@@ -427,10 +441,14 @@ function createRequestHandler(
           state.limits.maxResponseBytes,
           "application/problem+json",
         );
+      } else {
+        request.destroy();
+      }
     }, state.limits.requestTimeoutMs);
     timer.unref();
     response.once("close", () => {
       clearTimeout(timer);
+      releaseSlot();
     });
     const run = async (): Promise<void> => {
       const urlText = request.url ?? "";
@@ -468,6 +486,7 @@ function createRequestHandler(
         return;
       }
       state.activeRequests += 1;
+      slotOwned = true;
       try {
         const current = descriptor();
         if (
@@ -599,6 +618,7 @@ function createRequestHandler(
         }
         if (typeof origin === "string") applyOriginHeaders(response, origin);
         await rejectUnexpectedBody(request, state.limits.maxBodyBytes);
+        if (timedOut || response.destroyed) return;
         const contentType = request.headers["content-type"];
         if (contentType !== undefined && contentType !== "application/json") {
           sendJson(
@@ -785,7 +805,7 @@ function createRequestHandler(
         const code = error instanceof ControlApiError ? error.code : "CONTROL_INTERNAL_ERROR";
         const status =
           code === "CONTROL_BODY_TOO_LARGE" ? 413 : code === "CONTROL_BODY_NOT_ALLOWED" ? 400 : 500;
-        if (!response.writableEnded)
+        if (!timedOut && !response.writableEnded && !response.destroyed)
           sendJson(
             response,
             status,
@@ -800,7 +820,8 @@ function createRequestHandler(
             "application/problem+json",
           );
       } finally {
-        state.activeRequests -= 1;
+        clearTimeout(timer);
+        releaseSlot();
       }
     };
     void run();

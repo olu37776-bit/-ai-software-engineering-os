@@ -1,0 +1,11 @@
+file:///workspace/scratch/a43b31e014a5/fix-o06-lock/packages/platform/dist/filesystem.js:185
+        throw new ControlApiError("CONTROL_RUNTIME_LOCK_FAILED", "Runtime lock could not be acquired safely", { cause: error });
+              ^
+
+ControlApiError: Runtime lock could not be acquired safely
+    at acquireRuntimeLock (file:///workspace/scratch/a43b31e014a5/fix-o06-lock/packages/platform/dist/filesystem.js:185:15)
+    at async file:///workspace/scratch/a43b31e014a5/fix-o06-lock/tests/qualification/control-api/windows-claim-race-fixture.mjs:37:15 {
+  code: 'CONTROL_RUNTIME_LOCK_FAILED'
+}
+
+Node.js v24.19.0

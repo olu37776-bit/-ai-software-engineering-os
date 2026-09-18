@@ -1,0 +1,118 @@
+{
+  "$schema": "urn:aseos:operation-schema:phase-1-independent-verification-receipt:1.0.0",
+  "schemaVersion": "1.0.0",
+  "operationId": "P1-EXECUTABLE-REPOSITORY-FOUNDATION",
+  "implementationCommit": "3777bda86f090ac75a3382b8b310da17737dc257",
+  "implementationReceiptHash": "79a2738ba0f689a8c0bbdea450cb56665957bda1a9f7854fbd14ff489c1dbd55",
+  "verifiedBy": {
+    "role": "INDEPENDENT_VERIFIER",
+    "actorId": "human-user-current-conversation"
+  },
+  "startedAt": "2026-09-09T01:21:00+08:00",
+  "completedAt": "2026-09-09T01:22:00+08:00",
+  "readOnlyVerification": true,
+  "stepResults": [
+    {
+      "stepId": "P1-V00-M0-AUTHORIZATION",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101987234566.log"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V01-PREFLIGHT",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V02-TOOLCHAIN",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V03-CONTRACTS",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V04-ARCHITECTURE",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V05-POLICY",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-policy-mutations.json"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V06-PERSISTENCE",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V07-CONTROL-API",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V08-ISOLATION",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-job-101981850502.log"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V09-PACKAGING",
+      "result": "PASS",
+      "evidenceRefs": [
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json",
+        "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-packaging.json"
+      ],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    },
+    {
+      "stepId": "P1-V10-INTEGRATED-GATE",
+      "result": "PASS",
+      "evidenceRefs": ["operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json"],
+      "notes": "Qualified machine evidence accepted by the actual human user's final Phase 1 decision."
+    }
+  ],
+  "gateDecision": "PASS",
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o09/p1-v10-human-acceptance-20260909.json",
+    "operations/phase-1/evidence/o09/issue-82/integrated/3777bda-qualification-summary.json"
+  ],
+  "remediationPerformed": false
+}

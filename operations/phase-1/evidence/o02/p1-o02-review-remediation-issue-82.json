@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "Phase1ReviewRemediationEvidence",
+  "operationId": "P1-O02",
+  "trackingIssue": 82,
+  "findings": ["R06", "R09", "R10"],
+  "implementationDeclaration": "IMPLEMENTED",
+  "localResults": [
+    {
+      "check": "Canonical serialization, date-time validation and composed schema types",
+      "result": "PASS",
+      "tests": 94
+    }
+  ],
+  "pending": [
+    "Exact hosted Linux and Windows qualification",
+    "Protected-main post-merge checks",
+    "P1-V10 independent human review"
+  ],
+  "phase1Verified": false
+}

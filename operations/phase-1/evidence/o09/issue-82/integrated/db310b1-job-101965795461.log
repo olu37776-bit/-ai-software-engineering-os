@@ -1,0 +1,961 @@
+﻿2026-09-08T06:53:13.6175255Z Current runner version: '2.337.0'
+2026-09-08T06:53:13.6201222Z ##[group]Runner Image Provisioner
+2026-09-08T06:53:13.6202095Z Hosted Compute Agent
+2026-09-08T06:53:13.6202703Z Version: 20260819.586
+2026-09-08T06:53:13.6203552Z Commit: 3cc4a88dfa507ef76119ad1bb3eccc6378bb2b76
+2026-09-08T06:53:13.6204376Z Build Date: 2026-08-18T23:20:18Z
+2026-09-08T06:53:13.6205040Z Worker ID: {bc17d97a-304f-4b6f-beaa-3e959db1a55d}
+2026-09-08T06:53:13.6206000Z Azure Region: westcentralus
+2026-09-08T06:53:13.6206597Z ##[endgroup]
+2026-09-08T06:53:13.6207969Z ##[group]Operating System
+2026-09-08T06:53:13.6208656Z Microsoft Windows Server 2025
+2026-09-08T06:53:13.6209254Z 10.0.26100
+2026-09-08T06:53:13.6209797Z Datacenter
+2026-09-08T06:53:13.6210291Z ##[endgroup]
+2026-09-08T06:53:13.6210794Z ##[group]Runner Image
+2026-09-08T06:53:13.6211388Z Image: windows-2025-vs2026
+2026-09-08T06:53:13.6211967Z Version: 20260824.214.3
+2026-09-08T06:53:13.6213576Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20260824.214/images/windows/Windows2025-VS2026-Readme.md
+2026-09-08T06:53:13.6215233Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20260824.214
+2026-09-08T06:53:13.6216220Z ##[endgroup]
+2026-09-08T06:53:13.6217280Z ##[group]GITHUB_TOKEN Permissions
+2026-09-08T06:53:13.6219131Z Contents: read
+2026-09-08T06:53:13.6219732Z Metadata: read
+2026-09-08T06:53:13.6220284Z ##[endgroup]
+2026-09-08T06:53:13.6222378Z Secret source: Actions
+2026-09-08T06:53:13.6223518Z Prepare workflow directory
+2026-09-08T06:53:13.6707446Z Prepare all required actions
+2026-09-08T06:53:13.6757079Z Getting action download info
+2026-09-08T06:53:13.9821912Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+2026-09-08T06:53:14.1181968Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-09-08T06:53:14.4307318Z Uses: olu37776-bit/-ai-software-engineering-os/.github/workflows/quality.yml@refs/heads/main (db310b1d33324e72ba7767eb66760e4e54c8e1bd)
+2026-09-08T06:53:14.4312237Z ##[group] Inputs
+2026-09-08T06:53:14.4312814Z   target_sha: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T06:53:14.4313412Z ##[endgroup]
+2026-09-08T06:53:14.4313944Z Complete job name: required-quality / qualify (windows-x64)
+2026-09-08T06:53:14.5884718Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T06:53:14.5899636Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+2026-09-08T06:53:14.5901276Z with:
+2026-09-08T06:53:14.5902027Z   ref: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T06:53:14.5903061Z   fetch-depth: 0
+2026-09-08T06:53:14.5904022Z   repository: olu37776-bit/-ai-software-engineering-os
+2026-09-08T06:53:14.5910143Z   token: ***
+2026-09-08T06:53:14.5910598Z   ssh-strict: true
+2026-09-08T06:53:14.5911002Z   ssh-user: git
+2026-09-08T06:53:14.5911407Z   persist-credentials: true
+2026-09-08T06:53:14.5911851Z   clean: true
+2026-09-08T06:53:14.5912264Z   sparse-checkout-cone-mode: true
+2026-09-08T06:53:14.5912819Z   fetch-tags: false
+2026-09-08T06:53:14.5913224Z   show-progress: true
+2026-09-08T06:53:14.5913632Z   lfs: false
+2026-09-08T06:53:14.5914002Z   submodules: false
+2026-09-08T06:53:14.5914401Z   set-safe-directory: true
+2026-09-08T06:53:14.5915404Z ##[endgroup]
+2026-09-08T06:53:14.7491413Z Syncing repository: olu37776-bit/-ai-software-engineering-os
+2026-09-08T06:53:14.7493228Z ##[group]Getting Git version info
+2026-09-08T06:53:14.7494052Z Working directory is 'D:\a\-ai-software-engineering-os\-ai-software-engineering-os'
+2026-09-08T06:53:14.8631571Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-09-08T06:53:15.2570001Z git version 2.55.0.windows.5
+2026-09-08T06:53:15.2626638Z ##[endgroup]
+2026-09-08T06:53:15.2651925Z Temporarily overriding HOME='D:\a\_temp\d82ff5d5-735a-43f2-8d3e-8dfd88ab48ac' before making global git config changes
+2026-09-08T06:53:15.2654469Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-08T06:53:15.2664924Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\-ai-software-engineering-os\-ai-software-engineering-os
+2026-09-08T06:53:15.3285377Z Deleting the contents of 'D:\a\-ai-software-engineering-os\-ai-software-engineering-os'
+2026-09-08T06:53:15.3291639Z ##[group]Initializing the repository
+2026-09-08T06:53:15.3301150Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\-ai-software-engineering-os\-ai-software-engineering-os
+2026-09-08T06:53:15.4422039Z Initialized empty Git repository in D:/a/-ai-software-engineering-os/-ai-software-engineering-os/.git/
+2026-09-08T06:53:15.4471411Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/olu37776-bit/-ai-software-engineering-os
+2026-09-08T06:53:15.5077274Z ##[endgroup]
+2026-09-08T06:53:15.5078479Z ##[group]Disabling automatic garbage collection
+2026-09-08T06:53:15.5087004Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-09-08T06:53:15.5387705Z ##[endgroup]
+2026-09-08T06:53:15.5389101Z ##[group]Setting up auth
+2026-09-08T06:53:15.5399793Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-09-08T06:53:15.5699996Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-09-08T06:53:17.0575535Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-08T06:53:17.0892283Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-09-08T06:53:17.6445849Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-09-08T06:53:17.6761238Z ##[endgroup]
+2026-09-08T06:53:17.6762142Z ##[group]Fetching the repository
+2026-09-08T06:53:17.6773122Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-09-08T06:53:20.3675379Z From https://github.com/olu37776-bit/-ai-software-engineering-os
+2026-09-08T06:53:20.3676616Z  * [new branch]      diagnostic/issue-53-prettier-output -> origin/diagnostic/issue-53-prettier-output
+2026-09-08T06:53:20.3677939Z  * [new branch]      docs/coverage-loop-redesign-20260908 -> origin/docs/coverage-loop-redesign-20260908
+2026-09-08T06:53:20.3679980Z  * [new branch]      docs/knowledge-reconstruction-design-v1-20260908 -> origin/docs/knowledge-reconstruction-design-v1-20260908
+2026-09-08T06:53:20.3681622Z  * [new branch]      docs/learning-feedback-rebaseline-20260908 -> origin/docs/learning-feedback-rebaseline-20260908
+2026-09-08T06:53:20.3683117Z  * [new branch]      gate/p1-o04-final-scope-authority-amendment-issue-41 -> origin/gate/p1-o04-final-scope-authority-amendment-issue-41
+2026-09-08T06:53:20.3684205Z  * [new branch]      gate/p1-o04-final-scope-authority-amendment-issue-44 -> origin/gate/p1-o04-final-scope-authority-amendment-issue-44
+2026-09-08T06:53:20.3685307Z  * [new branch]      gate/p1-o04-final-scope-authority-amendment-issue-48 -> origin/gate/p1-o04-final-scope-authority-amendment-issue-48
+2026-09-08T06:53:20.3686406Z  * [new branch]      gate/p1-o04-resume-after-issue-29-final-amendment-issue-48 -> origin/gate/p1-o04-resume-after-issue-29-final-amendment-issue-48
+2026-09-08T06:53:20.3688577Z  * [new branch]      gate/p1-o04-transition-enforcement-issue-29 -> origin/gate/p1-o04-transition-enforcement-issue-29
+2026-09-08T06:53:20.3690096Z  * [new branch]      gate/p1-o05-start-after-issue-53-independent -> origin/gate/p1-o05-start-after-issue-53-independent
+2026-09-08T06:53:20.3691666Z  * [new branch]      gate/p1-o05-transition-authorization-issue-53 -> origin/gate/p1-o05-transition-authorization-issue-53
+2026-09-08T06:53:20.3693337Z  * [new branch]      gate/p1-o06-governance-amendment-authorization-issue-64 -> origin/gate/p1-o06-governance-amendment-authorization-issue-64
+2026-09-08T06:53:20.3694998Z  * [new branch]      gate/p1-o06-start-after-issue-64-independent -> origin/gate/p1-o06-start-after-issue-64-independent
+2026-09-08T06:53:20.3696691Z  * [new branch]      gate/p1-o07-governance-amendment-authorization-issue-71 -> origin/gate/p1-o07-governance-amendment-authorization-issue-71
+2026-09-08T06:53:20.3698333Z  * [new branch]      gate/p1-o07-start-after-issue-71-independent -> origin/gate/p1-o07-start-after-issue-71-independent
+2026-09-08T06:53:20.3700187Z  * [new branch]      governance/issue-11-independent-gate -> origin/governance/issue-11-independent-gate
+2026-09-08T06:53:20.3701480Z  * [new branch]      governance/issue-14-authorization-gate -> origin/governance/issue-14-authorization-gate
+2026-09-08T06:53:20.3702562Z  * [new branch]      governance/m0-final-gate -> origin/governance/m0-final-gate
+2026-09-08T06:53:20.3703650Z  * [new branch]      governance/p1-execution-scope-amendment -> origin/governance/p1-execution-scope-amendment
+2026-09-08T06:53:20.3704905Z  * [new branch]      governance/p1-o01-independent-gate -> origin/governance/p1-o01-independent-gate
+2026-09-08T06:53:20.3706141Z  * [new branch]      governance/p1-o02-resume-after-issue-14 -> origin/governance/p1-o02-resume-after-issue-14
+2026-09-08T06:53:20.3707441Z  * [new branch]      governance/p1-o02-resume-after-issue-21 -> origin/governance/p1-o02-resume-after-issue-21
+2026-09-08T06:53:20.3708697Z  * [new branch]      governance/p1-o02-resume-after-issue-24 -> origin/governance/p1-o02-resume-after-issue-24
+2026-09-08T06:53:20.3710157Z  * [new branch]      governance/p1-o02-root-integration-scope-amendment -> origin/governance/p1-o02-root-integration-scope-amendment
+2026-09-08T06:53:20.3712109Z  * [new branch]      governance/p1-o04-final-scope-authority-amendment-issue-41 -> origin/governance/p1-o04-final-scope-authority-amendment-issue-41
+2026-09-08T06:53:20.3713282Z  * [new branch]      governance/p1-o04-final-scope-authority-amendment-issue-44 -> origin/governance/p1-o04-final-scope-authority-amendment-issue-44
+2026-09-08T06:53:20.3714399Z  * [new branch]      governance/p1-o04-final-scope-authority-amendment-issue-48 -> origin/governance/p1-o04-final-scope-authority-amendment-issue-48
+2026-09-08T06:53:20.3715479Z  * [new branch]      governance/p1-o04-transition-enforcement-issue-29 -> origin/governance/p1-o04-transition-enforcement-issue-29
+2026-09-08T06:53:20.3716470Z  * [new branch]      governance/p1-o04-transition-enforcement-scope-amendment -> origin/governance/p1-o04-transition-enforcement-scope-amendment
+2026-09-08T06:53:20.3717508Z  * [new branch]      governance/p1-o05-scope-authority-amendment-issue-53 -> origin/governance/p1-o05-scope-authority-amendment-issue-53
+2026-09-08T06:53:20.3718482Z  * [new branch]      governance/p1-o06-scope-authority-amendment-issue-64 -> origin/governance/p1-o06-scope-authority-amendment-issue-64
+2026-09-08T06:53:20.3719438Z  * [new branch]      governance/p1-o07-scope-authority-amendment-issue-71 -> origin/governance/p1-o07-scope-authority-amendment-issue-71
+2026-09-08T06:53:20.3720671Z  * [new branch]      governance/phase-1-entry-gate -> origin/governance/phase-1-entry-gate
+2026-09-08T06:53:20.3721168Z  * [new branch]      main       -> origin/main
+2026-09-08T06:53:20.3721761Z  * [new branch]      phase-1/issue-11-transition-remediation -> origin/phase-1/issue-11-transition-remediation
+2026-09-08T06:53:20.3722966Z  * [new branch]      phase-1/p1-o01-authority-owner-test-remediation-issue-44 -> origin/phase-1/p1-o01-authority-owner-test-remediation-issue-44
+2026-09-08T06:53:20.3724149Z  * [new branch]      phase-1/p1-o01-base-exact-merge-execution-issue-37 -> origin/phase-1/p1-o01-base-exact-merge-execution-issue-37
+2026-09-08T06:53:20.3725222Z  * [new branch]      phase-1/p1-o01-governance-amendment-mode -> origin/phase-1/p1-o01-governance-amendment-mode
+2026-09-08T06:53:20.3726653Z  * [new branch]      phase-1/p1-o01-issue29-final-gate-recovery-issue-39 -> origin/phase-1/p1-o01-issue29-final-gate-recovery-issue-39
+2026-09-08T06:53:20.3727610Z  * [new branch]      phase-1/p1-o01-issue33-evidence-correction-issue-35 -> origin/phase-1/p1-o01-issue33-evidence-correction-issue-35
+2026-09-08T06:53:20.3728511Z  * [new branch]      phase-1/p1-o01-lf-c1-entry-preparation-issue-95 -> origin/phase-1/p1-o01-lf-c1-entry-preparation-issue-95
+2026-09-08T06:53:20.3729428Z  * [new branch]      phase-1/p1-o01-p1-o04-transition-enforcement-issue-29 -> origin/phase-1/p1-o01-p1-o04-transition-enforcement-issue-29
+2026-09-08T06:53:20.3730391Z  * [new branch]      phase-1/p1-o01-p1-o05-start-gate-enforcement-issue-53 -> origin/phase-1/p1-o01-p1-o05-start-gate-enforcement-issue-53
+2026-09-08T06:53:20.3731565Z  * [new branch]      phase-1/p1-o01-p1-o05-transition-enforcement-issue-53 -> origin/phase-1/p1-o01-p1-o05-transition-enforcement-issue-53
+2026-09-08T06:53:20.3732637Z  * [new branch]      phase-1/p1-o01-p1-o06-start-gate-enforcement-issue-64 -> origin/phase-1/p1-o01-p1-o06-start-gate-enforcement-issue-64
+2026-09-08T06:53:20.3733994Z  * [new branch]      phase-1/p1-o01-p1-o07-start-gate-enforcement-issue-71 -> origin/phase-1/p1-o01-p1-o07-start-gate-enforcement-issue-71
+2026-09-08T06:53:20.3735033Z  * [new branch]      phase-1/p1-o01-post-merge-qualification-dispatch-issue-33 -> origin/phase-1/p1-o01-post-merge-qualification-dispatch-issue-33
+2026-09-08T06:53:20.3735976Z  * [new branch]      phase-1/p1-o01-review-remediation-issue-82 -> origin/phase-1/p1-o01-review-remediation-issue-82
+2026-09-08T06:53:20.3736729Z  * [new branch]      phase-1/p1-o01-toolchain-foundation -> origin/phase-1/p1-o01-toolchain-foundation
+2026-09-08T06:53:20.3810063Z  * [new branch]      phase-1/p1-o01-toolchain-topology-verifier -> origin/phase-1/p1-o01-toolchain-topology-verifier
+2026-09-08T06:53:20.3812709Z  * [new branch]      phase-1/p1-o01-toolchain-transition-remediation-issue-24 -> origin/phase-1/p1-o01-toolchain-transition-remediation-issue-24
+2026-09-08T06:53:20.3814406Z  * [new branch]      phase-1/p1-o02-contract-foundation -> origin/phase-1/p1-o02-contract-foundation
+2026-09-08T06:53:20.3815806Z  * [new branch]      phase-1/p1-o02-contract-foundation-resume-3 -> origin/phase-1/p1-o02-contract-foundation-resume-3
+2026-09-08T06:53:20.3817277Z  * [new branch]      phase-1/p1-o02-review-remediation-issue-82 -> origin/phase-1/p1-o02-review-remediation-issue-82
+2026-09-08T06:53:20.3818317Z  * [new branch]      phase-1/p1-o02-windows-example-suite-copy-remediation-issue-64 -> origin/phase-1/p1-o02-windows-example-suite-copy-remediation-issue-64
+2026-09-08T06:53:20.3819956Z  * [new branch]      phase-1/p1-o03-architecture-enforcement -> origin/phase-1/p1-o03-architecture-enforcement
+2026-09-08T06:53:20.3821383Z  * [new branch]      phase-1/p1-o03-review-remediation-issue-82 -> origin/phase-1/p1-o03-review-remediation-issue-82
+2026-09-08T06:53:20.3822790Z  * [new branch]      phase-1/p1-o04-deterministic-policy -> origin/phase-1/p1-o04-deterministic-policy
+2026-09-08T06:53:20.3824165Z  * [new branch]      phase-1/p1-o04-review-remediation-issue-82 -> origin/phase-1/p1-o04-review-remediation-issue-82
+2026-09-08T06:53:20.3825635Z  * [new branch]      phase-1/p1-o05-node-sqlite-qualification -> origin/phase-1/p1-o05-node-sqlite-qualification
+2026-09-08T06:53:20.3827303Z  * [new branch]      phase-1/p1-o05-node-sqlite-qualification-resume-issue-60 -> origin/phase-1/p1-o05-node-sqlite-qualification-resume-issue-60
+2026-09-08T06:53:20.3829002Z  * [new branch]      phase-1/p1-o05-review-remediation-issue-82 -> origin/phase-1/p1-o05-review-remediation-issue-82
+2026-09-08T06:53:20.3831076Z  * [new branch]      phase-1/p1-o06-authenticated-loopback-control-api-issue-64 -> origin/phase-1/p1-o06-authenticated-loopback-control-api-issue-64
+2026-09-08T06:53:20.3833287Z  * [new branch]      phase-1/p1-o06-review-remediation-issue-82 -> origin/phase-1/p1-o06-review-remediation-issue-82
+2026-09-08T06:53:20.3834871Z  * [new branch]      phase-1/p1-o06-windows-claim-liveness-issue-82 -> origin/phase-1/p1-o06-windows-claim-liveness-issue-82
+2026-09-08T06:53:20.3836377Z  * [new branch]      phase-1/p1-o07-review-remediation-issue-82 -> origin/phase-1/p1-o07-review-remediation-issue-82
+2026-09-08T06:53:20.3838130Z  * [new branch]      phase-1/p1-o07-windows-process-restricted-qualification-issue-71 -> origin/phase-1/p1-o07-windows-process-restricted-qualification-issue-71
+2026-09-08T06:53:20.3839736Z  * [new branch]      phase-1/p1-o08-packaging -> origin/phase-1/p1-o08-packaging
+2026-09-08T06:53:20.3840981Z  * [new branch]      phase-1/p1-o08-review-remediation-issue-82 -> origin/phase-1/p1-o08-review-remediation-issue-82
+2026-09-08T06:53:20.3842263Z  * [new branch]      phase-1/p1-o09-integrated-gate -> origin/phase-1/p1-o09-integrated-gate
+2026-09-08T06:53:20.3843740Z  * [new branch]      phase-1/p1-o09-qualification-fixture-repair-issue-82 -> origin/phase-1/p1-o09-qualification-fixture-repair-issue-82
+2026-09-08T06:53:20.3845309Z  * [new branch]      phase-1/p1-o09-review-plan-issue-82 -> origin/phase-1/p1-o09-review-plan-issue-82
+2026-09-08T06:53:20.3846534Z  * [new branch]      remediation/m0-governance-hardening -> origin/remediation/m0-governance-hardening
+2026-09-08T06:53:20.3847874Z  * [new branch]      remediation/m0-preimplementation-governance -> origin/remediation/m0-preimplementation-governance
+2026-09-08T06:53:20.3849277Z  * [new branch]      remediation/p1-o06-windows-acl-native -> origin/remediation/p1-o06-windows-acl-native
+2026-09-08T06:53:20.3850953Z  * [new branch]      transition/p1-o02-dynamic-contract-qualification-issue-60 -> origin/transition/p1-o02-dynamic-contract-qualification-issue-60
+2026-09-08T06:53:20.3854119Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse --verify --quiet db310b1d33324e72ba7767eb66760e4e54c8e1bd^{object}
+2026-09-08T06:53:20.4173762Z db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T06:53:20.4214299Z ##[endgroup]
+2026-09-08T06:53:20.4214924Z ##[group]Determining the checkout info
+2026-09-08T06:53:20.4215811Z ##[endgroup]
+2026-09-08T06:53:20.4225059Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-09-08T06:53:20.4648003Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-09-08T06:53:20.4956041Z ##[group]Checking out the ref
+2026-09-08T06:53:20.4967332Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T06:53:20.6930911Z Note: switching to 'db310b1d33324e72ba7767eb66760e4e54c8e1bd'.
+2026-09-08T06:53:20.6931529Z 
+2026-09-08T06:53:20.6931948Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-08T06:53:20.6933080Z changes and commit them, and you can discard any commits you make in this
+2026-09-08T06:53:20.6933755Z state without impacting any branches by switching back to a branch.
+2026-09-08T06:53:20.6934154Z 
+2026-09-08T06:53:20.6934560Z If you want to create a new branch to retain commits you create, you may
+2026-09-08T06:53:20.6935351Z do so (now or later) by using -c with the switch command. Example:
+2026-09-08T06:53:20.6935712Z 
+2026-09-08T06:53:20.6935870Z   git switch -c <new-branch-name>
+2026-09-08T06:53:20.6936134Z 
+2026-09-08T06:53:20.6936257Z Or undo this operation with:
+2026-09-08T06:53:20.6936474Z 
+2026-09-08T06:53:20.6936581Z   git switch -
+2026-09-08T06:53:20.6936743Z 
+2026-09-08T06:53:20.6937074Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-08T06:53:20.6937530Z 
+2026-09-08T06:53:20.6938811Z HEAD is now at db310b1 Merge independently qualified P1-O08 Issue 82 remediation
+2026-09-08T06:53:20.7176044Z ##[endgroup]
+2026-09-08T06:53:20.7569602Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-09-08T06:53:20.7844574Z db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T06:53:20.8323557Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T06:53:20.8325603Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+2026-09-08T06:53:20.8325981Z with:
+2026-09-08T06:53:20.8326165Z   node-version: 24.19.0
+2026-09-08T06:53:20.8326369Z   check-latest: false
+2026-09-08T06:53:20.8326563Z   always-auth: false
+2026-09-08T06:53:20.8329369Z   token: ***
+2026-09-08T06:53:20.8329579Z ##[endgroup]
+2026-09-08T06:53:21.0097318Z Found in cache @ C:\hostedtoolcache\windows\node\24.19.0\x64
+2026-09-08T06:53:21.0104860Z (node:9784) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-09-08T06:53:21.0106382Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-09-08T06:53:21.0108856Z ##[group]Environment details
+2026-09-08T06:53:26.4368163Z node: v24.19.0
+2026-09-08T06:53:26.4368573Z npm: 11.17.0
+2026-09-08T06:53:26.4369133Z yarn: 1.22.22
+2026-09-08T06:53:26.4369918Z ##[endgroup]
+2026-09-08T06:53:26.4735367Z ##[group]Run python -m pip install --disable-pip-version-check --no-input "jsonschema==4.25.1" "referencing==0.36.2"
+2026-09-08T06:53:26.4736350Z [36;1mpython -m pip install --disable-pip-version-check --no-input "jsonschema==4.25.1" "referencing==0.36.2"[0m
+2026-09-08T06:53:26.7126719Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T06:53:26.7127759Z ##[endgroup]
+2026-09-08T06:53:31.9062239Z Collecting jsonschema==4.25.1
+2026-09-08T06:53:32.1493354Z   Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+2026-09-08T06:53:32.2510674Z Collecting referencing==0.36.2
+2026-09-08T06:53:32.2730527Z   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
+2026-09-08T06:53:32.3506376Z Collecting attrs>=22.2.0 (from jsonschema==4.25.1)
+2026-09-08T06:53:32.3711484Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-09-08T06:53:32.4570019Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.25.1)
+2026-09-08T06:53:32.4782203Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+2026-09-08T06:53:32.8909070Z Collecting rpds-py>=0.7.1 (from jsonschema==4.25.1)
+2026-09-08T06:53:32.9130216Z   Downloading rpds_py-2026.6.3-cp312-cp312-win_amd64.whl.metadata (4.2 kB)
+2026-09-08T06:53:32.9978465Z Collecting typing-extensions>=4.4.0 (from referencing==0.36.2)
+2026-09-08T06:53:33.0186474Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-09-08T06:53:33.0733063Z Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+2026-09-08T06:53:33.1491430Z Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
+2026-09-08T06:53:33.1924695Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-09-08T06:53:33.2439971Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+2026-09-08T06:53:33.2840332Z Downloading rpds_py-2026.6.3-cp312-cp312-win_amd64.whl (220 kB)
+2026-09-08T06:53:33.3721286Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-09-08T06:53:33.7462207Z Installing collected packages: typing-extensions, rpds-py, attrs, referencing, jsonschema-specifications, jsonschema
+2026-09-08T06:53:34.3356518Z 
+2026-09-08T06:53:34.3377945Z Successfully installed attrs-26.1.0 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 referencing-0.36.2 rpds-py-2026.6.3 typing-extensions-4.16.0
+2026-09-08T06:53:34.5541407Z ##[group]Run corepack enable
+2026-09-08T06:53:34.5542351Z [36;1mcorepack enable[0m
+2026-09-08T06:53:34.5542643Z [36;1mcorepack install --global pnpm@11.24.0[0m
+2026-09-08T06:53:34.5648760Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T06:53:34.5649115Z ##[endgroup]
+2026-09-08T06:53:35.1574112Z Installing pnpm@11.24.0...
+2026-09-08T06:53:40.9970851Z ##[group]Run pnpm install --frozen-lockfile
+2026-09-08T06:53:40.9971361Z [36;1mpnpm install --frozen-lockfile[0m
+2026-09-08T06:53:41.0075099Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T06:53:41.0075648Z ##[endgroup]
+2026-09-08T06:53:42.4639183Z Scope: all 9 workspace projects
+2026-09-08T06:53:42.6654002Z ? Verifying lockfile against supply-chain policies (407 entries)...
+2026-09-08T06:53:42.6787887Z Lockfile is up to date, resolution step is skipped
+2026-09-08T06:53:42.8172124Z Progress: resolved 1, reused 0, downloaded 0, added 0
+2026-09-08T06:53:42.9284978Z Packages: +382
+2026-09-08T06:53:42.9287301Z ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2026-09-08T06:53:43.8422201Z Progress: resolved 382, reused 0, downloaded 3, added 0
+2026-09-08T06:53:44.8431920Z Progress: resolved 382, reused 0, downloaded 34, added 0
+2026-09-08T06:53:45.5307399Z Packages are hard linked from the content-addressable store to the virtual store.
+2026-09-08T06:53:45.5319434Z   Content-addressable store is at: D:\.pnpm-store\v11
+2026-09-08T06:53:45.5359775Z   Virtual store is at:             node_modules/.pnpm
+2026-09-08T06:53:45.8820790Z Progress: resolved 382, reused 0, downloaded 78, added 4
+2026-09-08T06:53:46.9049443Z Progress: resolved 382, reused 0, downloaded 142, added 8
+2026-09-08T06:53:47.5190088Z ✓ Lockfile passes supply-chain policies (407 entries in 4.8s)
+2026-09-08T06:53:47.9025079Z Progress: resolved 382, reused 0, downloaded 212, added 12
+2026-09-08T06:53:48.9112139Z Progress: resolved 382, reused 0, downloaded 381, added 42
+2026-09-08T06:53:49.9124109Z Progress: resolved 382, reused 0, downloaded 382, added 198
+2026-09-08T06:53:50.3325517Z Progress: resolved 382, reused 0, downloaded 382, added 382, done
+2026-09-08T06:53:50.7571364Z .../node_modules/protobufjs postinstall$ node scripts/postinstall
+2026-09-08T06:53:50.8295046Z .../node_modules/protobufjs postinstall: Done
+2026-09-08T06:53:50.8777837Z [WARN] Failed to create bin at D:\a\-ai-software-engineering-os\-ai-software-engineering-os\node_modules\.bin\aseos-worker. ENOENT: no such file or directory, stat 'D:\a\-ai-software-engineering-os\-ai-software-engineering-os\apps\worker\dist\main.js.EXE'
+2026-09-08T06:53:50.9430927Z 
+2026-09-08T06:53:50.9431629Z dependencies:
+2026-09-08T06:53:50.9432203Z + @aseos/contracts 0.1.0 <- packages\contracts
+2026-09-08T06:53:50.9432857Z + @aseos/persistence 0.1.0 <- packages\persistence
+2026-09-08T06:53:50.9433454Z + @aseos/platform 0.1.0 <- packages\platform
+2026-09-08T06:53:50.9434006Z + @aseos/policy 0.1.0 <- packages\policy
+2026-09-08T06:53:50.9434970Z + @aseos/windows-process-restricted 0.1.0 <- packages\adapters\tool\windows-process-restricted
+2026-09-08T06:53:50.9435901Z + @aseos/worker 0.1.0 <- apps\worker
+2026-09-08T06:53:50.9436196Z 
+2026-09-08T06:53:50.9436332Z devDependencies:
+2026-09-08T06:53:50.9436660Z + @eslint/js 10.0.1
+2026-09-08T06:53:50.9437060Z + @opentelemetry/sdk-node 0.221.0
+2026-09-08T06:53:50.9437834Z + @stryker-mutator/core 10.0.0
+2026-09-08T06:53:50.9438375Z + @stryker-mutator/typescript-checker 10.0.0
+2026-09-08T06:53:50.9438944Z + @stryker-mutator/vitest-runner 10.0.0
+2026-09-08T06:53:50.9439393Z + @types/node 24.13.3
+2026-09-08T06:53:50.9440020Z + ajv 8.20.0
+2026-09-08T06:53:50.9440402Z + dependency-cruiser 18.2.0
+2026-09-08T06:53:50.9440823Z + eslint 10.9.1
+2026-09-08T06:53:50.9441258Z + fast-check 4.9.0
+2026-09-08T06:53:50.9441636Z + prettier 3.9.6
+2026-09-08T06:53:50.9442114Z + typescript 6.0.3
+2026-09-08T06:53:50.9442536Z + typescript-eslint 8.68.0
+2026-09-08T06:53:50.9442929Z + vitest 4.1.11
+2026-09-08T06:53:50.9443141Z 
+2026-09-08T06:53:50.9622865Z [WARN] Failed to create bin at D:\a\-ai-software-engineering-os\-ai-software-engineering-os\node_modules\.bin\aseos-worker. ENOENT: no such file or directory, stat 'D:\a\-ai-software-engineering-os\-ai-software-engineering-os\node_modules\@aseos\worker\dist\main.js.EXE'
+2026-09-08T06:53:51.0028679Z Done in 9.5s using pnpm v11.24.0
+2026-09-08T06:53:51.1438465Z ##[group]Run pnpm run verify:versions
+2026-09-08T06:53:51.1438845Z [36;1mpnpm run verify:versions[0m
+2026-09-08T06:53:51.1545172Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T06:53:51.1545547Z ##[endgroup]
+2026-09-08T06:53:52.2296041Z $ node scripts/toolchain/verify-versions.mjs
+2026-09-08T06:53:53.6785279Z {
+2026-09-08T06:53:53.6785687Z   "schemaVersion": "1.0.0",
+2026-09-08T06:53:53.6786195Z   "check": "BUILD_VERSION_CONSISTENCY",
+2026-09-08T06:53:53.6786684Z   "result": "PASS",
+2026-09-08T06:53:53.6786972Z   "actual": {
+2026-09-08T06:53:53.6787247Z     "node": "24.19.0",
+2026-09-08T06:53:53.6787594Z     "pnpm": "11.24.0",
+2026-09-08T06:53:53.6787985Z     "typescript": "6.0.3"
+2026-09-08T06:53:53.6788339Z   },
+2026-09-08T06:53:53.6789142Z   "lockfileSha256": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
+2026-09-08T06:53:53.6789986Z   "packageManager": "pnpm@11.24.0"
+2026-09-08T06:53:53.6790289Z }
+2026-09-08T06:53:53.7741448Z ##[group]Run pnpm run verify:scope
+2026-09-08T06:53:53.7741834Z [36;1mpnpm run verify:scope[0m
+2026-09-08T06:53:53.7844125Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T06:53:53.7844482Z env:
+2026-09-08T06:53:53.7844734Z   PHASE1_SCOPE_BASE: b18059b27e3a9fef089c974f8dd6195d8c17dcf9
+2026-09-08T06:53:53.7845062Z   PHASE1_SCOPE_BRANCH: main
+2026-09-08T06:53:53.7845292Z   PHASE1_SCOPE_EVENT: push
+2026-09-08T06:53:53.7845576Z   PHASE1_SCOPE_HEAD: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T06:53:53.7846199Z ##[endgroup]
+2026-09-08T06:53:54.6977900Z $ node scripts/toolchain/verify-scope.mjs
+2026-09-08T06:53:55.1200406Z {
+2026-09-08T06:53:55.1200690Z   "schemaVersion": "1.0.0",
+2026-09-08T06:53:55.1201047Z   "check": "PHASE1_OPERATION_AWARE_WRITE_SCOPE",
+2026-09-08T06:53:55.1201378Z   "result": "PASS",
+2026-09-08T06:53:55.1201595Z   "mode": "OPERATION_MERGE",
+2026-09-08T06:53:55.1201832Z   "operationId": "P1-O08",
+2026-09-08T06:53:55.1202401Z   "executionRecord": "operations/phase-1/executions/p1-o08-review-remediation-issue-82.json",
+2026-09-08T06:53:55.1202980Z   "baseCommit": "b18059b27e3a9fef089c974f8dd6195d8c17dcf9",
+2026-09-08T06:53:55.1203383Z   "headCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+2026-09-08T06:53:55.1203688Z   "branch": "main",
+2026-09-08T06:53:55.1203928Z   "enforcementMode": "DENY_BY_DEFAULT",
+2026-09-08T06:53:55.1204191Z   "operationStartGate": {
+2026-09-08T06:53:55.1204405Z     "required": false
+2026-09-08T06:53:55.1204592Z   },
+2026-09-08T06:53:55.1204768Z   "authorityLockRefresh": {
+2026-09-08T06:53:55.1204995Z     "lockChanged": false,
+2026-09-08T06:53:55.1205234Z     "changedLockedPaths": []
+2026-09-08T06:53:55.1205452Z   },
+2026-09-08T06:53:55.1205667Z   "immutableAuthorityFilesVerified": 25,
+2026-09-08T06:53:55.1205932Z   "changedPaths": [
+2026-09-08T06:53:55.1206153Z     ".github/workflows/release.yml",
+2026-09-08T06:53:55.1206542Z     "docs/implementation/phase-1/o08/review-remediation-issue-82.md",
+2026-09-08T06:53:55.1207091Z     "docs/implementation/phase-1/o08/windows-clean-start-qualification.md",
+2026-09-08T06:53:55.1207651Z     "operations/phase-1/evidence/o08/p1-o08-review-remediation-issue-82.json",
+2026-09-08T06:53:55.1208201Z     "operations/phase-1/executions/p1-o08-review-remediation-issue-82.json",
+2026-09-08T06:53:55.1208632Z     "scripts/release/qualify-windows-x64.mjs",
+2026-09-08T06:53:55.1209269Z     "tests/qualification/packaging/clean-windows-startup.test.mjs",
+2026-09-08T06:53:55.1209727Z     "tests/qualification/packaging/network-guard.test.mjs"
+2026-09-08T06:53:55.1210024Z   ],
+2026-09-08T06:53:55.1210278Z   "violations": []
+2026-09-08T06:53:55.1210850Z }
+2026-09-08T06:53:55.2165933Z ##[group]Run pnpm run quality
+2026-09-08T06:53:55.2166273Z [36;1mpnpm run quality[0m
+2026-09-08T06:53:55.2268983Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T06:53:55.2269351Z ##[endgroup]
+2026-09-08T06:53:56.1398827Z $ pnpm run format && pnpm run lint && pnpm run contracts:generate-types && pnpm run typecheck && pnpm run isolation:build && pnpm run test && pnpm --filter @aseos/platform test && pnpm --filter @aseos/windows-process-restricted test && pnpm --filter @aseos/worker test && pnpm run contracts:qualify && pnpm run architecture:qualify && pnpm run persistence:qualify && pnpm run control-api:qualify && pnpm run isolation:qualify && pnpm run build && pnpm run verify:config && pnpm run verify:versions && pnpm run verify:frozen-install
+2026-09-08T06:53:56.6784824Z $ prettier --check --no-error-on-unmatched-pattern package.json pnpm-workspace.yaml "tsconfig*.json" "*.config.mjs" .github/workflows/quality.yml "toolchain/**/*.json" "scripts/toolchain/**/*.mjs" "scripts/contracts/**/*.mjs" "scripts/architecture/**/*.mjs" "tests/qualification/toolchain/**/*.{json,mjs,ts}" "tests/contract/**/*.mjs" "tests/architecture/**/*.{json,mjs}" packages/contracts/package.json packages/contracts/tsconfig.json packages/contracts/type-bindings.json packages/contracts/README.md "packages/contracts/src/**/*.ts" "docs/implementation/phase-1/o01/**/*.md" "docs/implementation/phase-1/o02/**/*.md" "docs/implementation/phase-1/o03/**/*.md" "operations/phase-1/evidence/o01/**/*.json" "operations/phase-1/evidence/o02/**/*.json" "operations/phase-1/evidence/o03/**/*.json" "operations/phase-1/executions/p1-o01-*.json" "operations/phase-1/executions/p1-o02-*.json" "operations/phase-1/executions/p1-o03-*.json" "packages/policy/**/*.{json,ts}" "tests/qualification/policy/**/*.mjs" "docs/implementation/phase-1/o04/**/*.md" "operations/phase-1/evidence/o04/**/*.json" "operations/phase-1/executions/p1-o04-*.json" "packages/persistence/**/*.{json,ts}" "scripts/qualification/persistence/**/*.mjs" "tests/qualification/persistence/**/*.mjs" "tests/fault-injection/persistence/**/*.mjs" "docs/implementation/phase-1/o05/**/*.md" "operations/phase-1/evidence/o05/**/*.json" "operations/phase-1/executions/p1-o05-*.json" "packages/platform/**/*.{json,ts}" "apps/{runtime,cli}/**/*.{json,ts}" "scripts/qualification/control-api/**/*.mjs" "tests/qualification/control-api/**/*.mjs" "tests/acceptance/control-api/**/*.mjs" "tests/contract/control-api/**/*.mjs" "docs/implementation/phase-1/o06/**/*.md" "operations/phase-1/evidence/o06/**/*.json" "operations/phase-1/executions/p1-o06-*.json" "packages/adapters/tool/windows-process-restricted/**/*.{json,mjs,ts}" "apps/worker/**/*.{json,ts}" "scripts/qualification/isolation/**/*.mjs" "tests/qualification/isolation/**/*.mjs" "tests/security/isolation/**/*.mjs" "docs/implementation/phase-1/o07/**/*.md" "operations/phase-1/evidence/o07/**/*.json" "operations/phase-1/executions/p1-o07-*.json"
+2026-09-08T06:53:56.8019138Z Checking formatting...
+2026-09-08T06:54:00.0710281Z All matched files use Prettier code style!
+2026-09-08T06:54:00.6756854Z $ eslint . --ignore-pattern "**/dist/**"
+2026-09-08T06:54:12.3565613Z $ node scripts/contracts/generate-contract-types.mjs --check
+2026-09-08T06:54:12.6912700Z Schema-generated TypeScript declarations are current.
+2026-09-08T06:54:13.2592533Z $ tsc -b tsconfig.build.json --pretty false
+2026-09-08T06:54:22.1654601Z $ pnpm --filter @aseos/windows-process-restricted build && pnpm --filter @aseos/worker build
+2026-09-08T06:54:22.7344477Z $ tsc -b tsconfig.json --pretty false && node scripts/copy-assets.mjs
+2026-09-08T06:54:23.5034292Z $ tsc -b tsconfig.json --pretty false
+2026-09-08T06:54:24.2127292Z $ vitest run --maxWorkers=1 && vitest run --config tests/architecture/vitest.config.mjs
+2026-09-08T06:54:24.6269684Z 
+2026-09-08T06:54:24.6274655Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mD:/a/-ai-software-engineering-os/-ai-software-engineering-os[39m
+2026-09-08T06:54:24.6276941Z 
+2026-09-08T06:54:49.1642114Z  [32m✓[39m tests/qualification/toolchain/transition-enforcement-integration.test.mjs [2m([22m[2m6 tests[22m[2m)[22m[33m 24214[2mms[22m[39m
+2026-09-08T06:54:49.1643588Z      [33m[2m✓[22m[39m performs an exact transactional SHA refresh with real files [33m 3400[2mms[22m[39m
+2026-09-08T06:54:49.1644668Z      [33m[2m✓[22m[39m fails P1-O04 closed without or with an invalid Gate, then passes exact Gate ancestry [33m 12054[2mms[22m[39m
+2026-09-08T06:54:49.1645681Z      [33m[2m✓[22m[39m rejects raw adversarial Git paths before scope classification [33m 3384[2mms[22m[39m
+2026-09-08T06:54:49.1646592Z      [33m[2m✓[22m[39m keeps governed source paths visible for a real Git rename [33m 2578[2mms[22m[39m
+2026-09-08T06:54:49.1647459Z      [33m[2m✓[22m[39m keeps governed source paths visible for a real Git delete [33m 2793[2mms[22m[39m
+2026-09-08T06:55:15.0676668Z  [32m✓[39m tests/qualification/control-api/p1-v07-control-api.test.mjs [2m([22m[2m17 tests[22m[2m)[22m[33m 25360[2mms[22m[39m
+2026-09-08T06:55:15.0678860Z      [33m[2m✓[22m[39m binds only to the IPv4 loopback endpoint and rejects Host, Origin and unauthenticated access [33m 3532[2mms[22m[39m
+2026-09-08T06:55:15.0680792Z      [33m[2m✓[22m[39m allows only registered and bounded unauthenticated CORS preflight [33m 844[2mms[22m[39m
+2026-09-08T06:55:15.0682842Z      [33m[2m✓[22m[39m rotates a 256-bit token, enforces user-only ACL and never leaks the secret [33m 2081[2mms[22m[39m
+2026-09-08T06:55:15.0685046Z      [33m[2m✓[22m[39m uses the absolute System32 security helper when cwd and PATH contain hostile executables [33m 1668[2mms[22m[39m
+2026-09-08T06:55:15.0687017Z      [33m[2m✓[22m[39m fails closed when token inheritance is enabled after secure creation [33m 3714[2mms[22m[39m
+2026-09-08T06:55:15.0689128Z      [33m[2m✓[22m[39m validates discovery identity and exposes bounded status metadata through the public client [33m 870[2mms[22m[39m
+2026-09-08T06:55:15.0691572Z      [33m[2m✓[22m[39m rejects stale PID and authenticated instance identity mismatches [33m 862[2mms[22m[39m
+2026-09-08T06:55:15.0693461Z      [33m[2m✓[22m[39m rejects non-canonical descriptor fields before any client request [33m 1258[2mms[22m[39m
+2026-09-08T06:55:15.0695716Z      [33m[2m✓[22m[39m fails closed for malformed, oversized, query-bearing and unknown requests [33m 1291[2mms[22m[39m
+2026-09-08T06:55:15.0697568Z      [33m[2m✓[22m[39m enforces the configured response byte limit without emitting a non-canonical fallback [33m 1355[2mms[22m[39m
+2026-09-08T06:55:15.0699488Z      [33m[2m✓[22m[39m bounds authentication failures and idempotency state with replay and conflict semantics [33m 1129[2mms[22m[39m
+2026-09-08T06:55:15.0701217Z      [33m[2m✓[22m[39m streams bounded read-only SSE metadata and supports replay and gap detection [33m 981[2mms[22m[39m
+2026-09-08T06:55:15.0703129Z      [33m[2m✓[22m[39m rejects notification kinds outside the read-only public metadata enum [33m 845[2mms[22m[39m
+2026-09-08T06:55:15.0704750Z      [33m[2m✓[22m[39m closes replay streams when retained metadata exceeds the backpressure budget [33m 1004[2mms[22m[39m
+2026-09-08T06:55:15.0706483Z      [33m[2m✓[22m[39m bounds retention-gap and heartbeat SSE frames with the same byte budget [33m 2942[2mms[22m[39m
+2026-09-08T06:55:15.0707825Z      [33m[2m✓[22m[39m keeps an established SSE stream beyond the ordinary request timeout [33m 979[2mms[22m[39m
+2026-09-08T06:55:15.3303867Z  [32m✓[39m tests/qualification/toolchain/scope-policy.test.mjs [2m([22m[2m28 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+2026-09-08T06:55:15.7634845Z  [32m✓[39m tests/qualification/policy/p1-v05-policy.test.mjs [2m([22m[2m16 tests[22m[2m)[22m[32m 72[2mms[22m[39m
+2026-09-08T06:55:16.0117133Z  [32m✓[39m tests/qualification/toolchain/transition-enforcement-policy.test.mjs [2m([22m[2m17 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+2026-09-08T06:55:16.2529760Z  [32m✓[39m tests/qualification/toolchain/p1-o07-start-gate.test.mjs [2m([22m[2m31 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+2026-09-08T06:55:30.2852293Z  [32m✓[39m tests/qualification/control-api/review-remediation.test.mjs [2m([22m[2m8 tests[22m[2m)[22m[33m 13704[2mms[22m[39m
+2026-09-08T06:55:30.2854226Z    [33m[2m✓[22m[39m concurrent lock losers cannot remove a live owner's claim or metadata [33m 7260[2mms[22m[39m
+2026-09-08T06:55:30.2855518Z    [33m[2m✓[22m[39m separate processes elect one owner and recover a killed owner's unique claim [33m 653[2mms[22m[39m
+2026-09-08T06:55:30.2860567Z    [33m[2m✓[22m[39m timed-out unfinished bodies close their socket and release capacity exactly once [33m 1470[2mms[22m[39m
+2026-09-08T06:55:30.2862662Z    [33m[2m✓[22m[39m SSE preserves Unicode split inside multibyte characters [33m 919[2mms[22m[39m
+2026-09-08T06:55:30.2864148Z    [33m[2m✓[22m[39m SSE rejects invalid UTF-8 without silently changing its payload [33m 846[2mms[22m[39m
+2026-09-08T06:55:30.2865686Z    [33m[2m✓[22m[39m SSE rejects truncated UTF-8 without silently changing its payload [33m 872[2mms[22m[39m
+2026-09-08T06:55:30.2867290Z    [33m[2m✓[22m[39m SSE rejects incomplete frame without silently changing its payload [33m 847[2mms[22m[39m
+2026-09-08T06:55:30.2868935Z    [33m[2m✓[22m[39m discovery rejects a valid health body bound to an unregistered success status [33m 834[2mms[22m[39m
+2026-09-08T06:55:33.8271818Z  [32m✓[39m tests/qualification/persistence/p1-v06-persistence.test.mjs [2m([22m[2m6 tests[22m[2m)[22m[33m 3241[2mms[22m[39m
+2026-09-08T06:55:33.8273686Z      [33m[2m✓[22m[39m attests the fixed engine and fail-closed SQLite controls [33m 561[2mms[22m[39m
+2026-09-08T06:55:33.8275118Z      [33m[2m✓[22m[39m commits Event receipt outbox and audit atomically with exact idempotency [33m 461[2mms[22m[39m
+2026-09-08T06:55:33.8277778Z      [33m[2m✓[22m[39m deduplicates inbox and enforces monotonic projection checkpoints [33m 450[2mms[22m[39m
+2026-09-08T06:55:33.8279670Z      [33m[2m✓[22m[39m creates an integrity-checked online backup that restores independently [33m 830[2mms[22m[39m
+2026-09-08T06:55:33.8281458Z      [33m[2m✓[22m[39m keeps the Runtime event loop responsive while the dedicated worker writes [33m 497[2mms[22m[39m
+2026-09-08T06:55:33.8282561Z      [33m[2m✓[22m[39m rejects unknown public fields through the canonical runtime Contract [33m 440[2mms[22m[39m
+2026-09-08T06:58:49.4962520Z  [32m✓[39m tests/security/isolation/process-restricted.security.test.mjs [2m([22m[2m6 tests[22m[2m)[22m[33m 195420[2mms[22m[39m
+2026-09-08T06:58:49.4964224Z      [33m[2m✓[22m[39m rejects digest mismatch, traversal, raw shells and invalid budgets [33m 23549[2mms[22m[39m
+2026-09-08T06:58:49.4965295Z      [33m[2m✓[22m[39m bounds stdout and records canonical output-limit evidence [33m 22968[2mms[22m[39m
+2026-09-08T06:58:49.4966780Z      [33m[2m✓[22m[39m terminates the root, child and grandchild at wall-clock expiry [33m 24081[2mms[22m[39m
+2026-09-08T06:58:49.4968241Z      [33m[2m✓[22m[39m cancels promptly by terminating the complete Job Object [33m 22866[2mms[22m[39m
+2026-09-08T06:58:49.4970848Z      [33m[2m✓[22m[39m enforces CPU and memory budgets with explicit reasons [33m 46281[2mms[22m[39m
+2026-09-08T06:58:49.4972006Z      [33m[2m✓[22m[39m enforces the active-process budget [33m 23196[2mms[22m[39m
+2026-09-08T06:58:50.2105733Z  [32m✓[39m tests/contract/isolation/isolation-contracts.test.mjs [2m([22m[2m11 tests[22m[2m)[22m[33m 414[2mms[22m[39m
+2026-09-08T06:58:50.4547285Z  [32m✓[39m tests/qualification/toolchain/p1-o06-start-gate.test.mjs [2m([22m[2m19 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+2026-09-08T06:58:52.0722448Z  [32m✓[39m tests/qualification/toolchain/configuration-consistency.test.mjs [2m([22m[2m17 tests[22m[2m)[22m[33m 1395[2mms[22m[39m
+2026-09-08T06:58:52.0725069Z      [33m[2m✓[22m[39m scripts/toolchain/verify-versions.mjs [33m 1264[2mms[22m[39m
+2026-09-08T06:59:03.5426150Z  [32m✓[39m tests/qualification/toolchain/review-remediation.test.mjs [2m([22m[2m5 tests[22m[2m)[22m[33m 11253[2mms[22m[39m
+2026-09-08T06:59:03.5429396Z    [33m[2m✓[22m[39m the authority build restores runtime-loaded assets even with up-to-date TypeScript outputs [33m 345[2mms[22m[39m
+2026-09-08T06:59:03.5431556Z    [33m[2m✓[22m[39m CI evidence binds the checked-out subject and rejects a mismatching requested target [33m 1427[2mms[22m[39m
+2026-09-08T06:59:03.5449871Z    [33m[2m✓[22m[39m M0 rejects an actual invalid implementation receipt instead of checking only its schema [33m 1149[2mms[22m[39m
+2026-09-08T06:59:03.5451870Z    [33m[2m✓[22m[39m M0 rejects a schema-valid self-declared integrated PASS without independent evidence [33m 8323[2mms[22m[39m
+2026-09-08T06:59:50.2544053Z  [32m✓[39m tests/qualification/isolation/p1-v08-isolation.test.mjs [2m([22m[2m4 tests[22m[2m)[22m[33m 46423[2mms[22m[39m
+2026-09-08T06:59:50.2546591Z      [33m[2m✓[22m[39m runs a pinned executable in a staged Unicode path with an allowlisted environment [33m 22948[2mms[22m[39m
+2026-09-08T06:59:55.0190137Z  [32m✓[39m tests/fault-injection/persistence/p1-o05-faults.test.mjs [2m([22m[2m6 tests[22m[2m)[22m[33m 4488[2mms[22m[39m
+2026-09-08T06:59:55.0191266Z      [33m[2m✓[22m[39m rejects future migration history before declaring schema compatibility [33m 921[2mms[22m[39m
+2026-09-08T06:59:55.0192275Z      [33m[2m✓[22m[39m rejects incompatible existing schema before applying the authority migration [33m 380[2mms[22m[39m
+2026-09-08T06:59:55.0193300Z      [33m[2m✓[22m[39m rolls back a worker-terminated pre-commit transaction [33m 736[2mms[22m[39m
+2026-09-08T06:59:55.0195358Z      [33m[2m✓[22m[39m recovers committed authority after worker termination without graceful drain [33m 807[2mms[22m[39m
+2026-09-08T06:59:55.0197398Z      [33m[2m✓[22m[39m fails with a typed busy result and succeeds after the authority lock is released [33m 1001[2mms[22m[39m
+2026-09-08T06:59:55.0199307Z      [33m[2m✓[22m[39m quarantines corruption and never replaces it with an empty authority database [33m 641[2mms[22m[39m
+2026-09-08T07:00:11.7172516Z  [32m✓[39m tests/qualification/toolchain/post-merge-target.test.mjs [2m([22m[2m10 tests[22m[2m)[22m[33m 16479[2mms[22m[39m
+2026-09-08T07:00:11.7174357Z      [33m[2m✓[22m[39m derives the target first parent and exact scope bindings [33m 6736[2mms[22m[39m
+2026-09-08T07:00:11.7176148Z      [33m[2m✓[22m[39m rejects malformed target SHA "" [33m 1498[2mms[22m[39m
+2026-09-08T07:00:11.7177728Z      [33m[2m✓[22m[39m rejects malformed target SHA "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" [33m 1253[2mms[22m[39m
+2026-09-08T07:00:11.7179799Z      [33m[2m✓[22m[39m rejects malformed target SHA "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" [33m 1183[2mms[22m[39m
+2026-09-08T07:00:11.7181584Z      [33m[2m✓[22m[39m rejects dispatch from a non-main ref [33m 1224[2mms[22m[39m
+2026-09-08T07:00:11.7183102Z      [33m[2m✓[22m[39m rejects a checkout that differs from the exact target [33m 1122[2mms[22m[39m
+2026-09-08T07:00:11.7184303Z      [33m[2m✓[22m[39m rejects a claimed current main that differs from origin/main [33m 1086[2mms[22m[39m
+2026-09-08T07:00:11.7185253Z      [33m[2m✓[22m[39m rejects a target outside the protected-main first-parent chain [33m 1178[2mms[22m[39m
+2026-09-08T07:00:11.7186222Z      [33m[2m✓[22m[39m rejects a first-parent commit that is not a two-parent merge [33m 1195[2mms[22m[39m
+2026-09-08T07:00:15.5522173Z  [32m✓[39m tests/contract/registry-integrity.test.mjs [2m([22m[2m8 tests[22m[2m)[22m[33m 3554[2mms[22m[39m
+2026-09-08T07:00:15.5524426Z      [33m[2m✓[22m[39m meta-validates, hashes and compiles every canonical entry [33m 353[2mms[22m[39m
+2026-09-08T07:00:15.5526248Z      [33m[2m✓[22m[39m accepts a consistent CRLF authority checkout and rejects content drift [33m 531[2mms[22m[39m
+2026-09-08T07:00:15.5527988Z      [33m[2m✓[22m[39m rejects malformed lone CR authority line endings [33m 306[2mms[22m[39m
+2026-09-08T07:00:15.5529654Z      [33m[2m✓[22m[39m rejects duplicate paths, missing files and repository traversal [33m 792[2mms[22m[39m
+2026-09-08T07:00:15.5531513Z      [33m[2m✓[22m[39m rejects unresolved references and schema metadata/version mismatches [33m 1021[2mms[22m[39m
+2026-09-08T07:00:16.1933986Z  [32m✓[39m tests/contract/control-api/control-api-contracts.test.mjs [2m([22m[2m12 tests[22m[2m)[22m[33m 372[2mms[22m[39m
+2026-09-08T07:00:21.2071128Z  [32m✓[39m tests/qualification/toolchain/p1-o07-start-gate-integration.test.mjs [2m([22m[2m2 tests[22m[2m)[22m[33m 4806[2mms[22m[39m
+2026-09-08T07:00:21.2072323Z      [33m[2m✓[22m[39m fails closed without a legal P1-O07 operation context [33m 1664[2mms[22m[39m
+2026-09-08T07:00:21.2073398Z      [33m[2m✓[22m[39m fails the real operation-aware preflight closed for an absent or malformed Gate [33m 3139[2mms[22m[39m
+2026-09-08T07:00:26.9502292Z  [32m✓[39m tests/qualification/toolchain/p1-o06-start-gate-integration.test.mjs [2m([22m[2m2 tests[22m[2m)[22m[33m 5529[2mms[22m[39m
+2026-09-08T07:00:26.9504287Z      [33m[2m✓[22m[39m fails closed without a legal P1-O06 operation context [33m 2542[2mms[22m[39m
+2026-09-08T07:00:26.9505767Z      [33m[2m✓[22m[39m fails the real operation-aware preflight closed for an absent or malformed Gate [33m 2986[2mms[22m[39m
+2026-09-08T07:00:29.9641099Z  [32m✓[39m tests/qualification/toolchain/p1-o05-start-gate-integration.test.mjs [2m([22m[2m1 test[22m[2m)[22m[33m 2801[2mms[22m[39m
+2026-09-08T07:00:29.9642334Z      [33m[2m✓[22m[39m fails the real operation-aware preflight closed for an absent or malformed Gate [33m 2799[2mms[22m[39m
+2026-09-08T07:00:34.0202750Z  [32m✓[39m tests/qualification/persistence/review-remediation.test.mjs [2m([22m[2m6 tests[22m[2m)[22m[33m 3774[2mms[22m[39m
+2026-09-08T07:00:34.0204065Z    [33m[2m✓[22m[39m rejects events payload schema identity, hash and content before any durable write [33m 571[2mms[22m[39m
+2026-09-08T07:00:34.0205231Z    [33m[2m✓[22m[39m rejects outbox payload schema identity, hash and content before any durable write [33m 446[2mms[22m[39m
+2026-09-08T07:00:34.0206638Z    [33m[2m✓[22m[39m caller mutation after commit starts cannot replace a validated payload [33m 399[2mms[22m[39m
+2026-09-08T07:00:34.0208740Z    [33m[2m✓[22m[39m invalid busy timeout leaves a healthy database byte-identical and immediately reopenable [33m 968[2mms[22m[39m
+2026-09-08T07:00:34.0210940Z    [33m[2m✓[22m[39m an existing truncated database is quarantined instead of initialized as an empty authority [33m 1055[2mms[22m[39m
+2026-09-08T07:00:34.0212634Z    [33m[2m✓[22m[39m an operational open failure preserves the original path without a corruption marker [33m 334[2mms[22m[39m
+2026-09-08T07:00:34.2571273Z  [32m✓[39m tests/qualification/toolchain/p1-o05-start-gate.test.mjs [2m([22m[2m13 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+2026-09-08T07:00:37.3261264Z  [32m✓[39m tests/acceptance/control-api/cli-public-api.acceptance.test.mjs [2m([22m[2m3 tests[22m[2m)[22m[33m 2744[2mms[22m[39m
+2026-09-08T07:00:37.3262572Z      [33m[2m✓[22m[39m runs start, version, doctor, status and stop through the built entrypoints [33m 1775[2mms[22m[39m
+2026-09-08T07:00:37.3263664Z      [33m[2m✓[22m[39m removing discovery stops the listening runtime and cleans up its token [33m 963[2mms[22m[39m
+2026-09-08T07:00:40.0799122Z  [32m✓[39m tests/contract/inventory-integrity.test.mjs [2m([22m[2m5 tests[22m[2m)[22m[33m 2485[2mms[22m[39m
+2026-09-08T07:00:40.0802418Z      [33m[2m✓[22m[39m bind every active contract to one registry identity and canonical owner [33m 399[2mms[22m[39m
+2026-09-08T07:00:40.0804287Z      [33m[2m✓[22m[39m rejects active/planned ownership collisions [33m 542[2mms[22m[39m
+2026-09-08T07:00:40.0806021Z      [33m[2m✓[22m[39m rejects inventory identities missing from the canonical registry [33m 492[2mms[22m[39m
+2026-09-08T07:00:40.0808204Z      [33m[2m✓[22m[39m rejects a public payload schema that permits unknown root fields [33m 539[2mms[22m[39m
+2026-09-08T07:00:40.0809879Z      [33m[2m✓[22m[39m rejects inconsistent active/planned status linkage [33m 511[2mms[22m[39m
+2026-09-08T07:00:40.4847930Z  [32m✓[39m tests/qualification/persistence/migration-git-attributes.test.mjs [2m([22m[2m4 tests[22m[2m)[22m[32m 183[2mms[22m[39m
+2026-09-08T07:00:40.6980128Z  [32m✓[39m tests/qualification/control-api/openapi-structure.test.mjs [2m([22m[2m1 test[22m[2m)[22m[32m 12[2mms[22m[39m
+2026-09-08T07:00:43.6866598Z  [32m✓[39m tests/contract/review-remediation.test.mjs [2m([22m[2m29 tests[22m[2m)[22m[33m 2341[2mms[22m[39m
+2026-09-08T07:00:43.6868771Z    [33m[2m✓[22m[39m type consistency detects operator drift below allOf and multiple local references [33m 1900[2mms[22m[39m
+2026-09-08T07:01:34.0753131Z  [32m✓[39m tests/security/isolation/host-death.security.test.mjs [2m([22m[2m1 test[22m[2m)[22m[33m 50139[2mms[22m[39m
+2026-09-08T07:01:34.0755874Z    [33m[2m✓[22m[39m killing only the Node host terminates its bridge and every tool descendant [33m 50137[2mms[22m[39m
+2026-09-08T07:01:38.0875212Z  [32m✓[39m tests/contract/example-suite.test.mjs [2m([22m[2m4 tests[22m[2m)[22m[33m 3729[2mms[22m[39m
+2026-09-08T07:01:38.0876596Z      [33m[2m✓[22m[39m accepts every valid fixture and rejects every invalid fixture [33m 420[2mms[22m[39m
+2026-09-08T07:01:38.0877717Z      [33m[2m✓[22m[39m does not infer invalidity from a fixture filename [33m 632[2mms[22m[39m
+2026-09-08T07:01:38.0879348Z      [33m[2m✓[22m[39m fails closed for missing, duplicate and unknown-schema fixture bindings [33m 1874[2mms[22m[39m
+2026-09-08T07:01:38.0881111Z      [33m[2m✓[22m[39m requires invalid cases to prove their declared boundary violation [33m 802[2mms[22m[39m
+2026-09-08T07:01:38.8549523Z  [32m✓[39m tests/contract/artifact-git-attributes.test.mjs [2m([22m[2m2 tests[22m[2m)[22m[33m 555[2mms[22m[39m
+2026-09-08T07:01:38.8550628Z      [33m[2m✓[22m[39m marks every tracked artifact as binary and preserves its canonical bytes [33m 493[2mms[22m[39m
+2026-09-08T07:01:45.9099443Z  [32m✓[39m tests/contract/schema-type-consistency.test.mjs [2m([22m[2m4 tests[22m[2m)[22m[33m 6580[2mms[22m[39m
+2026-09-08T07:01:45.9102020Z      [33m[2m✓[22m[39m checks semantic shape, enums, optionality and readonly exports [33m 2059[2mms[22m[39m
+2026-09-08T07:01:45.9103658Z      [33m[2m✓[22m[39m detects a required schema field deletion [33m 1429[2mms[22m[39m
+2026-09-08T07:01:45.9105103Z      [33m[2m✓[22m[39m detects primitive and enum drift in TypeScript [33m 2101[2mms[22m[39m
+2026-09-08T07:01:45.9106603Z      [33m[2m✓[22m[39m detects a mutable public field [33m 988[2mms[22m[39m
+2026-09-08T07:01:47.8714281Z  [32m✓[39m tests/contract/policy/policy-contracts.test.mjs [2m([22m[2m6 tests[22m[2m)[22m[33m 1670[2mms[22m[39m
+2026-09-08T07:01:47.8715646Z      [33m[2m✓[22m[39m urn:aseos:schema:capability-manifest:1.0.0 accepts its canonical example and rejects its fail-closed example [33m 410[2mms[22m[39m
+2026-09-08T07:01:48.7092843Z  [32m✓[39m tests/contract/runtime-validator.test.mjs [2m([22m[2m4 tests[22m[2m)[22m[33m 403[2mms[22m[39m
+2026-09-08T07:01:48.9298645Z  [32m✓[39m tests/qualification/toolchain/scope-event-policy.test.mjs [2m([22m[2m7 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+2026-09-08T07:01:49.5297729Z  [32m✓[39m tests/qualification/toolchain/toolchain-manifest.test.mjs [2m([22m[2m2 tests[22m[2m)[22m[32m 76[2mms[22m[39m
+2026-09-08T07:01:54.5492354Z  [32m✓[39m tests/qualification/toolchain/dependency-build-policy.test.mjs [2m([22m[2m1 test[22m[2m)[22m[33m 4780[2mms[22m[39m
+2026-09-08T07:01:54.5493518Z      [33m[2m✓[22m[39m does not execute an unallowlisted dependency install script [33m 4777[2mms[22m[39m
+2026-09-08T07:01:55.3288702Z  [32m✓[39m tests/contract/compatibility.test.mjs [2m([22m[2m3 tests[22m[2m)[22m[33m 471[2mms[22m[39m
+2026-09-08T07:01:57.9697480Z  [32m✓[39m tests/contract/phase-1-integration.test.mjs [2m([22m[2m1 test[22m[2m)[22m[33m 2336[2mms[22m[39m
+2026-09-08T07:01:57.9700394Z    [33m[2m✓[22m[39m canonical JSON rejection reaches the durable journal boundary without partial writes [33m 2334[2mms[22m[39m
+2026-09-08T07:01:58.3677656Z  [32m✓[39m tests/contract/package-integration.test.mjs [2m([22m[2m1 test[22m[2m)[22m[32m 167[2mms[22m[39m
+2026-09-08T07:01:58.6521417Z  [32m✓[39m tests/contract/generated-types.test.mjs [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+2026-09-08T07:02:01.5278483Z  [32m✓[39m tests/qualification/control-api/windows-claim-race.test.mjs [2m([22m[2m4 tests[22m[2m)[22m[33m 2650[2mms[22m[39m
+2026-09-08T07:02:01.5279738Z    [33m[2m✓[22m[39m a departing Windows claim reporting EPERM does not prevent an uncontested owner [33m 618[2mms[22m[39m
+2026-09-08T07:02:01.5280801Z    [33m[2m✓[22m[39m a departing Windows claim reporting EACCES does not prevent an uncontested owner [33m 423[2mms[22m[39m
+2026-09-08T07:02:01.5282402Z    [33m[2m✓[22m[39m a departing Windows claim reporting EBUSY does not prevent an uncontested owner [33m 502[2mms[22m[39m
+2026-09-08T07:02:01.5284300Z    [33m[2m✓[22m[39m a persistently unreadable live claim remains fail closed and is never removed [33m 1104[2mms[22m[39m
+2026-09-08T07:02:04.8568600Z  [32m✓[39m tests/contract/p1-v03-contracts.test.mjs [2m([22m[2m1 test[22m[2m)[22m[33m 2726[2mms[22m[39m
+2026-09-08T07:02:04.8570755Z      [33m[2m✓[22m[39m produces all four required Evidence result types [33m 2724[2mms[22m[39m
+2026-09-08T07:02:05.1523920Z  [32m✓[39m tests/qualification/toolchain/esm-project-reference.test.mjs [2m([22m[2m1 test[22m[2m)[22m[32m 32[2mms[22m[39m
+2026-09-08T07:02:05.1574997Z 
+2026-09-08T07:02:05.1587494Z [2m Test Files [22m [1m[32m44 passed[39m[22m[90m (44)[39m
+2026-09-08T07:02:05.1588986Z [2m      Tests [22m [1m[32m339 passed[39m[22m[90m (339)[39m
+2026-09-08T07:02:05.1590155Z [2m   Start at [22m 06:54:24
+2026-09-08T07:02:05.1591655Z [2m   Duration [22m 460.51s[2m (transform 1.30s, setup 0ms, import 4.38s, tests 447.47s, environment 6ms)[22m
+2026-09-08T07:02:05.1593355Z 
+2026-09-08T07:02:05.9915907Z 
+2026-09-08T07:02:05.9921643Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mD:/a/-ai-software-engineering-os/-ai-software-engineering-os[39m
+2026-09-08T07:02:05.9922590Z 
+2026-09-08T07:02:08.3277788Z  [32m✓[39m tests/architecture/p1-v04-architecture.test.mjs [2m([22m[2m9 tests[22m[2m)[22m[33m 1177[2mms[22m[39m
+2026-09-08T07:02:08.3280348Z      [33m[2m✓[22m[39m qualifies the live package/import graph and canonical owner authorities [33m 1109[2mms[22m[39m
+2026-09-08T07:02:27.9451207Z  [32m✓[39m tests/architecture/review-remediation.test.mjs [2m([22m[2m5 tests[22m[2m)[22m[33m 20799[2mms[22m[39m
+2026-09-08T07:02:27.9453845Z    [33m[2m✓[22m[39m normal live qualification rejects an application deep import [33m 13011[2mms[22m[39m
+2026-09-08T07:02:27.9454874Z    [33m[2m✓[22m[39m normal live qualification rejects application module cycles [33m 4187[2mms[22m[39m
+2026-09-08T07:02:27.9456071Z    [33m[2m✓[22m[39m an application cannot inherit the repository root's broad dependency allowance [33m 1972[2mms[22m[39m
+2026-09-08T07:02:27.9458062Z    [33m[2m✓[22m[39m a newly declared workspace without an explicit architecture owner fails qualification [33m 1599[2mms[22m[39m
+2026-09-08T07:02:27.9483885Z 
+2026-09-08T07:02:27.9490488Z [2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+2026-09-08T07:02:27.9491988Z [2m      Tests [22m [1m[32m14 passed[39m[22m[90m (14)[39m
+2026-09-08T07:02:27.9493036Z [2m   Start at [22m 07:02:05
+2026-09-08T07:02:27.9494387Z [2m   Duration [22m 21.95s[2m (transform 446ms, setup 0ms, import 1.73s, tests 21.98s, environment 0ms)[22m
+2026-09-08T07:02:27.9496354Z 
+2026-09-08T07:02:28.6178174Z $ pnpm run build && node --test test/*.test.mjs
+2026-09-08T07:02:29.2615184Z $ tsc -b tsconfig.json --pretty false
+2026-09-08T07:02:29.6319379Z ✔ Windows identity parsing binds one exact CSV record to a bounded numeric SID (1.3751ms)
+2026-09-08T07:02:29.6352319Z ✔ precompiled Windows token helper is bound to its auditable source and embedded bytes (6.07ms)
+2026-09-08T07:02:32.0168771Z ✔ loopback runtime rotates credentials, authenticates public client and stops idempotently (2381.1754ms)
+2026-09-08T07:02:32.0170976Z ✔ bounded idempotency detects payload conflicts and evicts oldest metadata (0.7436ms)
+2026-09-08T07:02:32.0173806Z ✔ public redaction removes bearer values and sensitive paths (0.2281ms)
+2026-09-08T07:02:32.0349839Z ℹ tests 5
+2026-09-08T07:02:32.0350508Z ℹ suites 0
+2026-09-08T07:02:32.0351009Z ℹ pass 5
+2026-09-08T07:02:32.0351501Z ℹ fail 0
+2026-09-08T07:02:32.0351970Z ℹ cancelled 0
+2026-09-08T07:02:32.0352500Z ℹ skipped 0
+2026-09-08T07:02:32.0353130Z ℹ todo 0
+2026-09-08T07:02:32.0354102Z ℹ duration_ms 2568.2312
+2026-09-08T07:02:32.6195908Z $ pnpm run build && node --test test/*.test.mjs
+2026-09-08T07:02:33.1707048Z $ tsc -b tsconfig.json --pretty false && node scripts/copy-assets.mjs
+2026-09-08T07:02:56.5293105Z ✔ capability probe is fail-closed and canonical (23030.4933ms)
+2026-09-08T07:03:42.8955151Z ✔ executes a digest-pinned native tool without shell fallback (46367.3571ms)
+2026-09-08T07:04:31.4811632Z ✔ rejects a renamed shell by signed PE identity (48585.259ms)
+2026-09-08T07:06:03.5212550Z ✔ rejects non-canonical evidence and authority injection before staging (92038.5036ms)
+2026-09-08T07:06:03.5214699Z ✔ pre-cancelled requests never resolve a catalog or start (0.4559ms)
+2026-09-08T07:06:52.4523974Z ✔ cancellation before bridge listener registration creates a marker and closes the Job (48930.6362ms)
+2026-09-08T07:07:38.6809195Z ✔ zero stdout budget enters execution and terminates as OUTPUT_LIMIT (46227.6946ms)
+2026-09-08T07:08:25.6528166Z ✔ accepts a non-reparse Windows 8.3 alias and launches only its long canonical identity (46971.1327ms)
+2026-09-08T07:08:25.6701163Z ℹ tests 8
+2026-09-08T07:08:25.6702412Z ℹ suites 0
+2026-09-08T07:08:25.6703045Z ℹ pass 8
+2026-09-08T07:08:25.6703915Z ℹ fail 0
+2026-09-08T07:08:25.6704407Z ℹ cancelled 0
+2026-09-08T07:08:25.6704927Z ℹ skipped 0
+2026-09-08T07:08:25.6705452Z ℹ todo 0
+2026-09-08T07:08:25.6706012Z ℹ duration_ms 352249.4008
+2026-09-08T07:08:26.2805119Z $ pnpm --filter @aseos/windows-process-restricted build && pnpm run build && node --test test/*.test.mjs
+2026-09-08T07:08:26.8808629Z $ tsc -b tsconfig.json --pretty false && node scripts/copy-assets.mjs
+2026-09-08T07:08:27.6434237Z $ tsc -b tsconfig.json --pretty false
+2026-09-08T07:08:51.9496924Z ✔ missing and unknown requirements block without consulting the catalog (23999.6768ms)
+2026-09-08T07:08:51.9498707Z ✔ unavailable provider takes precedence without executing (0.8097ms)
+2026-09-08T07:09:38.5300932Z ✔ selected Worker request executes through the exact adapter boundary (46581.9457ms)
+2026-09-08T07:09:38.5424238Z ℹ tests 3
+2026-09-08T07:09:38.5424833Z ℹ suites 0
+2026-09-08T07:09:38.5425344Z ℹ pass 3
+2026-09-08T07:09:38.5425813Z ℹ fail 0
+2026-09-08T07:09:38.5426708Z ℹ cancelled 0
+2026-09-08T07:09:38.5427403Z ℹ skipped 0
+2026-09-08T07:09:38.5428624Z ℹ todo 0
+2026-09-08T07:09:38.5429888Z ℹ duration_ms 70681.6877
+2026-09-08T07:09:39.1216803Z $ pnpm exec tsc -b packages/contracts/tsconfig.json --pretty false && node scripts/contracts/qualify-contracts.mjs
+2026-09-08T07:09:42.5131260Z {
+2026-09-08T07:09:42.5146870Z   "schemaVersion": "1.0.0",
+2026-09-08T07:09:42.5148295Z   "gateStepId": "P1-V03-CONTRACTS",
+2026-09-08T07:09:42.5148900Z   "result": "PASS",
+2026-09-08T07:09:42.5149324Z   "schemaMetaValidation": {
+2026-09-08T07:09:42.5149870Z     "evidenceType": "SchemaMetaValidationResult",
+2026-09-08T07:09:42.5150501Z     "result": "PASS",
+2026-09-08T07:09:42.5151155Z     "dialect": "https://json-schema.org/draft/2020-12/schema",
+2026-09-08T07:09:42.5151594Z     "registeredSchemas": 52,
+2026-09-08T07:09:42.5151944Z     "metaValidatedSchemas": 52,
+2026-09-08T07:09:42.5152281Z     "compiledSchemas": 52,
+2026-09-08T07:09:42.5152579Z     "unresolvedReferences": 0
+2026-09-08T07:09:42.5152907Z   },
+2026-09-08T07:09:42.5153223Z   "schemaRegistryValidation": {
+2026-09-08T07:09:42.5153622Z     "evidenceType": "SchemaRegistryValidationResult",
+2026-09-08T07:09:42.5154035Z     "result": "PASS",
+2026-09-08T07:09:42.5154321Z     "registryEntries": 52,
+2026-09-08T07:09:42.5154673Z     "uniqueSchemaIdentities": 52,
+2026-09-08T07:09:42.5155072Z     "uniqueAuthorityPaths": 52,
+2026-09-08T07:09:42.5155381Z     "verifiedHashes": 88,
+2026-09-08T07:09:42.5155899Z     "inventoryActiveContracts": 36,
+2026-09-08T07:09:42.5156388Z     "inventoryPlannedContracts": 37,
+2026-09-08T07:09:42.5156747Z     "uniqueCanonicalOwners": 73
+2026-09-08T07:09:42.5157036Z   },
+2026-09-08T07:09:42.5157301Z   "exampleSuite": {
+2026-09-08T07:09:42.5157643Z     "evidenceType": "ExampleSuiteResult",
+2026-09-08T07:09:42.5157980Z     "result": "PASS",
+2026-09-08T07:09:42.5158248Z     "totalCases": 38,
+2026-09-08T07:09:42.5158514Z     "validAccepted": 19,
+2026-09-08T07:09:42.5158800Z     "invalidRejected": 19,
+2026-09-08T07:09:42.5159126Z     "semanticAssertions": 22
+2026-09-08T07:09:42.5159437Z   },
+2026-09-08T07:09:42.5159698Z   "schemaTypeConsistency": {
+2026-09-08T07:09:42.5160067Z     "evidenceType": "SchemaTypeConsistencyResult",
+2026-09-08T07:09:42.5160430Z     "result": "PASS",
+2026-09-08T07:09:42.5160719Z     "bindings": 40,
+2026-09-08T07:09:42.5161069Z     "requiredOptionalChecks": 574,
+2026-09-08T07:09:42.5161419Z     "primitiveContainerChecks": 497,
+2026-09-08T07:09:42.5161768Z     "enumDiscriminantChecks": 122,
+2026-09-08T07:09:42.5162099Z     "readonlyExportChecks": 608
+2026-09-08T07:09:42.5162416Z   },
+2026-09-08T07:09:42.5162652Z   "compatibility": {
+2026-09-08T07:09:42.5163025Z     "evidenceType": "ContractCompatibilityResult",
+2026-09-08T07:09:42.5163380Z     "result": "PASS",
+2026-09-08T07:09:42.5163643Z     "probes": 4,
+2026-09-08T07:09:42.5163902Z     "compatible": 1,
+2026-09-08T07:09:42.5164160Z     "failClosed": 3
+2026-09-08T07:09:42.5164405Z   },
+2026-09-08T07:09:42.5164678Z   "runtimeValidation": {
+2026-09-08T07:09:42.5164958Z     "result": "PASS",
+2026-09-08T07:09:42.5165227Z     "validAccepted": true,
+2026-09-08T07:09:42.5165562Z     "unknownField": "SCHEMA_VALIDATION_FAILED",
+2026-09-08T07:09:42.5165939Z     "unknownSchema": "UNKNOWN_SCHEMA",
+2026-09-08T07:09:42.5166316Z     "futureVersion": "UNSUPPORTED_SCHEMA_VERSION",
+2026-09-08T07:09:42.5166832Z     "identityVersionMismatch": "UNSUPPORTED_SCHEMA_VERSION"
+2026-09-08T07:09:42.5167217Z   },
+2026-09-08T07:09:42.5167458Z   "inventory": {
+2026-09-08T07:09:42.5167723Z     "activeContracts": 36,
+2026-09-08T07:09:42.5168032Z     "plannedContracts": 37,
+2026-09-08T07:09:42.5168362Z     "publicOrPersistedBoundaries": 36
+2026-09-08T07:09:42.5168709Z   }
+2026-09-08T07:09:42.5168923Z }
+2026-09-08T07:09:43.1387064Z $ pnpm exec tsc -b packages/contracts/tsconfig.json --pretty false && node scripts/architecture/qualify-architecture.mjs
+2026-09-08T07:09:45.1554162Z {
+2026-09-08T07:09:45.1554779Z   "schemaVersion": "1.0.0",
+2026-09-08T07:09:45.1555441Z   "gateStepId": "P1-V04-ARCHITECTURE",
+2026-09-08T07:09:45.1555991Z   "result": "PASS",
+2026-09-08T07:09:45.1556417Z   "dependencyGraph": {
+2026-09-08T07:09:45.1556921Z     "evidenceType": "DependencyGraphResult",
+2026-09-08T07:09:45.1557481Z     "result": "PASS",
+2026-09-08T07:09:45.1557985Z     "engine": "dependency-cruiser 18.2.0",
+2026-09-08T07:09:45.1561164Z     "governedPackages": 9,
+2026-09-08T07:09:45.1561683Z     "packageEdges": 13,
+2026-09-08T07:09:45.1562125Z     "modules": 60,
+2026-09-08T07:09:45.1562555Z     "moduleDependencies": 139,
+2026-09-08T07:09:45.1563054Z     "workspaceImportEdges": 14,
+2026-09-08T07:09:45.1563530Z     "cycles": 0,
+2026-09-08T07:09:45.1563941Z     "dependencyInversions": 0
+2026-09-08T07:09:45.1564405Z   },
+2026-09-08T07:09:45.1564740Z   "deepImportDenial": {
+2026-09-08T07:09:45.1565232Z     "evidenceType": "DeepImportDenialResult",
+2026-09-08T07:09:45.1565764Z     "result": "PASS",
+2026-09-08T07:09:45.1566243Z     "publicEntriesChecked": 8,
+2026-09-08T07:09:45.1566709Z     "deepImports": 0,
+2026-09-08T07:09:45.1567154Z     "unknownWorkspaceImports": 0
+2026-09-08T07:09:45.1567614Z   },
+2026-09-08T07:09:45.1568017Z   "duplicateSemanticOwnerDenial": {
+2026-09-08T07:09:45.1568688Z     "evidenceType": "DuplicateSemanticOwnerDenialResult",
+2026-09-08T07:09:45.1569324Z     "result": "PASS",
+2026-09-08T07:09:45.1569714Z     "semantics": 73,
+2026-09-08T07:09:45.1570117Z     "activeSemantics": 36,
+2026-09-08T07:09:45.1570591Z     "plannedSemantics": 37,
+2026-09-08T07:09:45.1571155Z     "canonicalOwnerPackages": 12,
+2026-09-08T07:09:45.1571642Z     "duplicates": 0
+2026-09-08T07:09:45.1572017Z   },
+2026-09-08T07:09:45.1572364Z   "cycleDenial": {
+2026-09-08T07:09:45.1572761Z     "result": "PASS",
+2026-09-08T07:09:45.1573158Z     "moduleCycles": 0,
+2026-09-08T07:09:45.1573615Z     "packageCycles": 0
+2026-09-08T07:09:45.1573990Z   },
+2026-09-08T07:09:45.1574391Z   "dependencyInversionDenial": {
+2026-09-08T07:09:45.1574877Z     "result": "PASS",
+2026-09-08T07:09:45.1575298Z     "inversions": 0
+2026-09-08T07:09:45.1575686Z   }
+2026-09-08T07:09:45.1576035Z }
+2026-09-08T07:09:45.7398941Z $ pnpm exec tsc -b packages/contracts/tsconfig.json packages/persistence/tsconfig.json --pretty false && node scripts/qualification/persistence/qualify-node-sqlite.mjs
+2026-09-08T07:10:16.4488261Z {
+2026-09-08T07:10:16.4489082Z   "evidenceType": "PersistencePerformanceQualificationResult",
+2026-09-08T07:10:16.4489920Z   "result": "PASS",
+2026-09-08T07:10:16.4490373Z   "totalEvents": 100000,
+2026-09-08T07:10:16.4490813Z   "batchSize": 1000,
+2026-09-08T07:10:16.4491233Z   "appendDurationMs": 25287,
+2026-09-08T07:10:16.4491662Z   "replay": {
+2026-09-08T07:10:16.4491939Z     "events": 10000,
+2026-09-08T07:10:16.4492259Z     "durationMs": 101
+2026-09-08T07:10:16.4492542Z   },
+2026-09-08T07:10:16.4492791Z   "recovery": {
+2026-09-08T07:10:16.4493059Z     "events": 100000,
+2026-09-08T07:10:16.4493344Z     "durationMs": 291
+2026-09-08T07:10:16.4493621Z   },
+2026-09-08T07:10:16.4493989Z   "eventLoopIsolation": "DEDICATED_WORKER_THREAD",
+2026-09-08T07:10:16.4494395Z   "health": {
+2026-09-08T07:10:16.4494975Z     "databasePath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\aseos-p1-v06-nfr-iRYxRO\\state\\aseos.db",
+2026-09-08T07:10:16.4495818Z     "sqliteVersion": "3.53.3",
+2026-09-08T07:10:16.4496173Z     "journalMode": "wal",
+2026-09-08T07:10:16.4496484Z     "synchronous": 2,
+2026-09-08T07:10:16.4496800Z     "foreignKeys": 1,
+2026-09-08T07:10:16.4497104Z     "trustedSchema": 0,
+2026-09-08T07:10:16.4497586Z     "busyTimeoutMs": 5000,
+2026-09-08T07:10:16.4497911Z     "defensive": true,
+2026-09-08T07:10:16.4498239Z     "extensionLoading": false,
+2026-09-08T07:10:16.4498614Z     "doubleQuotedStringLiterals": false,
+2026-09-08T07:10:16.4499011Z     "integrity": "ok"
+2026-09-08T07:10:16.4499282Z   },
+2026-09-08T07:10:16.4499542Z   "stateManifest": {
+2026-09-08T07:10:16.4499832Z     "schemaVersion": "1.0.0",
+2026-09-08T07:10:16.4500179Z     "databaseSchemaVersion": 1,
+2026-09-08T07:10:16.4500486Z     "migrations": [
+2026-09-08T07:10:16.4500760Z       {
+2026-09-08T07:10:16.4500988Z         "version": 1,
+2026-09-08T07:10:16.4501296Z         "name": "initial-authority-storage",
+2026-09-08T07:10:16.4501811Z         "sha256": "0684ff34039eb2cb1aab856fcfccde1f20ce8b0050018b61f6c93bfefc3ee324"
+2026-09-08T07:10:16.4502765Z       }
+2026-09-08T07:10:16.4503004Z     ],
+2026-09-08T07:10:16.4503290Z     "sqliteVersion": "3.53.3",
+2026-09-08T07:10:16.4503613Z     "compatibility": "COMPATIBLE"
+2026-09-08T07:10:16.4503927Z   },
+2026-09-08T07:10:16.4504161Z   "security": {
+2026-09-08T07:10:16.4504420Z     "attachDenied": true,
+2026-09-08T07:10:16.4504733Z     "schemaMutationDenied": true,
+2026-09-08T07:10:16.4505106Z     "extensionLoadingDenied": true,
+2026-09-08T07:10:16.4505477Z     "parameterBindingPreservedJournal": true
+2026-09-08T07:10:16.4505808Z   },
+2026-09-08T07:10:16.4506040Z   "backup": {
+2026-09-08T07:10:16.4506462Z     "sha256": "f76f4ac765da4ff2a781e2cbf5bf841d08ba5241fce950a90239e391ae3c8e30",
+2026-09-08T07:10:16.4506927Z     "sizeBytes": 152207360,
+2026-09-08T07:10:16.4507241Z     "pages": 37160,
+2026-09-08T07:10:16.4507495Z     "integrity": "ok"
+2026-09-08T07:10:16.4507750Z   }
+2026-09-08T07:10:16.4507970Z }
+2026-09-08T07:10:17.2924460Z $ pnpm exec tsc -b packages/contracts/tsconfig.json packages/platform/tsconfig.json apps/runtime/tsconfig.json apps/cli/tsconfig.json --pretty false && node scripts/qualification/control-api/qualify-control-api.mjs
+2026-09-08T07:10:20.1727645Z {
+2026-09-08T07:10:20.1728575Z   "qualification": "P1-V07-CONTROL-API",
+2026-09-08T07:10:20.1729405Z   "result": "PASS",
+2026-09-08T07:10:20.1729960Z   "platform": "win32",
+2026-09-08T07:10:20.1730538Z   "results": [
+2026-09-08T07:10:20.1730992Z     {
+2026-09-08T07:10:20.1731591Z       "evidenceType": "OpenApiValidationResult",
+2026-09-08T07:10:20.1732332Z       "result": "PASS",
+2026-09-08T07:10:20.1732867Z       "version": "3.1.1",
+2026-09-08T07:10:20.1733418Z       "requiredPaths": [
+2026-09-08T07:10:20.1733997Z         "/version",
+2026-09-08T07:10:20.1736207Z         "/health",
+2026-09-08T07:10:20.1736720Z         "/endpoint",
+2026-09-08T07:10:20.1737226Z         "/status",
+2026-09-08T07:10:20.1737711Z         "/doctor",
+2026-09-08T07:10:20.1738199Z         "/events",
+2026-09-08T07:10:20.1738726Z         "/runtime/stop"
+2026-09-08T07:10:20.1739283Z       ]
+2026-09-08T07:10:20.1739704Z     },
+2026-09-08T07:10:20.1740147Z     {
+2026-09-08T07:10:20.1740735Z       "evidenceType": "LoopbackExposureResult",
+2026-09-08T07:10:20.1741455Z       "result": "PASS",
+2026-09-08T07:10:20.1742289Z       "host": "127.0.0.1",
+2026-09-08T07:10:20.1743004Z       "portClass": "OS_ASSIGNED_EPHEMERAL"
+2026-09-08T07:10:20.1743645Z     },
+2026-09-08T07:10:20.1744054Z     {
+2026-09-08T07:10:20.1744631Z       "evidenceType": "TokenAclRedactionResult",
+2026-09-08T07:10:20.1745350Z       "result": "PASS",
+2026-09-08T07:10:20.1745899Z       "tokenBits": 256,
+2026-09-08T07:10:20.1746560Z       "acl": "CURRENT_USER_ONLY_NO_INHERITANCE",
+2026-09-08T07:10:20.1747327Z       "publicErrorRedacted": true
+2026-09-08T07:10:20.1747919Z     },
+2026-09-08T07:10:20.1748342Z     {
+2026-09-08T07:10:20.1748976Z       "evidenceType": "CliPublicApiAcceptanceResult",
+2026-09-08T07:10:20.1749725Z       "result": "PASS",
+2026-09-08T07:10:20.1750296Z       "commands": [
+2026-09-08T07:10:20.1750780Z         "start",
+2026-09-08T07:10:20.1751239Z         "version",
+2026-09-08T07:10:20.1751717Z         "doctor",
+2026-09-08T07:10:20.1752174Z         "status",
+2026-09-08T07:10:20.1752633Z         "stop"
+2026-09-08T07:10:20.1753077Z       ],
+2026-09-08T07:10:20.1753827Z       "clientBoundary": "@aseos/platform public Control API client"
+2026-09-08T07:10:20.1754648Z     }
+2026-09-08T07:10:20.1755065Z   ]
+2026-09-08T07:10:20.1755498Z }
+2026-09-08T07:10:20.8445304Z $ pnpm run isolation:build && node scripts/qualification/isolation/qualify-process-restricted.mjs
+2026-09-08T07:10:21.4373279Z $ pnpm --filter @aseos/windows-process-restricted build && pnpm --filter @aseos/worker build
+2026-09-08T07:10:22.0502930Z $ tsc -b tsconfig.json --pretty false && node scripts/copy-assets.mjs
+2026-09-08T07:10:22.8397544Z $ tsc -b tsconfig.json --pretty false
+2026-09-08T07:11:34.8219154Z {
+2026-09-08T07:11:34.8220300Z   "schemaVersion": "1.0.0",
+2026-09-08T07:11:34.8221266Z   "gateStepId": "P1-V08-ISOLATION",
+2026-09-08T07:11:34.8221959Z   "result": "PASS",
+2026-09-08T07:11:34.8222475Z   "platform": "win32",
+2026-09-08T07:11:34.8222958Z   "capability": {
+2026-09-08T07:11:34.8223485Z     "schemaVersion": "1.0.0",
+2026-09-08T07:11:34.8224152Z     "reportId": "01a07fda-e405-74b4-801a-4183bfff0cbb",
+2026-09-08T07:11:34.8224909Z     "capabilityId": "windows-process-restricted",
+2026-09-08T07:11:34.8226016Z     "capabilityVersion": "1.0.0",
+2026-09-08T07:11:34.8226710Z     "providerId": "aseos.windows-job-object",
+2026-09-08T07:11:34.8227478Z     "providerVersion": "1.0.0",
+2026-09-08T07:11:34.8228090Z     "platform": "win32",
+2026-09-08T07:11:34.8228680Z     "isolationLevel": "PROCESS_RESTRICTED",
+2026-09-08T07:11:34.8229333Z     "probe": {
+2026-09-08T07:11:34.8229751Z       "probeId": "01a07fda-e405-74e7-9fc5-9a3fe56e69e1",
+2026-09-08T07:11:34.8230284Z       "performedAt": "2026-09-08T07:10:46.788Z",
+2026-09-08T07:11:34.8267280Z       "windowsBuild": "10.0.26100",
+2026-09-08T07:11:34.8267832Z       "jobObjectAvailable": true,
+2026-09-08T07:11:34.8268411Z       "nestedProcessAssignmentSupported": true
+2026-09-08T07:11:34.8268938Z     },
+2026-09-08T07:11:34.8269201Z     "budgetSupport": {
+2026-09-08T07:11:34.8269523Z       "cpuTime": true,
+2026-09-08T07:11:34.8269795Z       "memory": true,
+2026-09-08T07:11:34.8270068Z       "processCount": true,
+2026-09-08T07:11:34.8270364Z       "wallClock": true,
+2026-09-08T07:11:34.8270642Z       "stdout": true,
+2026-09-08T07:11:34.8270877Z       "stderr": true
+2026-09-08T07:11:34.8271127Z     },
+2026-09-08T07:11:34.8271383Z     "guarantees": {
+2026-09-08T07:11:34.8271696Z       "processTreeLifecycleContained": true,
+2026-09-08T07:11:34.8272071Z       "resourceBudgetsEnforced": true,
+2026-09-08T07:11:34.8272418Z       "networkAccessDenied": false,
+2026-09-08T07:11:34.8272736Z       "filesystemAccessDenied": false,
+2026-09-08T07:11:34.8273088Z       "registryAccessDenied": false,
+2026-09-08T07:11:34.8273469Z       "securitySandbox": false
+2026-09-08T07:11:34.8273759Z     },
+2026-09-08T07:11:34.8274001Z     "result": "AVAILABLE",
+2026-09-08T07:11:34.8274279Z     "reasonCodes": [],
+2026-09-08T07:11:34.8274616Z     "reportedAt": "2026-09-08T07:10:46.788Z"
+2026-09-08T07:11:34.8274966Z   },
+2026-09-08T07:11:34.8275205Z   "jobObjectLifecycle": {
+2026-09-08T07:11:34.8275546Z     "evidenceType": "JobObjectLifecycleResult",
+2026-09-08T07:11:34.8275892Z     "result": "PASS",
+2026-09-08T07:11:34.8276198Z     "jobAssignedAtProcessCreation": true,
+2026-09-08T07:11:34.8276615Z     "membershipVerifiedBeforeResume": true,
+2026-09-08T07:11:34.8276972Z     "jobObjectAssigned": true,
+2026-09-08T07:11:34.8277268Z     "killOnJobClose": true,
+2026-09-08T07:11:34.8277600Z     "activeProcessCountAfterCompletion": 0,
+2026-09-08T07:11:34.8277966Z     "environmentAllowlist": "PASS",
+2026-09-08T07:11:34.8278315Z     "stagedUnicodeAndSpacePath": "PASS"
+2026-09-08T07:11:34.8278656Z   },
+2026-09-08T07:11:34.8278903Z   "processTreeTermination": {
+2026-09-08T07:11:34.8279272Z     "evidenceType": "ProcessTreeTerminationResult",
+2026-09-08T07:11:34.8279634Z     "result": "PASS",
+2026-09-08T07:11:34.8279925Z     "observedProcessCount": 3,
+2026-09-08T07:11:34.8280271Z     "rootChildGrandchildTerminated": true,
+2026-09-08T07:11:34.8280669Z     "terminationReason": "WALL_CLOCK_LIMIT",
+2026-09-08T07:11:34.8281041Z     "activeProcessCountAfterCompletion": 0
+2026-09-08T07:11:34.8281348Z   },
+2026-09-08T07:11:34.8281579Z   "noDowngrade": {
+2026-09-08T07:11:34.8281899Z     "evidenceType": "NoDowngradePropertyResult",
+2026-09-08T07:11:34.8282244Z     "result": "PASS",
+2026-09-08T07:11:34.8282564Z     "strongerMinimumsBlocked": [
+2026-09-08T07:11:34.8283513Z       "OS_SANDBOXED",
+2026-09-08T07:11:34.8285240Z       "CONTAINER_ISOLATED",
+2026-09-08T07:11:34.8286183Z       "REMOTE_ISOLATED"
+2026-09-08T07:11:34.8287570Z     ],
+2026-09-08T07:11:34.8288188Z     "unavailableProcessRestrictedBlocked": true,
+2026-09-08T07:11:34.8289327Z     "hostUnrestrictedSelectable": false
+2026-09-08T07:11:34.8289823Z   },
+2026-09-08T07:11:34.8290155Z   "claimBoundary": {
+2026-09-08T07:11:34.8290623Z     "filesystemDenied": false,
+2026-09-08T07:11:34.8291077Z     "registryDenied": false,
+2026-09-08T07:11:34.8291553Z     "networkDenied": false,
+2026-09-08T07:11:34.8291989Z     "securitySandbox": false
+2026-09-08T07:11:34.8292390Z   }
+2026-09-08T07:11:34.8292716Z }
+2026-09-08T07:11:35.3830747Z $ tsc -b tsconfig.build.json --pretty false && node scripts/toolchain/copy-runtime-assets.mjs
+2026-09-08T07:11:36.1629890Z $ node scripts/toolchain/verify-config.mjs
+2026-09-08T07:11:36.2816999Z {
+2026-09-08T07:11:36.2817548Z   "schemaVersion": "1.0.0",
+2026-09-08T07:11:36.2818208Z   "check": "TOOLCHAIN_CONFIGURATION_CONSISTENCY",
+2026-09-08T07:11:36.2818863Z   "result": "PASS",
+2026-09-08T07:11:36.2819885Z   "authorityBuild": "tsc -b tsconfig.build.json --pretty false && node scripts/toolchain/copy-runtime-assets.mjs",
+2026-09-08T07:11:36.2821017Z   "projectReferences": 9,
+2026-09-08T07:11:36.2821538Z   "workspacePackages": 8,
+2026-09-08T07:11:36.2822097Z   "packageProjectReferences": 8,
+2026-09-08T07:11:36.2822643Z   "nonPackageProjectReferences": 1,
+2026-09-08T07:11:36.2823356Z   "toolchainQualificationProject": "tests/qualification/toolchain",
+2026-09-08T07:11:36.2824012Z   "esmOnly": true,
+2026-09-08T07:11:36.2824547Z   "qualityAggregatorCheck": "p1-o01-toolchain-qualify",
+2026-09-08T07:11:36.2825327Z   "dependencyBuildPolicy": "DENY_UNLESS_ALLOW_BUILDS",
+2026-09-08T07:11:36.2825962Z   "dependencyBuildAllowlist": [
+2026-09-08T07:11:36.2826439Z     "protobufjs@7.6.5"
+2026-09-08T07:11:36.2826820Z   ]
+2026-09-08T07:11:36.2827440Z }
+2026-09-08T07:11:36.8594205Z $ node scripts/toolchain/verify-versions.mjs
+2026-09-08T07:11:38.1394289Z {
+2026-09-08T07:11:38.1394607Z   "schemaVersion": "1.0.0",
+2026-09-08T07:11:38.1395005Z   "check": "BUILD_VERSION_CONSISTENCY",
+2026-09-08T07:11:38.1395278Z   "result": "PASS",
+2026-09-08T07:11:38.1395524Z   "actual": {
+2026-09-08T07:11:38.1395708Z     "node": "24.19.0",
+2026-09-08T07:11:38.1395912Z     "pnpm": "11.24.0",
+2026-09-08T07:11:38.1396122Z     "typescript": "6.0.3"
+2026-09-08T07:11:38.1396329Z   },
+2026-09-08T07:11:38.1396730Z   "lockfileSha256": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
+2026-09-08T07:11:38.1397279Z   "packageManager": "pnpm@11.24.0"
+2026-09-08T07:11:38.1397565Z }
+2026-09-08T07:11:38.7295167Z $ node scripts/toolchain/verify-frozen-install.mjs
+2026-09-08T07:11:42.3973752Z {
+2026-09-08T07:11:42.3974157Z   "schemaVersion": "1.0.0",
+2026-09-08T07:11:42.3974789Z   "check": "CLEAN_FROZEN_LOCKFILE_OFFLINE_INSTALL",
+2026-09-08T07:11:42.3975431Z   "result": "PASS",
+2026-09-08T07:11:42.3975931Z   "temporaryCheckout": true,
+2026-09-08T07:11:42.3976406Z   "lockfileUnchanged": true,
+2026-09-08T07:11:42.3977373Z   "lockfileSha256": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
+2026-09-08T07:11:42.3978312Z   "output": "Done in 3.5s using pnpm v11.24.0"
+2026-09-08T07:11:42.3978880Z }
+2026-09-08T07:11:44.7202807Z ##[group]Run pnpm run clean
+2026-09-08T07:11:44.7203291Z [36;1mpnpm run clean[0m
+2026-09-08T07:11:44.7203569Z [36;1mpnpm run build[0m
+2026-09-08T07:11:44.7316596Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T07:11:44.7317011Z ##[endgroup]
+2026-09-08T07:11:45.6820885Z $ tsc -b tsconfig.build.json --clean && node scripts/toolchain/copy-runtime-assets.mjs --clean
+2026-09-08T07:11:46.4955201Z $ tsc -b tsconfig.build.json --pretty false && node scripts/toolchain/copy-runtime-assets.mjs
+2026-09-08T07:11:55.6462912Z ##[group]Run pnpm run evidence:ci
+2026-09-08T07:11:55.6463473Z [36;1mpnpm run evidence:ci[0m
+2026-09-08T07:11:55.6566541Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-09-08T07:11:55.6566906Z ##[endgroup]
+2026-09-08T07:11:56.7049203Z $ node scripts/toolchain/emit-ci-evidence.mjs
+2026-09-08T07:11:58.0826651Z {
+2026-09-08T07:11:58.0827455Z   "schemaVersion": "1.0.0",
+2026-09-08T07:11:58.0829330Z   "evidenceType": "CrossPlatformBuildEvidence",
+2026-09-08T07:11:58.0829974Z   "result": "PASS",
+2026-09-08T07:11:58.0830483Z   "commit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+2026-09-08T07:11:58.0831218Z   "controllerCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+2026-09-08T07:11:58.0831795Z   "environment": {
+2026-09-08T07:11:58.0832106Z     "os": "win32",
+2026-09-08T07:11:58.0832385Z     "arch": "x64",
+2026-09-08T07:11:58.0832677Z     "node": "24.19.0",
+2026-09-08T07:11:58.0832981Z     "pnpm": "11.24.0",
+2026-09-08T07:11:58.0833361Z     "typescript": "6.0.3",
+2026-09-08T07:11:58.0833767Z     "runnerImage": "win25-vs2026",
+2026-09-08T07:11:58.0834229Z     "runnerImageVersion": "20260824.214.3"
+2026-09-08T07:11:58.0834646Z   },
+2026-09-08T07:11:58.0835257Z   "lockfileSha256": "29ed28951e114220bc2d7fc8c72220138ce8956639c7190fcfa0aeb6e99264d8",
+2026-09-08T07:11:58.0836562Z   "authorityBuild": "pnpm exec tsc -b tsconfig.build.json --pretty false && node scripts/toolchain/copy-runtime-assets.mjs"
+2026-09-08T07:11:58.0838622Z }
+2026-09-08T07:11:58.2044185Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T07:11:58.2046516Z Post job cleanup.
+2026-09-08T07:11:58.3743337Z (node:5204) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-09-08T07:11:58.3744173Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-09-08T07:11:58.4112750Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T07:11:58.4114140Z Post job cleanup.
+2026-09-08T07:11:58.6335756Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-09-08T07:11:58.6647025Z git version 2.55.0.windows.5
+2026-09-08T07:11:58.6742948Z Temporarily overriding HOME='D:\a\_temp\52eacf07-887e-4111-8c69-899bd70dca24' before making global git config changes
+2026-09-08T07:11:58.6745830Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-08T07:11:58.6759782Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\-ai-software-engineering-os\-ai-software-engineering-os
+2026-09-08T07:11:58.7124883Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-09-08T07:11:58.7542641Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-09-08T07:11:59.3779935Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-08T07:11:59.4070748Z http.https://github.com/.extraheader
+2026-09-08T07:11:59.4122222Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-09-08T07:11:59.4465564Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-09-08T07:12:00.1011069Z Cleaning up orphan processes
+2026-09-08T07:12:00.1472196Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

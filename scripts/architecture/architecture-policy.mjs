@@ -3,6 +3,8 @@ import { relative, resolve, sep } from "node:path";
 
 import { cruise } from "dependency-cruiser";
 
+import { parseWorkspacePackagePaths } from "../toolchain/topology-policy.mjs";
+
 const workspaceSpecifier = /^@aseos\/[^/]+$/u;
 const workspaceDeepSpecifier = /^(@aseos\/[^/]+)\/.+/u;
 
@@ -136,6 +138,17 @@ export function evaluatePackageGraph(packageRecords, policy) {
   const policyByName = new Map(policy.packages.map((item) => [item.name, item]));
   const violations = [];
   const edges = [];
+  for (const record of packageRecords) {
+    if (!policy.packages.some((item) => item.root === record.root)) {
+      violations.push({ code: "UNGOVERNED_WORKSPACE_PACKAGE", subject: record.root });
+    }
+    if (
+      record.root !== "." &&
+      !policy.sourceRoots.some((root) => record.root === root || record.root.startsWith(`${root}/`))
+    ) {
+      violations.push({ code: "UNSCANNED_WORKSPACE_PACKAGE", subject: record.root });
+    }
+  }
   let publicEntriesChecked = 0;
   if (recordsByName.size !== packageRecords.length) {
     violations.push({ code: "DUPLICATE_PACKAGE_NAME", subject: "package manifests" });
@@ -175,7 +188,15 @@ export function evaluatePackageGraph(packageRecords, policy) {
       });
     }
     for (const dependency of dependencySections(record.manifest)) {
-      if (!policyByName.has(dependency.name)) continue;
+      if (!policyByName.has(dependency.name)) {
+        if (dependency.name.startsWith("@aseos/") || dependency.version.startsWith("workspace:")) {
+          violations.push({
+            code: "UNKNOWN_WORKSPACE_DEPENDENCY",
+            subject: `${packagePolicy.name} -> ${dependency.name}`,
+          });
+        }
+        continue;
+      }
       edges.push({ from: packagePolicy.name, to: dependency.name, source: "manifest" });
       if (!packagePolicy.allowedWorkspaceDependencies.includes(dependency.name)) {
         violations.push({
@@ -214,14 +235,20 @@ export function evaluatePackageGraph(packageRecords, policy) {
 
 export async function loadGovernedPackageRecords(repositoryRoot, policy) {
   const records = [];
-  for (const item of policy.packages) {
-    const path = resolve(repositoryRoot, item.root, "package.json");
+  const workspace = parseWorkspacePackagePaths(
+    await readFile(resolve(repositoryRoot, "pnpm-workspace.yaml"), "utf8"),
+  );
+  for (const root of sortedUnique([...workspace, ...policy.packages.map((item) => item.root)])) {
+    const path = resolve(repositoryRoot, root, "package.json");
     try {
       await access(path);
     } catch {
+      if (workspace.includes(root)) {
+        throw new ArchitecturePolicyError("MISSING_WORKSPACE_PACKAGE", root);
+      }
       continue;
     }
-    records.push({ root: item.root, manifest: await readJson(path) });
+    records.push({ root, manifest: await readJson(path) });
   }
   return records;
 }

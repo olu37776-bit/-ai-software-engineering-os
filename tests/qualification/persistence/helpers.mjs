@@ -1,9 +1,9 @@
 import { canonicalJsonSha256 } from "@aseos/contracts";
 
 const schemaRef = Object.freeze({
-  schemaId: "urn:aseos:schema:fixture-change-node-contract:1.0.0",
+  schemaId: "urn:aseos:schema:actor-ref:1.0.0",
   schemaVersion: "1.0.0",
-  schemaHash: "2d471f657b7369e670d7801ea58b727b70fe1ca1eeac70545f1eb9792a5298f6",
+  schemaHash: "67c513a9e37c4f1006d1e7121fbf271498c08f01299b4d8be70c36f0bf6c35c5",
 });
 
 export function qualificationUuid(index, namespace = 0) {
@@ -24,7 +24,10 @@ export function makeJournalBatch({
   outboxCount = 1,
 }) {
   const events = Array.from({ length: eventCount }, (_, index) => {
-    const payload = { sequence: expectedVersion + index + 1 };
+    const payload = {
+      actorType: "SYSTEM",
+      actorId: `qualification-event-${expectedVersion + index + 1}`,
+    };
     return {
       schemaVersion: "1.0.0",
       eventId: qualificationUuid(sequence * 2_000 + index, 1),
@@ -46,7 +49,7 @@ export function makeJournalBatch({
     };
   });
   const outbox = Array.from({ length: outboxCount }, (_, index) => {
-    const payload = { sequence, index };
+    const payload = { actorType: "SYSTEM", actorId: `qualification-outbox-${sequence}-${index}` };
     return {
       schemaVersion: "1.0.0",
       taskId: qualificationUuid(sequence * 2_000 + index, 4),

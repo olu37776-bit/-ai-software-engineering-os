@@ -34,6 +34,7 @@ public static class AseosWindowsProcessRestrictedBridge
     private const uint OPEN_EXISTING = 3;
     private const uint WAIT_OBJECT_0 = 0;
     private const uint WAIT_TIMEOUT = 258;
+    private const uint SYNCHRONIZE = 0x00100000;
     private const uint JOB_OBJECT_LIMIT_PROCESS_TIME = 0x00000002;
     private const uint JOB_OBJECT_LIMIT_ACTIVE_PROCESS = 0x00000008;
     private const uint JOB_OBJECT_LIMIT_PROCESS_MEMORY = 0x00000100;
@@ -43,6 +44,7 @@ public static class AseosWindowsProcessRestrictedBridge
     private const int JobObjectBasicAccountingInformation = 1;
     private const int JobObjectAssociateCompletionPortInformation = 7;
     private static readonly IntPtr PROC_THREAD_ATTRIBUTE_HANDLE_LIST = new IntPtr(0x00020002);
+    private static readonly IntPtr PROC_THREAD_ATTRIBUTE_JOB_LIST = new IntPtr(0x0002000D);
 
     public sealed class Limits
     {
@@ -56,6 +58,7 @@ public static class AseosWindowsProcessRestrictedBridge
 
     public sealed class Request
     {
+        public int hostProcessId { get; set; }
         public string executable { get; set; }
         public string executableSha256 { get; set; }
         public string[] arguments { get; set; }
@@ -266,7 +269,10 @@ public static class AseosWindowsProcessRestrictedBridge
         uint dwMilliseconds);
 
     [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool AssignProcessToJobObject(IntPtr hJob, IntPtr hProcess);
+    private static extern bool IsProcessInJob(IntPtr hProcess, IntPtr hJob, out bool result);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr OpenProcess(uint desiredAccess, bool inheritHandle, int processId);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool TerminateJobObject(IntPtr hJob, uint uExitCode);
@@ -446,6 +452,7 @@ public static class AseosWindowsProcessRestrictedBridge
     {
         var serializer = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue };
         var watch = Stopwatch.StartNew();
+        IntPtr hostProcess = IntPtr.Zero;
         IntPtr job = IntPtr.Zero;
         IntPtr completionPort = IntPtr.Zero;
         IntPtr process = IntPtr.Zero;
@@ -458,6 +465,7 @@ public static class AseosWindowsProcessRestrictedBridge
         IntPtr limitsPointer = IntPtr.Zero;
         IntPtr attributeList = IntPtr.Zero;
         IntPtr inheritedHandlesPointer = IntPtr.Zero;
+        IntPtr jobListPointer = IntPtr.Zero;
         GCHandle environmentPin = default(GCHandle);
         Task<byte[]> stdoutTask = null;
         Task<byte[]> stderrTask = null;
@@ -466,7 +474,14 @@ public static class AseosWindowsProcessRestrictedBridge
         try
         {
             var request = serializer.Deserialize<Request>(requestJson);
-            if (request == null || request.limits == null) throw new InvalidDataException("Malformed request");
+            if (request == null || request.limits == null || request.hostProcessId <= 0)
+                throw new InvalidDataException("Malformed request");
+            // A native process handle remains bound to this host after PID reuse.
+            // The bridge must terminate its Job if the invoking Node host dies.
+            hostProcess = OpenProcess(SYNCHRONIZE, false, request.hostProcessId);
+            if (hostProcess == IntPtr.Zero) throw Win32("OpenProcess(host)");
+            if (WaitForSingleObject(hostProcess, 0) != WAIT_TIMEOUT)
+                throw new InvalidDataException("Host process is not running");
             executableLock = new FileStream(
                 request.executable, FileMode.Open, FileAccess.Read, FileShare.Read,
                 65536, FileOptions.SequentialScan);
@@ -544,9 +559,9 @@ public static class AseosWindowsProcessRestrictedBridge
                 }
             };
             IntPtr attributeListSize = IntPtr.Zero;
-            InitializeProcThreadAttributeList(IntPtr.Zero, 1, 0, ref attributeListSize);
+            InitializeProcThreadAttributeList(IntPtr.Zero, 2, 0, ref attributeListSize);
             attributeList = Marshal.AllocHGlobal(attributeListSize);
-            if (!InitializeProcThreadAttributeList(attributeList, 1, 0, ref attributeListSize))
+            if (!InitializeProcThreadAttributeList(attributeList, 2, 0, ref attributeListSize))
                 throw Win32("InitializeProcThreadAttributeList");
             var inheritedHandles = new[] { stdinHandle, stdoutWrite, stderrWrite };
             inheritedHandlesPointer = Marshal.AllocHGlobal(IntPtr.Size * inheritedHandles.Length);
@@ -556,6 +571,14 @@ public static class AseosWindowsProcessRestrictedBridge
                 inheritedHandlesPointer, new IntPtr(IntPtr.Size * inheritedHandles.Length),
                 IntPtr.Zero, IntPtr.Zero))
                 throw Win32("UpdateProcThreadAttribute(HANDLE_LIST)");
+            // Creation-time assignment closes the suspended-process orphan window.
+            // The Job handle is not in HANDLE_LIST and cannot outlive this bridge.
+            jobListPointer = Marshal.AllocHGlobal(IntPtr.Size);
+            Marshal.WriteIntPtr(jobListPointer, job);
+            if (!UpdateProcThreadAttribute(
+                attributeList, 0, PROC_THREAD_ATTRIBUTE_JOB_LIST,
+                jobListPointer, new IntPtr(IntPtr.Size), IntPtr.Zero, IntPtr.Zero))
+                throw Win32("UpdateProcThreadAttribute(JOB_LIST)");
             startup.lpAttributeList = attributeList;
             var commandLine = new StringBuilder(
                 String.Join(" ", new[] { request.executable }.Concat(request.arguments ?? new string[0]).Select(Quote)));
@@ -581,11 +604,14 @@ public static class AseosWindowsProcessRestrictedBridge
             CloseHandle(stderrWrite); stderrWrite = IntPtr.Zero;
             CloseHandle(stdinHandle); stdinHandle = IntPtr.Zero;
 
-            if (!AssignProcessToJobObject(job, process))
+            bool inJob;
+            if (!IsProcessInJob(process, job, out inJob) || !inJob)
             {
                 TerminateProcess(process, 0xE0000001);
-                throw Win32("AssignProcessToJobObject");
+                throw new InvalidDataException("Creation-time Job assignment was not established");
             }
+            if (WaitForSingleObject(hostProcess, 0) != WAIT_TIMEOUT)
+                throw new InvalidDataException("Host exited before tool resume");
             var stdoutReaderHandle = stdoutRead;
             stdoutRead = IntPtr.Zero;
             stdoutTask = Task.Run(() => ReadBounded(stdoutReaderHandle, request.limits.stdoutBytes, job, 2));
@@ -610,7 +636,10 @@ public static class AseosWindowsProcessRestrictedBridge
                 ConsumeResourceNotifications(completionPort);
                 ReadUsage(job, out cpuTimeMs, out memoryPeakBytes, out totalProcesses, out activeProcessCount);
                 processPeakCount = Math.Max(processPeakCount, activeProcessCount);
-                if (File.Exists(request.cancellationPath))
+                var hostWait = WaitForSingleObject(hostProcess, 0);
+                if (hostWait != WAIT_TIMEOUT && hostWait != WAIT_OBJECT_0)
+                    throw Win32("WaitForSingleObject(host)");
+                if (hostWait == WAIT_OBJECT_0 || File.Exists(request.cancellationPath))
                     Interlocked.CompareExchange(ref terminationReason, 4, 0);
                 else if (watch.ElapsedMilliseconds >= request.limits.wallClockMs)
                     Interlocked.CompareExchange(ref terminationReason, 1, 0);
@@ -694,6 +723,7 @@ public static class AseosWindowsProcessRestrictedBridge
                 Marshal.FreeHGlobal(attributeList);
             }
             if (inheritedHandlesPointer != IntPtr.Zero) Marshal.FreeHGlobal(inheritedHandlesPointer);
+            if (jobListPointer != IntPtr.Zero) Marshal.FreeHGlobal(jobListPointer);
             if (limitsPointer != IntPtr.Zero) Marshal.FreeHGlobal(limitsPointer);
             if (stdoutWrite != IntPtr.Zero) CloseHandle(stdoutWrite);
             if (stderrWrite != IntPtr.Zero) CloseHandle(stderrWrite);
@@ -704,6 +734,7 @@ public static class AseosWindowsProcessRestrictedBridge
             if (process != IntPtr.Zero) CloseHandle(process);
             if (job != IntPtr.Zero) CloseHandle(job);
             if (completionPort != IntPtr.Zero) CloseHandle(completionPort);
+            if (hostProcess != IntPtr.Zero) CloseHandle(hostProcess);
         }
     }
 }
@@ -715,6 +746,7 @@ if ($Probe) {
   try {
     $probeExecutable = Join-Path $env:SystemRoot "System32\whoami.exe"
     $probeRequest = @{
+      hostProcessId = $PID
       executable = $probeExecutable
       executableSha256 = (Get-FileHash -LiteralPath $probeExecutable -Algorithm SHA256).Hash.ToLowerInvariant()
       arguments = @()

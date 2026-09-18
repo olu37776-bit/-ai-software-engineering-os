@@ -1,0 +1,30 @@
+{
+  "note": "Historical independent findings. Not an acceptance of a later HEAD. Exact final review must be read from PR 101.",
+  "comments": [
+    {
+      "body": "<!-- codex-pull-request-review-summary -->\n\n## Codex Review Summary\n\nThis comment shows the latest Codex review activity on this pull request.\n\n| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n| 📝 **Code Review** | ✅ **Completed** <relative-time datetime=\"2026-09-08T07:21:18.144843Z\">2026-09-08T07:21:18.144843Z</relative-time> | `f34dc15` | Manual request |\n\n\n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\" or \"@codex security review\".\n\nCodex reacts with 👀 while any review is running, comments if it has suggestions, and reacts with 👍 once all reviews finish with no findings.\n\n</details>",
+      "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101#issuecomment-5580766500",
+      "user": "chatgpt-codex-connector[bot]"
+    },
+    {
+      "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `9d7cec1c95`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+      "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101#pullrequestreview-5138499317",
+      "user": "chatgpt-codex-connector[bot]"
+    },
+    {
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Hash mutations before embedding the checkout URL**\n\nWhen this qualification runs for the same exact HEAD on Ubuntu and Windows—or merely from two different checkout directories—`mutated` contains the absolute `contractsUrl` inserted at lines 155–159, so this SHA changes even though the compiled owner and logical mutation are identical. That makes the per-case mutation hashes host-dependent and unsuitable for comparing independent cross-platform receipts; compute them from canonical mutated owner bytes before the environment-specific import rewrite, or normalize that import first.\n\nUseful? React with 👍 / 👎.",
+      "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101#discussion_r3955261881",
+      "user": "chatgpt-codex-connector[bot]"
+    },
+    {
+      "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Include runtime dependencies in the relocated checkout**\n\nWhen this regression runs after a normal install/build, copying only `packages/contracts/dist` leaves the relocated package without its `ajv` runtime dependency. The `tsc -b` output is not bundled: `packages/contracts/dist/index.js` loads modules that import `ajv/dist/2020.js`, and Node resolves that bare import from the temporary checkout rather than the original repository's `node_modules`. Consequently `qualifyPolicyMutations(copy)` fails with `ERR_MODULE_NOT_FOUND` before any hashes are compared, causing the required quality suite to fail; recreate or link the copied checkout's runtime dependencies as part of this fixture.\n\nUseful? React with 👍 / 👎.",
+      "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101#discussion_r3955334378",
+      "user": "chatgpt-codex-connector[bot]"
+    },
+    {
+      "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `f34dc154ec`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+      "url": "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/101#pullrequestreview-5138588448",
+      "user": "chatgpt-codex-connector[bot]"
+    }
+  ]
+}

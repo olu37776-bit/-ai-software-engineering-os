@@ -842,6 +842,37 @@ def verify_operation_aware_transition(
         raise AssertionError(f"Accepted ADRs changed: {adr_changes}")
 
     report = load_scope_report(scope_report_path)
+    if (
+        report.get("check") == "PHASE2_OPERATION_AWARE_WRITE_SCOPE"
+        or branch.startswith("phase-2/")
+        or any(path.startswith("operations/phase-2/") for path in changed_paths)
+    ):
+        # A caller-provided PASS is not authority. Recompute scope, accepted P1
+        # ancestry and immutable hashes from this exact checkout, independently
+        # of the submitted report. The historical P1 checks above remain active.
+        verification = subprocess.run(
+            ["node", "scripts/toolchain/verify-scope.mjs", "--base", base,
+             "--head", effective_head, "--branch", branch, "--event", "local"],
+            cwd=ROOT, capture_output=True, text=True, encoding="utf-8", check=False,
+        )
+        if verification.returncode != 0:
+            raise AssertionError("Phase 2 scope recomputation failed: " + verification.stderr)
+        recomputed = json.loads(verification.stdout)
+        if (
+            report != recomputed
+            or report.get("check") != "PHASE2_OPERATION_AWARE_WRITE_SCOPE"
+            or report.get("result") != "PASS"
+            or report.get("changedPaths") != changed_paths
+        ):
+            raise AssertionError("Forged or mismatched Phase 2 scope report")
+        return {
+            "changedPaths": len(changed_paths), "productionPaths": len(production),
+            "scopeReportRequired": True, "scopeReportResult": "PASS",
+            "scopeMode": report["mode"], "operationId": report["operationId"],
+            "baseCommit": base, "headCommit": effective_head, "branch": branch,
+            "acceptedP1MainCommit": report["acceptedP1MainCommit"],
+            "scopeIndependentlyRecomputed": True,
+        }
     mode = report.get("mode")
     operation_id = report.get("operationId")
     if (

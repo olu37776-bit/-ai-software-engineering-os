@@ -1,0 +1,150 @@
+{
+  "$schema": "urn:aseos:release-schema:packaging-evidence:1.0.0",
+  "schemaVersion": "1.0.0",
+  "operationId": "P1-O08",
+  "verificationStepId": "P1-V09-PACKAGING",
+  "recordedAt": "2026-09-08T06:54:15.258Z",
+  "subject": {
+    "frameworkVersion": "0.1.0",
+    "gitCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+    "platform": "win32-x64"
+  },
+  "results": [
+    {
+      "evidenceType": "SelfContainedArtifactResult",
+      "result": "PASS",
+      "bundledRuntimeExecutable": "node/node.exe",
+      "pathWasEmpty": true,
+      "developmentToolchainEnvironmentRemoved": true,
+      "elevationRequested": false,
+      "privilegedLocationUsed": false,
+      "offlineStartup": true,
+      "networkGuardMechanism": "NODE_OPTIONS_ESM_BUILTIN_NETWORK_GUARD_V1",
+      "negativeNonLoopbackProbeBlocked": true,
+      "observedNonLoopbackOutboundAttempts": 0,
+      "observedLoopbackOperations": 34,
+      "runtimeGuardInstalled": true
+    },
+    {
+      "evidenceType": "ReleaseManifestConsistencyResult",
+      "result": "PASS",
+      "payloadFileCount": 245,
+      "verifiedBeforeStartup": true,
+      "verifiedAfterShutdown": true,
+      "manifestSha256": "ca0432eae19f8a5e86d632cfbeddf38fe43fd29d93ac92d36af8cf949aad127b",
+      "verifiedManifestSha256Before": "ca0432eae19f8a5e86d632cfbeddf38fe43fd29d93ac92d36af8cf949aad127b",
+      "verifiedManifestSha256After": "ca0432eae19f8a5e86d632cfbeddf38fe43fd29d93ac92d36af8cf949aad127b",
+      "manifestSizeBytes": 39539,
+      "payloadSizeBytes": 93822859,
+      "tamperRejected": true,
+      "missingPayloadRejected": true
+    },
+    {
+      "evidenceType": "CleanWindowsStartupResult",
+      "result": "PASS",
+      "installRootClass": "UNICODE_AND_SPACE_TEMP_PATH",
+      "dataRootClass": "SEPARATE_UNICODE_AND_SPACE_TEMP_PATH",
+      "commands": [
+        "start",
+        "version",
+        "doctor",
+        "status",
+        "stop"
+      ],
+      "releaseDataSeparated": true,
+      "releasePayloadUnchanged": true,
+      "processExited": true,
+      "discoveryRemoved": true,
+      "tokenRemoved": true,
+      "commandResults": {
+        "start": {
+          "outcome": "STARTED",
+          "descriptor": {
+            "schemaVersion": "1.0.0",
+            "instanceId": "01a07fcb-b254-7850-a722-7518e08ed237",
+            "pid": 6392,
+            "startedAt": "2026-09-08T06:54:11.029Z",
+            "host": "127.0.0.1",
+            "port": 50020,
+            "apiVersions": [
+              "v1"
+            ],
+            "frameworkVersion": "0.1.0",
+            "releaseId": "p1-v09-6866b0f2-f2cb-43ae-85aa-dc21f6d835a6",
+            "tokenFileRef": "secrets/runtime/control-api.token"
+          },
+          "health": {
+            "schemaVersion": "1.0.0",
+            "instanceId": "01a07fcb-b254-7850-a722-7518e08ed237",
+            "readiness": "READY",
+            "runtimeVersion": "0.1.0",
+            "releaseId": "p1-v09-6866b0f2-f2cb-43ae-85aa-dc21f6d835a6",
+            "stateVersion": 0,
+            "checkedAt": "2026-09-08T06:54:13.196Z",
+            "findings": []
+          }
+        },
+        "version": {
+          "schemaVersion": "1.0.0",
+          "apiVersion": "v1",
+          "frameworkVersion": "0.1.0",
+          "releaseId": "p1-v09-6866b0f2-f2cb-43ae-85aa-dc21f6d835a6",
+          "instanceId": "01a07fcb-b254-7850-a722-7518e08ed237",
+          "requestId": "01a07fcb-bb8a-7c21-8221-665694b60e32",
+          "correlationId": "01a07fcb-bb8a-7c21-8221-665694b60e32"
+        },
+        "doctor": {
+          "schemaVersion": "1.0.0",
+          "status": "PASS",
+          "findings": [],
+          "requestId": "01a07fcb-bc44-71d9-8235-2fe828ad562a",
+          "correlationId": "01a07fcb-bc44-71d9-8235-2fe828ad562a"
+        },
+        "status": {
+          "schemaVersion": "1.0.0",
+          "status": "READY",
+          "instanceId": "01a07fcb-b254-7850-a722-7518e08ed237",
+          "uptimeMs": 2740,
+          "limits": {
+            "authenticationRateLimit": {
+              "capacity": 20,
+              "windowMs": 60000
+            },
+            "idempotency": {
+              "capacity": 1024,
+              "ttlMs": 900000,
+              "entries": 0
+            },
+            "sse": {
+              "connectionCapacity": 8,
+              "activeConnections": 0,
+              "retentionCapacity": 512,
+              "retainedNotifications": 1,
+              "heartbeatMs": 15000
+            }
+          },
+          "requestId": "01a07fcb-bd09-70e6-88f4-710c615be888",
+          "correlationId": "01a07fcb-bd09-70e6-88f4-710c615be888"
+        },
+        "stop": {
+          "schemaVersion": "1.0.0",
+          "operationId": "01a07fcb-bdc7-72e9-b943-6481a8c0f597",
+          "type": "RuntimeStop",
+          "status": "ACCEPTED",
+          "resourceUri": "/v1/operations/01a07fcb-bdc7-72e9-b943-6481a8c0f597",
+          "evidenceRefs": []
+        },
+        "tamper": {
+          "expectedCode": "RELEASE_PAYLOAD_HASH_MISMATCH",
+          "rejected": true,
+          "message": "RELEASE_PAYLOAD_HASH_MISMATCH: app/apps/cli/dist/index.d.ts: 126aac25d051402b9c7e9ae4f2d8277f901c4aee6a0f22f0d130d553fecc658d != 0a0269a1148134e468d01825d335491870893fab4e9732f1edaa400624aa2b18"
+        },
+        "missing": {
+          "expectedCode": "RELEASE_PAYLOAD_MISSING",
+          "rejected": true,
+          "message": "RELEASE_PAYLOAD_MISSING: app/apps/cli/dist/index.d.ts"
+        }
+      }
+    }
+  ]
+}

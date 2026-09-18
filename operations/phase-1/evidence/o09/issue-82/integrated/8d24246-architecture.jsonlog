@@ -1,0 +1,43 @@
+$ pnpm exec tsc -b packages/contracts/tsconfig.json --pretty false && node scripts/architecture/qualify-architecture.mjs
+{
+  "schemaVersion": "1.0.0",
+  "gateStepId": "P1-V04-ARCHITECTURE",
+  "result": "PASS",
+  "dependencyGraph": {
+    "evidenceType": "DependencyGraphResult",
+    "result": "PASS",
+    "engine": "dependency-cruiser 18.2.0",
+    "governedPackages": 9,
+    "packageEdges": 13,
+    "modules": 60,
+    "moduleDependencies": 139,
+    "workspaceImportEdges": 14,
+    "cycles": 0,
+    "dependencyInversions": 0
+  },
+  "deepImportDenial": {
+    "evidenceType": "DeepImportDenialResult",
+    "result": "PASS",
+    "publicEntriesChecked": 8,
+    "deepImports": 0,
+    "unknownWorkspaceImports": 0
+  },
+  "duplicateSemanticOwnerDenial": {
+    "evidenceType": "DuplicateSemanticOwnerDenialResult",
+    "result": "PASS",
+    "semantics": 73,
+    "activeSemantics": 36,
+    "plannedSemantics": 37,
+    "canonicalOwnerPackages": 12,
+    "duplicates": 0
+  },
+  "cycleDenial": {
+    "result": "PASS",
+    "moduleCycles": 0,
+    "packageCycles": 0
+  },
+  "dependencyInversionDenial": {
+    "result": "PASS",
+    "inversions": 0
+  }
+}

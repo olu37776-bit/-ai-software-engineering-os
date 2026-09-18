@@ -15,7 +15,7 @@ never exports SQL rows, table names, `DatabaseSync`, statements, or driver types
 
 The authority database is `<data-root>/state/aseos.db`. A bounded parent queue
 feeds a serial worker queue. Each append uses one `BEGIN IMMEDIATE` transaction
-covering the Event journal, command receipt, outbox, and audit facts. Expected
+covering the Event journal, command receipt, outbox, and audit facts. The public boundary captures a canonical JSON snapshot and validates each Event/outbox payload against its declared schema identity, version, authority hash and content before transfer. Expected
 versions, Event payload hashes, outbox payload hashes, command identities, and
 idempotency scope are checked before commit. Duplicate commands return the
 original persisted receipt. Command IDs and command idempotency pairs are checked
@@ -37,9 +37,7 @@ schema produced by the authorized migration and requires the applied migration
 history to equal the ordered manifest set. Unknown future versions and malformed
 or partial tables fail closed before any migration write. `COMPATIBLE` is
 reported only after those checks and `quick_check` pass. Backup uses SQLite
-online backup and full `integrity_check`. An existing database that cannot be
-opened or checked is moved to a quarantine path and is never replaced with an
-empty database. An exclusive recovery-required marker is written before the
+online backup and full `integrity_check`. A database with proven corruption, including an existing zero-byte truncated file, is moved to a quarantine path and is never replaced with an empty database. Configuration, migration incompatibility, permission and other operational failures preserve the original database and do not create a corruption marker. Public busy timeouts outside 1–60000 ms fail before worker startup. An exclusive recovery-required marker is written before the
 move; every later normal open checks it before SQLite access and fails closed
 until an explicit recovery action.
 
@@ -73,3 +71,5 @@ Seven Phase-1 persistence Contracts are activated together with the registry,
 inventory, type bindings, and generated declarations. `LeaseRecord` remains
 planned for Phase 2. No scheduler, Workflow, Node Runtime, terminal transition,
 alternate driver, or fallback persistence semantics are introduced.
+
+Issue #82 fixes and current regression results are recorded in `review-remediation-issue-82.md`; the earlier qualification commit above identifies historical evidence.

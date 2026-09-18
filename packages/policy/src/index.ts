@@ -445,7 +445,12 @@ function compileRequirements(value: unknown, path: string): PolicyRequirements {
   return Object.freeze(result);
 }
 
-function compileCondition(value: unknown, path: string, remainingDepth: number): PolicyCondition {
+function compileCondition(
+  value: unknown,
+  path: string,
+  remainingDepth: number,
+  constants: Readonly<Record<string, unknown>>,
+): PolicyCondition {
   if (!isRecord(value) || remainingDepth < 0) {
     throw new PolicyFailure("INVALID_CONDITION", path, "Condition depth exceeds four");
   }
@@ -464,7 +469,12 @@ function compileCondition(value: unknown, path: string, remainingDepth: number):
       operator,
       conditions: Object.freeze(
         conditions.map((child, index) =>
-          compileCondition(child, path + "/conditions/" + String(index), remainingDepth - 1),
+          compileCondition(
+            child,
+            path + "/conditions/" + String(index),
+            remainingDepth - 1,
+            constants,
+          ),
         ),
       ),
     });
@@ -473,7 +483,12 @@ function compileCondition(value: unknown, path: string, remainingDepth: number):
     exactKeys(value, ["operator", "condition"], path);
     return Object.freeze({
       operator,
-      condition: compileCondition(value["condition"], path + "/condition", remainingDepth - 1),
+      condition: compileCondition(
+        value["condition"],
+        path + "/condition",
+        remainingDepth - 1,
+        constants,
+      ),
     });
   }
   if (typeof operator !== "string" || !leafOperators.has(operator)) {
@@ -486,6 +501,16 @@ function compileCondition(value: unknown, path: string, remainingDepth: number):
       "INVALID_REFERENCE",
       path + "/reference",
       "Reference is outside the typed namespace",
+    );
+  }
+  if (
+    reference.startsWith("constant.") &&
+    !Object.hasOwn(constants, reference.slice("constant.".length))
+  ) {
+    throw new PolicyFailure(
+      "INVALID_REFERENCE",
+      path + "/reference",
+      "Referenced constant is not declared",
     );
   }
   if (operator !== "exists" && value["operand"] === undefined) {
@@ -505,7 +530,11 @@ function compileCondition(value: unknown, path: string, remainingDepth: number):
   });
 }
 
-function compileRule(value: unknown, index: number): CompiledPolicyRule {
+function compileRule(
+  value: unknown,
+  index: number,
+  constants: Readonly<Record<string, unknown>>,
+): CompiledPolicyRule {
   const path = "$/rules/" + String(index);
   if (!isRecord(value)) {
     throw new PolicyFailure("INVALID_POLICY_RULE", path, "Rule must be an object");
@@ -566,7 +595,7 @@ function compileRule(value: unknown, index: number): CompiledPolicyRule {
         path + "/resourceSelector/resourceTypes",
       ),
     }),
-    when: compileCondition(value["when"], path + "/when", 4),
+    when: compileCondition(value["when"], path + "/when", 4, constants),
     ruleEffect: effect,
     requirements: compileRequirements(value["requirements"], path + "/requirements"),
     reasonCode: requiredString(value, "reasonCode", path, stableCode, 128, 3),
@@ -617,7 +646,7 @@ export function compilePolicySet(value: unknown): CompilePolicyResult {
     ) {
       throw new PolicyFailure("INVALID_POLICY_SET", "$/source/kind", "Unknown source kind");
     }
-    const compiledRules = rules.map((rule, index) => compileRule(rule, index));
+    const compiledRules = rules.map((rule, index) => compileRule(rule, index, constants));
     if (new Set(compiledRules.map((rule) => rule.ruleId)).size !== compiledRules.length) {
       throw new PolicyFailure("INVALID_POLICY_SET", "$/rules", "Duplicate ruleId");
     }
@@ -991,6 +1020,12 @@ function equalJson(left: PolicyJson | undefined, right: PolicyJson | undefined):
   return left !== undefined && right !== undefined && canonicalJson(left) === canonicalJson(right);
 }
 
+function sameJsonType(left: PolicyJson | undefined, right: PolicyJson | undefined): boolean {
+  if (left === undefined || right === undefined) return false;
+  if (left === null || right === null) return left === right;
+  return typeof left === typeof right && Array.isArray(left) === Array.isArray(right);
+}
+
 function isPolicyArray(value: PolicyJson | undefined): value is readonly PolicyJson[] {
   return Array.isArray(value);
 }
@@ -1025,13 +1060,18 @@ function evaluateCondition(
     ? constants[leaf.reference.slice("constant.".length)]
     : referencedValue(input, leaf.reference);
   const expected = leaf.operand;
+  if (actual === undefined) return { ok: false, matched: false };
   switch (leaf.operator) {
     case "exists":
-      return { ok: true, matched: actual !== undefined };
+      return { ok: true, matched: true };
     case "eq":
-      return { ok: true, matched: equalJson(actual, expected) };
+      return sameJsonType(actual, expected)
+        ? { ok: true, matched: equalJson(actual, expected) }
+        : { ok: false, matched: false };
     case "notEq":
-      return { ok: true, matched: !equalJson(actual, expected) };
+      return sameJsonType(actual, expected)
+        ? { ok: true, matched: !equalJson(actual, expected) }
+        : { ok: false, matched: false };
     case "in":
       return isPolicyArray(expected)
         ? {

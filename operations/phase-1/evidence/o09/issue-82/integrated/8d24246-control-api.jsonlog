@@ -1,0 +1,47 @@
+$ pnpm exec tsc -b packages/contracts/tsconfig.json packages/platform/tsconfig.json apps/runtime/tsconfig.json apps/cli/tsconfig.json --pretty false && node scripts/qualification/control-api/qualify-control-api.mjs
+{
+  "qualification": "P1-V07-CONTROL-API",
+  "result": "PASS",
+  "platform": "linux",
+  "results": [
+    {
+      "evidenceType": "OpenApiValidationResult",
+      "result": "PASS",
+      "version": "3.1.1",
+      "requiredPaths": [
+        "/version",
+        "/health",
+        "/endpoint",
+        "/status",
+        "/doctor",
+        "/events",
+        "/runtime/stop"
+      ]
+    },
+    {
+      "evidenceType": "LoopbackExposureResult",
+      "result": "PASS",
+      "host": "127.0.0.1",
+      "portClass": "OS_ASSIGNED_EPHEMERAL"
+    },
+    {
+      "evidenceType": "TokenAclRedactionResult",
+      "result": "PASS",
+      "tokenBits": 256,
+      "acl": "0600",
+      "publicErrorRedacted": true
+    },
+    {
+      "evidenceType": "CliPublicApiAcceptanceResult",
+      "result": "PASS",
+      "commands": [
+        "start",
+        "version",
+        "doctor",
+        "status",
+        "stop"
+      ],
+      "clientBoundary": "@aseos/platform public Control API client"
+    }
+  ]
+}

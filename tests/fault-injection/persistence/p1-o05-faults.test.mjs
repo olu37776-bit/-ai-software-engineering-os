@@ -37,7 +37,7 @@ describe("P1-O05 crash recovery and storage fault injection", () => {
     connection.close();
 
     await expect(PersistenceWorker.open({ dataRoot: root })).rejects.toMatchObject({
-      code: "PERSISTENCE_CORRUPTION",
+      code: "PERSISTENCE_MIGRATION_MISMATCH",
       message: "Applied migration history differs from migration authority",
     });
   });
@@ -51,19 +51,17 @@ describe("P1-O05 crash recovery and storage fault injection", () => {
     connection.exec("CREATE TABLE event_journal(bad TEXT) STRICT");
     connection.close();
 
-    let quarantinePath;
     try {
       await PersistenceWorker.open({ dataRoot: root });
       throw new Error("Expected incompatible schema to fail closed");
     } catch (error) {
       expect(error).toMatchObject({
-        code: "PERSISTENCE_CORRUPTION",
+        code: "PERSISTENCE_MIGRATION_MISMATCH",
         message: "SQLite schema structure differs from migration authority",
       });
-      quarantinePath = error.details?.quarantinePath;
+      expect(error.details?.quarantinePath).toBeUndefined();
     }
-    expect(typeof quarantinePath).toBe("string");
-    const quarantined = new DatabaseSync(quarantinePath, { readOnly: true });
+    const quarantined = new DatabaseSync(databasePath, { readOnly: true });
     try {
       const names = quarantined
         .prepare("SELECT name FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY name")

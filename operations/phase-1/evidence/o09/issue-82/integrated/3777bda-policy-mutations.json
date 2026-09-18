@@ -1,0 +1,56 @@
+{
+  "evidenceType": "PolicyMutationResult",
+  "result": "PASS",
+  "method": "ISOLATED_COMPILED_OWNER_BEHAVIORAL_MUTATION",
+  "sourceSha256": "080eb9d59a6b2772d7e54c745bd87ffa71e4abeb89d9e95b5da64fcae5fd2e1e",
+  "canonicalSourceSha256": "080eb9d59a6b2772d7e54c745bd87ffa71e4abeb89d9e95b5da64fcae5fd2e1e",
+  "baselineProbes": 8,
+  "killedMutations": 8,
+  "survivingMutations": 0,
+  "cases": [
+    {
+      "id": "default-allow",
+      "result": "KILLED",
+      "mutationSha256": "a1c7966d276413a02b350273f8e351e21de542ec7f05c5313c8d86a06e18f8b6"
+    },
+    {
+      "id": "deny-override-removal",
+      "result": "KILLED",
+      "mutationSha256": "7f1399373d16b6d125ed81d21fee5b1d2871c50e9d1982ee05640361c0cd7bb9"
+    },
+    {
+      "id": "hard-invariant-bypass",
+      "result": "KILLED",
+      "mutationSha256": "32d624c8c28ba00729f647f8c5e0646a2bec0f5e19a5e4bb2c98b0cd85aef1cb"
+    },
+    {
+      "id": "requirement-conflict-coercion",
+      "result": "KILLED",
+      "mutationSha256": "10011839cdadcb305a9d6766dfd0bb73247915964dc46ed7f1f89f30067e79dc"
+    },
+    {
+      "id": "unknown-constant-acceptance",
+      "result": "KILLED",
+      "mutationSha256": "4ee140af75f7131dd478b18c29cb8c02c9ce5ad6e70cb23ccf399a78fac0791e"
+    },
+    {
+      "id": "incompatible-not-equal-acceptance",
+      "result": "KILLED",
+      "mutationSha256": "4c69f5733badf6d4391070c6cbb835b176b25a8fba3287e531e6fb90d97f5bb7"
+    },
+    {
+      "id": "invalid-deny-skipped",
+      "result": "KILLED",
+      "mutationSha256": "cb2707bd5e32aeec71a26384f25f7ba75f90cf4fcad6ba7c1d9757215a5a7e5a"
+    },
+    {
+      "id": "ambient-clock-substitution",
+      "result": "KILLED",
+      "mutationSha256": "53b8f8b7611c2d33a84ff4d23b4a8aec4f2203780958313d035c8ef96b1d9bec"
+    }
+  ],
+  "subject": {
+    "gitCommit": "3777bda86f090ac75a3382b8b310da17737dc257"
+  },
+  "environment": "local Windows 11 x64; Node 24.19.0"
+}

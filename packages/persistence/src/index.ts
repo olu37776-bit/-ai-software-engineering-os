@@ -2,6 +2,7 @@ import { isAbsolute, resolve } from "node:path";
 import { Worker } from "node:worker_threads";
 
 import {
+  canonicalJson,
   loadContractRegistry,
   type CommandDedupRecord,
   type ContractRegistry,
@@ -50,6 +51,10 @@ export type PersistenceWorkerOptions = Readonly<{
   repositoryRoot?: string;
 }>;
 
+export type PersistenceCommandIdentity = Readonly<
+  Pick<JournalAppendBatch, "commandId" | "idempotencyKey" | "effectScope" | "payloadHash">
+>;
+
 export type PersistenceHealth = Readonly<{
   databasePath: string;
   sqliteVersion: string;
@@ -95,6 +100,7 @@ type WorkerRequestKind =
   | "close"
   | "commit"
   | "get-command"
+  | "lookup-command-receipt"
   | "health"
   | "hold-lock"
   | "list-outbox"
@@ -204,6 +210,12 @@ export class PersistenceWorker {
     }
     const maxQueueDepth = positiveInteger(options.maxQueueDepth, 128, "maxQueueDepth");
     const busyTimeoutMs = positiveInteger(options.busyTimeoutMs, 5_000, "busyTimeoutMs");
+    if (busyTimeoutMs > 60_000) {
+      throw new PersistenceError(
+        "PERSISTENCE_CONTRACT_INVALID",
+        "busyTimeoutMs must not exceed 60000",
+      );
+    }
     const dataRoot = isAbsolute(options.dataRoot) ? options.dataRoot : resolve(options.dataRoot);
     const registry =
       options.repositoryRoot === undefined
@@ -218,11 +230,43 @@ export class PersistenceWorker {
     return instance;
   }
 
-  public async commit(batch: JournalAppendBatch): Promise<PersistenceCommitReceipt> {
+  #validateBatch(batch: JournalAppendBatch): JournalAppendBatch {
+    // Capture one immutable JSON value before any await or worker transfer.
+    // This also rejects JavaScript values that cannot survive the journal format.
+    let snapshot: JournalAppendBatch;
+    try {
+      snapshot = JSON.parse(canonicalJson(batch)) as JournalAppendBatch;
+    } catch (error: unknown) {
+      throw new PersistenceError("PERSISTENCE_CONTRACT_INVALID", "Batch is not canonical JSON", {
+        cause: error instanceof Error ? error.message : String(error),
+      });
+    }
     const validated = this.#validate<JournalAppendBatch>(
       "urn:aseos:schema:journal-append-batch:1.0.0",
-      batch,
+      snapshot,
     );
+    for (const envelope of [...validated.events, ...validated.outbox]) {
+      const entry = this.#registry.resolve(envelope.payloadSchema);
+      if ("ok" in entry || entry.sha256 !== envelope.payloadSchema.schemaHash) {
+        throw new PersistenceError(
+          "PERSISTENCE_CONTRACT_INVALID",
+          "Payload schema identity or authority hash is invalid",
+        );
+      }
+      const payload = this.#registry.validate(envelope.payloadSchema, envelope.payload);
+      if (!payload.ok) {
+        throw new PersistenceError(
+          "PERSISTENCE_CONTRACT_INVALID",
+          "Payload violates its declared canonical schema",
+          { errors: payload.errors },
+        );
+      }
+    }
+    return validated;
+  }
+
+  public async commit(batch: JournalAppendBatch): Promise<PersistenceCommitReceipt> {
+    const validated = this.#validateBatch(batch);
     const receipt = await this.#request<PersistenceCommitReceipt>("commit", validated);
     return this.#validate<PersistenceCommitReceipt>(
       "urn:aseos:schema:persistence-commit-receipt:1.0.0",
@@ -255,6 +299,34 @@ export class PersistenceWorker {
     return record === null
       ? null
       : this.#validate<CommandDedupRecord>("urn:aseos:schema:command-dedup-record:1.0.0", record);
+  }
+
+  /** Reads the durable outcome with exactly the same identity rules as commit. */
+  public async lookupCommandReceipt(
+    identity: PersistenceCommandIdentity,
+  ): Promise<PersistenceCommitReceipt | null> {
+    const snapshot: PersistenceCommandIdentity = {
+      commandId: identity.commandId,
+      idempotencyKey: identity.idempotencyKey,
+      effectScope: identity.effectScope,
+      payloadHash: identity.payloadHash,
+    };
+    if (
+      Object.values(snapshot).some((value) => typeof value !== "string" || value.length === 0) ||
+      !/^[a-f0-9]{64}$/u.test(snapshot.payloadHash)
+    ) {
+      throw new PersistenceError("PERSISTENCE_CONTRACT_INVALID", "Invalid command lookup identity");
+    }
+    const receipt = await this.#request<PersistenceCommitReceipt | null>(
+      "lookup-command-receipt",
+      snapshot,
+    );
+    return receipt === null
+      ? null
+      : this.#validate<PersistenceCommitReceipt>(
+          "urn:aseos:schema:persistence-commit-receipt:1.0.0",
+          receipt,
+        );
   }
 
   public async listOutbox(): Promise<readonly OutboxRecord[]> {
@@ -313,10 +385,7 @@ export class PersistenceWorker {
   }
 
   public async armCrashBeforeCommitForQualification(batch: JournalAppendBatch): Promise<void> {
-    const validated = this.#validate<JournalAppendBatch>(
-      "urn:aseos:schema:journal-append-batch:1.0.0",
-      batch,
-    );
+    const validated = this.#validateBatch(batch);
     await this.#request<"ARMED">("arm-crash", validated);
   }
 

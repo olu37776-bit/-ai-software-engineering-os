@@ -1,0 +1,113 @@
+{
+  "subject": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+  "releaseRunId": 34196662898,
+  "artifacts": [
+    {
+      "archive_download_url": "https://api.github.com/repos/olu37776-bit/-ai-software-engineering-os/actions/artifacts/10044177096/zip",
+      "created_at": "2026-09-08T06:54:16Z",
+      "digest": "sha256:5cbc9b989736f3fb5e593a2c0e80f8489cf641f2097e1c27d021122450074bad",
+      "expired": false,
+      "expires_at": "2026-09-22T06:54:15Z",
+      "id": 10044177096,
+      "name": "p1-v09-packaging-evidence",
+      "node_id": "MDg6QXJ0aWZhY3QxMDA0NDE3NzA5Ng==",
+      "size_in_bytes": 1882,
+      "updated_at": "2026-09-08T06:54:16Z",
+      "url": "https://api.github.com/repos/olu37776-bit/-ai-software-engineering-os/actions/artifacts/10044177096",
+      "workflow_run": {
+        "head_branch": "main",
+        "head_repository_id": 1346997113,
+        "head_sha": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+        "id": 34196662898,
+        "repository_id": 1346997113
+      }
+    },
+    {
+      "archive_download_url": "https://api.github.com/repos/olu37776-bit/-ai-software-engineering-os/actions/artifacts/10044161568/zip",
+      "created_at": "2026-09-08T06:53:42Z",
+      "digest": "sha256:3fd80ee883a3979b659ba5aad55ff034669fea0d8e6722216421a23a4cc63dc7",
+      "expired": false,
+      "expires_at": "2026-09-15T06:53:39Z",
+      "id": 10044161568,
+      "name": "aseos-windows-x64-qualification",
+      "node_id": "MDg6QXJ0aWZhY3QxMDA0NDE2MTU2OA==",
+      "size_in_bytes": 35984823,
+      "updated_at": "2026-09-08T06:53:42Z",
+      "url": "https://api.github.com/repos/olu37776-bit/-ai-software-engineering-os/actions/artifacts/10044161568",
+      "workflow_run": {
+        "head_branch": "main",
+        "head_repository_id": 1346997113,
+        "head_sha": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+        "id": 34196662898,
+        "repository_id": 1346997113
+      }
+    }
+  ],
+  "protection": {
+    "id": 21648824,
+    "name": "phase-1-main-protection",
+    "target": "branch",
+    "source_type": "Repository",
+    "source": "olu37776-bit/-ai-software-engineering-os",
+    "enforcement": "active",
+    "conditions": {
+      "ref_name": {
+        "exclude": [],
+        "include": [
+          "~DEFAULT_BRANCH"
+        ]
+      }
+    },
+    "rules": [
+      {
+        "type": "deletion"
+      },
+      {
+        "type": "non_fast_forward"
+      },
+      {
+        "type": "pull_request",
+        "parameters": {
+          "required_approving_review_count": 0,
+          "dismiss_stale_reviews_on_push": false,
+          "required_reviewers": [],
+          "require_code_owner_review": false,
+          "require_last_push_approval": false,
+          "required_review_thread_resolution": false,
+          "require_extra_approval_for_unattributed_changes": true,
+          "allowed_merge_methods": [
+            "merge",
+            "squash",
+            "rebase"
+          ]
+        }
+      },
+      {
+        "type": "required_status_checks",
+        "parameters": {
+          "strict_required_status_checks_policy": true,
+          "do_not_enforce_on_create": false,
+          "required_status_checks": [
+            {
+              "context": "verify",
+              "integration_id": 15368
+            }
+          ]
+        }
+      }
+    ],
+    "node_id": "RRS_lACqUmVwb3NpdG9yec5QSYt5zgFKVbg",
+    "created_at": "2026-08-27T19:57:49.434+08:00",
+    "updated_at": "2026-08-27T19:57:49.606+08:00",
+    "bypass_actors": [],
+    "current_user_can_bypass": "never",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/olu37776-bit/-ai-software-engineering-os/rulesets/21648824"
+      },
+      "html": {
+        "href": "https://github.com/olu37776-bit/-ai-software-engineering-os/rules/21648824"
+      }
+    }
+  }
+}

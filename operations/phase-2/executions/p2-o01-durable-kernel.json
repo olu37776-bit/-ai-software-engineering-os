@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O01",
+  "implementationBranch": "phase-2/p2-o01-durable-workflow",
+  "baseCommit": "114f466e4de7cb2f698c2f4cde57fc90006e527f",
+  "status": "IN_PROGRESS",
+  "phase2Complete": false,
+  "note": "Preparation only until accepted P1 protected-main merge is bound and required CI has passed. A PASS scope report authorizes paths; it is not an implementation completion receipt."
+}

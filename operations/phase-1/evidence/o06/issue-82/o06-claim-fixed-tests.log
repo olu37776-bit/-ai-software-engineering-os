@@ -1,0 +1,18 @@
+
+ RUN  v4.1.11 /workspace/scratch/a43b31e014a5/fix-o06-lock
+
+ ✓ tests/qualification/control-api/windows-claim-race.test.mjs (4 tests) 2410ms
+   ✓ a departing Windows claim reporting EPERM does not prevent an uncontested owner  453ms
+   ✓ a departing Windows claim reporting EACCES does not prevent an uncontested owner  323ms
+   ✓ a departing Windows claim reporting EBUSY does not prevent an uncontested owner  325ms
+   ✓ a persistently unreadable live claim remains fail closed and is never removed  1304ms
+ ✓ tests/qualification/control-api/review-remediation.test.mjs (8 tests) 5992ms
+   ✓ concurrent lock losers cannot remove a live owner's claim or metadata  2652ms
+   ✓ separate processes elect one owner and recover a killed owner's unique claim  2446ms
+   ✓ timed-out unfinished bodies close their socket and release capacity exactly once  731ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  15:47:33
+   Duration  7.28s (transform 719ms, setup 0ms, import 900ms, tests 8.40s, environment 0ms)
+

@@ -50,6 +50,7 @@ env:
   NODE_VERSION: "24.19.0"
   PNPM_VERSION: "11.24.0"
   QUALIFICATION_VERSION: "0.1.0"
+  QUALIFICATION_SUBJECT: ${{ github.event.pull_request.head.sha || github.sha }}
 
 jobs:
   assemble:
@@ -61,6 +62,8 @@ jobs:
     steps:
       - name: Checkout immutable source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.QUALIFICATION_SUBJECT }}
 
       - name: Install pinned Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -98,17 +101,18 @@ jobs:
       - name: Assemble and verify qualification artifact
         shell: bash
         run: |
+          test "$(git rev-parse HEAD)" = "$QUALIFICATION_SUBJECT"
           node scripts/release/assemble-windows-x64.mjs \
             --runtime-archive "$RUNNER_TEMP/node-win-x64.zip" \
             --output "$RUNNER_TEMP/aseos-windows-x64" \
-            --git-commit "$GITHUB_SHA" \
+            --git-commit "$QUALIFICATION_SUBJECT" \
             --built-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --build-id "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
           node scripts/release/verify-manifest.mjs \
             --artifact-root "$RUNNER_TEMP/aseos-windows-x64" \
             --manifest "release-manifest.json" \
             --expected-version "$QUALIFICATION_VERSION" \
-            --expected-git-commit "$GITHUB_SHA" \
+            --expected-git-commit "$QUALIFICATION_SUBJECT" \
             --toolchain-path "toolchain/toolchain.json"
 
       - name: Upload qualification artifact
@@ -128,6 +132,8 @@ jobs:
     steps:
       - name: Checkout qualification scripts
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.QUALIFICATION_SUBJECT }}
 
       - name: Install qualification orchestrator Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -154,7 +160,7 @@ jobs:
           ASEOS_QUALIFICATION_ARTIFACT: ${{ github.workspace }}\dist\aseos-windows-x64
           ASEOS_QUALIFICATION_EVIDENCE: ${{ github.workspace }}\dist\evidence\p1-v09-packaging.json
           ASEOS_QUALIFICATION_EXPECTED_VERSION: ${{ env.QUALIFICATION_VERSION }}
-          ASEOS_QUALIFICATION_EXPECTED_GIT_COMMIT: ${{ github.sha }}
+          ASEOS_QUALIFICATION_EXPECTED_GIT_COMMIT: ${{ env.QUALIFICATION_SUBJECT }}
           ASEOS_QUALIFICATION_TOOLCHAIN: ${{ github.workspace }}\toolchain\toolchain.json
 
       - name: Upload P1-V09 Evidence

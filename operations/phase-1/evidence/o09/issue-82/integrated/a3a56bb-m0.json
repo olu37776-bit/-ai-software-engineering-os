@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "1.0.0",
+  "reportType": "M0_PREIMPLEMENTATION_READ_ONLY_VERIFICATION",
+  "subject": "a3a56bb791963639ae7395a14d20e55bf7125326",
+  "generatedAt": "2026-09-08T07:10:05Z",
+  "decision": "PASS",
+  "checks": [
+    {
+      "id": "M0-V01-JSON-PARSE",
+      "result": "PASS",
+      "detail": 243
+    },
+    {
+      "id": "M0-V02-SCHEMA-META-AND-ID",
+      "result": "PASS",
+      "detail": {
+        "schemas": 52
+      }
+    },
+    {
+      "id": "M0-V03-REF-RESOLUTION",
+      "result": "PASS",
+      "detail": 194
+    },
+    {
+      "id": "M0-V04-COMPLETE-SCHEMA-REGISTRY",
+      "result": "PASS",
+      "detail": {
+        "schemas": 52,
+        "paths": 52
+      }
+    },
+    {
+      "id": "M0-V05-ACTIVE-PLANNED-INVENTORIES",
+      "result": "PASS",
+      "detail": {
+        "active": 36,
+        "planned": 37
+      }
+    },
+    {
+      "id": "M0-V06-EXECUTABLE-EXAMPLES",
+      "result": "PASS",
+      "detail": {
+        "cases": 38,
+        "valid": 19,
+        "invalid": 19,
+        "payload": 4,
+        "schema": 12,
+        "artifact": 9
+      }
+    },
+    {
+      "id": "M0-V07-NO-PLACEHOLDER-HASHES",
+      "result": "PASS",
+      "detail": 243
+    },
+    {
+      "id": "M0-V08-OPERATION-AND-VERIFICATION-DAG",
+      "result": "PASS",
+      "detail": {
+        "operations": 9,
+        "steps": 11,
+        "gateCoverage": 11
+      }
+    },
+    {
+      "id": "M0-V09-WRITE-SCOPE-CLOSURE",
+      "result": "PASS",
+      "detail": {
+        "operations": 9,
+        "allowedPathGlobs": 177,
+        "executionRecordScopes": 9,
+        "denyByDefault": true,
+        "integratedReceiptOwner": "P1-O09"
+      }
+    },
+    {
+      "id": "M0-V10-AUTHORITY-LOCK",
+      "result": "PASS",
+      "detail": {
+        "paths": 32,
+        "immutable": 25,
+        "operationScoped": 7
+      }
+    },
+    {
+      "id": "M0-V11-ACCEPTED-ADR-IMMUTABILITY",
+      "result": "PASS",
+      "detail": 11
+    },
+    {
+      "id": "M0-V12-RECEIPT-ANTI-FALSE-IMPLEMENTED",
+      "result": "PASS",
+      "detail": {
+        "negativeErrors": 53,
+        "schemas": 2,
+        "implementationReceipt": "NOT_YET_CREATED"
+      }
+    },
+    {
+      "id": "M0-V13-OPERATION-AWARE-TRANSITION",
+      "result": "PASS",
+      "detail": {
+        "changedPaths": 5,
+        "productionPaths": 0,
+        "acceptedAdrPaths": 0,
+        "scopeReportRequired": true,
+        "scopeReportResult": "PASS",
+        "scopeMode": "OPERATION_EXECUTION",
+        "operationId": "P1-O09",
+        "baseCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+        "headCommit": "a3a56bb791963639ae7395a14d20e55bf7125326",
+        "branch": "phase-1/p1-o09-integrated-handoff-issue-82"
+      }
+    },
+    {
+      "id": "M0-V14-BRANCH-PROTECTION-PREREQUISITE",
+      "result": "PASS",
+      "detail": {
+        "recorded": true,
+        "enabledClaimed": false,
+        "note": "Repository settings must be independently confirmed before Phase 1 entry."
+      }
+    }
+  ],
+  "summary": {
+    "passed": 14,
+    "failed": 0,
+    "total": 14
+  },
+  "claimBoundary": {
+    "m0FinalGate": "NOT_CREATED_BY_THIS_SCRIPT",
+    "remediationPerformed": false
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceType": "Phase1LocalVerification",
+  "subjectCommit": "a3a56bb791963639ae7395a14d20e55bf7125326",
+  "actorId": "codex-work-5fb93e787236",
+  "independent": false,
+  "environment": {
+    "os": "Linux x64 Codex container",
+    "node": "24.19.0",
+    "pnpm": "11.24.0",
+    "typescript": "6.0.3",
+    "pythonJsonschema": "4.25.1"
+  },
+  "results": [
+    {
+      "command": "node scripts/toolchain/verify-scope.mjs --base db310b1d33324e72ba7767eb66760e4e54c8e1bd --head a3a56bb791963639ae7395a14d20e55bf7125326 --branch phase-1/p1-o09-integrated-handoff-issue-82",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-scope.json"
+    },
+    {
+      "command": "python scripts/governance/verify_m0.py with matching --base/--head/--subject and actual scope report",
+      "result": "PASS",
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-m0.json"
+    },
+    {
+      "command": "pnpm exec vitest run tests/qualification/{toolchain/review-remediation,policy/integrated-mutation,policy/p1-v05-policy,persistence/review-remediation,control-api/review-remediation}.test.mjs tests/contract/{review-remediation,phase-1-integration}.test.mjs",
+      "result": "PASS",
+      "passed": 67,
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-focused.log"
+    },
+    {
+      "command": "node scripts/verify-phase-1/qualify-policy-mutations.mjs",
+      "result": "PASS",
+      "killed": 8,
+      "survived": 0,
+      "logRef": "operations/phase-1/evidence/o09/issue-82/integrated/a3a56bb-policy-mutation.json"
+    }
+  ],
+  "limitations": [
+    "Author checks, not P1-V10 independent review.",
+    "Windows checks are hosted; no local Windows execution.",
+    "Base full local quality failed networkInterfaces() under container restrictions: 329 passed, 9 Windows-only skipped, 1 failure. No test was disabled to turn that result green.",
+    "No inherited qualification claim for later HEADs."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "evidenceId": "P1-O06-WINDOWS-CLAIM-LIVENESS-ISSUE-82",
+  "operationId": "P1-O06",
+  "status": "IMPLEMENTED",
+  "subjectBase": "a16d8147dd38087fbc4e6d6ad09acb98b964551d",
+  "observedWindowsFailure": {
+    "subject": "43ea7961f2595a30c7d29e1b3e7938e34cfd29aa",
+    "jobId": 101947487500,
+    "observation": "One 16-contender round returned zero winners; original log did not retain underlying filesystem errors"
+  },
+  "confirmedFaultCase": "The original scanner rejects an uncontested acquisition when a departing claim yields Windows EPERM during deletion; reproduced through the real lock entry with an isolated filesystem fault before the repair",
+  "repair": "On Windows only, retry complete claim scans for EPERM/EACCES/EBUSY for at most 1000 monotonic milliseconds; never skip an unreadable live claim. Permanent denial still fails closed.",
+  "localResults": {
+    "beforeFix": "Transient EPERM case failed CONTROL_RUNTIME_LOCK_FAILED",
+    "afterFix": "12 tests PASS: three transient error codes, persistent unreadable claim, original competition/process recovery/deadline/SSE cases",
+    "build": "PASS",
+    "lint": "PASS",
+    "nativeWindows": "NOT_YET_RUN_ON_FINAL_HEAD"
+  },
+  "claimBoundary": "Local error injection explicitly models Windows in an isolated child on Linux; it is not native Windows qualification and does not by itself identify the exact errno of the earlier uninstrumented job.",
+  "evidenceRefs": [
+    "operations/phase-1/evidence/o06/issue-82/o06-claim-before-fix.log",
+    "operations/phase-1/evidence/o06/issue-82/o06-claim-fixed-tests.log"
+  ]
+}

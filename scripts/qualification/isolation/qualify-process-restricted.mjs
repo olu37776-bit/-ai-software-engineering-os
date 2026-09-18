@@ -163,7 +163,8 @@ try {
         jobObjectLifecycle: {
           evidenceType: "JobObjectLifecycleResult",
           result: "PASS",
-          suspendedCreateBeforeAssignment: true,
+          jobAssignedAtProcessCreation: true,
+          membershipVerifiedBeforeResume: true,
           jobObjectAssigned: true,
           killOnJobClose: true,
           activeProcessCountAfterCompletion: 0,

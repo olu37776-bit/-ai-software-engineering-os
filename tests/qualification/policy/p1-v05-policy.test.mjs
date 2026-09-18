@@ -81,6 +81,78 @@ function snapshot(value) {
 }
 
 describe("P1-V05 deterministic Policy qualification", () => {
+  test.each(["eq", "notEq", "exists"])(
+    "rejects unresolved constants in every rule before evaluation (%s)",
+    (operator) => {
+      const missing = {
+        operator,
+        reference: "constant.MISSING",
+        ...(operator === "exists" ? {} : { operand: true }),
+      };
+      for (const when of [
+        missing,
+        { operator: "not", condition: missing },
+        { operator: "any", conditions: [rule().when, missing] },
+      ]) {
+        const invalid = policy([
+          rule(),
+          rule({ ruleId: "deny-missing", domain: "unmatched-domain", ruleEffect: "DENY", when }),
+        ]);
+        expect(compilePolicySet(invalid)).toMatchObject({
+          ok: false,
+          diagnostics: [{ code: "INVALID_REFERENCE" }],
+        });
+        // Rebinding the hash cannot make a semantically invalid snapshot authorize.
+        const forged = {
+          ...snapshot(policy()),
+          compiledPolicySet: invalid,
+          policyHash: hashPolicyValue(invalid),
+        };
+        expect(evaluatePolicy(forged, input()).outcome).toBe("INDETERMINATE");
+      }
+    },
+  );
+
+  test.each(["eq", "notEq"])(
+    "incompatible equality operands cannot allow directly or through a skipped DENY (%s)",
+    (operator) => {
+      const wrongType = { operator, reference: "input.controlVerified", operand: "true" };
+      expect(evaluatePolicy(snapshot(policy([rule({ when: wrongType })])), input())).toMatchObject({
+        outcome: "INDETERMINATE",
+        reasonCodes: ["CONDITION_TYPE_MISMATCH"],
+      });
+      expect(
+        evaluatePolicy(
+          snapshot(
+            policy([
+              rule(),
+              rule({ ruleId: "deny-wrong-type", ruleEffect: "DENY", when: wrongType }),
+            ]),
+          ),
+          input(),
+        ),
+      ).toMatchObject({ outcome: "INDETERMINATE", reasonCodes: ["CONDITION_TYPE_MISMATCH"] });
+    },
+  );
+
+  test("declared constant equality remains deterministic and unknown constants never compile", () => {
+    const valid = policy([
+      rule({ when: { operator: "eq", reference: "constant.LOW_RISK", operand: "R1" } }),
+    ]);
+    expect(evaluatePolicy(snapshot(valid), input()).outcome).toBe("ALLOW");
+    fc.assert(
+      fc.property(fc.integer({ min: 0, max: 1_000_000 }), (suffix) => {
+        const invalid = policy([
+          rule({
+            when: { operator: "notEq", reference: `constant.MISSING_${suffix}`, operand: false },
+          }),
+        ]);
+        expect(compilePolicySet(invalid).ok).toBe(false);
+      }),
+      { numRuns: 100 },
+    );
+  });
+
   test("canonicalizes and hashes independent of key order", () => {
     const left = { z: [3, 2, 1], a: -0, text: "e\u0301" };
     const right = { text: "e\u0301", a: 0, z: [3, 2, 1] };

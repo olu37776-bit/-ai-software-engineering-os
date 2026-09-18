@@ -19,7 +19,10 @@
     "typecheck": "tsc -b tsconfig.json --pretty false"
   },
   "dependencies": {
-    "@aseos/contracts": "workspace:*"
+    "@aseos/contracts": "workspace:*",
+    "@aseos/kernel": "workspace:*",
+    "@aseos/workflow": "workspace:*",
+    "@aseos/persistence": "workspace:*"
   },
   "engines": {
     "node": "24.19.0"

@@ -1,0 +1,293 @@
+﻿2026-09-08T07:12:11.9019773Z Current runner version: '2.337.0'
+2026-09-08T07:12:11.9045046Z ##[group]Runner Image Provisioner
+2026-09-08T07:12:11.9046393Z Hosted Compute Agent
+2026-09-08T07:12:11.9047230Z Version: 20260828.587
+2026-09-08T07:12:11.9047898Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-08T07:12:11.9048737Z Build Date: 2026-08-28T16:44:25Z
+2026-09-08T07:12:11.9049474Z Worker ID: {09a61105-5685-4e3b-bf95-e620cb190250}
+2026-09-08T07:12:11.9050222Z Azure Region: centralus
+2026-09-08T07:12:11.9050885Z ##[endgroup]
+2026-09-08T07:12:11.9052338Z ##[group]Operating System
+2026-09-08T07:12:11.9053008Z Ubuntu
+2026-09-08T07:12:11.9053693Z 24.04.4
+2026-09-08T07:12:11.9054232Z LTS
+2026-09-08T07:12:11.9054863Z ##[endgroup]
+2026-09-08T07:12:11.9055740Z ##[group]Runner Image
+2026-09-08T07:12:11.9056388Z Image: ubuntu-24.04
+2026-09-08T07:12:11.9057140Z Version: 20260831.293.1
+2026-09-08T07:12:11.9058420Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-08T07:12:11.9060071Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+2026-09-08T07:12:11.9061106Z ##[endgroup]
+2026-09-08T07:12:11.9062290Z ##[group]GITHUB_TOKEN Permissions
+2026-09-08T07:12:11.9064210Z Contents: read
+2026-09-08T07:12:11.9064942Z Metadata: read
+2026-09-08T07:12:11.9065858Z ##[endgroup]
+2026-09-08T07:12:11.9068018Z Secret source: Actions
+2026-09-08T07:12:11.9069122Z Prepare workflow directory
+2026-09-08T07:12:11.9406781Z Prepare all required actions
+2026-09-08T07:12:11.9454549Z Getting action download info
+2026-09-08T07:12:12.2287025Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-09-08T07:12:12.4842541Z Complete job name: verify
+2026-09-08T07:12:12.5522957Z ##[group]Run test "$QUALITY_RESULT" = "success"
+2026-09-08T07:12:12.5523710Z [36;1mtest "$QUALITY_RESULT" = "success"[0m
+2026-09-08T07:12:12.5524357Z [36;1mtest "$PACKAGING_RESULT" = "success"[0m
+2026-09-08T07:12:12.5568582Z shell: /usr/bin/bash -e {0}
+2026-09-08T07:12:12.5569333Z env:
+2026-09-08T07:12:12.5569767Z   QUALITY_RESULT: success
+2026-09-08T07:12:12.5570272Z   PACKAGING_RESULT: success
+2026-09-08T07:12:12.5570760Z ##[endgroup]
+2026-09-08T07:12:12.5810947Z ##[group]Run set -euo pipefail
+2026-09-08T07:12:12.5811540Z [36;1mset -euo pipefail[0m
+2026-09-08T07:12:12.5812080Z [36;1m[[ "${TARGET_SHA}" =~ ^[0-9a-f]{40}$ ]][0m
+2026-09-08T07:12:12.5812837Z [36;1mgit clone "https://github.com/${GITHUB_REPOSITORY}.git" repo[0m
+2026-09-08T07:12:12.5813533Z [36;1mcd repo[0m
+2026-09-08T07:12:12.5814010Z [36;1mgit checkout --detach "${TARGET_SHA}"[0m
+2026-09-08T07:12:12.5851660Z shell: /usr/bin/bash -e {0}
+2026-09-08T07:12:12.5852177Z env:
+2026-09-08T07:12:12.5852668Z   TARGET_SHA: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T07:12:12.5853282Z ##[endgroup]
+2026-09-08T07:12:12.5990006Z Cloning into 'repo'...
+2026-09-08T07:12:13.2865741Z HEAD is now at db310b1 Merge independently qualified P1-O08 Issue 82 remediation
+2026-09-08T07:12:13.3024657Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T07:12:13.3032818Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+2026-09-08T07:12:13.3033640Z with:
+2026-09-08T07:12:13.3034095Z   node-version: 24.19.0
+2026-09-08T07:12:13.3034604Z   check-latest: false
+2026-09-08T07:12:13.3035090Z   always-auth: false
+2026-09-08T07:12:13.3039409Z   token: ***
+2026-09-08T07:12:13.3039885Z ##[endgroup]
+2026-09-08T07:12:13.4461243Z Attempting to download 24.19.0...
+2026-09-08T07:12:13.4552447Z (node:2143) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-09-08T07:12:13.4554990Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-09-08T07:12:14.0735913Z Acquiring 24.19.0 - x64 from https://github.com/actions/node-versions/releases/download/24.19.0-30872449280/node-24.19.0-linux-x64.tar.gz
+2026-09-08T07:12:14.6930852Z Extracting ...
+2026-09-08T07:12:14.7056832Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/d852fb16-972c-4d16-8356-89b1c09895a1 -f /home/runner/work/_temp/4820bd5c-b536-43fe-9e8d-f7a0133d6bcd
+2026-09-08T07:12:16.0512129Z Adding to the cache ...
+2026-09-08T07:12:17.7800322Z ##[group]Environment details
+2026-09-08T07:12:18.0105810Z node: v24.19.0
+2026-09-08T07:12:18.0106608Z npm: 11.17.0
+2026-09-08T07:12:18.0107345Z yarn: 1.22.22
+2026-09-08T07:12:18.0109713Z ##[endgroup]
+2026-09-08T07:12:18.0322989Z ##[group]Run set -euo pipefail
+2026-09-08T07:12:18.0323382Z [36;1mset -euo pipefail[0m
+2026-09-08T07:12:18.0323807Z [36;1mnode scripts/toolchain/resolve-scope-event.mjs >> "${GITHUB_ENV}"[0m
+2026-09-08T07:12:18.0368242Z shell: /usr/bin/bash -e {0}
+2026-09-08T07:12:18.0368587Z env:
+2026-09-08T07:12:18.0368851Z   EVENT_NAME: push
+2026-09-08T07:12:18.0369123Z   PR_BASE_SHA: 
+2026-09-08T07:12:18.0369406Z   PR_HEAD_REF: 
+2026-09-08T07:12:18.0369685Z   PR_HEAD_SHA: 
+2026-09-08T07:12:18.0370061Z   PUSH_BEFORE_SHA: b18059b27e3a9fef089c974f8dd6195d8c17dcf9
+2026-09-08T07:12:18.0370517Z   PUSH_HEAD_SHA: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T07:12:18.0370883Z   REF_NAME: main
+2026-09-08T07:12:18.0371143Z ##[endgroup]
+2026-09-08T07:12:18.0884796Z ##[group]Run set -euo pipefail
+2026-09-08T07:12:18.0885181Z [36;1mset -euo pipefail[0m
+2026-09-08T07:12:18.0885984Z [36;1mpython -m pip install --disable-pip-version-check --no-input \[0m
+2026-09-08T07:12:18.0886452Z [36;1m  "jsonschema==4.25.1" \[0m
+2026-09-08T07:12:18.0886773Z [36;1m  "referencing==0.36.2"[0m
+2026-09-08T07:12:18.0927722Z shell: /usr/bin/bash -e {0}
+2026-09-08T07:12:18.0928028Z env:
+2026-09-08T07:12:18.0928369Z   PHASE1_SCOPE_BASE: b18059b27e3a9fef089c974f8dd6195d8c17dcf9
+2026-09-08T07:12:18.0928878Z   PHASE1_SCOPE_HEAD: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T07:12:18.0929266Z   PHASE1_SCOPE_BRANCH: main
+2026-09-08T07:12:18.0929557Z   PHASE1_SCOPE_EVENT: push
+2026-09-08T07:12:18.0929839Z ##[endgroup]
+2026-09-08T07:12:19.3428702Z Defaulting to user installation because normal site-packages is not writeable
+2026-09-08T07:12:20.5046256Z Collecting jsonschema==4.25.1
+2026-09-08T07:12:20.5706088Z   Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+2026-09-08T07:12:20.6206034Z Collecting referencing==0.36.2
+2026-09-08T07:12:20.6362562Z   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
+2026-09-08T07:12:20.6508924Z Requirement already satisfied: attrs>=22.2.0 in /usr/lib/python3/dist-packages (from jsonschema==4.25.1) (23.2.0)
+2026-09-08T07:12:20.6794679Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.25.1)
+2026-09-08T07:12:20.6952818Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+2026-09-08T07:12:21.0463403Z Collecting rpds-py>=0.7.1 (from jsonschema==4.25.1)
+2026-09-08T07:12:21.0620884Z   Downloading rpds_py-2026.6.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+2026-09-08T07:12:21.0762952Z Requirement already satisfied: typing-extensions>=4.4.0 in /usr/lib/python3/dist-packages (from referencing==0.36.2) (4.10.0)
+2026-09-08T07:12:21.1136545Z Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+2026-09-08T07:12:21.1473586Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.0/90.0 kB 4.0 MB/s eta 0:00:00
+2026-09-08T07:12:21.1531137Z Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
+2026-09-08T07:12:21.1708440Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+2026-09-08T07:12:21.1879361Z Downloading rpds_py-2026.6.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (366 kB)
+2026-09-08T07:12:21.2487357Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 366.2/366.2 kB 6.1 MB/s eta 0:00:00
+2026-09-08T07:12:21.5037697Z Installing collected packages: rpds-py, referencing, jsonschema-specifications, jsonschema
+2026-09-08T07:12:21.6202096Z Successfully installed jsonschema-4.25.1 jsonschema-specifications-2025.9.1 referencing-0.36.2 rpds-py-2026.6.3
+2026-09-08T07:12:21.7120180Z ##[group]Run set -euo pipefail
+2026-09-08T07:12:21.7120548Z [36;1mset -euo pipefail[0m
+2026-09-08T07:12:21.7120829Z [36;1mBEFORE="$(git status --porcelain)"[0m
+2026-09-08T07:12:21.7121221Z [36;1mSCOPE_REPORT="/tmp/phase1-operation-scope-report.json"[0m
+2026-09-08T07:12:21.7121686Z [36;1mnode scripts/toolchain/verify-scope.mjs > "${SCOPE_REPORT}"[0m
+2026-09-08T07:12:21.7122051Z [36;1mnode -e '[0m
+2026-09-08T07:12:21.7122292Z [36;1m  const fs = require("node:fs");[0m
+2026-09-08T07:12:21.7122707Z [36;1m  const report = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));[0m
+2026-09-08T07:12:21.7123155Z [36;1m  if (report.result !== "PASS") process.exit(1);[0m
+2026-09-08T07:12:21.7123487Z [36;1m' "${SCOPE_REPORT}"[0m
+2026-09-08T07:12:21.7123822Z [36;1mpython scripts/governance/verify_m0.py \[0m
+2026-09-08T07:12:21.7124187Z [36;1m  --base "${PHASE1_SCOPE_BASE}" \[0m
+2026-09-08T07:12:21.7124495Z [36;1m  --head "${PHASE1_SCOPE_HEAD}" \[0m
+2026-09-08T07:12:21.7124813Z [36;1m  --branch "${PHASE1_SCOPE_BRANCH}" \[0m
+2026-09-08T07:12:21.7125148Z [36;1m  --scope-report "${SCOPE_REPORT}" \[0m
+2026-09-08T07:12:21.7125819Z [36;1m  --subject "${TARGET_SHA}" \[0m
+2026-09-08T07:12:21.7126130Z [36;1m  | tee /tmp/m0-independent-report.json[0m
+2026-09-08T07:12:21.7126453Z [36;1mAFTER="$(git status --porcelain)"[0m
+2026-09-08T07:12:21.7126758Z [36;1mtest "${BEFORE}" = "${AFTER}"[0m
+2026-09-08T07:12:21.7127020Z [36;1m{[0m
+2026-09-08T07:12:21.7127295Z [36;1m  echo "## M0 independent preimplementation verification"[0m
+2026-09-08T07:12:21.7127629Z [36;1m  echo[0m
+2026-09-08T07:12:21.7127865Z [36;1m  echo "- Subject: \`${TARGET_SHA}\`"[0m
+2026-09-08T07:12:21.7128293Z [36;1m  echo "- Result: **PASS**"[0m
+2026-09-08T07:12:21.7128720Z [36;1m  echo "- Remediation performed: **false**"[0m
+2026-09-08T07:12:21.7129201Z [36;1m  echo "- M0 final Gate created: **false**"[0m
+2026-09-08T07:12:21.7129684Z [36;1m  echo "- Scope base: \`${PHASE1_SCOPE_BASE}\`"[0m
+2026-09-08T07:12:21.7130243Z [36;1m  echo "- Scope branch: \`${PHASE1_SCOPE_BRANCH}\`"[0m
+2026-09-08T07:12:21.7130759Z [36;1m} >> "${GITHUB_STEP_SUMMARY}"[0m
+2026-09-08T07:12:21.7172356Z shell: /usr/bin/bash -e {0}
+2026-09-08T07:12:21.7172631Z env:
+2026-09-08T07:12:21.7172917Z   PHASE1_SCOPE_BASE: b18059b27e3a9fef089c974f8dd6195d8c17dcf9
+2026-09-08T07:12:21.7173319Z   PHASE1_SCOPE_HEAD: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T07:12:21.7173755Z   PHASE1_SCOPE_BRANCH: main
+2026-09-08T07:12:21.7174077Z   PHASE1_SCOPE_EVENT: push
+2026-09-08T07:12:21.7174350Z   TARGET_SHA: db310b1d33324e72ba7767eb66760e4e54c8e1bd
+2026-09-08T07:12:21.7174659Z ##[endgroup]
+2026-09-08T07:12:22.4929001Z {
+2026-09-08T07:12:22.4929463Z   "schemaVersion": "1.0.0",
+2026-09-08T07:12:22.4930092Z   "reportType": "M0_PREIMPLEMENTATION_READ_ONLY_VERIFICATION",
+2026-09-08T07:12:22.4930829Z   "subject": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+2026-09-08T07:12:22.4931368Z   "generatedAt": "2026-09-08T07:12:22Z",
+2026-09-08T07:12:22.4931808Z   "decision": "PASS",
+2026-09-08T07:12:22.4932142Z   "checks": [
+2026-09-08T07:12:22.4932493Z     {
+2026-09-08T07:12:22.4932845Z       "id": "M0-V01-JSON-PARSE",
+2026-09-08T07:12:22.4933205Z       "result": "PASS",
+2026-09-08T07:12:22.4933450Z       "detail": 242
+2026-09-08T07:12:22.4933711Z     },
+2026-09-08T07:12:22.4933909Z     {
+2026-09-08T07:12:22.4934157Z       "id": "M0-V02-SCHEMA-META-AND-ID",
+2026-09-08T07:12:22.4934446Z       "result": "PASS",
+2026-09-08T07:12:22.4934670Z       "detail": {
+2026-09-08T07:12:22.4934882Z         "schemas": 52
+2026-09-08T07:12:22.4935095Z       }
+2026-09-08T07:12:22.4935494Z     },
+2026-09-08T07:12:22.4935700Z     {
+2026-09-08T07:12:22.4935951Z       "id": "M0-V03-REF-RESOLUTION",
+2026-09-08T07:12:22.4936222Z       "result": "PASS",
+2026-09-08T07:12:22.4936665Z       "detail": 194
+2026-09-08T07:12:22.4936868Z     },
+2026-09-08T07:12:22.4937061Z     {
+2026-09-08T07:12:22.4937324Z       "id": "M0-V04-COMPLETE-SCHEMA-REGISTRY",
+2026-09-08T07:12:22.4937821Z       "result": "PASS",
+2026-09-08T07:12:22.4938058Z       "detail": {
+2026-09-08T07:12:22.4938270Z         "schemas": 52,
+2026-09-08T07:12:22.4938493Z         "paths": 52
+2026-09-08T07:12:22.4938702Z       }
+2026-09-08T07:12:22.4938885Z     },
+2026-09-08T07:12:22.4939073Z     {
+2026-09-08T07:12:22.4939340Z       "id": "M0-V05-ACTIVE-PLANNED-INVENTORIES",
+2026-09-08T07:12:22.4939826Z       "result": "PASS",
+2026-09-08T07:12:22.4940054Z       "detail": {
+2026-09-08T07:12:22.4940280Z         "active": 36,
+2026-09-08T07:12:22.4940525Z         "planned": 37
+2026-09-08T07:12:22.4940740Z       }
+2026-09-08T07:12:22.4940929Z     },
+2026-09-08T07:12:22.4941118Z     {
+2026-09-08T07:12:22.4941372Z       "id": "M0-V06-EXECUTABLE-EXAMPLES",
+2026-09-08T07:12:22.4941674Z       "result": "PASS",
+2026-09-08T07:12:22.4941925Z       "detail": {
+2026-09-08T07:12:22.4942139Z         "cases": 38,
+2026-09-08T07:12:22.4942361Z         "valid": 19,
+2026-09-08T07:12:22.4942588Z         "invalid": 19,
+2026-09-08T07:12:22.4942822Z         "payload": 4,
+2026-09-08T07:12:22.4943056Z         "schema": 12,
+2026-09-08T07:12:22.4943287Z         "artifact": 9
+2026-09-08T07:12:22.4943495Z       }
+2026-09-08T07:12:22.4943685Z     },
+2026-09-08T07:12:22.4943878Z     {
+2026-09-08T07:12:22.4944125Z       "id": "M0-V07-NO-PLACEHOLDER-HASHES",
+2026-09-08T07:12:22.4944423Z       "result": "PASS",
+2026-09-08T07:12:22.4944662Z       "detail": 242
+2026-09-08T07:12:22.4944870Z     },
+2026-09-08T07:12:22.4945053Z     {
+2026-09-08T07:12:22.4945510Z       "id": "M0-V08-OPERATION-AND-VERIFICATION-DAG",
+2026-09-08T07:12:22.4945873Z       "result": "PASS",
+2026-09-08T07:12:22.4946097Z       "detail": {
+2026-09-08T07:12:22.4946317Z         "operations": 9,
+2026-09-08T07:12:22.4946558Z         "steps": 11,
+2026-09-08T07:12:22.4946781Z         "gateCoverage": 11
+2026-09-08T07:12:22.4947019Z       }
+2026-09-08T07:12:22.4947219Z     },
+2026-09-08T07:12:22.4947415Z     {
+2026-09-08T07:12:22.4947659Z       "id": "M0-V09-WRITE-SCOPE-CLOSURE",
+2026-09-08T07:12:22.4947944Z       "result": "PASS",
+2026-09-08T07:12:22.4948167Z       "detail": {
+2026-09-08T07:12:22.4948382Z         "operations": 9,
+2026-09-08T07:12:22.4948644Z         "allowedPathGlobs": 177,
+2026-09-08T07:12:22.4948941Z         "executionRecordScopes": 9,
+2026-09-08T07:12:22.4949241Z         "denyByDefault": true,
+2026-09-08T07:12:22.4949546Z         "integratedReceiptOwner": "P1-O09"
+2026-09-08T07:12:22.4949819Z       }
+2026-09-08T07:12:22.4950017Z     },
+2026-09-08T07:12:22.4950198Z     {
+2026-09-08T07:12:22.4950428Z       "id": "M0-V10-AUTHORITY-LOCK",
+2026-09-08T07:12:22.4950701Z       "result": "PASS",
+2026-09-08T07:12:22.4950919Z       "detail": {
+2026-09-08T07:12:22.4951132Z         "paths": 32,
+2026-09-08T07:12:22.4951355Z         "immutable": 25,
+2026-09-08T07:12:22.4951592Z         "operationScoped": 7
+2026-09-08T07:12:22.4951847Z       }
+2026-09-08T07:12:22.4952050Z     },
+2026-09-08T07:12:22.4952233Z     {
+2026-09-08T07:12:22.4952487Z       "id": "M0-V11-ACCEPTED-ADR-IMMUTABILITY",
+2026-09-08T07:12:22.4952797Z       "result": "PASS",
+2026-09-08T07:12:22.4953021Z       "detail": 11
+2026-09-08T07:12:22.4953229Z     },
+2026-09-08T07:12:22.4953417Z     {
+2026-09-08T07:12:22.4953710Z       "id": "M0-V12-RECEIPT-ANTI-FALSE-IMPLEMENTED",
+2026-09-08T07:12:22.4954045Z       "result": "PASS",
+2026-09-08T07:12:22.4954274Z       "detail": {
+2026-09-08T07:12:22.4954500Z         "negativeErrors": 53,
+2026-09-08T07:12:22.4954747Z         "schemas": 2,
+2026-09-08T07:12:22.4955033Z         "implementationReceipt": "NOT_YET_CREATED"
+2026-09-08T07:12:22.4955933Z       }
+2026-09-08T07:12:22.4956131Z     },
+2026-09-08T07:12:22.4956321Z     {
+2026-09-08T07:12:22.4956589Z       "id": "M0-V13-OPERATION-AWARE-TRANSITION",
+2026-09-08T07:12:22.4956917Z       "result": "PASS",
+2026-09-08T07:12:22.4957146Z       "detail": {
+2026-09-08T07:12:22.4957534Z         "changedPaths": 8,
+2026-09-08T07:12:22.4957786Z         "productionPaths": 0,
+2026-09-08T07:12:22.4958067Z         "acceptedAdrPaths": 0,
+2026-09-08T07:12:22.4958483Z         "scopeReportRequired": true,
+2026-09-08T07:12:22.4958790Z         "scopeReportResult": "PASS",
+2026-09-08T07:12:22.4959087Z         "scopeMode": "OPERATION_MERGE",
+2026-09-08T07:12:22.4959418Z         "operationId": "P1-O08",
+2026-09-08T07:12:22.4959778Z         "baseCommit": "b18059b27e3a9fef089c974f8dd6195d8c17dcf9",
+2026-09-08T07:12:22.4960200Z         "headCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+2026-09-08T07:12:22.4960514Z         "branch": "main"
+2026-09-08T07:12:22.4960741Z       }
+2026-09-08T07:12:22.4960932Z     },
+2026-09-08T07:12:22.4961120Z     {
+2026-09-08T07:12:22.4961410Z       "id": "M0-V14-BRANCH-PROTECTION-PREREQUISITE",
+2026-09-08T07:12:22.4961730Z       "result": "PASS",
+2026-09-08T07:12:22.4961967Z       "detail": {
+2026-09-08T07:12:22.4962189Z         "recorded": true,
+2026-09-08T07:12:22.4962485Z         "enabledClaimed": false,
+2026-09-08T07:12:22.4962939Z         "note": "Repository settings must be independently confirmed before Phase 1 entry."
+2026-09-08T07:12:22.4963353Z       }
+2026-09-08T07:12:22.4963556Z     }
+2026-09-08T07:12:22.4963749Z   ],
+2026-09-08T07:12:22.4963947Z   "summary": {
+2026-09-08T07:12:22.4964174Z     "passed": 14,
+2026-09-08T07:12:22.4964389Z     "failed": 0,
+2026-09-08T07:12:22.4964597Z     "total": 14
+2026-09-08T07:12:22.4964802Z   },
+2026-09-08T07:12:22.4965002Z   "claimBoundary": {
+2026-09-08T07:12:22.4965459Z     "m0FinalGate": "NOT_CREATED_BY_THIS_SCRIPT",
+2026-09-08T07:12:22.4965810Z     "remediationPerformed": false
+2026-09-08T07:12:22.4966074Z   }
+2026-09-08T07:12:22.4966262Z }
+2026-09-08T07:12:22.5262935Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-08T07:12:22.5264325Z Post job cleanup.
+2026-09-08T07:12:22.6492428Z (node:2250) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-09-08T07:12:22.6493244Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-09-08T07:12:22.6662568Z Cleaning up orphan processes
+2026-09-08T07:12:22.6988005Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

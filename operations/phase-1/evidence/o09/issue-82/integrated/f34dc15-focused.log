@@ -1,0 +1,43 @@
+
+ RUN  v4.1.11 /workspace/scratch/5fb93e787236/p1-o09-subject
+
+ ✓ tests/qualification/policy/p1-v05-policy.test.mjs (16 tests) 238ms
+ ✓ tests/contract/phase-1-integration.test.mjs (1 test) 1651ms
+   ✓ canonical JSON rejection reaches the durable journal boundary without partial writes  1647ms
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/index.js" points to missing source files
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/canonical-json.js" points to missing source files
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/compatibility.js" points to missing source files
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/foundation-error.js" points to missing source files
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/examples.js" points to missing source files
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/json-schema.js" points to missing source files
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/repository.js" points to missing source files
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/inventory.js" points to missing source files
+Sourcemap for "/tmp/aseos-mutation-identity-l0DYw5/packages/contracts/dist/registry.js" points to missing source files
+ ✓ tests/qualification/policy/integrated-mutation.test.mjs (2 tests) 3649ms
+   ✓ the compiled canonical Policy owner kills eight behavioral mutations while valid ALLOW survives  1789ms
+   ✓ logical mutation identity survives a different checkout directory and CRLF emit bytes  1856ms
+ ✓ tests/contract/review-remediation.test.mjs (29 tests) 5782ms
+   ✓ type consistency detects operator drift below allOf and multiple local references  4374ms
+ ✓ tests/qualification/persistence/review-remediation.test.mjs (6 tests) 8717ms
+   ✓ rejects events payload schema identity, hash and content before any durable write  1633ms
+   ✓ rejects outbox payload schema identity, hash and content before any durable write  949ms
+   ✓ caller mutation after commit starts cannot replace a validated payload  820ms
+   ✓ invalid busy timeout leaves a healthy database byte-identical and immediately reopenable  2412ms
+   ✓ an existing truncated database is quarantined instead of initialized as an empty authority  2357ms
+   ✓ an operational open failure preserves the original path without a corruption marker  542ms
+ ✓ tests/qualification/control-api/review-remediation.test.mjs (8 tests) 9836ms
+   ✓ concurrent lock losers cannot remove a live owner's claim or metadata  5637ms
+   ✓ separate processes elect one owner and recover a killed owner's unique claim  3338ms
+   ✓ timed-out unfinished bodies close their socket and release capacity exactly once  649ms
+ ✓ tests/qualification/toolchain/review-remediation.test.mjs (6 tests) 11407ms
+   ✓ the actual required Gate shell rejects failed, cancelled, skipped and missing prerequisites  407ms
+   ✓ the authority build restores runtime-loaded assets even with up-to-date TypeScript outputs  1697ms
+   ✓ CI evidence binds the checked-out subject and rejects a mismatching requested target  6101ms
+   ✓ M0 rejects an actual invalid implementation receipt instead of checking only its schema  1586ms
+   ✓ M0 rejects a schema-valid self-declared integrated PASS without independent evidence  1592ms
+
+ Test Files  7 passed (7)
+      Tests  68 passed (68)
+   Start at  17:15:06
+   Duration  12.41s (transform 5.56s, setup 0ms, import 6.14s, tests 41.28s, environment 2ms)
+

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "check": "PHASE1_OPERATION_AWARE_WRITE_SCOPE",
+  "result": "PASS",
+  "mode": "OPERATION_EXECUTION",
+  "operationId": "P1-O09",
+  "executionRecord": "operations/phase-1/executions/p1-o09-integrated-handoff-issue-82.json",
+  "baseCommit": "db310b1d33324e72ba7767eb66760e4e54c8e1bd",
+  "headCommit": "f34dc154ec2521327635831edec3b03b5aa7d17e",
+  "branch": "phase-1/p1-o09-integrated-handoff-issue-82",
+  "enforcementMode": "DENY_BY_DEFAULT",
+  "operationStartGate": {
+    "required": false
+  },
+  "authorityLockRefresh": {
+    "lockChanged": false,
+    "changedLockedPaths": []
+  },
+  "immutableAuthorityFilesVerified": 25,
+  "changedPaths": [
+    "docs/implementation/phase-1/o09/integrated-handoff-issue-82.md",
+    "operations/phase-1/executions/p1-o09-integrated-handoff-issue-82.json",
+    "scripts/verify-phase-1/qualify-policy-mutations.mjs",
+    "tests/qualification/policy/integrated-mutation.test.mjs",
+    "tests/qualification/toolchain/review-remediation.test.mjs"
+  ],
+  "violations": []
+}
