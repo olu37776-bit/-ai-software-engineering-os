@@ -18,7 +18,7 @@
 - `docs/knowledge-reconstruction/operations/authority-sync.md`
 - 本文件及 `docs/README.md` 的新增导航。
 
-再核对该 base 的 `CONTRIBUTING.md`、`docs/README.md`、`docs/architecture/07-local-integrations.md`、`docs/architecture/04-context-contract-policy.md`、`docs/roadmap/progress-status.md`。比较审查时最新 main 是否改变交界；有变化先记录影响，不能把未合并 LF 文档当 main。
+再核对该 base 的 `CONTRIBUTING.md`、`docs/README.md`、`docs/architecture/07-local-integrations.md`、`docs/architecture/04-context-contract-policy.md`、`docs/roadmap/progress-status.md`。这些文件也只能按明确 commit SHA 通过 GitHub raw/API 单文件读取；禁止 clone/fetch/checkout 整个 Framework 仓库。比较审查时最新 main 是否改变交界；有变化先记录影响，不能把未合并 LF 文档当 main。
 
 ## 3. 必须覆盖的检查
 
@@ -32,7 +32,7 @@
 | KB-RV-06 | 增量维护可以处理新资料、代码变化、纠错、别名和失效；不会每份文件再造平台 |
 | KB-RV-07 | 新 HEAD 完整 scope 复验；B2/B3 重叠变更、双仓 commit 组合、来源/索引 subject 漂移处理明确 |
 | KB-RV-08 | 草稿写入/索引/发布分离；不能用分支名冒充隔离；同步失败不虚假发布、不破坏本地资产 |
-| KB-RV-09 | 拉取命令有实际仓库/路径/ref，未合并阶段不谎称 main 可读；不 push 本地内容 |
+| KB-RV-09 | 下载命令只允许 exact-file HTTP 获取本支线/明确依赖文件；不得 git clone/fetch/checkout Framework 仓库；未合并阶段不谎称 main 可读；不上传本地内容 |
 | KB-RV-10 | CURRENT、写范围、后续阶段、报告和回执一致；任务不越权，复杂设计没有继续塞聊天 |
 
 主动寻找新问题；不局限既有三项 P1，也不要求为了完整而立即安装模型、建立 Adapter、添加 Schema 或给每个代码文件写 Wiki。
