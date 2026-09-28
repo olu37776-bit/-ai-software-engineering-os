@@ -304,7 +304,7 @@ Embedding、reranker、后台 enrichment、GBrain 升级是以后独立能力变
 
 本仓库取代收入工具仓库成为本支线远程设计入口；不搬本地知识或私有治理历史。旧收入工具路径仅供历史追踪，不再用于当前任务。此次不修改收入工具；正式切换以本设计审查、合并和后续本机记录 Authority binding 为准。
 
-具体拉取/更新命令见[Authority 同步](../operations/authority-sync.md)。本地 checkout 固定建议为 `D:\ai-authority\ai-software-engineering-os\`，只拉公开设计，不绑定私有知识 remote。任务开始前固定 Authority SHA，不在长任务执行中自动 pull 到另一个设计版本。
+具体拉取/更新命令见[Authority 同步](../operations/authority-sync.md)。本地不建立独立 Authority Git checkout；远程 Authority 的只读缓存统一落在既有 `<SwapRepo>\.ai-local\knowledge\reconstruction\authority-cache\<AUTHORITY_SHA>\` 下。先取 `authority-index.md`，再只取它指向的 CURRENT Task 与该 Task 明确要求的 supporting Authority。任务开始前固定 Authority SHA，不在执行中追随新 HEAD。
 
 当前阶段、blocker、唯一允许动作和下一 Gate **只在** [Authority Index](../authority-index.md)维护；本设计给路线而不复制动态状态。后续每个 Task 在仓库中先写 Context、事实、目标、精确写范围、实施、测试、Evidence、门禁、报告路径和短回执。
 
