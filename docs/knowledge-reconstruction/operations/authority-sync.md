@@ -1,131 +1,168 @@
-# 本地拉取 Authority：只取 Authority 子树并固定执行版本
+# 本地获取 Authority：只下载本支线明确文件
 
-状态：`CURRENT DELIVERY GUIDE`。这里只下载公开 Authority，不执行业务建设，不上传本地文件。
+状态：`CURRENT DELIVERY GUIDE`。
 
-## 1. 固定位置
+本规则的目标不是“少 checkout 一点”，而是**完全不建立 Framework 仓库的本地 Git checkout**。
 
-- 远程：`https://github.com/olu37776-bit/-ai-software-engineering-os.git`
-- 本地只读 Authority checkout：`D:\\ai-authority\\ai-software-engineering-os`
-- 默认稀疏目录：`docs/knowledge-reconstruction/`
-- 入口：`docs/knowledge-reconstruction/authority-index.md`
+本地 Agent 只允许下载当前任务明确列出的 Knowledge Reconstruction Authority Markdown。不得 clone、fetch、pull、checkout、下载 ZIP 或 source archive。
 
-Authority checkout 不是本地 Swap 工程、正式知识仓或私有报告目录。旧 `D:\\ai-authority\\excel-arrival-tool` 保留历史即可，不改 remote、不搬内容。
+## 1. 固定边界
 
-**本地 Agent 不应为了读取 Authority 拉取或 checkout 整个 Framework 项目。** 默认使用 Git partial clone + sparse checkout；CURRENT Task 需要的少量仓库外 Authority/Contract 文件，使用固定 SHA 的 `git show` 按文件读取，不扩大工作树。
+远程仓库：
 
-## 2. 本次未合并设计的读取方式
+`https://github.com/olu37776-bit/-ai-software-engineering-os`
 
-当前设计 ref：
+本地 Authority cache：
 
-`docs/knowledge-reconstruction-design-v1-20260908`
+`D:\\ai-authority\\knowledge-reconstruction\\<AUTHORITY_SHA>\\`
 
-未合并前不能从 `main` 假定这些文件存在。后续设计合并并正式发布新的 CURRENT Task 后，再由新任务把 `$Ref` 改成 `main` 或固定批准 SHA。
+当前默认允许持久化到本地 cache 的文件只有：
 
-PowerShell：
+```text
+docs/knowledge-reconstruction/authority-index.md
+docs/knowledge-reconstruction/architecture/overall-design-v1.md
+docs/knowledge-reconstruction/reviews/design-v1-review-scope.md
+docs/knowledge-reconstruction/operations/authority-sync.md
+```
+
+这些文件就是本支线远程 Authority。Framework 其他源码、测试、配置、文档不得因为读取 Authority 而落到本机。
+
+## 2. AUTHORITY_SHA 必须由当前任务明确给出
+
+不得以 branch/main 的“最新版本”作为长期任务输入。
+
+聊天中的短执行提示词必须提供完整 40 位 `AUTHORITY_SHA`。Agent 只下载这个 commit 上的明确文件。
+
+如果没有 exact SHA：
+
+`BLOCKED_BY_AUTHORITY`
+
+不得自行解析 latest main、latest PR HEAD 后继续。
+
+## 3. Windows PowerShell：只下载四个 Authority 文件
+
+把聊天中给出的 SHA 填入 `$AuthoritySha`：
 
 ```powershell
 $ErrorActionPreference = 'Stop'
-$Repo = 'https://github.com/olu37776-bit/-ai-software-engineering-os.git'
-$A = 'D:\ai-authority\ai-software-engineering-os'
-$Ref = 'docs/knowledge-reconstruction-design-v1-20260908'
 
-function Invoke-CheckedGit {
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Arguments)
-    & git @Arguments
-    if ($LASTEXITCODE -ne 0) {
-        throw "git failed (exit=$LASTEXITCODE); stop without reset/clean."
-    }
+$Owner = 'olu37776-bit'
+$Repo = '-ai-software-engineering-os'
+$AuthoritySha = '<EXACT_40_CHAR_AUTHORITY_SHA_FROM_CURRENT_TASK>'
+$Root = "D:\ai-authority\knowledge-reconstruction\$AuthoritySha"
+
+if ($AuthoritySha -notmatch '^[0-9a-f]{40}$') {
+    throw 'Missing or invalid AUTHORITY_SHA. Stop.'
 }
 
-if (-not (Test-Path -LiteralPath $A)) {
-    New-Item -ItemType Directory -Path (Split-Path $A -Parent) -Force | Out-Null
-    Invoke-CheckedGit clone --filter=blob:none --no-checkout --single-branch --branch $Ref $Repo $A
-    Invoke-CheckedGit -C $A sparse-checkout init --cone
-    Invoke-CheckedGit -C $A sparse-checkout set docs/knowledge-reconstruction
-} else {
-    if (-not (Test-Path -LiteralPath (Join-Path $A '.git'))) {
-        throw 'Target exists but is not the expected Authority checkout.'
+$Files = @(
+    'docs/knowledge-reconstruction/authority-index.md',
+    'docs/knowledge-reconstruction/architecture/overall-design-v1.md',
+    'docs/knowledge-reconstruction/reviews/design-v1-review-scope.md',
+    'docs/knowledge-reconstruction/operations/authority-sync.md'
+)
+
+New-Item -ItemType Directory -Path $Root -Force | Out-Null
+
+foreach ($Path in $Files) {
+    $Url = "https://raw.githubusercontent.com/$Owner/$Repo/$AuthoritySha/$Path"
+    $Relative = $Path.Substring('docs/knowledge-reconstruction/'.Length)
+    $Target = Join-Path $Root $Relative
+    New-Item -ItemType Directory -Path (Split-Path $Target -Parent) -Force | Out-Null
+
+    $Response = Invoke-WebRequest -Uri $Url -UseBasicParsing
+    if ($Response.StatusCode -ne 200) {
+        throw "Authority download failed: $Path"
     }
-    $Top = (Invoke-CheckedGit -C $A rev-parse --show-toplevel).Trim()
-    if ([IO.Path]::GetFullPath($Top).TrimEnd('\') -ne [IO.Path]::GetFullPath($A).TrimEnd('\')) {
-        throw 'Wrong Git root.'
+
+    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Response.Content)
+    if ($Bytes.Length -gt 2MB) {
+        throw "Unexpected Authority file size: $Path"
     }
-    $Remote = (Invoke-CheckedGit -C $A remote get-url origin).Trim()
-    if ($Remote -ne $Repo) {
-        throw 'Origin does not match; do not rewrite it.'
-    }
-    $Dirty = @(Invoke-CheckedGit -C $A status --porcelain)
-    if ($Dirty.Count -ne 0) {
-        throw 'Authority checkout is dirty; preserve files and stop.'
-    }
-    Invoke-CheckedGit -C $A sparse-checkout init --cone
-    Invoke-CheckedGit -C $A sparse-checkout set docs/knowledge-reconstruction
+
+    [System.IO.File]::WriteAllBytes($Target, $Bytes)
 }
 
-Invoke-CheckedGit -C $A fetch --filter=blob:none --depth=1 --no-tags origin "refs/heads/${Ref}:refs/remotes/origin/${Ref}"
-Invoke-CheckedGit -C $A switch --detach "refs/remotes/origin/$Ref"
-Invoke-CheckedGit -C $A sparse-checkout reapply
+@{
+    authoritySha = $AuthoritySha
+    downloadedAt = (Get-Date).ToString('o')
+    files = $Files
+} | ConvertTo-Json -Depth 3 |
+    Set-Content -LiteralPath (Join-Path $Root 'delivery-record.json') -Encoding UTF8
 
-$AuthoritySha = (Invoke-CheckedGit -C $A rev-parse HEAD).Trim()
-Write-Host "AUTHORITY_SHA=$AuthoritySha"
-Get-Content -LiteralPath (Join-Path $A 'docs\knowledge-reconstruction\authority-index.md') -Encoding UTF8
+Get-Content -LiteralPath (Join-Path $Root 'authority-index.md') -Encoding UTF8
 ```
 
-任务开始后固定打印出的 `AUTHORITY_SHA`。同一个实施/审查记录中不得中途 pull/fetch 另一个 Authority 版本。
+执行完成后，本地 `$Root` 中只能存在：
 
-## 3. CURRENT Task 需要少量主线文件时
+- 上述四个 Authority Markdown；
+- `delivery-record.json`。
 
-默认**不要把 `docs/architecture`、`docs/roadmap` 或源码目录加入 sparse checkout**。
+没有 `.git`，没有 Framework package、源码、测试、CI、roadmap 或其他项目目录。
 
-CURRENT Task 若列出必须核对的公开仓库文件，按固定 `AUTHORITY_SHA` 精确读取，例如：
+## 4. 任务确实需要核对其他公开仓库文件时
+
+**不得下载到 Authority cache，也不得 clone 仓库。**
+
+只能按任务文档明确列出的 exact path + exact commit，通过 Raw GitHub 单文件读取到内存，例如：
 
 ```powershell
-git -C $A show "$AuthoritySha`:CONTRIBUTING.md"
-git -C $A show "$AuthoritySha`:docs/README.md"
-git -C $A show "$AuthoritySha`:docs/architecture/07-local-integrations.md"
-git -C $A show "$AuthoritySha`:docs/architecture/04-context-contract-policy.md"
-git -C $A show "$AuthoritySha`:docs/roadmap/progress-status.md"
+$Path = 'docs/architecture/07-local-integrations.md'
+$Url = "https://raw.githubusercontent.com/$Owner/$Repo/$AuthoritySha/$Path"
+$Text = (Invoke-WebRequest -Uri $Url -UseBasicParsing).Content
+
+# 直接检查 $Text；不使用 -OutFile，不持久化整个项目文件。
 ```
 
-partial clone 会只按需取这些 blob，不把对应目录完整 checkout。
+如果任务要求的是另一个明确 base/main SHA，应使用任务文档指定的那个 SHA，而不是自动跟随最新 main。
 
-如果任务要求比较另一个明确 commit/base，先只获取该 commit，再用 `git show <SHA>:<path>`：
+未被 CURRENT Task 明确列出的项目文件不得读取。
 
-```powershell
-$Base = '<TASK_DECLARED_SHA>'
-Invoke-CheckedGit -C $A fetch --filter=blob:none --depth=1 --no-tags origin $Base
-git -C $A show "$Base`:docs/architecture/07-local-integrations.md"
+## 5. 明确禁止
+
+本地 Agent 在 Authority 获取阶段不得执行：
+
+```text
+git clone
+git fetch
+git pull
+git checkout
+git switch
+git sparse-checkout
+gh repo clone
+GitHub Download ZIP
+任何 repository archive / source tarball 下载
 ```
 
-任务未声明的目录/源码不能因为“可能有用”就加入 checkout。确实需要新增公开文件时，先按 CURRENT Task 的 scope 处理；需要内部源码/资料则从本机既有事实源读取，绝不上传到 Authority checkout。
+也不得：
 
-## 4. 明确禁止的同步方式
+- 把 Framework 仓库 remote 加到本地 Swap / Knowledge Repo；
+- 把内部源码、Knowledge Page、Raw Sources、Evidence 上传到 GitHub；
+- 因 HTTP 单文件读取失败而自动退化为完整仓库下载；
+- 在一个任务运行中切换到新的 Authority SHA。
 
-Authority checkout 不执行：
+HTTP、权限或指定文件失败时立即停止并返回 blocker。
 
-- 普通 `git clone <repo>` 后完整 checkout；
-- `git pull` 让未知工作树自动前进；
-- `git fetch --all`；
-- `git sparse-checkout disable`；
-- `git checkout .` / `reset --hard` / `clean`；
-- 将本地 Swap 源码、Knowledge Repo、Raw Sources 或 Evidence 复制到本 checkout；
-- `git push`。
+## 6. 本地执行与报告
 
-网络、ref、权限或 partial clone 不受支持时停止并返回 blocker；不要自动退化为整仓 clone。
+读取顺序：
 
-## 5. 安全、恢复与后续聊天
+1. `authority-index.md`
+2. 其中标记的 CURRENT TASK
+3. CURRENT TASK 明确要求的其他 Authority 文件
+4. 本机已有 Swap 源码、Raw Sources、Knowledge Repo 和私有 Evidence
 
-只在专用 Authority checkout 下载公开设计。读取索引后，只执行其中唯一 CURRENT Task；将 `AUTHORITY_SHA` 写入该任务规定的本地报告。
+内部事实源直接从本机读取，不通过这个 GitHub Authority cache 搬运。
 
-如果已有批准任务正在执行/审查，先完成或停止该 subject，再同步新 Authority。不同 SHA 不得混入同一执行记录。
+所有本地报告记录 `AUTHORITY_SHA`。不同 Authority SHA 的执行不得合并成一个 VERIFIED subject。
 
-后续聊天只需要给：
+## 7. 后续聊天提示词
 
-- Authority repo；
-- 当前 ref/批准 SHA；
-- 本文件或短版 sparse/partial 拉取命令；
-- Authority Index；
-- CURRENT Task；
-- 文档规定的短回执。
+后续聊天只需要提供：
 
-完整设计、WRITE_SCOPE、门禁、Evidence 要求继续只维护在仓库 Authority 中。
+- `AUTHORITY_SHA`
+- 上面的 exact-file 下载命令或指向本文件
+- CURRENT TASK 文件
+- 最终短回执要求
+
+完整设计、WRITE_SCOPE、Evidence 和 Gate 留在仓库 Authority 中；Framework 项目本身不下发到本地 Agent。
