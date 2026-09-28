@@ -39,7 +39,7 @@
 - 领域知识：`D:\gbrain-knowledge\microwave-kb\`。
 - 原资料：`D:\swap-knowledge-sources\`。
 - 私有治理/报告：`<SwapRepo>\.ai-local\knowledge\reconstruction\`。
-- 新 Authority checkout：`D:\ai-authority\ai-software-engineering-os\`。
+- Authority 本地只读缓存：`<SwapRepo>\.ai-local\knowledge\reconstruction\authority-cache\<AUTHORITY_SHA>\`。
 
 `<SwapRepo>` 必须是本次 Agent 已经打开的 Swap 项目仓库；应存在 `.ai-local\\knowledge\\reconstruction\\`。如果当前工作区无法唯一证明这一点，直接 `BLOCKED_BY_AUTHORITY`，禁止扫描磁盘猜路径。Authority cache 不是 Git 仓库、不是正式知识仓；它只保存当前任务需要的远程 Authority Markdown。
 
