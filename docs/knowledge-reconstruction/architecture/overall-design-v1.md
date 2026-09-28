@@ -92,7 +92,7 @@
 
 本仓库是公开仓库，只保存可公开的设计和任务要求。内部源码、知识正文、原始资料、完整调查/审查报告、实际查询文本、内部模型地址、Secrets 和本地 source 清单不得上传。即使只有 hash/路径，也不默认允许外发。
 
-远端提交 Authority → 本地拉取固定版本 → 内部 Agent 执行 → 本地留完整 Evidence → 用户仅反馈允许公开的状态枚举。这不是自动双向同步。
+远端提交 Authority → 本地按固定 commit SHA 逐文件下载本支线 Authority → 内部 Agent 执行 → 本地留完整 Evidence → 用户仅反馈允许公开的状态枚举。这不是自动双向同步。
 
 远端状态用 `REPORTED_*` 标注用户摘要；只有本地独立审查能在本地记录 exact-subject VERIFIED。没有新的脱敏回执时，远端保持最后已知状态/待核实，不假装实时同步。不能为了让云端审查“看到证据”要求用户搬运受限文件。
 
@@ -102,7 +102,7 @@
 当前 GitHub 项目：设计 / CURRENT Task / 审查范围
                  | 只下载
                  v
-本地 Authority checkout（独立、只读消费）
+本地 Authority cache（只保存本支线明确文件）
                  |
       本地执行 Agent + 独立审查 Agent
         /                   \
