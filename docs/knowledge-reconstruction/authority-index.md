@@ -41,7 +41,7 @@
 - 私有治理/报告：`<SwapRepo>\.ai-local\knowledge\reconstruction\`。
 - 新 Authority checkout：`D:\ai-authority\ai-software-engineering-os\`。
 
-`<SwapRepo>` 必须从本机现有项目/绑定记录确定。Authority checkout 不是 Swap 源码仓，不是知识内容仓。不得因远端换仓而搬动既有本地资产。
+`<SwapRepo>` 必须从本机现有项目/绑定记录确定。Authority cache 不是 Git 仓库、不是 Swap 源码仓、不是知识内容仓。不得因远端换仓而搬动既有本地资产。
 
 ## 4. 下一门禁与推进顺序
 
