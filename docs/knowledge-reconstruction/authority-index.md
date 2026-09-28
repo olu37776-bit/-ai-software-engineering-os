@@ -41,7 +41,7 @@
 - 私有治理/报告：`<SwapRepo>\.ai-local\knowledge\reconstruction\`。
 - 新 Authority checkout：`D:\ai-authority\ai-software-engineering-os\`。
 
-`<SwapRepo>` 必须从本机现有项目/绑定记录确定。Authority cache 不是 Git 仓库、不是 Swap 源码仓、不是知识内容仓。不得因远端换仓而搬动既有本地资产。
+`<SwapRepo>` 必须是本次 Agent 已经打开的 Swap 项目仓库；应存在 `.ai-local\\knowledge\\reconstruction\\`。如果当前工作区无法唯一证明这一点，直接 `BLOCKED_BY_AUTHORITY`，禁止扫描磁盘猜路径。Authority cache 不是 Git 仓库、不是正式知识仓；它只保存当前任务需要的远程 Authority Markdown。
 
 ## 4. 下一门禁与推进顺序
 
