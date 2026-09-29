@@ -136,10 +136,3 @@ Architecture Decision
 - [Exact-subject Evidence index](../operations/phase-1/evidence/o09/p1-v10-integrated-evidence-index-issue-82.json)
 
 These handoff files do not issue the pending P1-V10 HUMAN_REVIEW or change frozen Phase 1 Authority.
-
-## 项目知识库重建支线（独立文档范围）
-
-- [GBrain / 项目知识库重建 Authority Index](knowledge-reconstruction/authority-index.md)
-- [总体设计与实施路线 V1](knowledge-reconstruction/architecture/overall-design-v1.md)
-
-当前为设计草案，具体状态与唯一允许动作以支线索引为准。本支线不改写主线 KnowledgeProviderPort、Context 或 Learning & Feedback 的 Authority；本地知识内容及私有 Evidence 不进入本仓库。
