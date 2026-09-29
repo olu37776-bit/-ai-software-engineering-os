@@ -1,73 +1,92 @@
 # 项目知识库重建：Authority Index
 
-状态：`CURRENT DESIGN ENTRY / DESIGN_REVIEW_PENDING`  
-更新：`2026-09-08`；工作包：`KB-D0`；[Issue #96](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/96)。
+状态：`CURRENT / KB-R0 LOCAL STATE RECONCILIATION`
+更新：`2026-09-29`；跟踪：Issue #104。
 
-本目录属于 `olu37776-bit/-ai-software-engineering-os`，只负责 GBrain / 项目知识库重建支线。收入工具仓库不再承载本支线的当前设计；本地知识、内部源码与完整 Evidence 不上传。
+本目录是 GBrain / Swap 项目知识库重建支线的远程 Authority。聊天只负责提供 exact Authority SHA、CURRENT Task 路径和短回执；本地正式知识、内部源码、Raw Sources 与完整 Evidence 不上传。
 
-## 1. 入口与权限
+## 1. Authority 层级
 
-上位 Authority 为 [Framework 文档规则](../README.md)及其 Charter、accepted ADR、Contract。本目录不得改变主线机器授权或 Learning & Feedback 的职责/写范围。
+上位 Framework Charter / accepted ADR / public Contract 保持原 owner。本支线只拥有知识内容、知识治理、知识发布与本地建设流程，不拥有 Runtime、Context、Router、Verification System 或 Learning 核心语义。
 
-`CURRENT` 仅标识应该阅读哪个文件，不等于设计 APPROVED、代码 IMPLEMENTED 或知识 VERIFIED。
+| 文档 | 状态 | 作用 |
+| --- | --- | --- |
+| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 知识边界、内容模型、Evidence、维护、独立验证与发布规则 |
+| `tasks/kb-r0-local-state-reconciliation-v1.md` | `CURRENT TASK` | 从本机真实 Artifact 恢复 B2/B3、Knowledge Repo、GBrain 与 Baseline 状态 |
+| `operations/authority-sync.md` | `CURRENT` | exact-SHA 单文件 Authority 获取协议 |
+| `reviews/design-v1-review-scope.md` | `HISTORICAL REVIEW AUTHORITY` | KB-D0 总体设计独立审查范围 |
 
-| 文档 | 当前角色 |
+## 2. KB-D0 设计基线
+
+- PR #98 已合并到 main，merge commit：`6b1fea1fbb7ce54f0d8d50cb1e00e6c01f298846`。
+- 独立本地设计审查已完成；用户短回执表明无 P0/P1/P2 阻塞，仅 2 个 P3 记录性问题。
+- 设计审查只证明 KB-D0 设计可作为后续任务基线，不证明本地 B2/B3 或 GBrain 当前状态。
+- 两个 P3 的完整内容继续保留在本地 Review Artifact，不上传此公开仓库。
+
+## 3. 当前唯一允许任务
+
+`KB-R0：本机 Knowledge Reconstruction 真实状态恢复 V1`
+
+Authority：
+
+`docs/knowledge-reconstruction/tasks/kb-r0-local-state-reconciliation-v1.md`
+
+本任务只读调查既有本地事实，并只写新的 reconciliation 报告。不得修改正式 Knowledge Page、Raw Sources、production code、GBrain 索引或既有历史 Artifact。
+
+## 4. 当前本地边界
+
+- 正式项目知识：`D:\gbrain-knowledge\swap-kb\`
+- 正式领域知识：`D:\gbrain-knowledge\microwave-kb\`
+- Raw Sources：`D:\swap-knowledge-sources\`
+- 本地治理根：`<SwapRepo>\.ai-local\knowledge\reconstruction\`
+- Authority cache：`<SwapRepo>\.ai-local\knowledge\reconstruction\authority-cache\<AUTHORITY_SHA>\`
+
+`<SwapRepo>` 必须是 Agent 当前打开且能够证明为 Swap 项目的仓库。不能唯一证明时 fail closed，禁止扫描磁盘猜路径。
+
+## 5. 当前已知但尚待本机重证的历史状态
+
+| 对象 | 当前远端状态 |
 | --- | --- |
-| [总体设计与实施路线 V1](architecture/overall-design-v1.md) | CURRENT DESIGN，`DRAFT`；知识模型、边界、维护、验证、发布及未来交界的完整设计 |
-| [设计 V1 独立审查范围](reviews/design-v1-review-scope.md) | CURRENT TASK；当前唯一允许的独立设计审查 |
-| [Authority 拉取与固定版本](operations/authority-sync.md) | 当前交付方式；含具体命令，不授权知识/源码修改 |
+| Survey V1 | `REPORTED_COMPLETED`，本机 Evidence 待 KB-R0 绑定 |
+| Golden Slice #1 | `REPORTED_COMPLETED`，本机 Evidence 待 KB-R0 绑定 |
+| Knowledge Construction Convention V1 | `REPORTED_READY`，本机路径/版本待 KB-R0 绑定 |
+| Batch #2：Core Swap Processing Architecture | `RECONCILE_REQUIRED`，不得凭聊天判定最终 Gate |
+| Batch #3：Source Configuration Ingestion & Normalization | `RECONCILE_REQUIRED`，不得凭聊天判定最终 Gate |
+| GBrain Source / index subject | `RECONCILE_REQUIRED` |
 
-**当前唯一动作：审查 KB-D0 设计文档。** 不开始 KB-R0/B4，不移动知识仓，不修改 B2/B3 页面，不配置新运行能力。
+## 6. 当前 Blocker
 
-## 2. 状态单点
+`LOCAL_STATE_NOT_RECONCILED`
 
-| 对象 | 当前状态 / 可证明范围 |
-| --- | --- |
-| KB-D0 文档 | 已形成草案，独立结论待产生；未声明 VERIFIED |
-| 主 Framework | 核对到 main `5577c2e8a9ef090b87924edddf6114dd75eb28a5`；实时进度以[主线进度](../roadmap/progress-status.md)为准 |
-| GBrain、双知识仓 | 用户回报已安装/建立；本轮未检查本机版本、路径和索引 |
-| Survey V1、Golden Slice #1、Convention V1 | 用户回报已完成；本机历史 Evidence 保留，不重建、不冒充本轮验证 |
-| B2 | 用户回报已建设、整改且可能已复验；`RECONCILE_REQUIRED`，不预断缺门禁 |
-| B3 | 用户回报已建设；最终 Review/Remediation/Baseline 待本机恢复 |
-| 生产 GBrain 集成 | 非本次任务，不能从文档存在推断已实现 |
+原因：远端 Authority 不能直接证明 B2/B3 最终独立结论、两个 Knowledge Repo 当前 HEAD、GBrain Source 路径与索引 subject 是否一致。
 
-当前阻塞后续实施的事项：`DESIGN_REVIEW_PENDING`；`LOCAL_SUBJECT_NOT_RECONCILED`。后者不是证据丢失的结论，只表示远端尚不能核实。
+## 7. 下一 Gate
 
-## 3. 本地绑定位置
+KB-R0 完成后只能根据本机 Evidence 进入以下之一：
 
-- 项目知识：`D:\gbrain-knowledge\swap-kb\`。
-- 领域知识：`D:\gbrain-knowledge\microwave-kb\`。
-- 原资料：`D:\swap-knowledge-sources\`。
-- 私有治理/报告：`<SwapRepo>\.ai-local\knowledge\reconstruction\`。
-- Authority 本地只读缓存：`<SwapRepo>\.ai-local\knowledge\reconstruction\authority-cache\<AUTHORITY_SHA>\`。
+- `KB_V0_B2_REVIEW_OR_REVERIFY`
+- `KB_V0_B3_REVIEW_OR_REVERIFY`
+- `KB_V0_CURRENT_HEAD_REVERIFY`
+- `KB_P0_BASELINE_AND_PUBLISH_RECONCILIATION`
+- `BLOCKED_BY_LOCAL_STATE`
 
-`<SwapRepo>` 必须是本次 Agent 已经打开的 Swap 项目仓库；应存在 `.ai-local\\knowledge\\reconstruction\\`。如果当前工作区无法唯一证明这一点，直接 `BLOCKED_BY_AUTHORITY`，禁止扫描磁盘猜路径。Authority cache 不是 Git 仓库、不是正式知识仓；它只保存当前任务需要的远程 Authority Markdown。
+KB-R0 不得自动执行下一 Gate。
 
-## 4. 下一门禁与推进顺序
+## 8. Authority 获取规则
 
-1. 独立 Reviewer 固定 KB-D0 的完整 PR HEAD，按 CURRENT TASK 检查整体设计与当前 main 交界。
-2. 若需整改：作者在 KB-D0 范围内修文档，新 HEAD 重新审查完整设计范围；不自行声明 VERIFIED。
-3. 设计通过并按仓库流程合并后，另发 CURRENT `KB-R0`，在本机恢复 B2/B3 的实际记录、双仓 HEAD 和索引状态。
-4. 复用仍覆盖当前 subject 的有效独立证据。缺失/过期时合并核验 B2/B3 对应范围；不机械重审已满足的任务，也不继承旧 HEAD PASS。
-5. 需要知识整改则另发精确写授权；通过后统一记录合法发布基线，再继续增量批次。
-6. Embedding/Graphiti、Runtime 接入按实际需求另评估，不阻塞本地知识内容维护。
+严禁 clone/fetch/pull/checkout 整个 Framework 仓库。按 `operations/authority-sync.md`：
 
-这里是顺序，不是后续各阶段的开工授权。
+1. 使用聊天给出的 exact `AUTHORITY_SHA`；
+2. 只下载本文件；
+3. 读取本文件得到 CURRENT Task；
+4. 只下载 CURRENT Task 和它明确要求的 supporting Authority；
+5. Framework 其他公开文件如确需核对，只允许 exact SHA + exact path 的 HTTP 单文件读取，不落盘。
 
-## 5. 历史入口的处置
+## 9. 历史入口
 
-| 旧内容 | 新角色 |
-| --- | --- |
-| 收入工具仓库 `docs/swap-knowledge-reconstruction/` | SUPERSEDED 入口；不再下发任务，此次不删除/改写该仓库历史 |
-| 历史聊天长提示词 | 历史背景；不能提供持续写权限 |
-| `.ai-local/knowledge-reconstruction/` | 错误旧路径；不新建，实际长期根是 `.ai-local/knowledge/reconstruction/` |
-| 旧 LLM Wiki | 线索，不能单独证明当前事实 |
-| 已有本地报告/Convention/基线 | 历史事实与有效局部约定，按实际 subject 和版本复用；不因换入口而作废 |
+- 收入工具仓库中的旧 `docs/swap-knowledge-reconstruction/`：`SUPERSEDED`，仅供历史追踪。
+- 历史聊天长提示词：非 Authority。
+- `.ai-local/knowledge-reconstruction/`：错误旧路径；正式长期根始终是 `.ai-local/knowledge/reconstruction/`。
+- 旧 LLM Wiki：clue only。
 
-迁移只是远端 Authority 归位。本设计尚在分支时，不声称已合并 main；设计批准也不重写本机历史 PASS。
-
-## 6. 状态维护与短回执
-
-远端维护者随任务切换同步本索引的 CURRENT/SUPERSEDED、blocker、下一 Gate；本地执行者按任务同步私有状态和报告。完整内部证据不能传回时，远端只记录 `REPORTED_*` 状态，不伪造 exact-HEAD VERIFIED。
-
-本次作者交付：`KB_DESIGN_V1_IMPLEMENTED`。独立审查回执由 [CURRENT TASK](reviews/design-v1-review-scope.md)唯一规定。不能从 `READY` 自动推断 APPROVED。
+当前执行必须从本文件与 CURRENT Task 恢复，不依赖旧会话记忆。
