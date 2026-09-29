@@ -1,11 +1,11 @@
 # GBrain 项目知识库重建支线：总体设计与实施路线 V1
 
-状态：`DRAFT / DESIGN_REVIEW_PENDING`  
-文档版本：`1.0.0-draft.1`；日期：`2026-09-08`  
+状态：`DESIGN BASELINE / APPROVED_FOR_DESIGN_BASELINE`  
+文档版本：`1.0.0`；首次基线：`2026-09-29`  
 范围：本地 `swap-kb` 与 `microwave-kb` 的知识重建、维护、验证和受控发布。  
 入口：[Authority Index](../authority-index.md)；跟踪：[KB-D0 / Issue #96](https://github.com/olu37776-bit/-ai-software-engineering-os/issues/96)。
 
-> 本文是整体设计，不是生产代码开工许可，也不宣称本地知识已 VERIFIED。当前唯一动作是设计审查。具体实施必须由索引指向的、另行批准的 CURRENT Task 明确授权。
+> 本文是已批准的整体设计基线，不是生产代码开工许可，也不宣称本地知识已 VERIFIED。当前阶段与唯一允许任务始终以 `authority-index.md` 为准。
 
 ## 1. 目标、使用场景与非目标
 
@@ -359,7 +359,7 @@ docs/README.md  # 仅新增本支线导航
 
 报告位置：远端作者/独立设计意见记录本 Issue/PR 的 exact-HEAD 评论或 Review；本地完整报告只进入 `<SwapRepo>\.ai-local\knowledge\reconstruction\reviews\repository-design-v1\<AUTHORITY_SHA>\`，不上传。报告格式和短回执由审查文档单点定义。
 
-当前交付回执：`KB_DESIGN_V1_IMPLEMENTED`，含义仅为设计文件已提交。合并后也不自动授权 KB-R0；索引必须另行发布 CURRENT Task。回滚以正常 PR revert 文档提交完成，不动本地知识仓。
+KB-D0 已通过独立本地审查并由 PR #98 合并形成设计基线；审查仅有 2 个 P3 记录性问题。后续执行授权由 `authority-index.md` 与 CURRENT Task 单独发布，设计基线本身不代表任何本地 Knowledge/GBrain 状态已 VERIFIED。
 
 ## 16. 参考来源及适用范围
 
