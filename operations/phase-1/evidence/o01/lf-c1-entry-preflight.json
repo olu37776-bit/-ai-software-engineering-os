@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "1.0.0",
+  "recordType": "LF_C1_REQUEST_DIAGNOSTIC_NOT_ENTRY_EVIDENCE",
+  "decision": "BLOCKED",
+  "approvedMain": null,
+  "codeStartAuthorized": false,
+  "requestValidation": "PASS",
+  "scopeAuthorityMode": "REQUEST_RANGE_ONLY",
+  "requestSha256": "7e8e0430bbabd9c70f7ebd1f43f6a51b0ff2c1a29329193831d3a6a3ad2b7718",
+  "observedMain": {
+    "commit": "b18059b27e3a9fef089c974f8dd6195d8c17dcf9",
+    "tree": "307a79feeeeaec83780657fd24a238f604d37792",
+    "protectedStatus": "OBSERVED_ACTIVE_NO_BYPASS_STRICT_REQUIRED_VERIFY",
+    "ruleset": "https://github.com/olu37776-bit/-ai-software-engineering-os/rules/21648824"
+  },
+  "source": {
+    "commit": "a5279ab7a11f023133994b98f7caf86426c69e8c",
+    "tree": "94a6534ecf04cc680a4afc85572e3ba31d772cf1",
+    "path": "docs/roadmap/learning-feedback-core-entry-plan.md",
+    "sha256": "948fe784f82699733ae5189119e056877aecb641d4dd371bf97452ee36f9a099",
+    "pullRequest": 84,
+    "merged": false
+  },
+  "range": {
+    "requestedPaths": 54,
+    "authorityGranted": false
+  },
+  "verificationSteps": 18,
+  "existingDispatcher": {
+    "operation": "LF-C1",
+    "error": "UNKNOWN_OPERATION: LF-C1"
+  },
+  "p1O02LearningDenial": ["DENIED: packages/learning/src/index.ts"],
+  "actualEntryGate": "NOT_IMPLEMENTED_OR_AUTHORIZED_BY_THIS_DIAGNOSTIC",
+  "remainingGates": {
+    "E0": {
+      "status": "BLOCKED",
+      "reason": "D01-D05 and LF-RV01-04 independently pass as business documents; complete E0 blocked by ADR ordering and upper P1 lock delegation P1 findings, retained in final CURRENT",
+      "evidence": [
+        "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3954170418",
+        "https://github.com/olu37776-bit/-ai-software-engineering-os/pull/84#discussion_r3954170420",
+        "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5580684532"
+      ]
+    },
+    "E1": {
+      "status": "BLOCKED",
+      "reason": "LF-C1 unknown; formal Authority/checker absent; G1 blocked on accepted prior ADR and lawful upper P1 shared-lock transition, not permission granted by G0"
+    },
+    "E2": {
+      "status": "BLOCKED",
+      "dependencies": [
+        {
+          "findings": ["R01", "R02", "R16"],
+          "pullRequest": 86,
+          "head": "a763f581f765e4612293abe8dc5d4dccb3bd76dd",
+          "merged": true,
+          "mergeCommit": "ed14d4179808621c8ffd5751ebbf7b6704f33b64",
+          "independentClosure": "R01_R16_PASS_R02_BLOCKED",
+          "protectedMainQualification": {
+            "status": "SUCCESS_AT_EXACT_MERGE_NOT_CURRENT_MAIN_APPROVAL",
+            "run": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34182792727",
+            "packagingRun": "https://github.com/olu37776-bit/-ai-software-engineering-os/actions/runs/34182792657",
+            "packagingConclusion": "success"
+          }
+        },
+        {
+          "findings": ["R06", "R09", "R10"],
+          "pullRequest": 87,
+          "head": "6e1a98b6979ab4f3a761438658256f9fab6184a5",
+          "merged": true,
+          "mergeCommit": "eeb65baf9b0446a4b747eefdc7b7f8c1f965ea94",
+          "independentClosure": "PASS_AT_B180_WITH_REPORTED_LIMITATIONS"
+        },
+        {
+          "findings": ["R08"],
+          "pullRequest": 88,
+          "head": "e08ad49b667957fabe139d4033c008ca850dfa9f",
+          "merged": true,
+          "mergeCommit": "204bfbf1d3fe3f3da24eb3620461325e130b049c",
+          "independentClosure": "PASS_AT_B180_WITH_REPORTED_LIMITATIONS"
+        }
+      ],
+      "reason": "Independent exact b18059b applicability: R01/R16/R06/R09/R10/R08 PASS within reported coverage; R02 BLOCKED because normal M0 accepts missing local independent-receipt evidenceRefs; not a claimed PR-scope bypass",
+      "evidence": "https://github.com/olu37776-bit/-ai-software-engineering-os/issues/85#issuecomment-5580724172"
+    },
+    "E3": {
+      "status": "BLOCKED",
+      "reason": "LF-C1-INTEGRATION proposed sole 54-path writer; actual operator/session/acceptance actor/base/expiry and lawful shared delegation absent; CLOSED, not RESERVED"
+    },
+    "E4": {
+      "status": "BLOCKED",
+      "approvedMain": null,
+      "reason": "Observed SHA is not an approved entry baseline"
+    }
+  },
+  "limitation": "Checks a frozen request, not current GitHub approval/protection or live main; never issues READY."
+}
