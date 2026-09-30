@@ -60,6 +60,18 @@ export async function verifyPhase2Scope({
   }
   const read = (path) => readFile(resolve(root, path), "utf8");
   const readJson = async (path) => JSON.parse(await read(path));
+  const isO02 =
+    branch === "phase-2/p2-o02-atomic-results" ||
+    explicitOperation === "P2-O02" ||
+    (eventBase &&
+      !/^0{40}$/.test(eventBase) &&
+      paths("diff", "--no-renames", "--name-only", "-z", eventBase, headCommit).includes(
+        "operations/phase-2/executions/p2-o02-atomic-results.json",
+      ));
+  if (isO02) {
+    const { verifyPhase2O02Scope } = await import("./phase2-scope-o02.mjs");
+    return verifyPhase2O02Scope({ branch, event, eventBase, headCommit, explicitOperation, root });
+  }
   requireCondition(["local", "push", "pull_request"].includes(event), "P2_UNKNOWN_EVENT");
   requireCondition(
     !explicitOperation || explicitOperation === PHASE2_OPERATION,

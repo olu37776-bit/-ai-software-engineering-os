@@ -1,0 +1,20 @@
+{
+  "formatVersion": "1.0.0",
+  "operationId": "P2-O02",
+  "description": "Evidence record format, not a completion receipt or runtime schema.",
+  "requiredFields": [
+    "operationId",
+    "subjectCommit",
+    "acceptedO01MainCommit",
+    "result",
+    "evidenceRefs",
+    "knownGaps",
+    "phase2Complete"
+  ],
+  "resultVocabulary": ["NOT_RUN", "PARTIAL", "PASS", "FAIL"],
+  "rules": [
+    "PASS requires every verification-plan requirement to have exact-subject passing evidence",
+    "Preserve historical P1 and O01 acceptance records",
+    "phase2Complete remains false for this slice"
+  ]
+}

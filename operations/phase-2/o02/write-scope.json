@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O02",
+  "enforcementMode": "DENY_BY_DEFAULT",
+  "exactPaths": [
+    "package.json",
+    "scripts/governance/verify_m0.py",
+    "scripts/toolchain/phase2-scope.mjs",
+    "scripts/toolchain/phase2-scope-o02.mjs",
+    "scripts/toolchain/phase2-scope-o02-policy.mjs",
+    "operations/phase-2/o02/operation.json",
+    "operations/phase-2/o02/write-scope.json",
+    "operations/phase-2/executions/p2-o02-atomic-results.json",
+    "operations/phase-2/o02/verification-plan.json",
+    "operations/phase-2/o02/result-format.json",
+    "packages/contracts/schemas/persistence/result-journal-append-batch.schema.json",
+    "packages/contracts/schema-registry.json",
+    "packages/contracts/schema-inventory.json",
+    "packages/contracts/examples/first-slice/example-suite.json",
+    "packages/contracts/type-bindings.json",
+    "packages/contracts/src/types.generated.ts",
+    "packages/contracts/examples/persistence/valid/result-journal-append-batch.json",
+    "packages/contracts/examples/persistence/valid/result-journal-scheduled-batch.json",
+    "packages/contracts/examples/persistence/invalid/result-journal-missing-result.json",
+    "tests/contract/persistence/p2-result-journal-contract.test.mjs",
+    "tests/contract/example-suite.test.mjs",
+    "tests/qualification/packaging/clean-windows-startup.test.mjs",
+    "packages/persistence/src/persistence-worker.ts",
+    "packages/persistence/src/index.ts",
+    "scripts/qualification/persistence/qualify-result-journal.mjs",
+    "docs/implementation/phase-2/p2-o02-atomic-results.md",
+    "docs/roadmap/progress-status.md"
+  ],
+  "prefixes": [
+    "tests/qualification/persistence/p2-",
+    "tests/fault-injection/persistence/p2-",
+    "scripts/qualification/persistence/p2-",
+    "operations/phase-2/evidence/p2-o02/",
+    "docs/implementation/phase-2/o02/"
+  ]
+}

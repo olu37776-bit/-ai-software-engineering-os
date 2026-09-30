@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aseos:schema:result-journal-append-batch:1.0.0",
+  "x-schemaVersion": "1.0.0",
+  "title": "ResultJournalAppendBatch",
+  "description": "Atomic result-journal request. Cross-field task identity, deduplication and stream invariants are enforced by the persistence transaction, not inferred from schema validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "batch",
+    "result"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "batch": {
+      "$ref": "urn:aseos:schema:journal-append-batch:1.0.0"
+    },
+    "result": {
+      "$ref": "urn:aseos:schema:side-effect-result-envelope:1.0.0"
+    },
+    "checkpoint": {
+      "$ref": "urn:aseos:schema:projection-checkpoint:1.0.0"
+    }
+  }
+}

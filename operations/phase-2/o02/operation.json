@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0.0",
+  "operationId": "P2-O02",
+  "name": "Atomic worker-result journal and durable pending outbox read",
+  "acceptedO01MainCommit": "449b740cdaf45e822ccc8e5fb256d5960fdbf206",
+  "authorization": {
+    "source": "EXPLICIT_USER_CONTINUATION",
+    "contractMutation": "SINGLE_ADDITIVE_RESULT_JOURNAL_CONTRACT",
+    "boundary": "Continue the user's authorized mainline construction only after accepted O01 main qualification; no migration, existing contract mutation, workflow lifecycle change or frozen P1 lock rewrite."
+  },
+  "scopeRef": "operations/phase-2/o02/write-scope.json",
+  "verificationRef": "operations/phase-2/o02/verification-plan.json",
+  "resultFormatRef": "operations/phase-2/o02/result-format.json",
+  "status": "IN_PROGRESS",
+  "phase2Complete": false
+}

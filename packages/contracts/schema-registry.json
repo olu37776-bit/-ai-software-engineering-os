@@ -366,6 +366,13 @@
       "sha256": "bb8c6e1011b888de71ae06824f6438de3e51a825883f4080ad309f04a6e75db2",
       "category": "FIXTURE",
       "examplesRequired": true
+    },
+    {
+      "schemaId": "urn:aseos:schema:result-journal-append-batch:1.0.0",
+      "authorityPath": "packages/contracts/schemas/persistence/result-journal-append-batch.schema.json",
+      "sha256": "a5c21563fe78c09c66e60bc38160196f7d71addb13a44f2d969529d8909dfb3e",
+      "category": "RUNTIME",
+      "examplesRequired": true
     }
   ]
 }

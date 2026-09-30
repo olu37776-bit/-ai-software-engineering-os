@@ -1124,6 +1124,12 @@ export type ProjectionCheckpoint = Readonly<{
   readonly sourceSequence: number;
   readonly updatedAt: string;
 }>;
+export type ResultJournalAppendBatch = Readonly<{
+  readonly batch: JournalAppendBatch;
+  readonly checkpoint?: ProjectionCheckpoint;
+  readonly result: SideEffectResultEnvelope;
+  readonly schemaVersion: "1.0.0";
+}>;
 export type RuntimeHealth = Readonly<{
   readonly checkedAt: string;
   readonly findings: readonly DiagnosticFinding[];

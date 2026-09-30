@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "1.0.0",
+  "batch": {
+    "schemaVersion": "1.0.0",
+    "transactionId": "0198e0a1-0000-7024-8024-000000000024",
+    "commandId": "0198e0a1-0000-7007-8007-000000000007",
+    "idempotencyKey": "worker-result:0198e0a1-0000-7005-8005-000000000005",
+    "effectScope": "WorkerResult:0198e0a1-0000-7005-8005-000000000005",
+    "payloadHash": "8d3a459ee58ce75f3236cae9342998439e48958b2326ab329e3024a59b30cab8",
+    "stream": {
+      "aggregateType": "WorkflowRun",
+      "aggregateId": "0198e0a1-0000-7002-8002-000000000002",
+      "expectedVersion": 1
+    },
+    "events": [
+      {
+        "schemaVersion": "1.0.0",
+        "eventId": "0198e0a1-0000-7023-8023-000000000023",
+        "eventType": "SideEffectResultRecorded",
+        "aggregateType": "WorkflowRun",
+        "aggregateId": "0198e0a1-0000-7002-8002-000000000002",
+        "aggregateVersion": 2,
+        "occurredAt": "2026-08-26T08:10:03Z",
+        "actor": {
+          "actorType": "SYSTEM",
+          "actorId": "kernel",
+          "actorVersion": "0.1.0"
+        },
+        "causationId": "0198e0a1-0000-7007-8007-000000000007",
+        "correlationId": "0198e0a1-0000-7003-8003-000000000003",
+        "payloadSchema": {
+          "schemaId": "urn:aseos:schema:side-effect-result-envelope:1.0.0",
+          "schemaVersion": "1.0.0",
+          "schemaHash": "f9bc5d3503bada61d8b09908bc1f7430ff5ccddd1277a67febd3a1bbe16364cc"
+        },
+        "payloadHash": "77830ced9af339781ac86627012d0457d9e909c3db38d10a09fb8c60553591b5",
+        "payload": {
+          "schemaVersion": "1.0.0",
+          "resultId": "0198e0a1-0000-7007-8007-000000000007",
+          "taskId": "0198e0a1-0000-7005-8005-000000000005",
+          "executionId": "0198e0a1-0000-7006-8006-000000000006",
+          "attempt": 1,
+          "correlationId": "0198e0a1-0000-7003-8003-000000000003",
+          "outcome": "SUCCEEDED",
+          "startedAt": "2026-08-26T08:10:02Z",
+          "completedAt": "2026-08-26T08:10:03Z",
+          "adapterId": "windows-process-restricted-workspace",
+          "adapterVersion": "1.0.0",
+          "selectedIsolationLevel": "PROCESS_RESTRICTED",
+          "isolationEvidenceRef": {
+            "artifactId": "0198e0a1-0000-7104-8004-000000000104",
+            "sha256": "6a9681f47f43a20a79167ec9868ec1ef10f37c5bfdadff32d1356e314635cb94",
+            "mediaType": "application/vnd.aseos.isolation-evidence+json",
+            "sizeBytes": 76,
+            "sensitivity": "INTERNAL",
+            "logicalName": "isolation-evidence.json"
+          },
+          "outputArtifactRefs": [
+            {
+              "artifactId": "0198e0a1-0000-7103-8003-000000000103",
+              "sha256": "04976d39027e4947d35829b27d851d58adbd502097202de0fbb505d6d6bcaf67",
+              "mediaType": "text/x-diff",
+              "sizeBytes": 60,
+              "sensitivity": "INTERNAL",
+              "logicalName": "change.diff"
+            }
+          ],
+          "evidenceRefs": [
+            {
+              "subjectType": "Evidence",
+              "subjectId": "0198e0a1-0000-7008-8008-000000000008"
+            }
+          ],
+          "payloadSchema": {
+            "schemaId": "urn:aseos:schema:apply-workspace-change-result:1.0.0",
+            "schemaVersion": "1.0.0",
+            "schemaHash": "7aaf732ecf5839d0b7a0b6fafe859f88725705f75463cc8f17eea0438137e770"
+          },
+          "payloadHash": "3943dcfe78faf1b7c0eaf48eecee301839fa946d1ca72b15ef397f1a340d112e",
+          "payload": {
+            "changeSetId": "0198e0a1-0000-700e-800e-00000000000e",
+            "beforeSnapshotHash": "9220e38f08d4e4102e5f174940b4f6b234e27bcff47fc00257599779ef85ce03",
+            "afterSnapshotHash": "fc85386f42e3c8fe4586786c3bd1992dbbf626949e1f0064ad0b8f1ba3740cdb",
+            "changedPaths": [
+              "target.txt"
+            ]
+          }
+        }
+      }
+    ],
+    "outbox": [],
+    "audit": [
+      {
+        "auditId": "0198e0a1-0000-7025-8025-000000000025",
+        "occurredAt": "2026-08-26T08:10:03Z",
+        "action": "SIDE_EFFECT_RESULT_RECORDED",
+        "payloadHash": "77830ced9af339781ac86627012d0457d9e909c3db38d10a09fb8c60553591b5"
+      }
+    ],
+    "capturedAt": "2026-08-26T08:10:03Z"
+  },
+  "checkpoint": {
+    "schemaVersion": "1.0.0",
+    "projectionName": "workflow-result-projection",
+    "projectionVersion": "1.0.0",
+    "sourceSequence": 2,
+    "rebuiltFromSequence": null,
+    "updatedAt": "2026-08-26T08:10:03Z"
+  }
+}

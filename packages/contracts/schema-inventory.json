@@ -1524,6 +1524,49 @@
       "sha256": "35ff0e24f7beb2328d445f3a0bab946e310e2095294d690fc0fea1b1f76c272d",
       "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
       "exampleRequired": true
+    },
+    {
+      "contractId": "aseos.persistence.result-journal-append-batch",
+      "canonicalName": "ResultJournalAppendBatch",
+      "domain": "persistence",
+      "canonicalOwner": "packages/persistence",
+      "contractKind": "JSON_SCHEMA",
+      "schemaVersion": "1.0.0",
+      "status": "BASELINE_DRAFT",
+      "priority": "P2",
+      "phaseIntroduced": "PHASE_2",
+      "authorityPath": "packages/contracts/schemas/persistence/result-journal-append-batch.schema.json",
+      "persisted": true,
+      "publicBoundary": true,
+      "sensitivity": "INTERNAL",
+      "producers": [
+        "kernel"
+      ],
+      "consumers": [
+        "persistence-worker"
+      ],
+      "dependsOn": [
+        "aseos.persistence.journal-append-batch",
+        "aseos.kernel.side-effect-result-envelope",
+        "aseos.persistence.projection-checkpoint"
+      ],
+      "adrRefs": [
+        "ADR-0008"
+      ],
+      "examplePaths": [
+        "packages/contracts/examples/persistence/valid/result-journal-append-batch.json",
+        "packages/contracts/examples/persistence/invalid/result-journal-missing-result.json"
+      ],
+      "verificationObligations": [
+        "result-event-inbox-outbox-checkpoint-atomicity",
+        "scheduled-task-identity-binding",
+        "duplicate-result-idempotency",
+        "failure-before-commit-rollback"
+      ],
+      "schemaId": "urn:aseos:schema:result-journal-append-batch:1.0.0",
+      "sha256": "a5c21563fe78c09c66e60bc38160196f7d71addb13a44f2d969529d8909dfb3e",
+      "hashPolicy": "SHA256_EXACT_AUTHORITY_FILE_BYTES",
+      "exampleRequired": true
     }
   ],
   "plannedInventoryRef": "packages/contracts/planned-contracts.json",

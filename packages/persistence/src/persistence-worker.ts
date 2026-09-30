@@ -14,6 +14,8 @@ import {
   type OutboxRecord,
   type PersistenceCommitReceipt,
   type ProjectionCheckpoint,
+  type ResultJournalAppendBatch,
+  type SideEffectTaskEnvelope,
   type StateSchemaManifest,
 } from "@aseos/contracts";
 
@@ -584,166 +586,172 @@ function commitBatch(batch: JournalAppendBatch): PersistenceCommitReceipt {
     return parseJson(duplicate["receipt_json"], "command receipt") as PersistenceCommitReceipt;
   }
   verifyOutbox(batch);
-  return runTransaction(() => {
-    const transactionalDuplicate = findCommandDuplicate(batch);
-    if (transactionalDuplicate !== undefined) {
-      return parseJson(
-        transactionalDuplicate["receipt_json"],
-        "command receipt",
-      ) as PersistenceCommitReceipt;
-    }
-    verifyOutboxIdentities(batch);
-    const currentVersion = currentAggregateVersion(batch);
-    if (currentVersion !== batch.stream.expectedVersion) {
-      throw new InternalPersistenceError(
-        "PERSISTENCE_OPTIMISTIC_CONCURRENCY",
-        "Aggregate expected version does not match authority storage",
-        { expectedVersion: batch.stream.expectedVersion, actualVersion: currentVersion },
-      );
-    }
-    const insertEvent = db().prepare(
-      "INSERT INTO event_journal(event_id, aggregate_type, aggregate_id, aggregate_version, occurred_at, payload_schema_id, payload_schema_version, payload_schema_hash, payload_hash, payload_json, event_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  return runTransaction(() => appendBatchWithinTransaction(batch));
+}
+
+function appendBatchWithinTransaction(batch: JournalAppendBatch): PersistenceCommitReceipt {
+  const transactionalDuplicate = findCommandDuplicate(batch);
+  if (transactionalDuplicate !== undefined) {
+    return parseJson(
+      transactionalDuplicate["receipt_json"],
+      "command receipt",
+    ) as PersistenceCommitReceipt;
+  }
+  verifyOutboxIdentities(batch);
+  const currentVersion = currentAggregateVersion(batch);
+  if (currentVersion !== batch.stream.expectedVersion) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_OPTIMISTIC_CONCURRENCY",
+      "Aggregate expected version does not match authority storage",
+      { expectedVersion: batch.stream.expectedVersion, actualVersion: currentVersion },
     );
-    batch.events.forEach((event, index) => {
-      verifyEvent(event, batch, currentVersion + index + 1);
-      insertEvent.run(
-        event.eventId,
-        event.aggregateType,
-        event.aggregateId,
-        event.aggregateVersion,
-        event.occurredAt,
-        event.payloadSchema.schemaId,
-        event.payloadSchema.schemaVersion,
-        event.payloadSchema.schemaHash,
-        event.payloadHash,
-        canonicalJson(event.payload),
-        canonicalJson(event),
-      );
-    });
-    const insertOutbox = db().prepare(
-      "INSERT INTO outbox(task_id, idempotency_key, effect_scope, payload_hash, envelope_json, status, attempt, created_at, leased_until) VALUES (?, ?, ?, ?, ?, 'PENDING', ?, ?, NULL)",
+  }
+  const insertEvent = db().prepare(
+    "INSERT INTO event_journal(event_id, aggregate_type, aggregate_id, aggregate_version, occurred_at, payload_schema_id, payload_schema_version, payload_schema_hash, payload_hash, payload_json, event_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  );
+  batch.events.forEach((event, index) => {
+    verifyEvent(event, batch, currentVersion + index + 1);
+    insertEvent.run(
+      event.eventId,
+      event.aggregateType,
+      event.aggregateId,
+      event.aggregateVersion,
+      event.occurredAt,
+      event.payloadSchema.schemaId,
+      event.payloadSchema.schemaVersion,
+      event.payloadSchema.schemaHash,
+      event.payloadHash,
+      canonicalJson(event.payload),
+      canonicalJson(event),
     );
-    for (const task of batch.outbox) {
-      insertOutbox.run(
-        task.taskId,
-        task.idempotencyKey,
-        task.effectScope,
-        task.payloadHash,
-        canonicalJson(task),
-        task.attempt,
-        batch.capturedAt,
-      );
-    }
-    const insertAudit = db().prepare(
-      "INSERT INTO audit_facts(audit_id, occurred_at, action, payload_hash) VALUES (?, ?, ?, ?)",
-    );
-    for (const audit of batch.audit) {
-      insertAudit.run(audit.auditId, audit.occurredAt, audit.action, audit.payloadHash);
-    }
-    const receiptBase = {
-      schemaVersion: "1.0.0" as const,
-      transactionId: batch.transactionId,
-      commandId: batch.commandId,
-      aggregateType: batch.stream.aggregateType,
-      aggregateId: batch.stream.aggregateId,
-      committedVersion: currentVersion + batch.events.length,
-      eventIds: batch.events.map((event) => event.eventId),
-      outboxTaskIds: batch.outbox.map((task) => task.taskId),
-      auditIds: batch.audit.map((audit) => audit.auditId),
-      committedAt: batch.capturedAt,
-    };
-    const receipt: PersistenceCommitReceipt = {
-      ...receiptBase,
-      receiptHash: canonicalJsonSha256(receiptBase),
-    };
-    db()
-      .prepare(
-        "INSERT INTO command_receipts(command_id, idempotency_key, effect_scope, payload_hash, outcome_hash, status, receipt_json, completed_at) VALUES (?, ?, ?, ?, ?, 'COMMITTED', ?, ?)",
-      )
-      .run(
-        batch.commandId,
-        batch.idempotencyKey,
-        batch.effectScope,
-        batch.payloadHash,
-        receipt.receiptHash,
-        canonicalJson(receipt),
-        batch.capturedAt,
-      );
-    return receipt;
   });
+  const insertOutbox = db().prepare(
+    "INSERT INTO outbox(task_id, idempotency_key, effect_scope, payload_hash, envelope_json, status, attempt, created_at, leased_until) VALUES (?, ?, ?, ?, ?, 'PENDING', ?, ?, NULL)",
+  );
+  for (const task of batch.outbox) {
+    insertOutbox.run(
+      task.taskId,
+      task.idempotencyKey,
+      task.effectScope,
+      task.payloadHash,
+      canonicalJson(task),
+      task.attempt,
+      batch.capturedAt,
+    );
+  }
+  const insertAudit = db().prepare(
+    "INSERT INTO audit_facts(audit_id, occurred_at, action, payload_hash) VALUES (?, ?, ?, ?)",
+  );
+  for (const audit of batch.audit) {
+    insertAudit.run(audit.auditId, audit.occurredAt, audit.action, audit.payloadHash);
+  }
+  const receiptBase = {
+    schemaVersion: "1.0.0" as const,
+    transactionId: batch.transactionId,
+    commandId: batch.commandId,
+    aggregateType: batch.stream.aggregateType,
+    aggregateId: batch.stream.aggregateId,
+    committedVersion: currentVersion + batch.events.length,
+    eventIds: batch.events.map((event) => event.eventId),
+    outboxTaskIds: batch.outbox.map((task) => task.taskId),
+    auditIds: batch.audit.map((audit) => audit.auditId),
+    committedAt: batch.capturedAt,
+  };
+  const receipt: PersistenceCommitReceipt = {
+    ...receiptBase,
+    receiptHash: canonicalJsonSha256(receiptBase),
+  };
+  db()
+    .prepare(
+      "INSERT INTO command_receipts(command_id, idempotency_key, effect_scope, payload_hash, outcome_hash, status, receipt_json, completed_at) VALUES (?, ?, ?, ?, ?, 'COMMITTED', ?, ?)",
+    )
+    .run(
+      batch.commandId,
+      batch.idempotencyKey,
+      batch.effectScope,
+      batch.payloadHash,
+      receipt.receiptHash,
+      canonicalJson(receipt),
+      batch.capturedAt,
+    );
+  return receipt;
 }
 
 function recordInbox(record: InboxRecord): InboxRecord {
-  return runTransaction(() => {
-    const existing = db()
-      .prepare(
-        "SELECT result_id, task_id, payload_hash, status, received_at FROM inbox WHERE result_id = ? OR task_id = ?",
-      )
-      .all(record.resultId, record.taskId) as unknown[];
-    if (existing.length > 0) {
-      const rows = existing.map((value) => asRecord(value, "inbox"));
-      const row = rows[0];
-      if (
-        rows.length !== 1 ||
-        row === undefined ||
-        requiredString(row, "result_id", "inbox") !== record.resultId ||
-        requiredString(row, "task_id", "inbox") !== record.taskId ||
-        requiredString(row, "payload_hash", "inbox") !== record.payloadHash
-      ) {
-        throw new InternalPersistenceError(
-          "PERSISTENCE_IDEMPOTENCY_CONFLICT",
-          "Inbox result or task identity was reused by a different record",
-        );
-      }
-      return {
-        schemaVersion: "1.0.0",
-        resultId: requiredString(row, "result_id", "inbox"),
-        taskId: requiredString(row, "task_id", "inbox"),
-        payloadHash: requiredString(row, "payload_hash", "inbox"),
-        status: "DUPLICATE",
-        receivedAt: requiredString(row, "received_at", "inbox"),
-      };
+  return runTransaction(() => recordInboxWithinTransaction(record));
+}
+
+function recordInboxWithinTransaction(record: InboxRecord): InboxRecord {
+  const existing = db()
+    .prepare(
+      "SELECT result_id, task_id, payload_hash, status, received_at FROM inbox WHERE result_id = ? OR task_id = ?",
+    )
+    .all(record.resultId, record.taskId) as unknown[];
+  if (existing.length > 0) {
+    const rows = existing.map((value) => asRecord(value, "inbox"));
+    const row = rows[0];
+    if (
+      rows.length !== 1 ||
+      row === undefined ||
+      requiredString(row, "result_id", "inbox") !== record.resultId ||
+      requiredString(row, "task_id", "inbox") !== record.taskId ||
+      requiredString(row, "payload_hash", "inbox") !== record.payloadHash
+    ) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+        "Inbox result or task identity was reused by a different record",
+      );
     }
-    db()
-      .prepare(
-        "INSERT INTO inbox(result_id, task_id, payload_hash, status, received_at) VALUES (?, ?, ?, ?, ?)",
-      )
-      .run(record.resultId, record.taskId, record.payloadHash, record.status, record.receivedAt);
-    return record;
-  });
+    return {
+      schemaVersion: "1.0.0",
+      resultId: requiredString(row, "result_id", "inbox"),
+      taskId: requiredString(row, "task_id", "inbox"),
+      payloadHash: requiredString(row, "payload_hash", "inbox"),
+      status: "DUPLICATE",
+      receivedAt: requiredString(row, "received_at", "inbox"),
+    };
+  }
+  db()
+    .prepare(
+      "INSERT INTO inbox(result_id, task_id, payload_hash, status, received_at) VALUES (?, ?, ?, ?, ?)",
+    )
+    .run(record.resultId, record.taskId, record.payloadHash, record.status, record.receivedAt);
+  return record;
 }
 
 function saveCheckpoint(checkpoint: ProjectionCheckpoint): ProjectionCheckpoint {
-  return runTransaction(() => {
-    const existing = db()
-      .prepare("SELECT source_sequence FROM projection_checkpoints WHERE projection_name = ?")
-      .get(checkpoint.projectionName);
-    if (
-      existing !== undefined &&
-      requiredSafeInteger(
-        asRecord(existing, "projection checkpoint"),
-        "source_sequence",
-        "checkpoint",
-      ) > checkpoint.sourceSequence
-    ) {
-      throw new InternalPersistenceError(
-        "PERSISTENCE_OPTIMISTIC_CONCURRENCY",
-        "Projection checkpoint cannot move backwards",
-      );
-    }
-    db()
-      .prepare(
-        "INSERT INTO projection_checkpoints(projection_name, projection_version, source_sequence, rebuilt_from_sequence, updated_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(projection_name) DO UPDATE SET projection_version = excluded.projection_version, source_sequence = excluded.source_sequence, rebuilt_from_sequence = excluded.rebuilt_from_sequence, updated_at = excluded.updated_at",
-      )
-      .run(
-        checkpoint.projectionName,
-        checkpoint.projectionVersion,
-        checkpoint.sourceSequence,
-        checkpoint.rebuiltFromSequence,
-        checkpoint.updatedAt,
-      );
-    return checkpoint;
-  });
+  return runTransaction(() => saveCheckpointWithinTransaction(checkpoint));
+}
+
+function saveCheckpointWithinTransaction(checkpoint: ProjectionCheckpoint): ProjectionCheckpoint {
+  const existing = db()
+    .prepare("SELECT source_sequence FROM projection_checkpoints WHERE projection_name = ?")
+    .get(checkpoint.projectionName);
+  if (
+    existing !== undefined &&
+    requiredSafeInteger(
+      asRecord(existing, "projection checkpoint"),
+      "source_sequence",
+      "checkpoint",
+    ) > checkpoint.sourceSequence
+  ) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_OPTIMISTIC_CONCURRENCY",
+      "Projection checkpoint cannot move backwards",
+    );
+  }
+  db()
+    .prepare(
+      "INSERT INTO projection_checkpoints(projection_name, projection_version, source_sequence, rebuilt_from_sequence, updated_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(projection_name) DO UPDATE SET projection_version = excluded.projection_version, source_sequence = excluded.source_sequence, rebuilt_from_sequence = excluded.rebuilt_from_sequence, updated_at = excluded.updated_at",
+    )
+    .run(
+      checkpoint.projectionName,
+      checkpoint.projectionVersion,
+      checkpoint.sourceSequence,
+      checkpoint.rebuiltFromSequence,
+      checkpoint.updatedAt,
+    );
+  return checkpoint;
 }
 
 function getCommand(commandId: string): CommandDedupRecord | null {
@@ -764,6 +772,203 @@ function getCommand(commandId: string): CommandDedupRecord | null {
     status: "COMMITTED",
     completedAt: requiredString(row, "completed_at", "command receipt"),
   };
+}
+
+function checkedReceipt(value: unknown): PersistenceCommitReceipt {
+  const receipt = parseJson(value, "command receipt") as PersistenceCommitReceipt;
+  const { receiptHash, ...base } = receipt;
+  if (canonicalJsonSha256(base) !== receiptHash) {
+    throw new InternalPersistenceError("PERSISTENCE_CORRUPTION", "Stored receipt hash is invalid");
+  }
+  return receipt;
+}
+
+function verifyResultTask(input: ResultJournalAppendBatch): void {
+  const { result, batch } = input;
+  const rowValue = db()
+    .prepare("SELECT envelope_json FROM outbox WHERE task_id = ?")
+    .get(result.taskId);
+  if (rowValue === undefined) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_CONTRACT_INVALID",
+      "Result has no durable scheduled task",
+    );
+  }
+  const row = asRecord(rowValue, "scheduled task");
+  const task = parseJson(row["envelope_json"], "scheduled task") as SideEffectTaskEnvelope;
+  if (task.causationId === undefined) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_CONTRACT_INVALID",
+      "Scheduled task has no causation identity",
+    );
+  }
+  const originEventValue = db()
+    .prepare("SELECT event_json FROM event_journal WHERE event_id = ?")
+    .get(task.causationId);
+  const originEvent =
+    originEventValue === undefined
+      ? undefined
+      : (parseJson(
+          asRecord(originEventValue, "scheduling event")["event_json"],
+          "scheduling event",
+        ) as DomainEventEnvelope);
+  const commandId = originEvent?.causationId ?? task.causationId;
+  const receiptValue = db()
+    .prepare("SELECT receipt_json FROM command_receipts WHERE command_id = ?")
+    .get(commandId);
+  if (receiptValue === undefined) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_CONTRACT_INVALID",
+      "Scheduled task has no producing command receipt",
+    );
+  }
+  const receipt = checkedReceipt(asRecord(receiptValue, "scheduled receipt")["receipt_json"]);
+  if (
+    task.taskId !== result.taskId ||
+    task.executionId !== result.executionId ||
+    task.attempt !== result.attempt ||
+    task.correlationId !== result.correlationId ||
+    receipt.commandId !== commandId ||
+    !receipt.outboxTaskIds.includes(result.taskId) ||
+    (originEvent !== undefined &&
+      (!receipt.eventIds.includes(originEvent.eventId) ||
+        originEvent.aggregateId !== batch.stream.aggregateId ||
+        originEvent.aggregateType !== batch.stream.aggregateType)) ||
+    receipt.aggregateType !== batch.stream.aggregateType ||
+    receipt.aggregateId !== batch.stream.aggregateId ||
+    receipt.committedVersion > batch.stream.expectedVersion
+  ) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_CONTRACT_INVALID",
+      "Result does not match its scheduled task and stream",
+    );
+  }
+}
+
+function appendResultWithinTransaction(input: ResultJournalAppendBatch): PersistenceCommitReceipt {
+  const { batch, result, checkpoint } = input;
+  verifyResultTask(input);
+  const duplicate = findCommandDuplicate(batch);
+  const inboxRows = db()
+    .prepare(
+      "SELECT result_id, task_id, payload_hash, status FROM inbox WHERE result_id = ? OR task_id = ?",
+    )
+    .all(result.resultId, result.taskId) as unknown[];
+  if (duplicate !== undefined || inboxRows.length > 0) {
+    const inbox = inboxRows.length === 1 ? asRecord(inboxRows[0], "inbox") : undefined;
+    if (
+      duplicate === undefined ||
+      inbox?.["result_id"] !== result.resultId ||
+      inbox["task_id"] !== result.taskId ||
+      inbox["payload_hash"] !== canonicalJsonSha256(result) ||
+      inbox["status"] !== "ACCEPTED"
+    ) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+        "Result identity conflicts or lacks an atomic original receipt",
+      );
+    }
+    const receipt = checkedReceipt(duplicate["receipt_json"]);
+    const eventRow = db()
+      .prepare("SELECT event_json FROM event_journal WHERE event_id = ?")
+      .get(receipt.eventIds[0] ?? "");
+    if (
+      eventRow === undefined ||
+      receipt.eventIds.length !== 1 ||
+      receipt.aggregateId !== batch.stream.aggregateId ||
+      receipt.aggregateType !== batch.stream.aggregateType
+    ) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_CORRUPTION",
+        "Result receipt has no matching journal event",
+      );
+    }
+    const event = parseJson(
+      asRecord(eventRow, "result event")["event_json"],
+      "result event",
+    ) as DomainEventEnvelope;
+    if (
+      event.eventType !== "SideEffectResultRecorded" ||
+      event.causationId !== result.resultId ||
+      canonicalJson(event.payload) !== canonicalJson(result)
+    ) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_IDEMPOTENCY_CONFLICT",
+        "Result receipt is not an atomic result outcome",
+      );
+    }
+    return receipt;
+  }
+  verifyOutbox(batch);
+  const receipt = appendBatchWithinTransaction(batch);
+  recordInboxWithinTransaction({
+    schemaVersion: "1.0.0",
+    resultId: result.resultId,
+    taskId: result.taskId,
+    payloadHash: canonicalJsonSha256(result),
+    status: "ACCEPTED",
+    receivedAt: batch.capturedAt,
+  });
+  if (checkpoint !== undefined) {
+    const sequence = requiredSafeInteger(
+      asRecord(
+        db().prepare("SELECT COALESCE(MAX(sequence), 0) AS sequence FROM event_journal").get(),
+        "journal sequence",
+      ),
+      "sequence",
+      "journal sequence",
+    );
+    if (
+      checkpoint.sourceSequence > sequence ||
+      (checkpoint.rebuiltFromSequence !== null &&
+        checkpoint.rebuiltFromSequence > checkpoint.sourceSequence)
+    ) {
+      throw new InternalPersistenceError(
+        "PERSISTENCE_CONTRACT_INVALID",
+        "Checkpoint refers beyond committed journal history",
+      );
+    }
+    saveCheckpointWithinTransaction(checkpoint);
+  }
+  return receipt;
+}
+
+function commitResult(input: ResultJournalAppendBatch): PersistenceCommitReceipt {
+  return runTransaction(() => appendResultWithinTransaction(input));
+}
+
+function armResultCrash(input: ResultJournalAppendBatch): "ARMED" {
+  if (writeLockHeld || crashTransactionArmed) {
+    throw new InternalPersistenceError(
+      "PERSISTENCE_BUSY",
+      "A qualification transaction is already active",
+    );
+  }
+  db().exec("BEGIN IMMEDIATE");
+  try {
+    appendResultWithinTransaction(input);
+    crashTransactionArmed = true;
+    return "ARMED";
+  } catch (error: unknown) {
+    db().exec("ROLLBACK");
+    throw translateSqliteError(error);
+  }
+}
+
+const pendingOutboxPredicate =
+  "status = 'PENDING' AND NOT EXISTS (SELECT 1 FROM inbox WHERE inbox.task_id = outbox.task_id AND inbox.status = 'ACCEPTED')";
+
+function listPendingOutboxTasks(): readonly SideEffectTaskEnvelope[] {
+  const rows = db()
+    .prepare(`SELECT envelope_json FROM outbox WHERE ${pendingOutboxPredicate} ORDER BY task_id`)
+    .all() as unknown[];
+  return rows.map(
+    (row) =>
+      parseJson(
+        asRecord(row, "pending task")["envelope_json"],
+        "pending task",
+      ) as SideEffectTaskEnvelope,
+  );
 }
 
 function listOutbox(): readonly OutboxRecord[] {
@@ -877,7 +1082,7 @@ function recover(): Readonly<Record<string, unknown>> {
   return {
     eventCount: count("event_journal"),
     commandCount: count("command_receipts"),
-    pendingOutboxCount: count("outbox", "WHERE status = 'PENDING'"),
+    pendingOutboxCount: count("outbox", `WHERE ${pendingOutboxPredicate}`),
     inboxCount: count("inbox"),
     auditCount: count("audit_facts"),
     checkpointCount: count("projection_checkpoints"),
@@ -1084,12 +1289,16 @@ async function handle(request: WorkerRequest): Promise<unknown> {
   switch (request.kind) {
     case "arm-crash":
       return armCrash(request.payload as JournalAppendBatch);
+    case "arm-result-crash":
+      return armResultCrash(request.payload as ResultJournalAppendBatch);
     case "backup":
       return backupDatabase(payload);
     case "close":
       return closeDatabase();
     case "commit":
       return commitBatch(request.payload as JournalAppendBatch);
+    case "commit-result":
+      return commitResult(request.payload as ResultJournalAppendBatch);
     case "get-command":
       return getCommand(requiredString(payload, "commandId", "get-command"));
     case "lookup-command-receipt": {
@@ -1109,6 +1318,8 @@ async function handle(request: WorkerRequest): Promise<unknown> {
       return holdLock();
     case "list-outbox":
       return listOutbox();
+    case "list-pending-outbox-tasks":
+      return listPendingOutboxTasks();
     case "read-events":
       return readEvents(payload);
     case "record-inbox":

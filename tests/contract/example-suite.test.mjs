@@ -15,10 +15,10 @@ describe("first-slice executable examples", () => {
     await expect(validateExampleSuite(registry)).resolves.toEqual({
       evidenceType: "ExampleSuiteResult",
       result: "PASS",
-      totalCases: 38,
-      validAccepted: 19,
-      invalidRejected: 19,
-      semanticAssertions: 22,
+      totalCases: 40,
+      validAccepted: 20,
+      invalidRejected: 20,
+      semanticAssertions: 24,
     });
   });
 

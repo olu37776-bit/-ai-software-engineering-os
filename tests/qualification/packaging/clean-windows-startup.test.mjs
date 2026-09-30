@@ -159,6 +159,39 @@ test(
 );
 
 test(
+  "P2 packaged atomic result journal recovers original receipts without host dependencies",
+  { skip: process.platform !== "win32" || process.env.ASEOS_QUALIFICATION_ARTIFACT === undefined },
+  () => {
+    const artifactRoot = process.env.ASEOS_QUALIFICATION_ARTIFACT;
+    const output = execFileSync(
+      join(artifactRoot, "node", "node.exe"),
+      [
+        fileURLToPath(
+          new URL(
+            "../../../scripts/qualification/persistence/p2-packaged-result-probe.mjs",
+            import.meta.url,
+          ),
+        ),
+        artifactRoot,
+      ],
+      {
+        cwd: artifactRoot,
+        env: sanitizedWindowsEnvironment(process.env),
+        windowsHide: true,
+        encoding: "utf8",
+        timeout: 30_000,
+      },
+    );
+    const result = JSON.parse(output.trim());
+    assert.equal(result.evidenceType, "PackagedAtomicResultJournalResult");
+    assert.equal(result.result, "PASS");
+    assert.equal(result.restartReceipt, true);
+    assert.equal(result.acceptedResultCount, 1);
+    process.stdout.write(output);
+  },
+);
+
+test(
   "P2 packaged workflow executes and recovers with only the bundled Node and authority assets",
   { skip: process.platform !== "win32" || process.env.ASEOS_QUALIFICATION_ARTIFACT === undefined },
   () => {
