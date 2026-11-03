@@ -37,6 +37,17 @@ D:\swap-knowledge-sources\
 
 候选目录、F0 build 目录、F1 review 目录和 KB-P0 本地发布 Evidence 路径仅由各任务文档及本地真实 manifest 确认。不存在的旧 cache/new B2 Review 目录不是有效 blocker。旧 `reviews\batch-2-v1\` 的 subject 前缀 `3b25e85` 只能用作历史来源，不自动将 PASS 迁移至当前 commit。
 
+## 3.1 当前 Preflight 状态与处置
+
+本机 P0 预检用户报告：
+
+- `P0-B1` PR #116 未合并：**已解除**。PR #116 required checks 成功，现已合并至 main `009132b02f0caa06d0000b3f00b5f4393c270ba2`。
+- `P0-B2` Windows Owner = `BUILTIN\Administrators`：**待本机区分 Git safe.directory 信任问题和实际 NTFS ACL 写权限**，不得一概视为必须改 Owner。
+- `P0-B3` GBrain 两 Source `tracked_branch=null`：**待核实 native Source/sync/index subject 证据**。null 不单独证明索引无法绑定，也绝不允许伪造绑定。
+- `P0-B4` 无消费者暂停证据：**仍是关键发布阻塞**。先取得可验证的原生维护门禁或单机完全停止消费/自动任务方案，否则禁止 promotion/sync。
+
+具体单轮处理步骤已经加入 `tasks/kb-p0-controlled-publication-v1.md` 的 **§1.1**。不另开一轮形式化状态调查；在同一 P0 Task 中先只读解除三个 blocker，全部 PASS 才允许进入后续正式发布，失败只保留证据并停止。
+
 ## 4. KB-P0 必须保留的 Gate
 
 在一轮任务中完成受控流程：
