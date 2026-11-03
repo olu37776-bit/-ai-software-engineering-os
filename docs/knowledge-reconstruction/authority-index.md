@@ -1,77 +1,64 @@
 # 项目知识库重建：Authority Index
 
-状态：`CURRENT / KB-V0-B3 B2-GATED INDEPENDENT REVIEW OR REVERIFICATION`
-更新：`2026-11-02`；跟踪：Issue #110。
+状态：`CURRENT / KB-F0 EXISTING-ASSETS FAST BUILD`
+更新：`2026-11-03`；跟踪：Issue #112。
 
-本目录是 Swap / GBrain 知识库重建支线的**唯一远端执行 Authority**。只发布可公开的设计、任务、Gate 规则；内部知识、源码、完整本地 Review/Evidence 不上传此仓库。
+本目录是本地 Swap / GBrain 知识库支线的正式远程任务/设计 Authority。完整知识、内部源码、原始资料、私有 Evidence 不进入公共仓库。聊天仅分发 exact Authority SHA、CURRENT Task 与短回执。
 
-## 1. Authority 层级与 CURRENT
+## 1. CURRENT 与历史
 
-上位 Framework Charter / accepted ADR / public Contract 不变。本支线只拥有知识治理与本地建设流程，不拥有 Runtime、Context、Policy、Router、Verification System 或 Learning 的核心实现语义。
-
-| 文档 | 状态 | 用途 |
+| 文档 | 状态 | 说明 |
 | --- | --- | --- |
-| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 知识模型、边界、持续维护、验证与发布设计 |
-| `tasks/kb-v0-b3-review-reverify-v1.md` | `CURRENT TASK` | 读取 B2 实际 Review Gate；确认通过后，同轮完成 B3 独立 Review / Reverification |
-| `tasks/kb-v0-b2-review-reverify-v1.md` | `HISTORICAL TASK / LOCAL COMPLETION REPORTED` | B2 审查规则与上轮 Subject |
-| `tasks/kb-r0-local-state-reconciliation-v1.md` | `HISTORICAL TASK / COMPLETED LOCALLY` | 本机历史状态恢复任务 |
-| `operations/authority-sync.md` | `CURRENT DELIVERY` | exact SHA、单文件 HTTP 下载，仅缓存需要的 Authority |
+| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 知识边界、内容模型、来源、验证/发布隔离 |
+| `tasks/kb-f0-existing-assets-fast-build-v1.md` | **`CURRENT TASK`** | 基于真实旧 B2/B3 资产在独立 candidate worktree 做可用知识切片 |
+| `tasks/kb-v0-b3-review-reverify-v1.md` | `SUPERSEDED / NOT EXECUTABLE` | 原 B2→B3 硬门禁因错误预设新 B2 Review 路径而取消；不允许继续执行 |
+| `tasks/kb-v0-b2-review-reverify-v1.md` | `HISTORICAL / NOT CURRENT` | 旧 B2 审查任务，不能用于推断本地有对应新报告 |
+| `tasks/kb-r0-local-state-reconciliation-v1.md` | `HISTORICAL / REPORTED COMPLETE` | 本地状态恢复，真实记录继续在 `.ai-local` |
+| `operations/authority-sync.md` | `CURRENT DELIVERY` | fixed SHA + exact path 单文件下载，不 clone Framework |
 
-**当前唯一允许任务是上述 KB-V0-B3**。它必须先通过 B2 的本机 exact-subject Gate 检查。不得凭聊天“已完成”或远端表格直接宣布 B2 VERIFIED。
+## 2. 重要纠错
 
-## 2. 已知 Gate 与尚未证实的内容
+用户本机报告：唯一现有 B2 Review 位于 `<SwapRepo>\.ai-local\knowledge\reconstruction\reviews\batch-2-v1\`，历史 subject 绑定 `3b25e85...`。**历史 Review 不应因旧 Authority cache 不存在而被判不存在。**
 
-- KB-D0：已合并设计基线。用户回报独立审查通过，仅 2 个 P3 记录性问题。
-- KB-R0：用户回报已完成并选择 `KB_V0_B2_REVIEW_OR_REVERIFY`。完整证据保存在本地。
-- KB-V0-B2：用户回报“好了”，但未在当前会话提供精确 `decision`/`next_gate`。远端标记 `REPORTED_COMPLETED / DECISION_NOT_EXPORTED`；本任务将直接读取本地 Review Artifact 确定 Gate，不新增纯调查轮次。
-- B3：先前用户回报 Reconstruction 已完成，是否已有独立审查和 current-subject coverage 由本机 KB-R0 与 B3 Evidence 判定。
-- 双仓 HEAD、dirty、GBrain Source、index binding：都以本机实际 subject 为准，远端不补猜。
+此前 B3 任务错误强制要求 `reviews\batch-2\f2e4e473...\` 和旧 Authority 缓存存在。这是尚未执行的任务产生的预期路径，不是已经确认存在的事实。故原 B3 Gate 被暂停并由 KB-F0 取代。
 
-## 3. 当前阶段与边界
+对旧 B2 Review 的正确处理：读取原文件及完整 subject；复用可用来源、Finding 和结论，但不将旧 SHA 的 PASS 无证据延伸为当前 Knowledge HEAD VERIFIED。缺少新 Review 路径不是构建阻塞理由；只有实际缺少源证据、写入隔离或 private state 无法确认时才按 scope 阻塞。
 
-Batch #3 是 `Source Configuration Ingestion & Normalization`。重点验证 NCE GET 日志与设备 DB→MML（legacy C++ + Java supplement）两路输入、Source MML 汇合、接入 B2 公共处理链、覆盖差异及未知。
+## 3. 当前唯一任务
 
-当前任务默认只读，不允许改正式知识页、Raw Sources、Swap 代码、GBrain 索引或旧 Evidence；输出仅在新 `.ai-local` Review subject 目录。
+`docs/knowledge-reconstruction/tasks/kb-f0-existing-assets-fast-build-v1.md`。
 
-本地固定路径：
+本任务允许**先建设候选知识**，复用已有 Survey、Golden Slice、Convention V1、B2/B3 reconstruction 以及历史 B2 Review。只在独立 candidate worktree 中少量增量补齐导航、NCE GET、Device DB→legacy C++ + Java supplemental MML、Source MML 接 B2 主链与应用例子，不重复建设已有可靠页面。
 
-- `D:\gbrain-knowledge\swap-kb\`
-- `D:\gbrain-knowledge\microwave-kb\`
-- `D:\swap-knowledge-sources\`
-- `<SwapRepo>\.ai-local\knowledge\reconstruction\`
-- `<SwapRepo>\.ai-local\knowledge\reconstruction\authority-cache\<AUTHORITY_SHA>\`
+不允许把 candidate 合并回正式 `swap-kb`/`microwave-kb`，不允许 GBrain 正式 Source 同步未审查内容，也不允许实现者自称 VERIFIED。下一 Gate 为一次合并的候选独立审查。
 
-`<SwapRepo>` 必须是 Agent 当前已打开、能够核实为 Swap 的工程；禁止凭猜测或磁盘全盘搜索确定目录。
+## 4. 固定本地位置
 
-## 4. 前置 Gate（必须）
+- 正式项目知识：`D:\gbrain-knowledge\swap-kb\`
+- 正式领域知识：`D:\gbrain-knowledge\microwave-kb\`
+- Raw Sources：`D:\swap-knowledge-sources\`
+- 治理根：`<SwapRepo>\.ai-local\knowledge\reconstruction\`
+- Authority 只读缓存：`<SwapRepo>\.ai-local\knowledge\reconstruction\authority-cache\<AUTHORITY_SHA>\`
+- Candidate + manifest 路径以 CURRENT Task 精确 WRITE_SCOPE 为准。
 
-本轮首先读取 B2 Authority `f2e4e473bc70590ac5132a87733c78231396ed50` 下的最新本地 Review、findings、subject-manifest、query-validation 和 KB-R0 状态记录。
+`<SwapRepo>` 必须从 Agent 已打开的 Swap 工作区唯一证明。不能凭猜测或扫描整盘替代。
 
-仅当 B2 `decision = B2_VERIFIED_CURRENT_SUBJECT`、`next_gate = KB_V0_B3_REVIEW_OR_REVERIFY`，并且独立 subject 仍覆盖当前相关 Knowledge，才允许 B3 实际审查。否则返回 B2 当前真实下一 Gate 并停止，**不得伪造通过状态**。
+## 5. 权威与证据边界
 
-## 5. B3 当前义务
+Framework Charter/accepted ADR/Contract 优先，但本支线不拥有主线 Runtime/Context/Policy/Verification System/Learning 语义。代码证明当前实现；官方设备/MML/Feature 文档证明有适用范围的设备事实；旧 Wiki 只是 clue。
 
-- 真实代码/文档源驱动，验证源输入、解析/规范化/汇合和边界，不把 DB→MML 和后段 JNI/C++ GET→SET 混为一谈。
-- 不预设 C++/Java 固定优先级、无损或两路完全等价。
-- 回归历史 B3 Findings；所有 Current Truth 有当前来源、版本/适用范围；跨知识仓 Primary Home 明确。
-- 独立审查完整 `B3-VR-01～10`，输出 exact-subject Decision。
+Knowledge 正文/原始资料/完整 Git 差异和私有报告只在本机存储；GitHub 远端只接收脱敏短状态。现有旧 B2 PASS 仅绑定其历史 subject。当前实施者只能声明 `IMPLEMENTED_CANDIDATE`，不能自评为 `VERIFIED`、`BASELINED` 或 `PUBLISHED`。
 
-## 6. Next Gate
+## 6. 下一门禁
 
-由 CURRENT Task 中的 B2 前置结果和 B3 独立审查结果选择且仅选择一个：
+候选实现或确认无需改动 → `KB_F0_INDEPENDENT_CANDIDATE_REVIEW`：对候选实际内容、旧 findings、B2/B3 关键边界做一次 current-subject 的独立验证，再决定是否发布到正式双仓。
 
-- `KB_B2_REMEDIATION`（B2 未通过且要求整改）；
-- `KB_B3_REMEDIATION`（B3 发现阻塞）；
-- `KB_V0_CURRENT_HEAD_REVERIFY`（当前 subject 漂移，未覆盖）；
-- `KB_P0_BASELINE_AND_PUBLISH_RECONCILIATION`（B2/B3 有效、发布/基线绑定待收口）；
-- `BLOCKED_BY_LOCAL_STATE`（证据不足）。
+实施阻塞 → `BLOCKED_BY_LOCAL_STATE`，必须指出具体来源/路径/subject 障碍，不得只以旧 SHA cache 或新报告目录不存在为理由。
 
-本任务不可自动执行下一个 Gate，不启动 B4。
+## 7. Authority 单文件获取
 
-## 7. Authority 下载规则
-
-严格按 `operations/authority-sync.md`；Chat 提供 exact 40-char Authority SHA。**禁止 Git clone/fetch/pull/checkout 整个 Framework**，不下载 ZIP/archive；只将本 `authority-index.md`、CURRENT Task、Task 明确引用的 supporting Authority 逐文件下载到既有 `.ai-local/knowledge/reconstruction/authority-cache/<SHA>/`。其他 Framework 文件按需只读到内存，不能落到本地知识仓。
+严禁 clone、fetch、pull、checkout Framework 仓库或下载 ZIP/archive。给定 exact 40-char SHA，仅从 Raw GitHub 逐文件下载 `authority-index.md`、本 CURRENT Task 及 Task 明确需要的 `architecture/overall-design-v1.md`、`operations/authority-sync.md`；落到既有 `.ai-local\knowledge\reconstruction\authority-cache\<AUTHORITY_SHA>\`。不得预下载 Framework 其他目录。
 
 ## 8. 历史入口
 
-收入工具仓库旧 `docs/swap-knowledge-reconstruction/` 视为 `SUPERSEDED`；原旧 Wiki clue-only；`.ai-local/knowledge-reconstruction/` 是错误旧路径，正式治理根为 `.ai-local/knowledge/reconstruction/`。既有 Survey/Golden Slice/Convention/B2/B3 历史 Evidence 均不因 Authority 换仓而失效。
+收入工具中的旧 `docs/swap-knowledge-reconstruction/` 已 `SUPERSEDED`；旧 LLM Wiki 线索非权威；`.ai-local/knowledge-reconstruction/` 是曾误用的路径，现有长期治理根继续为 `.ai-local/knowledge/reconstruction/`。
