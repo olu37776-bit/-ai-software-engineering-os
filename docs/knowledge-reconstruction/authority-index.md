@@ -1,7 +1,7 @@
 # 项目知识库重建：Authority Index
 
-状态：`CURRENT / KB-F0 EXISTING-ASSETS FAST BUILD`
-更新：`2026-11-03`；跟踪：Issue #112。
+状态：`CURRENT / KB-F1 INDEPENDENT CANDIDATE REVIEW`
+更新：`2026-11-03`；跟踪：Issue #113。
 
 本目录是本地 Swap / GBrain 知识库支线的正式远程任务/设计 Authority。完整知识、内部源码、原始资料、私有 Evidence 不进入公共仓库。聊天仅分发 exact Authority SHA、CURRENT Task 与短回执。
 
@@ -10,7 +10,8 @@
 | 文档 | 状态 | 说明 |
 | --- | --- | --- |
 | `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 知识边界、内容模型、来源、验证/发布隔离 |
-| `tasks/kb-f0-existing-assets-fast-build-v1.md` | **`CURRENT TASK`** | 基于真实旧 B2/B3 资产在独立 candidate worktree 做可用知识切片 |
+| `tasks/kb-f1-independent-candidate-review-v1.md` | **`CURRENT TASK`** | 一次性复核 F0 真实候选或 NO_CHANGES_NEEDED 的当前知识 subject，检查来源、导航、B2/B3 责任边界 |
+| `tasks/kb-f0-existing-assets-fast-build-v1.md` | `HISTORICAL / LOCAL COMPLETION REPORTED` | 用户回报 F0 已完成；实际产物和 Decision 由 F1 首先读取并绑定 |
 | `tasks/kb-v0-b3-review-reverify-v1.md` | `SUPERSEDED / NOT EXECUTABLE` | 原 B2→B3 硬门禁因错误预设新 B2 Review 路径而取消；不允许继续执行 |
 | `tasks/kb-v0-b2-review-reverify-v1.md` | `HISTORICAL / NOT CURRENT` | 旧 B2 审查任务，不能用于推断本地有对应新报告 |
 | `tasks/kb-r0-local-state-reconciliation-v1.md` | `HISTORICAL / REPORTED COMPLETE` | 本地状态恢复，真实记录继续在 `.ai-local` |
@@ -26,11 +27,11 @@
 
 ## 3. 当前唯一任务
 
-`docs/knowledge-reconstruction/tasks/kb-f0-existing-assets-fast-build-v1.md`。
+`docs/knowledge-reconstruction/tasks/kb-f1-independent-candidate-review-v1.md`。
 
-本任务允许**先建设候选知识**，复用已有 Survey、Golden Slice、Convention V1、B2/B3 reconstruction 以及历史 B2 Review。只在独立 candidate worktree 中少量增量补齐导航、NCE GET、Device DB→legacy C++ + Java supplemental MML、Source MML 接 B2 主链与应用例子，不重复建设已有可靠页面。
+用户回报 F0 候选建设已完成。本任务**只允许独立只读审查** F0 真实候选或 `NO_CHANGES_NEEDED` 情况下现有知识页面。复用已有 Survey、Golden Slice、Convention V1、B2/B3 和历史 B2 Review，集中检查导航、NCE GET、Device DB→MML（C++/Java）、Source MML 与 B2 边界，不能再次擅自改写知识。
 
-不允许把 candidate 合并回正式 `swap-kb`/`microwave-kb`，不允许 GBrain 正式 Source 同步未审查内容，也不允许实现者自称 VERIFIED。下一 Gate 为一次合并的候选独立审查。
+不允许把 candidate 合并回正式 `swap-kb`/`microwave-kb`，不允许 GBrain 正式 Source 同步未审查内容，也不允许实施者自称 VERIFIED。独立审查通过后下一 Gate 才是 KB-P0 发布基线对齐；本轮不执行发布。
 
 ## 4. 固定本地位置
 
@@ -47,13 +48,13 @@
 
 Framework Charter/accepted ADR/Contract 优先，但本支线不拥有主线 Runtime/Context/Policy/Verification System/Learning 语义。代码证明当前实现；官方设备/MML/Feature 文档证明有适用范围的设备事实；旧 Wiki 只是 clue。
 
-Knowledge 正文/原始资料/完整 Git 差异和私有报告只在本机存储；GitHub 远端只接收脱敏短状态。现有旧 B2 PASS 仅绑定其历史 subject。当前实施者只能声明 `IMPLEMENTED_CANDIDATE`，不能自评为 `VERIFIED`、`BASELINED` 或 `PUBLISHED`。
+Knowledge 正文/原始资料/完整 Git 差异和私有报告只在本机存储；GitHub 远端只接收脱敏短状态。现有旧 B2 PASS 仅绑定其历史 subject。F0 实施者只能声明 `IMPLEMENTED_CANDIDATE` / `NO_CHANGES_NEEDED`，KB-F1 由不同 actor 进行独立复核；F1 APPROVED 也不意味着 `BASELINED` 或 `PUBLISHED`。
 
 ## 6. 下一门禁
 
-候选实现或确认无需改动 → `KB_F0_INDEPENDENT_CANDIDATE_REVIEW`：对候选实际内容、旧 findings、B2/B3 关键边界做一次 current-subject 的独立验证，再决定是否发布到正式双仓。
+KB-F1 独立审查通过 → `KB_P0_BASELINE_AND_PUBLISH_RECONCILIATION`；发现阻塞 Finding → `KB_F0_CANDIDATE_REMEDIATION`；无法冻结 current subject 或无独立 Reviewer → `BLOCKED_BY_LOCAL_STATE`。本轮不自动执行任何下一 Gate。
 
-实施阻塞 → `BLOCKED_BY_LOCAL_STATE`，必须指出具体来源/路径/subject 障碍，不得只以旧 SHA cache 或新报告目录不存在为理由。
+上一轮 F0 的旧 Authority cache 缺失或历史 B2 新目录不存在，均不能单独作为 F1 BLOCKED 的理由。审查者必须先读取实际 F0 build manifest，未修改的知识仓不强制要求 candidate worktree。
 
 ## 7. Authority 单文件获取
 
