@@ -1,6 +1,8 @@
-# KB-V0-B3：由 B2 Gate 直接执行 B3 独立 Review / Re-Verification V1
+# KB-V0-B3：由 B2 Gate 直接执行 B3 独立 Review / Re-Verification V1（已废止）
 
-状态：`CURRENT TASK / CONDITIONAL INDEPENDENT READ-ONLY REVIEW`
+> **STOP：本任务存在错误前置假设。** 它要求一个本地未产生的 `reviews/batch-2/f2e4e473...` 目录，不得用它阻塞既有 `reviews/batch-2-v1/` 历史证据。CURRENT Task 已切换为 `tasks/kb-f0-existing-assets-fast-build-v1.md`（Issue #112），先在独立候选 worktree 复用已有资产建设，再集中独立验证。此文件仅保留历史追溯，不授权执行。
+
+状态：`SUPERSEDED / DO NOT EXECUTE`
 跟踪：Issue #110
 上位设计：`docs/knowledge-reconstruction/architecture/overall-design-v1.md`
 历史 B2 Authority SHA：`f2e4e473bc70590ac5132a87733c78231396ed50`
