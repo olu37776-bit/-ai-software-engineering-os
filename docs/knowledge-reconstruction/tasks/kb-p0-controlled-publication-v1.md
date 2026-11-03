@@ -21,6 +21,46 @@ F1 独立审查 Authority：`474e04590250b969d66824a426fbc8f300e482af`。
 
 本任务允许在严格通过前置门禁后，受控更新正式知识仓 branch/工作树到**已经独立批准的精确 Candidate Commit**，并使用本机已验证的 GBrain 原生正式同步操作发布。不得修改未审知识内容、生产代码、Raw Sources，不得将私有报告或 Knowledge Page 上传到公开 GitHub。
 
+## 1.1 四项 Preflight Blocker 的确定性处理（2026-11-03）
+
+本附录属于 KB-P0 CURRENT Task，不另造独立调查环节；在同一任务内完成 read-only blocker resolution 与必要 evidence。原 Gate 和发布边界继续有效。
+
+### P0-B1 — Authority 生效
+
+PR #116 已在 required checks 成功后合并，merge commit `009132b02f0caa06d0000b3f00b5f4393c270ba2`。旧 `PR116_NOT_MERGED` 阻塞已解除。新任务必须固定当前正式 Authority SHA；后续 Authority 如有更新，以聊天下发的 exact 40 位 SHA 为准，不以旧 PR HEAD 授权写操作。
+
+### P0-B2 — Windows Git 目录所有权
+
+正式仓 `D:\gbrain-knowledge\swap-kb\`、`D:\gbrain-knowledge\microwave-kb\` 的 Windows Owner 被报告为 `BUILTIN\Administrators`，与当前用户不同。这可触发 Git dubious ownership，但**所有权不同不等于当前进程一定没有 NTFS 写权限**。先只读检查本地：`whoami /user`、`whoami /groups`、`icacls <exact repo path>`，并分别验证 Git 信任和实际文件权限。
+
+如果本机操作者确认两个确切的本地 Knowledge Repo 是可信、受控、非外部写入来源，允许仅对**当前这一条 Git 命令**使用 `git -c safe.directory=<fully-qualified-exact-local-repo-path> -C <same-repo> ...`，对每个仓分别精确指定；不要使用 `safe.directory=*`、不要全局/系统永久放宽信任。先验证只读 `rev-parse` / `status`；仅真正具备 OS 写权限且 preflight 全部通过，才可以将同样的 command-scoped 信任用于 exact approved `merge --ff-only`。
+
+如果 OS ACL 实际拒绝写入，或无法证明该 Administrators-owned 仓的可信来源/受控权限：`P0_B2_OS_PERMISSION_BLOCKED`。**不自动 `takeown`、`icacls /grant`、修改 Owner、提升权限、system-wide safe.directory 或复制整个正式仓规避访问控制**。由有权管理员按照组织规定完成授权后再重试；不因此改变已批准 candidate SHA。
+
+### P0-B3 — GBrain index / Git Commit Pair
+
+两 Source 的 `tracked_branch = null` 是一个**待解释字段，不足以单独推出“索引不能绑定 Commit Pair”**；也不能被直接改成任意 branch 来求 PASS。
+
+先根据本机实际 GBrain CLI 帮助与版本做只读诊断：各 Source 的 status/path、索引 sync status/last completed commit 或 cursor、source writer/ownership state（如果本机 CLI 支持），以及 Git tracked files 和内容 hash。明确区分：`SOURCE_PATH_BOUND`（Source ID→正式绝对路径）、`SOURCE_GIT_SUBJECT_BOUND`（被同步版本/Commit）、`INDEX_CONTENT_BOUND`（已完成索引与此确切内容对应）。
+
+在 sync 前可记录目标 Git commit pair + 完整目标文件清单/内容 hash 与索引预期；同步后仅当 GBrain 原生 status/sync ledger 或可靠的逐项索引证据可证明两 Source 确实完整消费该目标 subject，才可返回 `index_subject: BOUND`。只看 Source path、`tracked_branch`、命令返回 0、少量成功查询、文件 mtime 都不能冒充完整绑定。若本机版本没有可验证手段，保持 `INDEX_SUBJECT_UNBOUND` 并在预检/发布 Gate HOLD；不得通过配置猜测、隐藏升级或删除/重建 GBrain DB 绕过。
+
+可参考本机版本 `gbrain sources status <id> --json`、`gbrain sync status --source <id> --json`、`gbrain doctor` 等**仅在 `--help` 证明可用且只读**的命令。非本机版本文档仅作候选，不作为真实操作 Authority。
+
+### P0-B4 — 消费者隔离和维护窗口
+
+必须先定位实际 GBrain 消费者：桌面客户端、MCP Server、Agent 工作进程、自动同步/定时任务、服务/API listener、共享机器其他用户等。不能用“当前没人查询”推断隔离。
+
+如果 GBrain 本机支持正式的 maintenance/read-only/serving pause/drain 模式，先只读检查支持性；若可控，按其实际管理接口执行并验证 consumer admission 被拒绝，同时保留管理方的同步入口。若没有原生模式，可在真正单用户、无外部共享的本机环境下，使用本机可核实的操作停止所有相关 Agent/MCP/UI/服务的**消费入口与自动任务**，验证没有仍可访问正式索引的消费者，明确单一 maintenance writer 和恢复步骤；不盲目 `taskkill /F`、不改全局防火墙或系统 ACL。
+
+在停止消费时必须确保本轮用于 GBrain sync 的管理接口仍受控可用。发布完成后只允许在独立发布 Gate PASS 后恢复消费者；如果无法列清并控制所有消费者、存在远程/后台不受控写者、或暂停后仍能查询半发布内容：`P0_B4_CONSUMER_HOLD_BLOCKED`。保留旧正式发布状态，不允许动正式仓或索引。
+
+### 统一恢复与行动门槛
+
+同一轮先以**只读**方式验证 B2/B3/B4。只有三个条件都明确 PASS、F1 exact-subject PASS、正式 repo clean、candidate FF 可行、rollback/maintenance plan 有证据，才真正进入第 4 节 Git Promotion。任一阻塞仍然存在，本轮只写诊断/计划报告、原地停止，不做部分 Promotion。
+
+把三个条件的证据和处理方式补入既有 KB-P0 `preflight-manifest.json` 与 `publish-report.md`，并输出 `B2=... B3=... B4=...` 的非敏感短结论；无需新增另一轮“准备任务”。
+
 ## 2. 必须先读的既有本地 Evidence
 
 ```text
