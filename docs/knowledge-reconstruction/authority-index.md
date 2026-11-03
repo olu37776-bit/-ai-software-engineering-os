@@ -1,31 +1,36 @@
 # 项目知识库重建：Authority Index
 
-状态：`CURRENT / KB-P0 CONTROLLED BASELINE & GBRAIN PUBLICATION`
+状态：`CURRENT / KB-P0-U PREFLIGHT BLOCKER CLOSURE`
 更新：`2026-11-03`；跟踪：Issue #115。
 
-本目录仅维护 Swap / GBrain 项目知识库重建支线**可公开的任务与设计 Authority**。正式 Knowledge、原始资料、内部源码、完整 Evidence 与私有报告留在本地，不上传此仓库。
+本目录为 Swap / GBrain 知识库支线的可公开 Authority。用户本地完整 Knowledge、Swap 源码、Raw Sources、Build/Review/Publish Evidence 不上传 GitHub。只通过 exact SHA + exact path 下载本任务需要的 Markdown，不 clone Framework 仓库。
 
 ## 1. 唯一 CURRENT Task
 
-| Authority 文件 | 状态 | 说明 |
+| 文件 | 状态 | 用途 |
 | --- | --- | --- |
-| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 事实来源、知识模型、验证/发布边界 |
-| `tasks/kb-p0-controlled-publication-v1.md` | **`CURRENT TASK`** | 受控完成 F1 已审候选的正式双知识仓 Commit Pair、GBrain Source/Index、独立发布验收与联合基线 |
-| `tasks/kb-f1-independent-candidate-review-v1.md` | `HISTORICAL / LOCALLY REPORTED APPROVED` | 用户反馈 `F1_APPROVED_CANDIDATE`；完整独立报告和 exact subject 必须在本机检查 |
-| `tasks/kb-f0-existing-assets-fast-build-v1.md` | `HISTORICAL / LOCALLY REPORTED COMPLETE` | 候选工作树/manifest/建设自检 |
-| `tasks/kb-v0-b3-review-reverify-v1.md` | `SUPERSEDED` | 曾误用不存在的新 B2 Review 路径的任务，禁止执行 |
-| `tasks/kb-v0-b2-review-reverify-v1.md` | `HISTORICAL` | 旧 B2 审查任务，与当下发布门禁无自动等价 |
-| `operations/authority-sync.md` | `CURRENT DELIVERY` | fixed SHA + exact path 下载 Authority；不克隆 Framework |
+| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 知识、证据与独立发布架构边界 |
+| `tasks/kb-p0-unblock-v1.md` | **`CURRENT TASK`** | 一轮关闭 P0-B1～B4，全部通过后按原 KB-P0 流程执行条件式发布 |
+| `tasks/kb-p0-controlled-publication-v1.md` | `SUPPORTING CURRENT TASK` | 已批准的 Promotion、GBrain Sync、独立发布验收、联合 Baseline 规则 |
+| `tasks/kb-f1-independent-candidate-review-v1.md` | `HISTORICAL / REPORTED_APPROVED` | F1 用户回报 APPROVED，完整独立 Evidence 留本地 |
+| `tasks/kb-f0-existing-assets-fast-build-v1.md` | `HISTORICAL / REPORTED_COMPLETE` | F0 候选建设及 manifest |
+| `tasks/kb-v0-b3-review-reverify-v1.md` | `SUPERSEDED` | 错误前置目录的历史任务，禁止继续使用 |
+| `operations/authority-sync.md` | `CURRENT DELIVERY` | 不下载 Framework 整仓的单文件交付协议 |
 
-## 2. 已知 Gate 与准确权限
+## 2. P0 四项阻塞事实与处理
 
-- KB-D0：设计基线已通过并合并。
-- KB-R0：本机状态恢复完成，用户提供下一 Gate。
-- KB-F0：用户报告候选知识建设完成，真实模式/产物以本地 manifest 为准。
-- KB-F1：用户明确反馈 `F1_APPROVED_CANDIDATE`、下一 Gate 为 `KB_P0_BASELINE_AND_PUBLISH_RECONCILIATION`。这是允许准备 KB-P0 的路由，不证明正式知识已发布，也不代替 F1 原始 Evidence。
-- KB-P0：本次唯一允许动作。运行前必须验证 F1 exact-subject、真实两 Knowledge Repo Git HEAD、候选 Git HEAD 与当前 GBrain Source 索引绑定。先做好预检/恢复措施后才允许 Promotion/Index Sync。
+用户回报正式发布前置检查：
 
-## 3. 目录与隔离
+- **P0-B1 Authority 未生效**：PR #116 当时尚未合并；现已合并到 main `009132b02f0caa06d0000b3f00b5f4393c270ba2`。B1 的历史原因已解决；本任务的新 Authority SHA 仍须先合并 main，才允许正式发布。
+- **P0-B2 Git Owner**：正式两个知识仓 owner 为 `BUILTIN\Administrators`，执行用户不同。先只读核对 ACL / trust，不允许全局通配例外或自动修改 NTFS Owner；在受信目录前提下只对本地进程给两个确切路径 `safe.directory`，并证明 Git 能正常读写。
+- **P0-B3 Index subject**：两个 Source 的 `tracked_branch = null`。不能将 null 直接当成 Source 不可用，也不能把它假装成绑定 commit。用当前本机 CLI 只读 Source/索引元数据、Git commit/内容哈希以及实际查询证明；无法证明则 `INDEX_SUBJECT_UNBOUND`，停止正式发布。
+- **P0-B4 消费者隔离**：当前没有经过验证的正式查询拒绝/暂停措施。必须证明发布期间普通消费者无法读取部分更新；如果没有这种机制，只在隔离非正式环境验证候选，正式索引不得变更。
+
+## 3. 本次唯一实际工作
+
+执行 `tasks/kb-p0-unblock-v1.md`：**一次性闭合四个前置阻塞**，复用 KB-F0 / KB-F1 真实记录；不重做 Survey、B2/B3、F0/F1。全部 PASS 且本 Authority 已合并 main 才允许在本任务内继续执行原 KB-P0 正式发布流程；否则只返回当前真实 blocker、保留已有 PASS。
+
+正式仓路径：
 
 ```text
 D:\gbrain-knowledge\swap-kb\
@@ -35,28 +40,10 @@ D:\swap-knowledge-sources\
 <SwapRepo>\.ai-local\knowledge\reconstruction\authority-cache\<AUTHORITY_SHA>\
 ```
 
-候选目录、F0 build 目录、F1 review 目录和 KB-P0 本地发布 Evidence 路径仅由各任务文档及本地真实 manifest 确认。不存在的旧 cache/new B2 Review 目录不是有效 blocker。旧 `reviews\batch-2-v1\` 的 subject 前缀 `3b25e85` 只能用作历史来源，不自动将 PASS 迁移至当前 commit。
+## 4. Outcome
 
-## 4. KB-P0 必须保留的 Gate
+完整独立发布验证通过，才可记录 `APPROVED_PUBLISHED_BASELINE` 并进入 `KB_BN_INCREMENTAL_KNOWLEDGE_MAINTENANCE`。任意前置阻塞则绝不声称 `PUBLISHED`，不强制 reset/reinit、不上传内部 Evidence。`tracked_branch = null` 本身不是直接 Verdict。
 
-在一轮任务中完成受控流程：
+## 5. 获取方式
 
-1. 冻结并确认 F1 当前批准的 candidate/full Knowledge target commit pair。
-2. 验证正式两仓 working tree clean、Git 目标可无破坏 fast-forward，GBrain Source 指向正确正式目录，确保避免未完成索引被正式消费。
-3. 用本地非破坏性 Git promotion 更新受影响的正式 Knowledge branch；不得自动 reset/rebase/cherry-pick 或修改未审页面。
-4. 以本机实际支持的受控 GBrain Source 同步方式发布；禁止重建 DB/Source。
-5. 由独立 Reviewer 验证两个 Source、查询、Unknown、index subject 与 Git commit Pair 一致；仅全通过后写双仓 `published-baseline.json` 并恢复正式消费。
-
-如果不能安全执行则返回真实 `PREFLIGHT_BLOCKED` / `PARTIAL_PUBLICATION_HOLD` / `PUBLISH_HOLD`，绝不假报 PUBLISHED，也不自动覆盖旧基线。
-
-成功后唯一下一 Gate 为 `KB_BN_INCREMENTAL_KNOWLEDGE_MAINTENANCE`。失败则进入明确受限的修复/恢复任务，不自动开启 Batch #4。
-
-## 5. Framework 与保密边界
-
-本知识支线不修改 Framework 受治理 Runtime、Context、Policy、Router、Verification System、Learning 的实现或 Contract。内部 Knowledge Page、Raw Sources、Review/Build/发布完整 Evidence 不上传 GitHub，公开仓库只存可公开 Authority 与脱敏短回执。
-
-仅按聊天给出的 exact 40 位 Authority SHA 下载 `authority-index.md`、唯一 CURRENT Task 和 Task 明确指定的 supporting Authority，缓存到既有 `<SwapRepo>\.ai-local\knowledge\reconstruction\authority-cache\<SHA>\`。禁止 clone/fetch/pull/checkout Framework 整仓、ZIP/archive；不能因单文件下载失败而退化为拉整仓。
-
-## 6. 历史入口
-
-旧收入工具仓库任务目录 `SUPERSEDED`；旧 LLM Wiki clue-only；`.ai-local/knowledge-reconstruction/` 是错误旧路径，长期治理根始终为 `.ai-local/knowledge/reconstruction/`。
+从 GitHub exact 40 位 SHA 下载：`authority-index.md` → `tasks/kb-p0-unblock-v1.md` → `tasks/kb-p0-controlled-publication-v1.md` → `architecture/overall-design-v1.md` → `operations/authority-sync.md`。保持本地历史目录不动，不克隆下载整个 Framework。
