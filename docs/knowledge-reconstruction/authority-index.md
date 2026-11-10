@@ -1,51 +1,45 @@
 # Swap / GBrain Knowledge Reconstruction — Authority Index
 
-状态：`CURRENT / KB-BN-C2 DEVICE VERSION MML CHANGE IMPACT`
-更新：`2026-11-06`；Issue #125。
+状态：`CURRENT / KB-BN-C3 PRIORITY GAPS`
+更新：`2026-11-09`；Issue #127。
 
-这里仅承载知识治理的公开 Authority。Swap 源码、正式双知识仓内容、设备 Raw Sources、GBrain index 数据、完整 Evidence 留在本地，不上传 Framework GitHub。
+本仓库只发布可公开的 Knowledge Reconstruction Authority；正式两 Knowledge Repo、Swap 生产源码、GBrain 索引、MML/设备原始资料、查询与验证 Evidence 只存本地。
 
 ## 1. 唯一 CURRENT Task
 
 | Authority 路径 | 状态 | 职责 |
 | --- | --- | --- |
-| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 事实来源、Knowledge Primary Home、验证及受控发布原则 |
-| `tasks/kb-bn-c2-device-version-mml-impact-v1.md` | **`CURRENT TASK`** | 设备/版本限制、MML 命令参数/转换语义、变更影响路径三线并行取证、一个 Candidate、一次独立 Review 与受控发布 |
-| `tasks/kb-bn-c1-four-core-flows-batch-v1.md` | `HISTORICAL / USER REPORTED COMPLETE` | SCC/IF/Data/CCIC 批次已由用户报告执行完成；具体发布状态/双仓 SHA、24 Case 结果以本机 Evidence 确定 |
-| `tasks/kb-b1-gap-close-and-publish-v1.md` | `HISTORICAL / REPORTED PUBLISHED` | XPIC 增量已回报受控发布完成 |
-| `tasks/kb-p0-controlled-publication-v1.md` | `SUPPORTING AUTHORITY` | 正式双仓 commit/index/消费隔离/受控发布恢复门禁 |
-| `operations/authority-sync.md` | `CURRENT DELIVERY` | exact SHA 仅必要 Authority 单文件拉取，不 clone Framework |
+| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 事实优先级、Primary Home、有效证据、独立审核、受控发布约束 |
+| `tasks/kb-bn-c3-priority-gaps-v1.md` | **`CURRENT TASK`** | 从 C2 正式发布的 Backlog 选最高价值知识 Gap，精确证据修补、独立验证、增量发布；顺带保存实际 change→affected knowledge 证据以供持续维护 |
+| `tasks/kb-bn-c2-device-version-mml-impact-v1.md` | `HISTORICAL / USER-REPORTED PUBLISHED + BOUND` | 用户已明确报告 `publication=PUBLISHED`、`index_subject=BOUND`、`KB_BN_C3_PRIORITY_GAPS`；本轮须核对本机真实 pair/基线后再做新候选 |
+| `tasks/kb-bn-c1-four-core-flows-batch-v1.md` | `HISTORICAL` | SCC/IF/Data/CCIC 实战批次，已有 Evidence 优先复用 |
+| `tasks/kb-b1-gap-close-and-publish-v1.md` | `HISTORICAL` | XPIC 实战已报告发布，不重复 Review/Build |
+| `tasks/kb-p0-controlled-publication-v1.md` | `SUPPORTING PUBLICATION AUTHORITY` | 正式双仓 ff-only、GBrain Source/Index、消费者暂停、独立发布验收和恢复 |
+| `operations/authority-sync.md` | `CURRENT DELIVERY` | exact 40 位 SHA 单文件下载，不 clone Framework 整仓 |
 
-## 2. 已知事实与下一步
+## 2. 当前真实进展与目标
 
-用户报告 KB-BN-C1 已执行完成。远端无法读取本机 `published-baseline.json`、24 个 Query Case 或 C1 独立发布证据，故本轮只在同一次任务开始时核对上一轮真实 `publication: PUBLISHED | NO_CHANGE` 与 `index_subject: BOUND`，并把受证实的 Git Commit Pair 冻结为本次 Base。若 C1 只有 Independent Review PASS 而没有正式发布，本任务不得假定完成，请先走 C1 的 D/E；也不允许凭聊天补造 SHA。
+用户本轮提供已完成 C2 正式发布且索引 BOUND 的短回执。聊天无法访问本机完整 `KB_BN_C2_COMPLETE`、published-baseline、双 Git Commit Pair、GBrain 实际 Index Subject，因此**只在本轮开工时单次核对**，不要重复旧 Survey/C2 问题检查。失败则本轮 `BLOCKED_BY_BASELINE`，不假设安全。
 
-本轮集中覆盖：
+本轮是明确的 **`PRIORITY_GAPS`**，不是无依据自动搭建平台。读取真实 C2 `coverage-and-backlog`、`gap-register`、`query-cases`，只处理已证实的 5–8 个（不足则按实际）高价值 Gap：错误设备/版本支持、MML 语义/映射错误、Swap 模块责任、跨库 Primary Home/导航等。检索-only / 源未知要独立列，不能伪装成知识页面已修复。
 
-1. 设备型号/主控/板卡/槽位/端口/Feature 与软件版本条件；
-2. MML 命令/参数语义、NCE 日志与 Device DB 经 C++/Java 转 Source MML、后段 cfg.ini/JNI GET→SET；
-3. 新设备、新版本、MML 参数变化对 Swap Scenario、`SwapParam`、Module、XML、目标配置及验证的真实影响导航。
+用真实源差异（如设备版本、板卡、MML 参数、代码/配置变化）在本地形成最小化 `change→affected pages→evidence→candidate` 维护证据，为下一批 C4 做准备；不创建 watcher/daemon/后台任务、不要修改生产源码、Raw Sources 或 Framework Learning/Verification 线。
 
-按 C1 真实 Backlog 与当前代码/正式设备资料挑选有限的真实对象，三条线合计 18 个可复现查询与正反例；不做全型号全命令虚假矩阵。达到有限、可验证、确实有用的知识进度后即交付，未知需求清楚留 backlog。
+## 3. 一轮执行与版本约束
 
-## 3. 本轮执行模式
+CURRENT Task 允许 **A→E 同一轮编排**：A 并行只读取证/排序；B 单仓唯一 Candidate Writer 修补小范围确证内容；C 独立 Reviewer 审 exact subject；D 当前 Authority 已在 main 生效且所有 P0 preflight 安全 Gate 重新 PASS 才发布精确 ff-only / GBrain Source 限定 Sync；E 独立 Publisher Reviewer 核对 Git Pair、Index Subject、正反例，通过才写新 Published Baseline 并恢复消费者。
 
-同轮 A→E：A 最多三路并行**只读取证**；B 每知识仓唯一候选 writer，对有证据 Gap 执行小范围增量；C 不同 Reviewer 绑定 exact subject 独立审核；D Authority 合并生效且受控发布前置全部满足才 Git ff-only / GBrain 定向同步；E 独立发布审核通过才写新 `published-baseline.json` 并恢复知识消费。
+**PR 分支未合并 main 时允许 A/B/C，但禁止正式 D/E 发布。** 任何独立性、Git 非 FF、Index 不能绑定或消费者不受控均 Fail Closed；具体写范围和 Receipt 以 CURRENT Task 为唯一准绳。
 
-未合并 main 的 PR Authority 仅供只读取证、隔离 Candidate 与独立 Review；绝不授权提前修改 `D:\gbrain-knowledge\swap-kb\`、`D:\gbrain-knowledge\microwave-kb\` 或正式 GBrain 索引。实施者独立 Review 与 Publisher 的角色不得混用为自证。
+## 4. 本地固定边界
 
-## 4. 固定知识与私有治理目录
+`D:\gbrain-knowledge\swap-kb\`、`D:\gbrain-knowledge\microwave-kb\` 是正式知识仓；`D:\swap-knowledge-sources\` 是只读原始资料；`<SwapRepo>\.ai-local\knowledge\reconstruction\` 为私有治理根。SwapRepo 仅从已打开且可证明的工程确定，不进行磁盘搜索猜测路径。
 
-正式项目知识：`D:\gbrain-knowledge\swap-kb\`。
-正式领域知识：`D:\gbrain-knowledge\microwave-kb\`。
-Raw Sources：`D:\swap-knowledge-sources\`。
-本地 Governance：`<SwapRepo>\.ai-local\knowledge\reconstruction\`；只有在已打开 Swap Repo 且该治理根可证明时使用，不扫描磁盘猜路径。所有 Candidate、Evidence、Review、Baseline 的 WRITE_SCOPE 由 CURRENT Task 严格限定。
+不上传任何私有知识或完整 Evidence。仅按 `operations/authority-sync.md` 下载 exact SHA 下 index → CURRENT Task → supporting Authority 单文件到既有 Authority Cache；严禁 clone/fetch/pull/checkout GitHub Framework 或 ZIP/archive。
 
 ## 5. 下一 Gate
 
-- 内容与索引独立发布通过（含部分场景但不伪称全量）：`KB_BN_C3_PRIORITY_GAPS`。
-- 内容事实或 Current Subject 独立审查失败：`KB_BN_C2_REMEDIATION`。
-- 发布期间部分成功/索引绑定失败：`KB_BN_C2_PUBLISH_RECOVERY`。
-- 本机真实 Subject、权限、独立性不可证明：`BLOCKED_BY_LOCAL_STATE`。
-
-严格依据 `operations/authority-sync.md`：仅给定 exact 40-char SHA 以单文件 HTTP 顺序下载 index → CURRENT Task → Task 指定 supporting Authority 到旧 authority-cache，不 clone/fetch/pull/checkout GitHub Framework 整仓、ZIP、archive，不上传私有 Evidence。
+- 实际内容与发布独立 PASS：`KB_BN_C4_INCREMENTAL_MAINTENANCE`；
+- 真实知识事实/独立审查 Finding：`KB_BN_C3_REMEDIATION`；
+- 部分正式发布或 Index HOLD：`KB_BN_C3_PUBLISH_RECOVERY`；
+- 无法证明基线/写入隔离/独立 Reviewer：`BLOCKED_BY_LOCAL_STATE`。
