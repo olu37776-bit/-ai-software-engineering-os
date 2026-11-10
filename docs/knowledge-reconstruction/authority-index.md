@@ -1,45 +1,42 @@
 # Swap / GBrain Knowledge Reconstruction — Authority Index
 
-状态：`CURRENT / KB-BN-C3 PRIORITY GAPS`
-更新：`2026-11-09`；Issue #127。
+状态：`CURRENT / KB-BN-C4 CHANGE-DRIVEN MAINTENANCE BATCH`
+更新：`2026-11-10`；Issue #129。
 
-本仓库只发布可公开的 Knowledge Reconstruction Authority；正式两 Knowledge Repo、Swap 生产源码、GBrain 索引、MML/设备原始资料、查询与验证 Evidence 只存本地。
+本目录只公开任务和规则 Authority；真实 Knowledge、Swap 源码、设备资料、GBrain 索引数据、完整测试 Evidence 只在本地，不上传 GitHub。
 
 ## 1. 唯一 CURRENT Task
 
-| Authority 路径 | 状态 | 职责 |
+| 路径 | 状态 | 说明 |
 | --- | --- | --- |
-| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 事实优先级、Primary Home、有效证据、独立审核、受控发布约束 |
-| `tasks/kb-bn-c3-priority-gaps-v1.md` | **`CURRENT TASK`** | 从 C2 正式发布的 Backlog 选最高价值知识 Gap，精确证据修补、独立验证、增量发布；顺带保存实际 change→affected knowledge 证据以供持续维护 |
-| `tasks/kb-bn-c2-device-version-mml-impact-v1.md` | `HISTORICAL / USER-REPORTED PUBLISHED + BOUND` | 用户已明确报告 `publication=PUBLISHED`、`index_subject=BOUND`、`KB_BN_C3_PRIORITY_GAPS`；本轮须核对本机真实 pair/基线后再做新候选 |
-| `tasks/kb-bn-c1-four-core-flows-batch-v1.md` | `HISTORICAL` | SCC/IF/Data/CCIC 实战批次，已有 Evidence 优先复用 |
-| `tasks/kb-b1-gap-close-and-publish-v1.md` | `HISTORICAL` | XPIC 实战已报告发布，不重复 Review/Build |
-| `tasks/kb-p0-controlled-publication-v1.md` | `SUPPORTING PUBLICATION AUTHORITY` | 正式双仓 ff-only、GBrain Source/Index、消费者暂停、独立发布验收和恢复 |
-| `operations/authority-sync.md` | `CURRENT DELIVERY` | exact 40 位 SHA 单文件下载，不 clone Framework 整仓 |
+| `architecture/overall-design-v1.md` | `DESIGN BASELINE` | 知识 Primary Home、事实来源、独立验证和受控发布约束 |
+| `tasks/kb-bn-c4-change-driven-batch-v1.md` | **`CURRENT TASK`** | 用 C3 已证实变更与剩余 Gap 驱动增量知识批处理：diff→impact→候选→独立 Review→受控发布→独立验收 |
+| `tasks/kb-bn-c3-priority-gaps-v1.md` | `HISTORICAL / USER-REPORTED PUBLISHED + BOUND` | 用户报告 C3 正式发布与索引绑定，精确双仓 Git pair / Index Subject 仍需本机 Evidence 核验 |
+| `tasks/kb-bn-c2-device-version-mml-impact-v1.md` | `HISTORICAL` | 设备版本、MML、影响导航，已纳入持续知识维护基础 |
+| `tasks/kb-bn-c1-four-core-flows-batch-v1.md` | `HISTORICAL` | SCC / IF / Data / CCIC 批次 |
+| `tasks/kb-b1-gap-close-and-publish-v1.md` | `HISTORICAL` | XPIC 增量 |
+| `tasks/kb-p0-controlled-publication-v1.md` | `SUPPORTING AUTHORITY` | 双知识仓/GBrain 原生定向同步、消费者隔离及发布核验的安全 Gate |
+| `operations/authority-sync.md` | `CURRENT DELIVERY` | fixed 40-char SHA + exact path 单文件 Authority 获取协议 |
 
-## 2. 当前真实进展与目标
+## 2. 本轮目标
 
-用户本轮提供已完成 C2 正式发布且索引 BOUND 的短回执。聊天无法访问本机完整 `KB_BN_C2_COMPLETE`、published-baseline、双 Git Commit Pair、GBrain 实际 Index Subject，因此**只在本轮开工时单次核对**，不要重复旧 Survey/C2 问题检查。失败则本轮 `BLOCKED_BY_BASELINE`，不假设安全。
+用户回报：C3 `publication=PUBLISHED`、`index_subject=BOUND`；下一任务请求 `KB_BN_C4_BATCH`。这个回报为进入新任务的路由，**不代替本地 Published Baseline、Git HEAD、GBrain Index Subject 与 Independent Publish Evidence**。
 
-本轮是明确的 **`PRIORITY_GAPS`**，不是无依据自动搭建平台。读取真实 C2 `coverage-and-backlog`、`gap-register`、`query-cases`，只处理已证实的 5–8 个（不足则按实际）高价值 Gap：错误设备/版本支持、MML 语义/映射错误、Swap 模块责任、跨库 Primary Home/导航等。检索-only / 源未知要独立列，不能伪装成知识页面已修复。
+新任务只在开工时核对上一发布事实并冻结当前 subject，然后从 C3 真实 `change-delta-cases` 与 `remaining-backlog` 抽取证据充分的来源变化。重点验证**源码/配置/MML/设备资料差异能不能可靠定位应更新的知识**，以一次批次更新最重要的受影响页面。没有旧版本对照，不得把当前状态说成“发生了变化”。
 
-用真实源差异（如设备版本、板卡、MML 参数、代码/配置变化）在本地形成最小化 `change→affected pages→evidence→candidate` 维护证据，为下一批 C4 做准备；不创建 watcher/daemon/后台任务、不要修改生产源码、Raw Sources 或 Framework Learning/Verification 线。
+本轮优先 3–6 条真实变化（若实际少就照实），8–12 条真实问答回归；每个知识仓只有一个集成候选 writer；只维护有证据的 `swap-kb` / `microwave-kb` 知识，不改生产源码、原始输入或 GBrain Schema。一次独立 Review、一次受控发布和一次独立发布 Gate；不为每条变化创建单独 Issue/PR。
 
-## 3. 一轮执行与版本约束
+阶段 A/B/C 允许按 Authority 在独立隔离区先执行。**PR 尚未合并 main 时，不允许 D/E 的正式 Git ff-only Promotion、GBrain Sync 或消费者切换。** 必须在发布前重新证明 P0 安全前置、Candidate Current Subject、独立 Actor、Source 路径与 Index Commit Pair。
 
-CURRENT Task 允许 **A→E 同一轮编排**：A 并行只读取证/排序；B 单仓唯一 Candidate Writer 修补小范围确证内容；C 独立 Reviewer 审 exact subject；D 当前 Authority 已在 main 生效且所有 P0 preflight 安全 Gate 重新 PASS 才发布精确 ff-only / GBrain Source 限定 Sync；E 独立 Publisher Reviewer 核对 Git Pair、Index Subject、正反例，通过才写新 Published Baseline 并恢复消费者。
+## 3. 本地边界
 
-**PR 分支未合并 main 时允许 A/B/C，但禁止正式 D/E 发布。** 任何独立性、Git 非 FF、Index 不能绑定或消费者不受控均 Fail Closed；具体写范围和 Receipt 以 CURRENT Task 为唯一准绳。
+正式：`D:\gbrain-knowledge\swap-kb\`、`D:\gbrain-knowledge\microwave-kb\`；Raw Sources 只读 `D:\swap-knowledge-sources\`；治理根 `<SwapRepo>\.ai-local\knowledge\reconstruction\`。Candidate、Report、Review、Published Baseline 的具体 WRITE_SCOPE 唯一由 CURRENT Task 定义。
 
-## 4. 本地固定边界
+Authority 使用 `operations/authority-sync.md`：agent 只以聊天下发的 40 位 exact SHA，单文件获取 index → 当前 task → supporting Authority 到原有 `authority-cache`，禁止 clone/fetch/pull/checkout GitHub Framework、下载 ZIP/archive 或上传私有知识。
 
-`D:\gbrain-knowledge\swap-kb\`、`D:\gbrain-knowledge\microwave-kb\` 是正式知识仓；`D:\swap-knowledge-sources\` 是只读原始资料；`<SwapRepo>\.ai-local\knowledge\reconstruction\` 为私有治理根。SwapRepo 仅从已打开且可证明的工程确定，不进行磁盘搜索猜测路径。
+## 4. 下一 Gate
 
-不上传任何私有知识或完整 Evidence。仅按 `operations/authority-sync.md` 下载 exact SHA 下 index → CURRENT Task → supporting Authority 单文件到既有 Authority Cache；严禁 clone/fetch/pull/checkout GitHub Framework 或 ZIP/archive。
-
-## 5. 下一 Gate
-
-- 实际内容与发布独立 PASS：`KB_BN_C4_INCREMENTAL_MAINTENANCE`；
-- 真实知识事实/独立审查 Finding：`KB_BN_C3_REMEDIATION`；
-- 部分正式发布或 Index HOLD：`KB_BN_C3_PUBLISH_RECOVERY`；
-- 无法证明基线/写入隔离/独立 Reviewer：`BLOCKED_BY_LOCAL_STATE`。
+- 独立审查和发布均 PASS，批量变更影响流程有实证可复用：`KB_CONTINUOUS_MAINTENANCE`。
+- 新知识事实问题/Reviewer Finding：`KB_BN_C4_REMEDIATION`。
+- 正式仓部分提升或 GBrain Index HOLD：`KB_BN_C4_PUBLISH_RECOVERY`。
+- 本地基线/隔离/独立 Reviewer/变更来源无法证明：`BLOCKED_BY_LOCAL_STATE`。
